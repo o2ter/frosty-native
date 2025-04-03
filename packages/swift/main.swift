@@ -44,6 +44,7 @@ print(props.call(withArguments: [context.globalObject, prototypes]))
 
 let function = JSCore.Value(in: context) { args, this in
     print(args, this)
+    return .null
 }
 
 print(function.call(withArguments: [context.globalObject, prototypes]))
