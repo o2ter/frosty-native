@@ -129,44 +129,6 @@ extension JSCore.Value {
             return .undefined
         }
     }
-
-    public init(
-        in context: JSCore,
-        _ callback: @escaping (_ arguments: [JSCore.Value]) -> Void
-    ) {
-        self.init(in: context) { arguments, _ in
-            callback(arguments)
-            return .undefined
-        }
-    }
-
-    public init(
-        in context: JSCore,
-        _ callback: @escaping (_ arguments: [JSCore.Value]) -> JSCore.Value
-    ) {
-        self.init(in: context) { arguments, _ in
-            return callback(arguments)
-        }
-    }
-
-    public init(
-        in context: JSCore,
-        _ callback: @escaping () -> Void
-    ) {
-        self.init(in: context) { _, _ in
-            callback()
-            return .undefined
-        }
-    }
-
-    public init(
-        in context: JSCore,
-        _ callback: @escaping () -> JSCore.Value
-    ) {
-        self.init(in: context) { _, _ in
-            return callback()
-        }
-    }
 }
 
 extension JSCore.ValueBase: CustomStringConvertible {
