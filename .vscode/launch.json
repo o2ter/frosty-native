@@ -1,0 +1,22 @@
+{
+  "configurations": [
+    {
+      "type": "lldb",
+      "request": "launch",
+      "args": [],
+      "cwd": "${workspaceFolder:frosty-native}",
+      "name": "Debug FrostyNative",
+      "program": "${workspaceFolder:frosty-native}/.build/debug/FrostyNative",
+      "preLaunchTask": "swift: Build Debug FrostyNative"
+    },
+    {
+      "type": "lldb",
+      "request": "launch",
+      "args": [],
+      "cwd": "${workspaceFolder:frosty-native}",
+      "name": "Release FrostyNative",
+      "program": "${workspaceFolder:frosty-native}/.build/release/FrostyNative",
+      "preLaunchTask": "swift: Build Release FrostyNative"
+    }
+  ]
+}
