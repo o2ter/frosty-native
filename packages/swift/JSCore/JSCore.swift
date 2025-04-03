@@ -27,26 +27,22 @@ import Foundation
 import JavaScriptCore
 
 public class JSCore {
-    
-    fileprivate let vm: VirtualMachine
+
+    public let virtualMachine: VirtualMachine
     fileprivate let base: JSContext
-    
-    public init(_ vm: VirtualMachine = VirtualMachine()) {
-        self.vm = vm
-        self.base = JSContext(virtualMachine: vm.base)
-    }
-    
-    public var virtualMachine: VirtualMachine {
-        return self.vm
+
+    public init(_ virtualMachine: VirtualMachine = VirtualMachine()) {
+        self.virtualMachine = virtualMachine
+        self.base = JSContext(virtualMachine: virtualMachine.base)
     }
 }
 
 extension JSCore {
-    
+
     public class VirtualMachine {
-        
+
         fileprivate let base: JSVirtualMachine
-        
+
         public init() {
             self.base = JSVirtualMachine()
         }
@@ -60,9 +56,9 @@ extension JSCore {
         case undefined
         case value(JSValue)
     }
-    
+
     public class Value {
-        
+
         fileprivate let base: ValueBase
 
         fileprivate init(_ value: JSValue) {
@@ -76,7 +72,7 @@ extension JSCore {
 }
 
 extension JSCore {
-    
+
     public var globalObject: JSCore.Value {
         return JSCore.Value(self.base.globalObject)
     }
@@ -110,7 +106,7 @@ extension JSCore.Value {
 }
 
 extension JSCore.ValueBase: CustomStringConvertible {
-    
+
     public var description: String {
         switch self {
         case .null: return "null"
@@ -121,7 +117,7 @@ extension JSCore.ValueBase: CustomStringConvertible {
 }
 
 extension JSCore.Value: CustomStringConvertible {
-    
+
     public var description: String {
         return self.base.description
     }
@@ -177,7 +173,9 @@ extension JSCore.Value {
 
     @discardableResult
     public func call(withArguments arguments: [JSCore.Value]) -> JSCore.Value {
-        guard case let .value(base) = self.base, let context = base.context else { return .undefined }
+        guard case let .value(base) = self.base, let context = base.context else {
+            return .undefined
+        }
         let result = base.call(withArguments: arguments.map { $0.toJSValue(inContext: context) })
         return result.map(JSCore.Value.init) ?? .undefined
     }
@@ -186,7 +184,8 @@ extension JSCore.Value {
         guard case let .value(base) = self.base, let context = base.context else {
             return .undefined
         }
-        let result = base.construct(withArguments: arguments.map { $0.toJSValue(inContext: context) })
+        let result = base.construct(
+            withArguments: arguments.map { $0.toJSValue(inContext: context) })
         return result.map(JSCore.Value.init) ?? .undefined
     }
 
@@ -197,7 +196,8 @@ extension JSCore.Value {
         guard case let .value(base) = self.base, let context = base.context else {
             return .undefined
         }
-        let result = base.invokeMethod(method, withArguments: arguments.map { $0.toJSValue(inContext: context) })
+        let result = base.invokeMethod(
+            method, withArguments: arguments.map { $0.toJSValue(inContext: context) })
         return result.map(JSCore.Value.init) ?? .undefined
     }
 }
