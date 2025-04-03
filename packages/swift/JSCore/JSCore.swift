@@ -103,19 +103,10 @@ extension JSCore.Value {
     public static var undefined: JSCore.Value {
         return JSCore.Value(.undefined)
     }
-    
-    public init(
-        in context: JSCore,
-        _ callback: @escaping (_ arguments: [JSCore.Value], _ this: JSCore.Value) -> Void
-    ) {
-        let closure: @convention(block) () -> Void  = {
-            callback(
-                JSContext.currentArguments().map { .init($0 as! JSValue) },
-                JSContext.currentThis().map(JSCore.Value.init) ?? .undefined)
-        }
-        self.init(JSValue(object: closure, in: context.base))
-    }
-    
+}
+
+extension JSCore.Value {
+
     public init(
         in context: JSCore,
         _ callback: @escaping (_ arguments: [JSCore.Value], _ this: JSCore.Value) -> JSCore.Value
@@ -127,6 +118,16 @@ extension JSCore.Value {
             return result.toJSValue(inContext: context.base)
         }
         self.init(JSValue(object: closure, in: context.base))
+    }
+
+    public init(
+        in context: JSCore,
+        _ callback: @escaping (_ arguments: [JSCore.Value], _ this: JSCore.Value) -> Void
+    ) {
+        self.init(in: context) { arguments, this in
+            callback(arguments, this)
+            return .undefined
+        }
     }
 }
 
