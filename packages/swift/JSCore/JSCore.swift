@@ -26,7 +26,7 @@
 import Foundation
 import JavaScriptCore
 
-public class JSCore {
+public struct JSCore {
 
     public let virtualMachine: VirtualMachine
     fileprivate let base: JSContext
@@ -34,40 +34,6 @@ public class JSCore {
     public init(_ virtualMachine: VirtualMachine = VirtualMachine()) {
         self.virtualMachine = virtualMachine
         self.base = JSContext(virtualMachine: virtualMachine.base)
-    }
-}
-
-extension JSCore {
-
-    public class VirtualMachine {
-
-        fileprivate let base: JSVirtualMachine
-
-        public init() {
-            self.base = JSVirtualMachine()
-        }
-    }
-}
-
-extension JSCore {
-
-    fileprivate enum ValueBase {
-        case null
-        case undefined
-        case value(JSValue)
-    }
-
-    public class Value {
-
-        fileprivate let base: ValueBase
-
-        fileprivate init(_ value: JSValue) {
-            self.base = .value(value)
-        }
-
-        fileprivate init(_ base: ValueBase) {
-            self.base = base
-        }
     }
 }
 
@@ -94,6 +60,40 @@ extension JSCore {
     }
 }
 
+extension JSCore {
+
+    public struct VirtualMachine {
+
+        fileprivate let base: JSVirtualMachine
+
+        public init() {
+            self.base = JSVirtualMachine()
+        }
+    }
+}
+
+extension JSCore {
+
+    fileprivate enum ValueBase {
+        case null
+        case undefined
+        case value(JSValue)
+    }
+
+    public struct Value {
+
+        fileprivate let base: ValueBase
+
+        fileprivate init(_ value: JSValue) {
+            self.base = .value(value)
+        }
+
+        fileprivate init(_ base: ValueBase) {
+            self.base = base
+        }
+    }
+}
+
 extension JSCore.Value {
 
     public static var null: JSCore.Value {
@@ -102,6 +102,31 @@ extension JSCore.Value {
 
     public static var undefined: JSCore.Value {
         return JSCore.Value(.undefined)
+    }
+    
+    public init(
+        in context: JSCore,
+        _ callback: @escaping (_ arguments: [JSCore.Value], _ this: JSCore.Value) -> Void
+    ) {
+        let closure: @convention(block) () -> Void  = {
+            callback(
+                JSContext.currentArguments().map { .init($0 as! JSValue) },
+                JSContext.currentThis().map(JSCore.Value.init) ?? .undefined)
+        }
+        self.init(JSValue(object: closure, in: context.base))
+    }
+    
+    public init(
+        in context: JSCore,
+        _ callback: @escaping (_ arguments: [JSCore.Value], _ this: JSCore.Value) -> JSCore.Value
+    ) {
+        let closure: @convention(block) () -> JSValue = {
+            let result = callback(
+                JSContext.currentArguments().map { .init($0 as! JSValue) },
+                JSContext.currentThis().map(JSCore.Value.init) ?? .undefined)
+            return result.toJSValue(inContext: context.base)
+        }
+        self.init(JSValue(object: closure, in: context.base))
     }
 }
 

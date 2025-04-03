@@ -41,3 +41,9 @@ let props = context.evaluateScript(
   "(x, prototypes) => [x, ...prototypes(x)].flatMap(x => Object.getOwnPropertyNames(x))")
 
 print(props.call(withArguments: [context.globalObject, prototypes]))
+
+let function = JSCore.Value(in: context) { args, this in
+    print(args, this)
+}
+
+print(function.call(withArguments: [context.globalObject, prototypes]))
