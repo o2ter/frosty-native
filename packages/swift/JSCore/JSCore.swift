@@ -76,6 +76,14 @@ extension JSCore {
 }
 
 extension JSCore {
+    
+    public var globalObject: JSCore.Value {
+        return JSCore.Value(self.base.globalObject)
+    }
+
+    public var exception: JSCore.Value {
+        return self.base.exception.map(JSCore.Value.init) ?? .undefined
+    }
 
     @discardableResult
     public func evaluateScript(_ script: String) -> JSCore.Value {

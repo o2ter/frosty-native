@@ -27,14 +27,17 @@ import Foundation
 
 let context = JSCore()
 
-context.evaluateScript(
+let prototypes = context.evaluateScript(
   """
-  const prototypes = (x) => {
+  (x) => {
     const prototype = Object.getPrototypeOf(x);
     if (prototype == undefined || prototype === Object.prototype) return [];
     return [prototype, ...prototypes(prototype)];
-  };
-  const props = (x) => [x, ...prototypes(x)].flatMap(x => Object.getOwnPropertyNames(x));
-  """)
+  }
+  """
+)
 
-print(context.evaluateScript("props(this).sort()"))
+let props = context.evaluateScript(
+  "(x, prototypes) => [x, ...prototypes(x)].flatMap(x => Object.getOwnPropertyNames(x))")
+
+print(props.call(withArguments: [context.globalObject, prototypes]))
