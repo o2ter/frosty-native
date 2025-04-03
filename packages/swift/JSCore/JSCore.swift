@@ -77,11 +77,13 @@ extension JSCore {
 
 extension JSCore {
 
+    @discardableResult
     public func evaluateScript(_ script: String) -> JSCore.Value {
         let result = self.base.evaluateScript(script)
         return result.map(JSCore.Value.init) ?? .undefined
     }
 
+    @discardableResult
     public func evaluateScript(_ script: String, withSourceURL sourceURL: URL) -> JSCore.Value {
         let result = self.base.evaluateScript(script, withSourceURL: sourceURL)
         return result.map(JSCore.Value.init) ?? .undefined
@@ -165,6 +167,7 @@ extension JSCore.Value {
 
 extension JSCore.Value {
 
+    @discardableResult
     public func call(withArguments arguments: [JSCore.Value]) -> JSCore.Value {
         guard case let .value(base) = self.base, let context = base.context else { return .undefined }
         let result = base.call(withArguments: arguments.map { $0.toJSValue(inContext: context) })
@@ -179,6 +182,7 @@ extension JSCore.Value {
         return result.map(JSCore.Value.init) ?? .undefined
     }
 
+    @discardableResult
     public func invokeMethod(_ method: String, withArguments arguments: [JSCore.Value])
         -> JSCore.Value
     {
