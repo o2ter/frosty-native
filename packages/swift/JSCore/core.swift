@@ -30,6 +30,7 @@ public struct JSCore {
     public let virtualMachine: VirtualMachine
 
     let base: JSContext
+    let context = Context()
 
     public init(_ virtualMachine: VirtualMachine = VirtualMachine()) {
         self.virtualMachine = virtualMachine

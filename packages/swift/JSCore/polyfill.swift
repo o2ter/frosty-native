@@ -29,14 +29,10 @@ extension JSValue: @unchecked @retroactive Sendable { }
 
 extension JSCore {
 
-  fileprivate class Context {
+  class Context {
 
     var timerId: Int = 0
     var timer: [Int: Timer] = [:]
-
-  }
-
-  fileprivate var context: Context {
 
   }
 }
