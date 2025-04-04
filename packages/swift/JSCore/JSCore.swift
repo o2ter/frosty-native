@@ -83,6 +83,9 @@ extension JSCore {
     fileprivate enum ValueBase {
         case null
         case undefined
+        case bool(Bool)
+        case number(Double)
+        case string(String)
         case value(JSValue)
     }
 
@@ -108,6 +111,18 @@ extension JSCore.Value {
 
     public static var undefined: JSCore.Value {
         return JSCore.Value(.undefined)
+    }
+
+    public init(_ value: Bool) {
+        self.init(.bool(value))
+    }
+
+    public init(_ value: Double) {
+        self.init(.number(value))
+    }
+
+    public init(_ value: String) {
+        self.init(.string(value))
     }
 }
 
@@ -153,6 +168,9 @@ extension JSCore.ValueBase: CustomStringConvertible {
         switch self {
         case .null: return "null"
         case .undefined: return "undefined"
+        case let .bool(value): return "\(value)"
+        case let .number(value): return "\(value)"
+        case let .string(value): return value
         case let .value(value): return value.toString()
         }
     }
@@ -171,8 +189,36 @@ extension JSCore.Value {
         switch self.base {
         case .null: return JSValue(nullIn: context)
         case .undefined: return JSValue(undefinedIn: context)
+        case let .bool(value): return JSValue(bool: value, in: context)
+        case let .number(value): return JSValue(double: value, in: context)
+        case let .string(value): return JSValue(object: value, in: context)
         case let .value(value): return value
         }
+    }
+}
+
+extension JSCore.Value: ExpressibleByBooleanLiteral {
+
+    public init(booleanLiteral value: BooleanLiteralType) {
+        self.init(value)
+    }
+}
+
+extension JSCore.Value: ExpressibleByFloatLiteral {
+
+    public init(floatLiteral value: FloatLiteralType) {
+        self.init(value)
+    }
+}
+
+extension JSCore.Value: ExpressibleByStringInterpolation {
+
+    public init(stringLiteral value: StringLiteralType) {
+        self.init(value)
+    }
+
+    public init(stringInterpolation: String.StringInterpolation) {
+        self.init(String(stringInterpolation: stringInterpolation))
     }
 }
 
