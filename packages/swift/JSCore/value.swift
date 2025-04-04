@@ -456,6 +456,7 @@ extension JSCore.Value {
 
   public var dateValue: Date? {
     switch self.base {
+    case .date(let value): return value
     case .value(let value): return value.toDate()
     default: return nil
     }
