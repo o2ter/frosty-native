@@ -36,6 +36,7 @@ extension JSCore {
       for (_, timer) in self.timer {
         timer.invalidate()
       }
+      timer = [:]
     }
   }
 }
