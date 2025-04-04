@@ -35,9 +35,9 @@ context.globalObject["console"]["log"] = JSCore.Value(in: context) { args, _ in
 context.evaluateScript(
   """
   console.log(setTimeout)
-  setTimeout(() => {
+  setInterval(() => {
   console.log('hello');
-  }, 0);
+  }, 10);
   """
 )
 
@@ -66,3 +66,5 @@ print(function.call(withArguments: [context.globalObject, prototypes]))
 print(context.globalObject["crypto"])
 print(context.globalObject["crypto"].invokeMethod("randomUUID"))
 print(context.globalObject["crypto"].invokeMethod("randomBytes", withArguments: [16]))
+
+RunLoop.main.run()
