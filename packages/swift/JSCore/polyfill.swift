@@ -83,10 +83,9 @@ extension JSCore {
 
   public var logger: @Sendable (LogLevel, [JSCore.Value]) -> Void {
     get { self.context.logger }
-    set {
-      let context = self.context
+    nonmutating set {
       self.virtualMachine.runloop.perform {
-        context.logger = newValue
+        self.context.logger = newValue
       }
     }
   }
