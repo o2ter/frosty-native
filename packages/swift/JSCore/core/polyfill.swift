@@ -91,26 +91,6 @@ extension JSCore {
 
 }
 
-@objc private protocol CryptoJSExports: JSExport {
-
-  func randomUUID() -> String
-
-  func randomBytes(_ length: Int) -> JSValue
-}
-
-@objc private class Crypto: NSObject, CryptoJSExports {
-
-  func randomUUID() -> String {
-    let uuid = UUID()
-    return .init(uuid.uuidString)
-  }
-
-  func randomBytes(_ length: Int) -> JSValue {
-    return .uint8Array(count: length, in: JSContext.current()) { bytes in
-      _ = SecRandomCopyBytes(kSecRandomDefault, length, bytes.baseAddress!)
-    }
-  }
-}
 extension JSCore {
 
   func polyfill() {
