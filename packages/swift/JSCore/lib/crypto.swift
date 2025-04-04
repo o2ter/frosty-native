@@ -53,18 +53,16 @@ import JavaScriptCore
   }
 
   func update(_ data: JSValue) {
-    let type = data.typedArrayType
-    guard type != kJSTypedArrayTypeNone else {
-      return
+    if (data.typedArrayType != kJSTypedArrayTypeNone) {
+      let byteLength = JSObjectGetTypedArrayByteLength(
+        data.context.jsGlobalContextRef, data.jsValueRef, nil)
+      let address = JSObjectGetTypedArrayBytesPtr(
+        data.context.jsGlobalContextRef, data.jsValueRef, nil)
+      base.update(
+        bufferPointer: UnsafeRawBufferPointer(
+          start: address?.assumingMemoryBound(to: UInt8.self),
+          count: byteLength))
     }
-    let byteLength = JSObjectGetTypedArrayByteLength(
-      data.context.jsGlobalContextRef, data.jsValueRef, nil)
-    let address = JSObjectGetTypedArrayBytesPtr(
-      data.context.jsGlobalContextRef, data.jsValueRef, nil)
-    base.update(
-      bufferPointer: UnsafeRawBufferPointer(
-        start: address?.assumingMemoryBound(to: UInt8.self),
-        count: byteLength))
   }
 
   func digest() -> JSValue {
