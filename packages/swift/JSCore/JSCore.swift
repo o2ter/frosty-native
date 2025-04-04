@@ -78,6 +78,8 @@ extension JSCore {
 
 extension JSCore {
 
+    public typealias Export = JavaScriptCore.JSExport & NSObject
+
     fileprivate enum ValueBase {
         case null
         case undefined
@@ -106,6 +108,16 @@ extension JSCore.Value {
 
     public static var undefined: JSCore.Value {
         return JSCore.Value(.undefined)
+    }
+}
+
+extension JSCore.Value {
+
+    public init(
+        object: JSExport & NSObject,
+        in context: JSCore
+    ) {
+        self.init(JSValue(object: object, in: context.base))
     }
 }
 
@@ -171,7 +183,7 @@ extension JSCore.Value {
             guard case let .value(base) = self.base else { return self }
             return .init(base.forProperty(property))
         }
-        set {
+        nonmutating set {
             guard case let .value(base) = self.base, let context = base.context else { return }
             base.setValue(newValue.toJSValue(inContext: context), forProperty: property)
         }
@@ -182,7 +194,7 @@ extension JSCore.Value {
             guard case let .value(base) = self.base else { return self }
             return .init(base.atIndex(index))
         }
-        set {
+        nonmutating set {
             guard case let .value(base) = self.base, let context = base.context else { return }
             base.setValue(newValue.toJSValue(inContext: context), at: index)
         }
