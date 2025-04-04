@@ -32,6 +32,11 @@ extension JSCore {
     var timerId: Int = 0
     var timer: [Int: Timer] = [:]
 
+    deinit {
+      for (_, timer) in self.timer {
+        timer.invalidate()
+      }
+    }
   }
 }
 
