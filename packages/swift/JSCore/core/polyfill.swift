@@ -52,17 +52,17 @@ extension JSCore {
 
 extension JSCore {
 
-  fileprivate typealias Export = JSExport & NSObject
+  public typealias Export = JSExport & NSObject
 
 }
 
 extension JSCore.Value {
 
-  fileprivate init(_ value: JSCore.Export, in context: JSCore) {
+  public init(_ value: JSCore.Export, in context: JSCore) {
     self.init(JSValue(object: value, in: context.base))
   }
 
-  fileprivate init(_ value: JSCore.Export.Type, in context: JSCore) {
+  public init(_ value: JSCore.Export.Type, in context: JSCore) {
     self.init(JSValue(object: value, in: context.base))
   }
 }
