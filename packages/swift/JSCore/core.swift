@@ -47,6 +47,13 @@ extension JSCore: @unchecked Sendable {}
 
 extension JSCore {
 
+    public var runloop: RunLoop {
+        return self.virtualMachine.runloop
+    }
+}
+
+extension JSCore {
+
     public var globalObject: JSCore.Value {
         return JSCore.Value(self.base.globalObject)
     }

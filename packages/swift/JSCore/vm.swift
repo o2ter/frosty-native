@@ -29,7 +29,7 @@ extension JSCore {
 
   public struct VirtualMachine {
 
-    let runloop: RunLoop
+    public let runloop: RunLoop
     let base: JSVirtualMachine
 
     public init() {
