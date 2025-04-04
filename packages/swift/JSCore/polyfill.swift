@@ -27,8 +27,8 @@ import JavaScriptCore
 
 extension JSCore {
 
-  func polyfill() {
-    self.globalObject["crypto"] = [
+  fileprivate var crypto: JSCore.Value {
+    return [
       "randomUUID": JSCore.Value(in: self) { _, _ in
         let uuid = UUID()
         return .init(uuid.uuidString)
@@ -42,5 +42,9 @@ extension JSCore {
         }
       },
     ]
+  }
+
+  func polyfill() {
+    self.globalObject["crypto"] = self.crypto
   }
 }
