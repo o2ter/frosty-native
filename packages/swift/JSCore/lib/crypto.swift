@@ -31,6 +31,8 @@ import JavaScriptCore
   func randomUUID() -> String
 
   func randomBytes(_ length: Int) -> JSValue
+
+  func createHash(_ algorithm: String) -> JSHash?
 }
 
 @objc class JSCrypto: NSObject, JSCryptoExport {
@@ -53,7 +55,7 @@ import JavaScriptCore
   }
 
   func update(_ data: JSValue) {
-    if (data.isTypedArray) {
+    if data.isTypedArray {
       let byteLength = JSObjectGetTypedArrayByteLength(
         data.context.jsGlobalContextRef, data.jsValueRef, nil)
       let address = JSObjectGetTypedArrayBytesPtr(
@@ -86,5 +88,24 @@ extension JSCrypto {
     return .uint8Array(count: length, in: JSContext.current()) { bytes in
       _ = SecRandomCopyBytes(kSecRandomDefault, length, bytes.baseAddress!)
     }
+  }
+
+  func createHash(_ algorithm: String) -> JSHash? {
+    let hash: any HashFunction
+    switch algorithm {
+    case "md5":
+      hash = Insecure.MD5()
+    case "sha1":
+      hash = Insecure.SHA1()
+    case "sha256":
+      hash = SHA256()
+    case "sha384":
+      hash = SHA384()
+    case "sha512":
+      hash = SHA512()
+    default:
+      return nil
+    }
+    return JSHash(hash)
   }
 }
