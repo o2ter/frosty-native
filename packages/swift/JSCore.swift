@@ -160,6 +160,21 @@ extension JSCore.Value {
     }
 }
 
+extension JSCore.Value {
+
+    public init(
+        bytesLength count: Int,
+        in context: JSCore,
+        _ callback: (_ bytes: UnsafeMutableRawBufferPointer) -> Void
+    ) {
+        let buffer = context.base.evaluateScript("new Uint8Array(\(count))")!
+        let address = JSObjectGetArrayBufferBytesPtr(
+            context.base.jsGlobalContextRef, buffer.forProperty("buffer").jsValueRef, nil)
+        callback(.init(start: address, count: count))
+        self.init(buffer)
+    }
+}
+
 extension JSCore.Value: CustomStringConvertible {
 
     public var description: String {
@@ -466,19 +481,9 @@ extension JSCore {
                 guard let length = arguments[0].numberValue.map(Int.init) else {
                     return .undefined
                 }
-                guard
-                    case let .value(buffer) = self.evaluateScript("new Uint8Array(\(length))").base
-                else {
-                    return .undefined
+                return .init(bytesLength: length, in: self) { bytes in
+                    _ = SecRandomCopyBytes(kSecRandomDefault, length, bytes.baseAddress!)
                 }
-                guard
-                    let address = JSObjectGetArrayBufferBytesPtr(
-                        self.base.jsGlobalContextRef, buffer.forProperty("buffer").jsValueRef, nil)
-                else {
-                    return .undefined
-                }
-                _ = SecRandomCopyBytes(kSecRandomDefault, length, address)
-                return .init(buffer)
             },
         ]
         self.globalObject["crypto"] = .init(crypto)
