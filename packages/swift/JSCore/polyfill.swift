@@ -45,8 +45,8 @@ extension JSCore {
 
   fileprivate func createTimer(callback: JSCore.Value, ms: Double, repeats: Bool) -> Int {
     let id = self.context.timerId
-    self.context.timer[id] = Timer(
-      timeInterval: ms / 1000,
+    self.context.timer[id] = Timer.scheduledTimer(
+      withTimeInterval: ms / 1000,
       repeats: repeats,
       block: { _ in
         _ = callback.call(withArguments: [])
