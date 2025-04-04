@@ -464,6 +464,71 @@ extension JSCore.Value {
   }
 }
 
+extension JSCore {
+
+  public struct TypedArrayType: RawRepresentable, Hashable, Sendable {
+
+    public let rawValue: UInt32
+
+    public init(rawValue: UInt32) {
+      self.rawValue = rawValue
+    }
+
+    public static var int8: TypedArrayType {
+      return .init(rawValue: kJSTypedArrayTypeInt8Array.rawValue)
+    }
+    public static var uint8: TypedArrayType {
+      return .init(rawValue: kJSTypedArrayTypeUint8Array.rawValue)
+    }
+    public static var uint8Clamped: TypedArrayType {
+      return .init(rawValue: kJSTypedArrayTypeUint8ClampedArray.rawValue)
+    }
+    public static var int16: TypedArrayType {
+      return .init(rawValue: kJSTypedArrayTypeInt16Array.rawValue)
+    }
+    public static var uint16: TypedArrayType {
+      return .init(rawValue: kJSTypedArrayTypeUint16Array.rawValue)
+    }
+    public static var int32: TypedArrayType {
+      return .init(rawValue: kJSTypedArrayTypeInt32Array.rawValue)
+    }
+    public static var uint32: TypedArrayType {
+      return .init(rawValue: kJSTypedArrayTypeUint32Array.rawValue)
+    }
+    public static var float32: TypedArrayType {
+      return .init(rawValue: kJSTypedArrayTypeFloat32Array.rawValue)
+    }
+    public static var float64: TypedArrayType {
+      return .init(rawValue: kJSTypedArrayTypeFloat64Array.rawValue)
+    }
+    public static var bigInt64: TypedArrayType {
+      return .init(rawValue: kJSTypedArrayTypeBigInt64Array.rawValue)
+    }
+    public static var bigUint64: TypedArrayType {
+      return .init(rawValue: kJSTypedArrayTypeBigUint64Array.rawValue)
+    }
+  }
+}
+
+extension JSValue {
+
+  public var typedArrayType: JSTypedArrayType {
+    return JSValueGetTypedArrayType(self.context.jsGlobalContextRef, self.jsValueRef, nil)
+  }
+}
+
+extension JSCore.Value {
+
+  public var typedArrayType: JSCore.TypedArrayType? {
+    switch self.base {
+    case .value(let value):
+      let type = value.typedArrayType
+      return type == kJSTypedArrayTypeNone ? nil : JSCore.TypedArrayType(rawValue: type.rawValue)
+    default: return nil
+    }
+  }
+}
+
 extension JSCore.ValueBase {
 
   public func toString() -> String {
