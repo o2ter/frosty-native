@@ -203,6 +203,12 @@ extension JSCore.Value: ExpressibleByBooleanLiteral {
     }
 }
 
+extension JSCore.Value: ExpressibleByIntegerLiteral {
+    public init(integerLiteral value: IntegerLiteralType) {
+        self.init(Double(value))
+    }
+}
+
 extension JSCore.Value: ExpressibleByFloatLiteral {
 
     public init(floatLiteral value: FloatLiteralType) {
@@ -454,7 +460,17 @@ extension JSCore {
             "randomUUID": JSCore.Value(in: self) { _, _ in
                 let uuid = UUID()
                 return .init(uuid.uuidString)
-            }
+            },
+            "randomBytes": JSCore.Value(in: self) { arguments, _ in
+                guard let length = arguments[0].numberValue.map(Int.init) else {
+                    return .undefined
+                }
+                var result = Data(count: length)
+                result.withUnsafeMutableBytes {
+                    _ = SecRandomCopyBytes(kSecRandomDefault, $0.count, $0.baseAddress!)
+                }
+                return .init(JSValue(object: result, in: self.base))
+            },
         ]
         self.globalObject["crypto"] = .init(crypto)
     }
