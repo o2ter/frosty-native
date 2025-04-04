@@ -82,7 +82,7 @@ extension JSCore {
     self.globalObject["crypto"] = self.crypto
     self.globalObject["setTimeout"] = .init(in: self) { arguments, _ in
       guard let ms = arguments[1].numberValue else { return .undefined }
-      let id = self.createTimer(callback: arguments[0], ms: max(1, ms), repeats: false)
+      let id = self.createTimer(callback: arguments[0], ms: ms, repeats: false)
       return .init(integerLiteral: id)
     }
     self.globalObject["clearTimeout"] = .init(in: self) { arguments, _ in
@@ -91,7 +91,7 @@ extension JSCore {
     }
     self.globalObject["setInterval"] = .init(in: self) { arguments, _ in
       guard let ms = arguments[1].numberValue else { return .undefined }
-      let id = self.createTimer(callback: arguments[0], ms: max(1, ms), repeats: true)
+      let id = self.createTimer(callback: arguments[0], ms: ms, repeats: true)
       return .init(integerLiteral: id)
     }
     self.globalObject["clearInterval"] = .init(in: self) { arguments, _ in
