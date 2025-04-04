@@ -405,7 +405,8 @@ extension JSCore.ValueBase {
         case let .array(elements):
             return "[" + elements.map { $0.toString() }.joined(separator: ", ") + "]"
         case let .object(dictionary):
-            return "{" + dictionary.map { "\($0.key): \($0.value.toString())" }
+            return "{"
+                + dictionary.map { "\($0.key): \($0.value.toString())" }
                 .joined(separator: ", ") + "}"
         case let .value(value): return value.toString()
         }
@@ -465,11 +466,19 @@ extension JSCore {
                 guard let length = arguments[0].numberValue.map(Int.init) else {
                     return .undefined
                 }
-                var result = Data(count: length)
-                result.withUnsafeMutableBytes {
-                    _ = SecRandomCopyBytes(kSecRandomDefault, $0.count, $0.baseAddress!)
+                guard
+                    case let .value(buffer) = self.evaluateScript("new Uint8Array(\(length))").base
+                else {
+                    return .undefined
                 }
-                return .init(JSValue(object: result, in: self.base))
+                guard
+                    let address = JSObjectGetArrayBufferBytesPtr(
+                        self.base.jsGlobalContextRef, buffer.jsValueRef, nil)
+                else {
+                    return .undefined
+                }
+                _ = SecRandomCopyBytes(kSecRandomDefault, length, address)
+                return .init(buffer)
             },
         ]
         self.globalObject["crypto"] = .init(crypto)
