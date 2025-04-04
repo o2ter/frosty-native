@@ -29,7 +29,7 @@ import PackageDescription
 let package = Package(
     name: "FrostyNative",
     products: [
-        .executable(name: "FrostyNative", targets: ["FrostyNative"])
+        .executable(name: "test", targets: ["test"])
     ],
     targets: [
         .target(
@@ -37,7 +37,7 @@ let package = Package(
             path: "packages/swift/JSCore",
         ),
         .executableTarget(
-            name: "FrostyNative",
+            name: "test",
             dependencies: ["JSCore"],
             path: "packages/swift/test"
         ),
