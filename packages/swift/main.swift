@@ -38,7 +38,7 @@ let prototypes = context.evaluateScript(
 )
 
 let props = context.evaluateScript(
-  "(x, prototypes) => [x, ...prototypes(x)].flatMap(x => Object.getOwnPropertyNames(x))")
+  "(x, prototypes) => [x, ...prototypes(x)].flatMap(x => Object.getOwnPropertyNames(x)).sort()")
 
 print(props.call(withArguments: [context.globalObject, prototypes]))
 
