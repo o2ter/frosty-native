@@ -429,7 +429,6 @@ extension JSCore.Value {
     }
   }
 
-  @available(macOS 10.15, macCatalyst 13.1, iOS 13, tvOS 13, *)
   public var isSymbol: Bool {
     switch self.base {
     case .value(let value): return value.isSymbol

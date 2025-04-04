@@ -23,16 +23,34 @@
 //  THE SOFTWARE.
 //
 
+import Crypto
 import JavaScriptCore
 
-@objc protocol CryptoJSExports: JSExport {
+@objc protocol JSCryptoExport: JSExport {
 
   func randomUUID() -> String
 
   func randomBytes(_ length: Int) -> JSValue
 }
 
-@objc class Crypto: NSObject, CryptoJSExports {
+@objc class JSCrypto: NSObject, JSCryptoExport {
+
+}
+
+@objc protocol JSHashExport: JSExport {
+
+}
+
+@objc class JSHash: NSObject, JSHashExport {
+
+  let base: any HashFunction
+
+  init(_ hash: any HashFunction) {
+    self.base = hash
+  }
+}
+
+extension JSCrypto {
 
   func randomUUID() -> String {
     let uuid = UUID()

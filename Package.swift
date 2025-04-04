@@ -28,12 +28,23 @@ import PackageDescription
 
 let package = Package(
     name: "FrostyNative",
+    platforms: [
+        .macOS(.v10_15),
+        .macCatalyst(.v13),
+        .iOS(.v13),
+    ],
     products: [
         .executable(name: "test", targets: ["test"])
+    ],
+    dependencies: [
+        .package(url: "https://github.com/apple/swift-crypto.git", from: "3.12.2"),
     ],
     targets: [
         .target(
             name: "JSCore",
+            dependencies: [
+                .product(name: "Crypto", package: "swift-crypto"),
+            ],
             path: "packages/swift/JSCore",
         ),
         .executableTarget(
