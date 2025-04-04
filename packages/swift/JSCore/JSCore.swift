@@ -210,6 +210,30 @@ extension JSCore.Value: ExpressibleByStringInterpolation {
     }
 }
 
+extension JSCore.Value: ExpressibleByArrayLiteral {
+
+    public init(arrayLiteral elements: JSCore.Value...) {
+        guard let context = JSContext.current() else {
+            fatalError("No current JSContext")
+        }
+        let array = JSValue(object: elements.map { $0.toJSValue(inContext: context) }, in: context)!
+        self.init(array)
+    }
+}
+
+extension JSCore.Value: ExpressibleByDictionaryLiteral {
+
+    public init(dictionaryLiteral elements: (String, JSCore.Value)...) {
+        guard let context = JSContext.current() else {
+            fatalError("No current JSContext")
+        }
+        let dictionary = JSValue(object: elements.reduce(into: [String: JSValue]()) { result, element in
+            result[element.0] = element.1.toJSValue(inContext: context)
+        }, in: context)!
+        self.init(dictionary)
+    }
+}
+
 extension JSCore.Value {
 
     public subscript(_ property: String) -> JSCore.Value {
