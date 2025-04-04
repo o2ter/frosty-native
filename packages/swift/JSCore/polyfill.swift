@@ -1,5 +1,5 @@
 //
-//  core.swift
+//  polyfill.swift
 //
 //  The MIT License
 //  Copyright (c) 2021 - 2025 O2ter Limited. All rights reserved.
@@ -25,42 +25,22 @@
 
 import JavaScriptCore
 
-public struct JSCore {
-
-    public let virtualMachine: VirtualMachine
-
-    let base: JSContext
-
-    public init(_ virtualMachine: VirtualMachine = VirtualMachine()) {
-        self.virtualMachine = virtualMachine
-        self.base = JSContext(virtualMachine: virtualMachine.base)
-        self.base.exceptionHandler = { context, exception in
-            guard let message = exception?.toString() else { return }
-            print(message)
-        }
-        self.polyfill()
-    }
-}
-
 extension JSCore {
 
-    public var globalObject: JSCore.Value {
-        return JSCore.Value(self.base.globalObject)
-    }
-
-    public var exception: JSCore.Value {
-        return self.base.exception.map(JSCore.Value.init) ?? .undefined
-    }
-
-    @discardableResult
-    public func evaluateScript(_ script: String) -> JSCore.Value {
-        let result = self.base.evaluateScript(script)
-        return result.map(JSCore.Value.init) ?? .undefined
-    }
-
-    @discardableResult
-    public func evaluateScript(_ script: String, withSourceURL sourceURL: URL) -> JSCore.Value {
-        let result = self.base.evaluateScript(script, withSourceURL: sourceURL)
-        return result.map(JSCore.Value.init) ?? .undefined
-    }
+  func polyfill() {
+    self.globalObject["crypto"] = [
+      "randomUUID": JSCore.Value(in: self) { _, _ in
+        let uuid = UUID()
+        return .init(uuid.uuidString)
+      },
+      "randomBytes": JSCore.Value(in: self) { arguments, _ in
+        guard let length = arguments[0].numberValue.map(Int.init) else {
+          return .undefined
+        }
+        return .uint8Array(count: length, in: self) { bytes in
+          _ = SecRandomCopyBytes(kSecRandomDefault, length, bytes.baseAddress!)
+        }
+      },
+    ]
+  }
 }
