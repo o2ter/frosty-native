@@ -84,6 +84,8 @@ extension JSCore {
         case bool(Bool)
         case number(Double)
         case string(String)
+        case array([ValueBase])
+        case object([String: ValueBase])
         case value(JSValue)
     }
 
@@ -122,6 +124,14 @@ extension JSCore.Value {
     public init(_ value: String) {
         self.init(.string(value))
     }
+
+    public init(_ value: [JSCore.Value]) {
+        self.init(.array(value.map { $0.base }))
+    }
+
+    public init(_ value: [String: JSCore.Value]) {
+        self.init(.object(value.mapValues { $0.base }))
+    }
 }
 
 extension JSCore.Value {
@@ -157,19 +167,32 @@ extension JSCore.Value: CustomStringConvertible {
     }
 }
 
-extension JSCore.Value {
+extension JSCore.ValueBase {
 
     fileprivate func toJSValue(inContext context: JSContext) -> JSValue {
-        switch self.base {
+        switch self {
         case .null: return JSValue(nullIn: context)
         case .undefined: return JSValue(undefinedIn: context)
         case let .bool(value): return JSValue(bool: value, in: context)
         case let .number(value): return JSValue(double: value, in: context)
         case let .string(value): return JSValue(object: value, in: context)
+        case let .array(elements):
+            let array = elements.map { $0.toJSValue(inContext: context) }
+            return JSValue(object: array, in: context)
+        case let .object(dictionary):
+            let object = dictionary.mapValues { $0.toJSValue(inContext: context) }
+            return JSValue(object: object, in: context)
         case let .value(value):
             assert(value.context === context, "JSValue context mismatch")
             return value
         }
+    }
+}
+
+extension JSCore.Value {
+
+    fileprivate func toJSValue(inContext context: JSContext) -> JSValue {
+        return self.base.toJSValue(inContext: context)
     }
 }
 
@@ -201,20 +224,15 @@ extension JSCore.Value: ExpressibleByStringInterpolation {
 extension JSCore.Value: ExpressibleByArrayLiteral {
 
     public init(arrayLiteral elements: JSCore.Value...) {
-        let context = JSContext.current()!
-        let array = elements.map { $0.toJSValue(inContext: context) }
-        self.init(JSValue(object: array, in: context))
+        self.init(elements)
     }
 }
 
 extension JSCore.Value: ExpressibleByDictionaryLiteral {
 
     public init(dictionaryLiteral elements: (String, JSCore.Value)...) {
-        let context = JSContext.current()!
-        let dictionary = elements.reduce(into: [String: JSValue]()) { result, element in
-            result[element.0] = element.1.toJSValue(inContext: context)
-        }
-        self.init(JSValue(object: dictionary, in: context))
+        let dictionary = elements.reduce(into: [String: JSCore.Value]()) { $0[$1.0] = $1.1 }
+        self.init(dictionary)
     }
 }
 
@@ -369,17 +387,29 @@ extension JSCore.Value {
     }
 }
 
-extension JSCore.Value {
+extension JSCore.ValueBase {
 
     public func toString() -> String {
-        switch self.base {
+        switch self {
         case .null: return "null"
         case .undefined: return "undefined"
         case let .bool(value): return "\(value)"
         case let .number(value): return "\(value)"
         case let .string(value): return value
+        case let .array(elements):
+            return "[" + elements.map { $0.toString() }.joined(separator: ", ") + "]"
+        case let .object(dictionary):
+            return "{" + dictionary.map { "\($0.key): \($0.value.toString())" }
+                .joined(separator: ", ") + "}"
         case let .value(value): return value.toString()
         }
+    }
+}
+
+extension JSCore.Value {
+
+    public func toString() -> String {
+        return self.base.toString()
     }
 }
 
@@ -426,7 +456,6 @@ extension JSCore {
                 return .init(uuid.uuidString)
             }
         ]
-        self.globalObject["crypto"] = .init(
-            JSValue(object: crypto.mapValues { $0.toJSValue(inContext: self.base) }, in: self.base))
+        self.globalObject["crypto"] = .init(crypto)
     }
 }
