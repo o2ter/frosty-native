@@ -29,7 +29,7 @@ import JSCore
 let context = JSCore()
 
 context.globalObject["console"]["log"] = JSCore.Value(in: context) { args, _ in
-  print(args)
+  print(args.map { $0.toString() }.joined(separator: " "))
 }
 
 context.evaluateScript(
