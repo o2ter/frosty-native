@@ -23,4 +23,5 @@
 //  THE SOFTWARE.
 //
 
+import 'core-js';
 import _ from 'lodash';
