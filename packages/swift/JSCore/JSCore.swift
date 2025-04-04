@@ -162,24 +162,10 @@ extension JSCore.Value {
     }
 }
 
-extension JSCore.ValueBase: CustomStringConvertible {
-
-    public var description: String {
-        switch self {
-        case .null: return "null"
-        case .undefined: return "undefined"
-        case let .bool(value): return "\(value)"
-        case let .number(value): return "\(value)"
-        case let .string(value): return value
-        case let .value(value): return value.toString()
-        }
-    }
-}
-
 extension JSCore.Value: CustomStringConvertible {
 
     public var description: String {
-        return self.base.description
+        return self.toString()
     }
 }
 
@@ -371,6 +357,20 @@ extension JSCore.Value {
         switch self.base {
         case .value(let value): return value.isBigInt
         default: return false
+        }
+    }
+}
+
+extension JSCore.Value {
+
+    public func toString() -> String {
+        switch self.base {
+        case .null: return "null"
+        case .undefined: return "undefined"
+        case let .bool(value): return "\(value)"
+        case let .number(value): return "\(value)"
+        case let .string(value): return value
+        case let .value(value): return value.toString()
         }
     }
 }
