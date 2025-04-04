@@ -25,8 +25,6 @@
 
 import JavaScriptCore
 
-extension JSValue: @unchecked @retroactive Sendable { }
-
 extension JSCore {
 
   class Context {
