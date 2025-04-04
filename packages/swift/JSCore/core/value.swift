@@ -157,8 +157,8 @@ extension JSValue {
     _ callback: (_ bytes: UnsafeMutableRawBufferPointer) -> Void = { _ in }
   ) -> JSValue {
     let buffer = context.evaluateScript("new Int8Array(\(count))")!
-    let address = JSObjectGetArrayBufferBytesPtr(
-      context.jsGlobalContextRef, buffer.forProperty("buffer").jsValueRef, nil)
+    let address = JSObjectGetTypedArrayBytesPtr(
+      context.jsGlobalContextRef, buffer.jsValueRef, nil)
     callback(.init(start: address, count: count))
     return buffer
   }
@@ -169,8 +169,8 @@ extension JSValue {
     _ callback: (_ bytes: UnsafeMutableRawBufferPointer) -> Void = { _ in }
   ) -> JSValue {
     let buffer = context.evaluateScript("new Uint8Array(\(count))")!
-    let address = JSObjectGetArrayBufferBytesPtr(
-      context.jsGlobalContextRef, buffer.forProperty("buffer").jsValueRef, nil)
+    let address = JSObjectGetTypedArrayBytesPtr(
+      context.jsGlobalContextRef, buffer.jsValueRef, nil)
     callback(.init(start: address, count: count))
     return buffer
   }
