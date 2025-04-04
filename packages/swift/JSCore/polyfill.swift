@@ -51,7 +51,7 @@ extension JSCore {
     let _class = self.evaluateScript(
       """
       ({ \(_methods.keys.joined(separator: ",")) }) => class \(name) {
-      \(_methods.keys.map { "\($0)() { return \($0)(...arguments); }" }.joined(separator: "\n"))
+      \(_methods.keys.map { "\($0)() { return \($0).call(this, ...arguments); }" }.joined(separator: "\n"))
       }
       """)
     return _class.call(withArguments: [.init(_methods)])
