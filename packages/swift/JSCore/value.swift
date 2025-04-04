@@ -123,6 +123,18 @@ extension JSCore.Value {
     return JSCore.Value(buffer)
   }
 
+  public static func int8Array(
+    bytesLength count: Int,
+    in context: JSCore,
+    _ callback: (_ bytes: UnsafeMutableRawBufferPointer) -> Void
+  ) -> JSCore.Value {
+    let buffer = context.base.evaluateScript("new Int8Array(\(count))")!
+    let address = JSObjectGetArrayBufferBytesPtr(
+      context.base.jsGlobalContextRef, buffer.forProperty("buffer").jsValueRef, nil)
+    callback(.init(start: address, count: count))
+    return JSCore.Value(buffer)
+  }
+
   public static func uint8Array(
     bytesLength count: Int,
     in context: JSCore,
