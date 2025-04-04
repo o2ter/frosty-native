@@ -78,4 +78,13 @@ context.evaluateScript(
   """
 )
 
+context.evaluateScript(
+  """
+  const hamc = crypto.createHamc('md5', new Uint8Array([1, 2, 3, 4, 5]));
+  hamc.update(new Uint8Array([1, 2, 3, 4, 5]));
+  hamc.update(new Uint8Array([6, 7, 8, 9, 10]));
+  console.log(hamc.digest());
+  """
+)
+
 RunLoop.main.run()

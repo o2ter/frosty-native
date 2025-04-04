@@ -60,7 +60,7 @@ extension HMAC: HashProtocol {
   typealias Digest = Self.MAC
 
   mutating func update(bufferPointer: UnsafeRawBufferPointer) {
-    self.update(bufferPointer: bufferPointer)
+    self.update(data: bufferPointer)
   }
 }
 
