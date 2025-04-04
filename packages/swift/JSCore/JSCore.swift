@@ -192,7 +192,9 @@ extension JSCore.Value {
         case let .bool(value): return JSValue(bool: value, in: context)
         case let .number(value): return JSValue(double: value, in: context)
         case let .string(value): return JSValue(object: value, in: context)
-        case let .value(value): return value
+        case let .value(value):
+            assert(value.context === context, "JSValue context mismatch")
+            return value
         }
     }
 }
