@@ -61,13 +61,26 @@ extension JSCore {
     timer?.invalidate()
   }
 
+  fileprivate func createClass(
+    _ methods: [String: ([JSCore.Value], JSCore.Value) -> JSCore.Value]
+  ) -> JSCore.Value {
+    let _methods = methods.mapValues { method in JSCore.Value(in: self) { method($0, $1) } }
+    let _class = self.evaluateScript(
+      """
+      ({ \(_methods.keys.joined(separator: ",")) }) => class Crypto {
+        \(_methods.keys.map { "\($0)() { return \($0)(...arguments); }" }.joined(separator: "\n"))
+      }
+      """)
+    return _class.call(withArguments: [.init(_methods)])
+  }
+
   fileprivate var crypto: JSCore.Value {
-    return [
-      "randomUUID": JSCore.Value(in: self) { _, _ in
+    return self.createClass([
+      "randomUUID": { _, _ in
         let uuid = UUID()
         return .init(uuid.uuidString)
       },
-      "randomBytes": JSCore.Value(in: self) { arguments, _ in
+      "randomBytes": { arguments, _ in
         guard let length = arguments[0].numberValue.map(Int.init) else {
           return .undefined
         }
@@ -75,11 +88,12 @@ extension JSCore {
           _ = SecRandomCopyBytes(kSecRandomDefault, length, bytes.baseAddress!)
         }
       },
-    ]
+    ])
   }
 
   func polyfill() {
-    self.globalObject["crypto"] = self.crypto
+    self.globalObject["Crypto"] = self.crypto
+    self.globalObject["crypto"] = self.evaluateScript("new Crypto()")
     self.globalObject["setTimeout"] = .init(in: self) { arguments, _ in
       guard let ms = arguments[1].numberValue else { return .undefined }
       let id = self.createTimer(callback: arguments[0], ms: ms, repeats: false)
