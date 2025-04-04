@@ -33,6 +33,7 @@ extension JSCore {
     case bool(Bool)
     case number(Double)
     case string(String)
+    case date(Date)
     case array([ValueBase])
     case object([String: ValueBase])
     case value(JSValue)
@@ -169,6 +170,7 @@ extension JSCore.ValueBase {
     case let .bool(value): return JSValue(bool: value, in: context)
     case let .number(value): return JSValue(double: value, in: context)
     case let .string(value): return JSValue(object: value, in: context)
+    case let .date(value): return JSValue(object: value, in: context)
     case let .array(elements):
       let array = elements.map { $0.toJSValue(inContext: context) }
       return JSValue(object: array, in: context)
@@ -404,6 +406,12 @@ extension JSCore.ValueBase {
     case let .bool(value): return "\(value)"
     case let .number(value): return "\(value)"
     case let .string(value): return value
+    case let .date(value):
+      let formatter = DateFormatter()
+      formatter.locale = Locale(identifier: "en_US_POSIX")
+      formatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"
+      formatter.timeZone = TimeZone(abbreviation: "UTC")
+      return formatter.string(from: value)
     case let .array(elements):
       return "[\(elements.map { $0.toString() }.joined(separator: ", "))]"
     case let .object(dictionary):
