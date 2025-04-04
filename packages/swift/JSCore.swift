@@ -421,12 +421,12 @@ extension JSCore {
 
     fileprivate func polyfill() {
         let crypto = [
-            "randomUUID": JSValue(
-                object: { () -> String in
-                    let uuid = UUID()
-                    return uuid.uuidString
-                }, in: self.base)
+            "randomUUID": JSCore.Value(in: self) { _, _ in
+                let uuid = UUID()
+                return .init(uuid.uuidString)
+            }
         ]
-        self.globalObject["crypto"] = .init(JSValue(object: crypto, in: self.base))
+        self.globalObject["crypto"] = .init(
+            JSValue(object: crypto.mapValues { $0.toJSValue(inContext: self.base) }, in: self.base))
     }
 }
