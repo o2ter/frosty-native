@@ -62,12 +62,13 @@ extension JSCore {
   }
 
   fileprivate func createClass(
+    name: String,
     _ methods: [String: ([JSCore.Value], JSCore.Value) -> JSCore.Value]
   ) -> JSCore.Value {
     let _methods = methods.mapValues { method in JSCore.Value(in: self) { method($0, $1) } }
     let _class = self.evaluateScript(
       """
-      ({ \(_methods.keys.joined(separator: ",")) }) => class Crypto {
+      ({ \(_methods.keys.joined(separator: ",")) }) => class \(name) {
         \(_methods.keys.map { "\($0)() { return \($0)(...arguments); }" }.joined(separator: "\n"))
       }
       """)
@@ -75,7 +76,7 @@ extension JSCore {
   }
 
   fileprivate var crypto: JSCore.Value {
-    return self.createClass([
+    return self.createClass(name: "Crypto", [
       "randomUUID": { _, _ in
         let uuid = UUID()
         return .init(uuid.uuidString)
