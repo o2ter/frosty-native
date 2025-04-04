@@ -89,7 +89,7 @@ extension JSCore.Value {
 
 extension JSValue {
 
-  convenience init(
+  public convenience init(
     in context: JSContext,
     _ callback: @escaping (_ arguments: [JSValue], _ this: JSValue) -> JSValue
   ) {
@@ -102,7 +102,7 @@ extension JSValue {
     self.init(object: closure, in: context)
   }
 
-  convenience init(
+  public convenience init(
     in context: JSContext,
     _ callback: @escaping (_ arguments: [JSValue], _ this: JSValue) -> Void
   ) {
@@ -139,7 +139,7 @@ extension JSCore.Value {
 
 extension JSValue {
 
-  static func arrayBuffer(
+  public static func arrayBuffer(
     bytesLength count: Int,
     in context: JSContext,
     _ callback: (_ bytes: UnsafeMutableRawBufferPointer) -> Void = { _ in }
@@ -151,7 +151,7 @@ extension JSValue {
     return buffer
   }
 
-  static func int8Array(
+  public static func int8Array(
     count: Int,
     in context: JSContext,
     _ callback: (_ bytes: UnsafeMutableRawBufferPointer) -> Void = { _ in }
@@ -163,7 +163,7 @@ extension JSValue {
     return buffer
   }
 
-  static func uint8Array(
+  public static func uint8Array(
     count: Int,
     in context: JSContext,
     _ callback: (_ bytes: UnsafeMutableRawBufferPointer) -> Void = { _ in }
