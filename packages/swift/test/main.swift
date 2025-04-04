@@ -24,6 +24,7 @@
 //
 
 import Foundation
+import JSCore
 
 let context = JSCore()
 
