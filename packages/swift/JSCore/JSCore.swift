@@ -214,8 +214,8 @@ extension JSCore.Value: ExpressibleByArrayLiteral {
 
     public init(arrayLiteral elements: JSCore.Value...) {
         let context = JSContext.current()!
-        let array = JSValue(object: elements.map { $0.toJSValue(inContext: context) }, in: context)!
-        self.init(array)
+        let array = elements.map { $0.toJSValue(inContext: context) }
+        self.init(JSValue(object: array, in: context))
     }
 }
 
@@ -223,10 +223,10 @@ extension JSCore.Value: ExpressibleByDictionaryLiteral {
 
     public init(dictionaryLiteral elements: (String, JSCore.Value)...) {
         let context = JSContext.current()!
-        let dictionary = JSValue(object: elements.reduce(into: [String: JSValue]()) { result, element in
+        let dictionary = elements.reduce(into: [String: JSValue]()) { result, element in
             result[element.0] = element.1.toJSValue(inContext: context)
-        }, in: context)!
-        self.init(dictionary)
+        }
+        self.init(JSValue(object: dictionary, in: context))
     }
 }
 
