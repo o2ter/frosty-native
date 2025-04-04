@@ -31,7 +31,8 @@ public struct JSCore {
 
     let base: JSContext
 
-    var timeer: [Int: Timer] = [:]
+    var timerId: Int = 0
+    var timer: [Int: Timer] = [:]
 
     public init(_ virtualMachine: VirtualMachine = VirtualMachine()) {
         self.virtualMachine = virtualMachine

@@ -25,7 +25,27 @@
 
 import JavaScriptCore
 
+extension JSValue: @unchecked @retroactive Sendable { }
+
 extension JSCore {
+
+  fileprivate mutating func createTimer(callback: JSValue, ms: Double, repeats: Bool) -> Int {
+    let id = self.timerId
+    self.timer[id] = Timer(
+      timeInterval: ms / 1000,
+      repeats: repeats,
+      block: { _ in
+        _ = callback.call(withArguments: [])
+      }
+    )
+    self.timerId += 1
+    return id
+  }
+
+  fileprivate mutating func removeTimer(identifier: Int) {
+    let timer = self.timer.removeValue(forKey: identifier)
+    timer?.invalidate()
+  }
 
   fileprivate var crypto: JSCore.Value {
     return [
