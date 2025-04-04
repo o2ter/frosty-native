@@ -87,19 +87,43 @@ extension JSCore.Value {
   }
 }
 
+extension JSValue {
+
+  convenience init(
+    in context: JSContext,
+    _ callback: @escaping (_ arguments: [JSValue], _ this: JSValue) -> JSValue
+  ) {
+    let closure: @convention(block) () -> JSValue = {
+      let result = callback(
+        JSContext.currentArguments().map { $0 as! JSValue },
+        JSContext.currentThis() ?? JSValue(undefinedIn: context))
+      return result
+    }
+    self.init(object: closure, in: context)
+  }
+
+  convenience init(
+    in context: JSContext,
+    _ callback: @escaping (_ arguments: [JSValue], _ this: JSValue) -> Void
+  ) {
+    self.init(in: context) { arguments, this in
+      callback(arguments, this)
+      return JSValue(undefinedIn: context)
+    }
+  }
+}
+
 extension JSCore.Value {
 
   public init(
     in context: JSCore,
     _ callback: @escaping (_ arguments: [JSCore.Value], _ this: JSCore.Value) -> JSCore.Value
   ) {
-    let closure: @convention(block) () -> JSValue = {
-      let result = callback(
-        JSContext.currentArguments().map { .init($0 as! JSValue) },
-        JSContext.currentThis().map(JSCore.Value.init) ?? .undefined)
-      return result.toJSValue(inContext: context.base)
-    }
-    self.init(JSValue(object: closure, in: context.base))
+    self.init(
+      JSValue(in: context.base) { arguments, this in
+        let result = callback(arguments.map { .init($0) }, JSCore.Value(this))
+        return result.toJSValue(inContext: context.base)
+      })
   }
 
   public init(
@@ -113,6 +137,45 @@ extension JSCore.Value {
   }
 }
 
+extension JSValue {
+
+  static func arrayBuffer(
+    bytesLength count: Int,
+    in context: JSContext,
+    _ callback: (_ bytes: UnsafeMutableRawBufferPointer) -> Void = { _ in }
+  ) -> JSValue {
+    let buffer = context.evaluateScript("new ArrayBuffer(\(count))")!
+    let address = JSObjectGetArrayBufferBytesPtr(
+      context.jsGlobalContextRef, buffer.jsValueRef, nil)
+    callback(.init(start: address, count: count))
+    return buffer
+  }
+
+  static func int8Array(
+    count: Int,
+    in context: JSContext,
+    _ callback: (_ bytes: UnsafeMutableRawBufferPointer) -> Void = { _ in }
+  ) -> JSValue {
+    let buffer = context.evaluateScript("new Int8Array(\(count))")!
+    let address = JSObjectGetArrayBufferBytesPtr(
+      context.jsGlobalContextRef, buffer.forProperty("buffer").jsValueRef, nil)
+    callback(.init(start: address, count: count))
+    return buffer
+  }
+
+  static func uint8Array(
+    count: Int,
+    in context: JSContext,
+    _ callback: (_ bytes: UnsafeMutableRawBufferPointer) -> Void = { _ in }
+  ) -> JSValue {
+    let buffer = context.evaluateScript("new Uint8Array(\(count))")!
+    let address = JSObjectGetArrayBufferBytesPtr(
+      context.jsGlobalContextRef, buffer.forProperty("buffer").jsValueRef, nil)
+    callback(.init(start: address, count: count))
+    return buffer
+  }
+}
+
 extension JSCore.Value {
 
   public static func arrayBuffer(
@@ -120,11 +183,7 @@ extension JSCore.Value {
     in context: JSCore,
     _ callback: (_ bytes: UnsafeMutableRawBufferPointer) -> Void = { _ in }
   ) -> JSCore.Value {
-    let buffer = context.base.evaluateScript("new ArrayBuffer(\(count))")!
-    let address = JSObjectGetArrayBufferBytesPtr(
-      context.base.jsGlobalContextRef, buffer.jsValueRef, nil)
-    callback(.init(start: address, count: count))
-    return JSCore.Value(buffer)
+    return JSCore.Value(JSValue.arrayBuffer(bytesLength: count, in: context.base, callback))
   }
 
   public static func int8Array(
@@ -132,11 +191,7 @@ extension JSCore.Value {
     in context: JSCore,
     _ callback: (_ bytes: UnsafeMutableRawBufferPointer) -> Void = { _ in }
   ) -> JSCore.Value {
-    let buffer = context.base.evaluateScript("new Int8Array(\(count))")!
-    let address = JSObjectGetArrayBufferBytesPtr(
-      context.base.jsGlobalContextRef, buffer.forProperty("buffer").jsValueRef, nil)
-    callback(.init(start: address, count: count))
-    return JSCore.Value(buffer)
+    return JSCore.Value(JSValue.int8Array(count: count, in: context.base, callback))
   }
 
   public static func uint8Array(
@@ -144,11 +199,7 @@ extension JSCore.Value {
     in context: JSCore,
     _ callback: (_ bytes: UnsafeMutableRawBufferPointer) -> Void = { _ in }
   ) -> JSCore.Value {
-    let buffer = context.base.evaluateScript("new Uint8Array(\(count))")!
-    let address = JSObjectGetArrayBufferBytesPtr(
-      context.base.jsGlobalContextRef, buffer.forProperty("buffer").jsValueRef, nil)
-    callback(.init(start: address, count: count))
-    return JSCore.Value(buffer)
+    return JSCore.Value(JSValue.uint8Array(count: count, in: context.base, callback))
   }
 }
 

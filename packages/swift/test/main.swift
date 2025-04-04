@@ -66,6 +66,8 @@ print(function.call(withArguments: [context.globalObject, prototypes]))
 
 print(context.globalObject["Crypto"])
 print(context.globalObject["crypto"])
+print(context.evaluateScript("Crypto.hi()"))
+print(context.evaluateScript("crypto.randomUUID()"))
 print(context.globalObject["crypto"].invokeMethod("randomUUID"))
 print(context.globalObject["crypto"].invokeMethod("randomBytes", withArguments: [16]))
 

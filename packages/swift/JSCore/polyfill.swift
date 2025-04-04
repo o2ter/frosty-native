@@ -27,15 +27,6 @@ import JavaScriptCore
 
 extension JSCore {
 
-  public enum LogLevel {
-    case log
-    case trace
-    case debug
-    case info
-    case warn
-    case error
-  }
-
   class Context {
 
     var timerId: Int = 0
@@ -59,55 +50,24 @@ extension JSCore {
   }
 }
 
+extension JSCore {
+
+  fileprivate typealias Export = JSExport & NSObject
+
+}
+
+extension JSCore.Value {
+
+  fileprivate init(_ value: JSCore.Export, in context: JSCore) {
+    self.init(JSValue(object: value, in: context.base))
+  }
+
+  fileprivate init(_ value: JSCore.Export.Type, in context: JSCore) {
+    self.init(JSValue(object: value, in: context.base))
+  }
+}
+
 extension JSCore.Context: @unchecked Sendable {}
-
-extension JSCore.LogLevel {
-
-  public static var allCases: [JSCore.LogLevel] {
-    return [.log, .trace, .debug, .info, .warn, .error]
-  }
-
-  public var name: String {
-    switch self {
-    case .log: return "log"
-    case .trace: return "trace"
-    case .debug: return "debug"
-    case .info: return "info"
-    case .warn: return "warn"
-    case .error: return "error"
-    }
-  }
-}
-
-extension JSCore {
-
-  public var logger: @Sendable (LogLevel, [JSCore.Value]) -> Void {
-    get { self.context.logger }
-    nonmutating set {
-      self.runloop.perform {
-        self.context.logger = newValue
-      }
-    }
-  }
-}
-
-extension JSCore {
-
-  fileprivate func createClass(
-    name: String,
-    _ methods: [String: ([JSCore.Value], JSCore.Value) -> JSCore.Value]
-  ) -> JSCore.Value {
-    let _methods = methods.mapValues { method in JSCore.Value(in: self) { method($0, $1) } }
-    let _class = self.evaluateScript(
-      """
-      ({ \(_methods.keys.joined(separator: ",")) }) => class \(name) {
-      \(_methods.keys.map { "\($0)() { return \($0).apply(this, arguments); }" }.joined(separator: "\n"))
-      }
-      """)
-    return _class.call(withArguments: [.init(_methods)])
-  }
-
-}
 
 extension JSCore {
 
@@ -131,29 +91,26 @@ extension JSCore {
 
 }
 
-extension JSCore {
+@objc private protocol CryptoJSExports: JSExport {
 
-  fileprivate var crypto: JSCore.Value {
-    return self.createClass(
-      name: "Crypto",
-      [
-        "randomUUID": { _, _ in
-          let uuid = UUID()
-          return .init(uuid.uuidString)
-        },
-        "randomBytes": { arguments, _ in
-          guard let length = arguments[0].numberValue.map(Int.init) else {
-            return .undefined
-          }
-          return .uint8Array(count: length, in: self) { bytes in
-            _ = SecRandomCopyBytes(kSecRandomDefault, length, bytes.baseAddress!)
-          }
-        },
-      ])
-  }
+  func randomUUID() -> String
 
+  func randomBytes(_ length: Int) -> JSValue
 }
 
+@objc private class Crypto: NSObject, CryptoJSExports {
+
+  func randomUUID() -> String {
+    let uuid = UUID()
+    return .init(uuid.uuidString)
+  }
+
+  func randomBytes(_ length: Int) -> JSValue {
+    return .uint8Array(count: length, in: JSContext.current()) { bytes in
+      _ = SecRandomCopyBytes(kSecRandomDefault, length, bytes.baseAddress!)
+    }
+  }
+}
 extension JSCore {
 
   func polyfill() {
@@ -162,8 +119,8 @@ extension JSCore {
         self.context.logger(level, arguments)
       }
     }
-    self.globalObject["Crypto"] = self.crypto
-    self.globalObject["crypto"] = self.evaluateScript("new Crypto()")
+    self.globalObject["Crypto"] = .init(Crypto.self, in: self)
+    self.globalObject["crypto"] = .init(Crypto(), in: self)
     self.globalObject["setTimeout"] = .init(in: self) { arguments, _ in
       guard let ms = arguments[1].numberValue else { return .undefined }
       let id = self.createTimer(callback: arguments[0], ms: ms, repeats: false)
