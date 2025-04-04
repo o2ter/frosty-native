@@ -28,15 +28,17 @@ import JSCore
 
 let context = JSCore()
 
-context.globalObject["console"]["log"] = JSCore.Value(in: context) { args, _ in
-  print(args.map { $0.toString() }.joined(separator: " "))
-}
-
 context.evaluateScript(
   """
-  console.log(setInterval(() => {
+  setInterval(() => {
     console.log('hello');
-  }, 1000));
+  }, 1000);
+  console.log('log');
+  console.warn('warn');
+  console.info('info');
+  console.debug('debug');
+  console.error('error');
+  console.trace('trace');
   """
 )
 

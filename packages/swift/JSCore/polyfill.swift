@@ -27,10 +27,27 @@ import JavaScriptCore
 
 extension JSCore {
 
+  public enum LogLevel {
+    case log
+    case trace
+    case debug
+    case info
+    case warn
+    case error
+  }
+
   class Context {
 
     var timerId: Int = 0
     var timer: [Int: Timer] = [:]
+
+    var logger: (LogLevel, [JSCore.Value]) -> Void
+
+    init() {
+      self.logger = { level, message in
+        print("[\(level.name.uppercased())] \(message.map { $0.toString() }.joined(separator: " "))")
+      }
+    }
 
     deinit {
       for (_, timer) in self.timer {
@@ -38,6 +55,32 @@ extension JSCore {
       }
       timer = [:]
     }
+  }
+}
+
+extension JSCore.LogLevel {
+
+  public static var all: [JSCore.LogLevel] {
+    return [.log, .trace, .debug, .info, .warn, .error]
+  }
+
+  public var name: String {
+    switch self {
+    case .log: return "log"
+    case .trace: return "trace"
+    case .debug: return "debug"
+    case .info: return "info"
+    case .warn: return "warn"
+    case .error: return "error"
+    }
+  }
+}
+
+extension JSCore {
+
+  public var logger: (LogLevel, [JSCore.Value]) -> Void {
+    get { self.context.logger }
+    set { self.context.logger = newValue }
   }
 }
 
@@ -84,20 +127,22 @@ extension JSCore {
 extension JSCore {
 
   fileprivate var crypto: JSCore.Value {
-    return self.createClass(name: "Crypto", [
-      "randomUUID": { _, _ in
-        let uuid = UUID()
-        return .init(uuid.uuidString)
-      },
-      "randomBytes": { arguments, _ in
-        guard let length = arguments[0].numberValue.map(Int.init) else {
-          return .undefined
-        }
-        return .uint8Array(count: length, in: self) { bytes in
-          _ = SecRandomCopyBytes(kSecRandomDefault, length, bytes.baseAddress!)
-        }
-      },
-    ])
+    return self.createClass(
+      name: "Crypto",
+      [
+        "randomUUID": { _, _ in
+          let uuid = UUID()
+          return .init(uuid.uuidString)
+        },
+        "randomBytes": { arguments, _ in
+          guard let length = arguments[0].numberValue.map(Int.init) else {
+            return .undefined
+          }
+          return .uint8Array(count: length, in: self) { bytes in
+            _ = SecRandomCopyBytes(kSecRandomDefault, length, bytes.baseAddress!)
+          }
+        },
+      ])
   }
 
 }
@@ -105,6 +150,11 @@ extension JSCore {
 extension JSCore {
 
   func polyfill() {
+    for level in LogLevel.all {
+      self.globalObject["console"][level.name] = .init(in: self) { arguments, _ in
+        self.context.logger(level, arguments)
+      }
+    }
     self.globalObject["Crypto"] = self.crypto
     self.globalObject["crypto"] = self.evaluateScript("new Crypto()")
     self.globalObject["setTimeout"] = .init(in: self) { arguments, _ in
