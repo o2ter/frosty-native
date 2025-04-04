@@ -418,11 +418,9 @@ extension JSCore.ValueBase {
         case let .number(value): return "\(value)"
         case let .string(value): return value
         case let .array(elements):
-            return "[" + elements.map { $0.toString() }.joined(separator: ", ") + "]"
+            return "[\(elements.map { $0.toString() }.joined(separator: ", "))]"
         case let .object(dictionary):
-            return "{"
-                + dictionary.map { "\($0.key): \($0.value.toString())" }
-                .joined(separator: ", ") + "}"
+            return "{\(dictionary.map { "\($0.key): \($0.value.toString())" }.joined(separator: ", "))}"
         case let .value(value): return value.toString()
         }
     }
