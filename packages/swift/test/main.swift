@@ -34,10 +34,9 @@ context.globalObject["console"]["log"] = JSCore.Value(in: context) { args, _ in
 
 context.evaluateScript(
   """
-  console.log(setTimeout)
-  console.log(setTimeout(() => {
+  console.log(setInterval(() => {
     console.log('hello');
-  }, 10));
+  }, 1000));
   """
 )
 
