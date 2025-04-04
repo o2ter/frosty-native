@@ -256,7 +256,7 @@ extension JSCore.Value {
 extension JSCore.Value {
 
     @discardableResult
-    public func call(withArguments arguments: [JSCore.Value]) -> JSCore.Value {
+    public func call(withArguments arguments: [JSCore.Value] = []) -> JSCore.Value {
         guard case let .value(base) = self.base, let context = base.context else {
             return .undefined
         }
@@ -264,7 +264,7 @@ extension JSCore.Value {
         return result.map(JSCore.Value.init) ?? .undefined
     }
 
-    public func construct(withArguments arguments: [JSCore.Value]) -> JSCore.Value {
+    public func construct(withArguments arguments: [JSCore.Value] = []) -> JSCore.Value {
         guard case let .value(base) = self.base, let context = base.context else {
             return .undefined
         }
@@ -274,7 +274,7 @@ extension JSCore.Value {
     }
 
     @discardableResult
-    public func invokeMethod(_ method: String, withArguments arguments: [JSCore.Value])
+    public func invokeMethod(_ method: String, withArguments arguments: [JSCore.Value] = [])
         -> JSCore.Value
     {
         guard case let .value(base) = self.base, let context = base.context else {
@@ -420,6 +420,13 @@ extension JSCore.Value {
 extension JSCore {
 
     fileprivate func polyfill() {
-
+        let crypto = [
+            "randomUUID": JSValue(
+                object: { () -> String in
+                    let uuid = UUID()
+                    return uuid.uuidString
+                }, in: self.base)
+        ]
+        self.globalObject["crypto"] = .init(JSValue(object: crypto, in: self.base))
     }
 }
