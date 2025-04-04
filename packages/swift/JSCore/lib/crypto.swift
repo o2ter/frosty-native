@@ -39,14 +39,41 @@ import JavaScriptCore
 
 @objc protocol JSHashExport: JSExport {
 
+  func update(_ data: JSValue)
+
+  func digest() -> JSValue
 }
 
 @objc class JSHash: NSObject, JSHashExport {
 
-  let base: any HashFunction
+  var base: any HashFunction
 
   init(_ hash: any HashFunction) {
     self.base = hash
+  }
+
+  func update(_ data: JSValue) {
+    let type = data.typedArrayType
+    guard type != kJSTypedArrayTypeNone else {
+      return
+    }
+    let byteLength = JSObjectGetTypedArrayByteLength(
+      data.context.jsGlobalContextRef, data.jsValueRef, nil)
+    let address = JSObjectGetTypedArrayBytesPtr(
+      data.context.jsGlobalContextRef, data.jsValueRef, nil)
+    base.update(
+      bufferPointer: UnsafeRawBufferPointer(
+        start: address?.assumingMemoryBound(to: UInt8.self),
+        count: byteLength))
+  }
+
+  func digest() -> JSValue {
+    let digest = base.finalize()
+    return digest.withUnsafeBytes { bytes in
+      .uint8Array(count: bytes.count, in: JSContext.current()) { buffer in
+        buffer.copyBytes(from: bytes)
+      }
+    }
   }
 }
 
