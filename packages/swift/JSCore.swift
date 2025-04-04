@@ -37,6 +37,7 @@ public struct JSCore {
             guard let message = exception?.toString() else { return }
             print(message)
         }
+        self.polyfill()
     }
 }
 
@@ -413,5 +414,12 @@ extension JSCore.Value {
         case .value(let value): return value.toDate()
         default: return nil
         }
+    }
+}
+
+extension JSCore {
+
+    fileprivate func polyfill() {
+
     }
 }
