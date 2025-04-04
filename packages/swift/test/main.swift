@@ -28,6 +28,20 @@ import JSCore
 
 let context = JSCore()
 
+context.globalObject["console"]["log"] = JSCore.Value(in: context) { args, this in
+  print(args)
+  return .null
+}
+
+context.evaluateScript(
+  """
+  console.log(setTimeout)
+  setTimeout(() => {
+  console.log('hello');
+  }, 0);
+  """
+)
+
 let prototypes = context.evaluateScript(
   """
   (x) => {
