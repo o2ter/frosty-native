@@ -29,21 +29,35 @@ extension JSValue: @unchecked @retroactive Sendable { }
 
 extension JSCore {
 
-  fileprivate mutating func createTimer(callback: JSValue, ms: Double, repeats: Bool) -> Int {
-    let id = self.timerId
-    self.timer[id] = Timer(
+  fileprivate class Context {
+
+    var timerId: Int = 0
+    var timer: [Int: Timer] = [:]
+
+  }
+
+  fileprivate var context: Context {
+
+  }
+}
+
+extension JSCore {
+
+  fileprivate func createTimer(callback: JSCore.Value, ms: Double, repeats: Bool) -> Int {
+    let id = self.context.timerId
+    self.context.timer[id] = Timer(
       timeInterval: ms / 1000,
       repeats: repeats,
       block: { _ in
         _ = callback.call(withArguments: [])
       }
     )
-    self.timerId += 1
+    self.context.timerId += 1
     return id
   }
 
-  fileprivate mutating func removeTimer(identifier: Int) {
-    let timer = self.timer.removeValue(forKey: identifier)
+  fileprivate func removeTimer(identifier: Int) {
+    let timer = self.context.timer.removeValue(forKey: identifier)
     timer?.invalidate()
   }
 
@@ -66,5 +80,10 @@ extension JSCore {
 
   func polyfill() {
     self.globalObject["crypto"] = self.crypto
+    self.globalObject["setTimeout"] = .init(in: self) { arguments, _ in
+      guard let ms = arguments[1].numberValue else { return .undefined }
+      let id = self.createTimer(callback: arguments[0], ms: ms, repeats: false)
+      return .init(integerLiteral: id)
+    }
   }
 }

@@ -192,6 +192,7 @@ extension JSCore.Value: ExpressibleByBooleanLiteral {
 }
 
 extension JSCore.Value: ExpressibleByIntegerLiteral {
+
   public init(integerLiteral value: IntegerLiteralType) {
     self.init(Double(value))
   }
