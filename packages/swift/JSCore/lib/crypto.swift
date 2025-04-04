@@ -33,6 +33,8 @@ import JavaScriptCore
   func randomBytes(_ length: Int) -> JSValue
 
   func createHash(_ algorithm: String) -> JSHash?
+
+  func createHamc(_ algorithm: String, _ secret: JSValue) -> JSHash?
 }
 
 extension JSCrypto {
