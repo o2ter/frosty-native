@@ -445,6 +445,25 @@ extension JSCore.Value {
   }
 }
 
+extension JSCore.Value {
+
+  public var isFunction: Bool {
+    switch self.base {
+    case .value(let value):
+      return JSObjectIsFunction(value.context.jsGlobalContextRef, value.jsValueRef)
+    default: return false
+    }
+  }
+
+  public var isConstructor: Bool {
+    switch self.base {
+    case .value(let value):
+      return JSObjectIsConstructor(value.context.jsGlobalContextRef, value.jsValueRef)
+    default: return false
+    }
+  }
+}
+
 extension JSCore.ValueBase {
 
   public func toString() -> String {
