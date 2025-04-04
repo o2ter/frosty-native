@@ -114,7 +114,7 @@ extension JSCore.Value {
   public static func arrayBuffer(
     bytesLength count: Int,
     in context: JSCore,
-    _ callback: (_ bytes: UnsafeMutableRawBufferPointer) -> Void
+    _ callback: (_ bytes: UnsafeMutableRawBufferPointer) -> Void = { _ in }
   ) -> JSCore.Value {
     let buffer = context.base.evaluateScript("new ArrayBuffer(\(count))")!
     let address = JSObjectGetArrayBufferBytesPtr(
@@ -126,7 +126,7 @@ extension JSCore.Value {
   public static func int8Array(
     bytesLength count: Int,
     in context: JSCore,
-    _ callback: (_ bytes: UnsafeMutableRawBufferPointer) -> Void
+    _ callback: (_ bytes: UnsafeMutableRawBufferPointer) -> Void = { _ in }
   ) -> JSCore.Value {
     let buffer = context.base.evaluateScript("new Int8Array(\(count))")!
     let address = JSObjectGetArrayBufferBytesPtr(
@@ -138,7 +138,7 @@ extension JSCore.Value {
   public static func uint8Array(
     bytesLength count: Int,
     in context: JSCore,
-    _ callback: (_ bytes: UnsafeMutableRawBufferPointer) -> Void
+    _ callback: (_ bytes: UnsafeMutableRawBufferPointer) -> Void = { _ in }
   ) -> JSCore.Value {
     let buffer = context.base.evaluateScript("new Uint8Array(\(count))")!
     let address = JSObjectGetArrayBufferBytesPtr(
