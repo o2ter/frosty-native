@@ -34,6 +34,10 @@ public struct JSCore {
     public init(_ virtualMachine: VirtualMachine = VirtualMachine()) {
         self.virtualMachine = virtualMachine
         self.base = JSContext(virtualMachine: virtualMachine.base)
+        self.base.exceptionHandler = { context, exception in
+            guard let message = exception?.toString() else { return }
+            print(message)
+        }
     }
 }
 
