@@ -467,7 +467,7 @@ extension JSCore {
                     return .undefined
                 }
                 guard
-                    case let .value(buffer) = self.evaluateScript("new Uint8Array(\(length))").base
+                    case let .value(buffer) = self.evaluateScript("new ArrayBuffer(\(length))").base
                 else {
                     return .undefined
                 }
