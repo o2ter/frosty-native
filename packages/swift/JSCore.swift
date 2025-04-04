@@ -261,8 +261,11 @@ extension JSCore.Value {
 
     public subscript(_ property: String) -> JSCore.Value {
         get {
-            guard case let .value(base) = self.base else { return self }
-            return .init(base.forProperty(property))
+            switch self.base {
+                case let .value(base): return .init(base.forProperty(property))
+                case let .object(dictionary): return dictionary[property].map(JSCore.Value.init) ?? .undefined
+                default: return .undefined
+            }
         }
         nonmutating set {
             guard case let .value(base) = self.base, let context = base.context else { return }
@@ -272,8 +275,13 @@ extension JSCore.Value {
 
     public subscript(_ index: Int) -> JSCore.Value {
         get {
-            guard case let .value(base) = self.base else { return self }
-            return .init(base.atIndex(index))
+            switch self.base {
+            case let .value(base): return .init(base.atIndex(index))
+            case let .array(elements):
+                guard index >= 0 && index < elements.count else { return .undefined }
+                return .init(elements[index])
+            default: return .undefined
+            }
         }
         nonmutating set {
             guard case let .value(base) = self.base, let context = base.context else { return }
