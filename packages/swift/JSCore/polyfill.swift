@@ -100,6 +100,10 @@ extension JSCore {
     ])
   }
 
+}
+
+extension JSCore {
+
   func polyfill() {
     self.globalObject["Crypto"] = self.crypto
     self.globalObject["crypto"] = self.evaluateScript("new Crypto()")
