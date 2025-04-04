@@ -62,6 +62,7 @@ let function = JSCore.Value(in: context) { args, this in
 
 print(function.call(withArguments: [context.globalObject, prototypes]))
 
+print(context.globalObject["Crypto"])
 print(context.globalObject["crypto"])
 print(context.globalObject["crypto"].invokeMethod("randomUUID"))
 print(context.globalObject["crypto"].invokeMethod("randomBytes", withArguments: [16]))
