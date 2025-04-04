@@ -124,7 +124,7 @@ extension JSCore.Value {
   }
 
   public static func int8Array(
-    bytesLength count: Int,
+    _ count: Int,
     in context: JSCore,
     _ callback: (_ bytes: UnsafeMutableRawBufferPointer) -> Void = { _ in }
   ) -> JSCore.Value {
@@ -136,7 +136,7 @@ extension JSCore.Value {
   }
 
   public static func uint8Array(
-    bytesLength count: Int,
+    _ count: Int,
     in context: JSCore,
     _ callback: (_ bytes: UnsafeMutableRawBufferPointer) -> Void = { _ in }
   ) -> JSCore.Value {
