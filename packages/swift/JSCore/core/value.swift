@@ -515,6 +515,10 @@ extension JSValue {
   public var typedArrayType: JSTypedArrayType {
     return JSValueGetTypedArrayType(self.context.jsGlobalContextRef, self.jsValueRef, nil)
   }
+
+  public var isTypedArray: Bool {
+    return self.typedArrayType != kJSTypedArrayTypeNone
+  }
 }
 
 extension JSCore.Value {
@@ -526,6 +530,10 @@ extension JSCore.Value {
       return type == kJSTypedArrayTypeNone ? nil : JSCore.TypedArrayType(rawValue: type.rawValue)
     default: return nil
     }
+  }
+
+  public var isTypedArray: Bool {
+    return self.typedArrayType != nil
   }
 }
 

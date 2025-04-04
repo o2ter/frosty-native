@@ -53,7 +53,7 @@ import JavaScriptCore
   }
 
   func update(_ data: JSValue) {
-    if (data.typedArrayType != kJSTypedArrayTypeNone) {
+    if (data.isTypedArray) {
       let byteLength = JSObjectGetTypedArrayByteLength(
         data.context.jsGlobalContextRef, data.jsValueRef, nil)
       let address = JSObjectGetTypedArrayBytesPtr(
