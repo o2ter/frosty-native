@@ -77,8 +77,6 @@ extension JSCore {
 
 extension JSCore {
 
-    public typealias Export = JavaScriptCore.JSExport & NSObject
-
     fileprivate enum ValueBase {
         case null
         case undefined
@@ -122,16 +120,6 @@ extension JSCore.Value {
 
     public init(_ value: String) {
         self.init(.string(value))
-    }
-}
-
-extension JSCore.Value {
-
-    public init(
-        object: JSExport & NSObject,
-        in context: JSCore
-    ) {
-        self.init(JSValue(object: object, in: context.base))
     }
 }
 
