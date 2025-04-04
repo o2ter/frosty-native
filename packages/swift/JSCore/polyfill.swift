@@ -156,7 +156,8 @@ extension JSCore {
 
 extension JSCore {
 
-  func polyfill() {
+  func _polyfill() {
+
     for level in LogLevel.allCases {
       self.globalObject["console"][level.name] = .init(in: self) { arguments, _ in
         self.context.logger(level, arguments)
