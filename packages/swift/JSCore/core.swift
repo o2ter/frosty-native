@@ -50,12 +50,6 @@ extension JSCore {
     public var runloop: RunLoop {
         return self.virtualMachine.runloop
     }
-
-    fileprivate func polyfill() {
-        self.runloop.perform {
-            self._polyfill()
-        }
-    }
 }
 
 extension JSCore {
