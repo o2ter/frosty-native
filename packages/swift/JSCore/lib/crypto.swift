@@ -35,6 +35,20 @@ import JavaScriptCore
   func createHash(_ algorithm: String) -> JSHash?
 }
 
+extension JSCrypto {
+
+  func randomUUID() -> String {
+    let uuid = UUID()
+    return .init(uuid.uuidString)
+  }
+
+  func randomBytes(_ length: Int) -> JSValue {
+    return .uint8Array(count: length, in: JSContext.current()) { bytes in
+      _ = SecRandomCopyBytes(kSecRandomDefault, length, bytes.baseAddress!)
+    }
+  }
+}
+
 @objc class JSCrypto: NSObject, JSCryptoExport {
 
 }
@@ -78,17 +92,6 @@ import JavaScriptCore
 }
 
 extension JSCrypto {
-
-  func randomUUID() -> String {
-    let uuid = UUID()
-    return .init(uuid.uuidString)
-  }
-
-  func randomBytes(_ length: Int) -> JSValue {
-    return .uint8Array(count: length, in: JSContext.current()) { bytes in
-      _ = SecRandomCopyBytes(kSecRandomDefault, length, bytes.baseAddress!)
-    }
-  }
 
   func createHash(_ algorithm: String) -> JSHash? {
     let hash: any HashFunction
