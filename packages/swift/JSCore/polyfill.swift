@@ -43,6 +43,24 @@ extension JSCore {
 
 extension JSCore {
 
+  fileprivate func createClass(
+    name: String,
+    _ methods: [String: ([JSCore.Value], JSCore.Value) -> JSCore.Value]
+  ) -> JSCore.Value {
+    let _methods = methods.mapValues { method in JSCore.Value(in: self) { method($0, $1) } }
+    let _class = self.evaluateScript(
+      """
+      ({ \(_methods.keys.joined(separator: ",")) }) => class \(name) {
+        \(_methods.keys.map { "\($0)() { return \($0)(...arguments); }" }.joined(separator: "\n"))
+      }
+      """)
+    return _class.call(withArguments: [.init(_methods)])
+  }
+
+}
+
+extension JSCore {
+
   fileprivate func createTimer(callback: JSCore.Value, ms: Double, repeats: Bool) -> Int {
     let id = self.context.timerId
     self.context.timer[id] = Timer.scheduledTimer(
@@ -61,19 +79,9 @@ extension JSCore {
     timer?.invalidate()
   }
 
-  fileprivate func createClass(
-    name: String,
-    _ methods: [String: ([JSCore.Value], JSCore.Value) -> JSCore.Value]
-  ) -> JSCore.Value {
-    let _methods = methods.mapValues { method in JSCore.Value(in: self) { method($0, $1) } }
-    let _class = self.evaluateScript(
-      """
-      ({ \(_methods.keys.joined(separator: ",")) }) => class \(name) {
-        \(_methods.keys.map { "\($0)() { return \($0)(...arguments); }" }.joined(separator: "\n"))
-      }
-      """)
-    return _class.call(withArguments: [.init(_methods)])
-  }
+}
+
+extension JSCore {
 
   fileprivate var crypto: JSCore.Value {
     return self.createClass(name: "Crypto", [
