@@ -77,7 +77,7 @@ extension JSCore {
                 guard let length = arguments[0].numberValue.map(Int.init) else {
                     return .undefined
                 }
-                return .init(bytesLength: length, in: self) { bytes in
+                return .uint8Array(bytesLength: length, in: self) { bytes in
                     _ = SecRandomCopyBytes(kSecRandomDefault, length, bytes.baseAddress!)
                 }
             },
