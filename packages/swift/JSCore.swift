@@ -478,7 +478,7 @@ extension JSCore.Value {
 extension JSCore {
 
     fileprivate func polyfill() {
-        let crypto = [
+        self.globalObject["crypto"] = [
             "randomUUID": JSCore.Value(in: self) { _, _ in
                 let uuid = UUID()
                 return .init(uuid.uuidString)
@@ -492,6 +492,5 @@ extension JSCore {
                 }
             },
         ]
-        self.globalObject["crypto"] = .init(crypto)
     }
 }
