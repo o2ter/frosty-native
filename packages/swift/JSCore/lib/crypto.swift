@@ -53,62 +53,40 @@ extension JSCrypto {
 
 }
 
-@objc protocol JSHashExport: JSExport {
+extension JSCrypto {
 
-  func update(_ data: JSValue)
-
-  func digest() -> JSValue
-}
-
-@objc class JSHash: NSObject, JSHashExport {
-
-  var base: any HashFunction
-
-  init(_ hash: any HashFunction) {
-    self.base = hash
-  }
-
-  func update(_ data: JSValue) {
-    if data.isTypedArray {
-      let byteLength = JSObjectGetTypedArrayByteLength(
-        data.context.jsGlobalContextRef, data.jsValueRef, nil)
-      let address = JSObjectGetTypedArrayBytesPtr(
-        data.context.jsGlobalContextRef, data.jsValueRef, nil)
-      base.update(
-        bufferPointer: UnsafeRawBufferPointer(
-          start: address?.assumingMemoryBound(to: UInt8.self),
-          count: byteLength))
-    }
-  }
-
-  func digest() -> JSValue {
-    let digest = base.finalize()
-    return digest.withUnsafeBytes { bytes in
-      .uint8Array(count: bytes.count, in: JSContext.current()) { buffer in
-        buffer.copyBytes(from: bytes)
-      }
+  func createHash(_ algorithm: String) -> JSHash? {
+    switch algorithm {
+    case "md5": return JSHash(Insecure.MD5())
+    case "sha1": return JSHash(Insecure.SHA1())
+    case "sha256": return JSHash(SHA256())
+    case "sha384": return JSHash(SHA384())
+    case "sha512": return JSHash(SHA512())
+    default: return nil
     }
   }
 }
 
 extension JSCrypto {
 
-  func createHash(_ algorithm: String) -> JSHash? {
-    let hash: any HashFunction
-    switch algorithm {
-    case "md5":
-      hash = Insecure.MD5()
-    case "sha1":
-      hash = Insecure.SHA1()
-    case "sha256":
-      hash = SHA256()
-    case "sha384":
-      hash = SHA384()
-    case "sha512":
-      hash = SHA512()
-    default:
+  func createHamc(_ algorithm: String, _ secret: JSValue) -> JSHash? {
+    let key: SymmetricKey
+    if secret.isTypedArray {
+      let byteLength = JSObjectGetTypedArrayByteLength(
+        secret.context.jsGlobalContextRef, secret.jsValueRef, nil)
+      let address = JSObjectGetTypedArrayBytesPtr(
+        secret.context.jsGlobalContextRef, secret.jsValueRef, nil)
+      key = .init(data: UnsafeRawBufferPointer(start: address, count: byteLength))
+    } else {
       return nil
     }
-    return JSHash(hash)
+    switch algorithm {
+    case "md5": return JSHash(HMAC<Insecure.MD5>(key: key))
+    case "sha1": return JSHash(HMAC<Insecure.SHA1>(key: key))
+    case "sha256": return JSHash(HMAC<SHA256>(key: key))
+    case "sha384": return JSHash(HMAC<SHA384>(key: key))
+    case "sha512": return JSHash(HMAC<SHA512>(key: key))
+    default: return nil
+    }
   }
 }
