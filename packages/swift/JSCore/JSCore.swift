@@ -291,3 +291,86 @@ extension JSCore.Value {
         return result.map(JSCore.Value.init) ?? .undefined
     }
 }
+
+extension JSCore.Value {
+
+    public var isNull: Bool {
+        switch self.base {
+        case .null: return true
+        case let .value(value): return value.isNull
+        default: return false
+        }
+    }
+
+    public var isUndefined: Bool {
+        switch self.base {
+        case .undefined: return true
+        case let .value(value): return value.isUndefined
+        default: return false
+        }
+    }
+
+    public var isBool: Bool {
+        switch self.base {
+        case .bool: return true
+        case let .value(value): return value.isBoolean
+        default: return false
+        }
+    }
+
+    public var isNumber: Bool {
+        switch self.base {
+        case .number: return true
+        case let .value(value): return value.isNumber
+        default: return false
+        }
+    }
+
+    public var isString: Bool {
+        switch self.base {
+        case .string: return true
+        case let .value(value): return value.isString
+        default: return false
+        }
+    }
+}
+
+extension JSCore.Value {
+
+    public var isObject: Bool {
+        switch self.base {
+        case .value(let value): return value.isObject
+        default: return false
+        }
+    }
+
+    public var isArray: Bool {
+        switch self.base {
+        case .value(let value): return value.isArray
+        default: return false
+        }
+    }
+
+    public var isDate: Bool {
+        switch self.base {
+        case .value(let value): return value.isDate
+        default: return false
+        }
+    }
+
+    @available(macOS 10.15, macCatalyst 13.1, iOS 13, tvOS 13, *)
+    public var isSymbol: Bool {
+        switch self.base {
+        case .value(let value): return value.isSymbol
+        default: return false
+        }
+    }
+
+    @available(macOS 15.0, macCatalyst 18, iOS 18, tvOS 18, *)
+    public var isBigInt: Bool {
+        switch self.base {
+        case .value(let value): return value.isBigInt
+        default: return false
+        }
+    }
+}
