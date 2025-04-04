@@ -43,6 +43,8 @@ public struct JSCore {
     }
 }
 
+extension JSCore: @unchecked Sendable {}
+
 extension JSCore {
 
     public var globalObject: JSCore.Value {

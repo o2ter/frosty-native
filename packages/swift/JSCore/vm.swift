@@ -29,10 +29,14 @@ extension JSCore {
 
   public struct VirtualMachine {
 
+    let runloop: RunLoop
     let base: JSVirtualMachine
 
     public init() {
+      self.runloop = .current
       self.base = JSVirtualMachine()
     }
   }
 }
+
+extension JSCore.VirtualMachine: @unchecked Sendable {}

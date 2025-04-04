@@ -41,11 +41,12 @@ extension JSCore {
     var timerId: Int = 0
     var timer: [Int: Timer] = [:]
 
-    var logger: (LogLevel, [JSCore.Value]) -> Void
+    var logger: @Sendable (LogLevel, [JSCore.Value]) -> Void
 
     init() {
       self.logger = { level, message in
-        print("[\(level.name.uppercased())] \(message.map { $0.toString() }.joined(separator: " "))")
+        print(
+          "[\(level.name.uppercased())] \(message.map { $0.toString() }.joined(separator: " "))")
       }
     }
 
@@ -57,6 +58,8 @@ extension JSCore {
     }
   }
 }
+
+extension JSCore.Context: @unchecked Sendable {}
 
 extension JSCore.LogLevel {
 
@@ -78,9 +81,14 @@ extension JSCore.LogLevel {
 
 extension JSCore {
 
-  public var logger: (LogLevel, [JSCore.Value]) -> Void {
+  public var logger: @Sendable (LogLevel, [JSCore.Value]) -> Void {
     get { self.context.logger }
-    set { self.context.logger = newValue }
+    set {
+      let context = self.context
+      self.virtualMachine.runloop.perform {
+        context.logger = newValue
+      }
+    }
   }
 }
 

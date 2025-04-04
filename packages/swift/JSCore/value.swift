@@ -53,10 +53,8 @@ extension JSCore {
   }
 }
 
-extension JSCore.ValueBase: Sendable {}
+extension JSCore.ValueBase: @unchecked Sendable {}
 extension JSCore.Value: Sendable {}
-
-extension JSValue: @unchecked @retroactive Sendable {}
 
 extension JSCore.Value {
 
