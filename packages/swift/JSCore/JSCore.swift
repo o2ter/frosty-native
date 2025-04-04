@@ -374,3 +374,37 @@ extension JSCore.Value {
         }
     }
 }
+
+extension JSCore.Value {
+
+    public var boolValue: Bool? {
+        switch self.base {
+        case .bool(let value): return value
+        case let .value(value): return value.toBool()
+        default: return nil
+        }
+    }
+
+    public var numberValue: Double? {
+        switch self.base {
+        case .number(let value): return value
+        case let .value(value): return value.toDouble()
+        default: return nil
+        }
+    }
+
+    public var stringValue: String? {
+        switch self.base {
+        case .string(let value): return value
+        case let .value(value): return value.toString()
+        default: return nil
+        }
+    }
+
+    public var dateValue: Date? {
+        switch self.base {
+        case .value(let value): return value.toDate()
+        default: return nil
+        }
+    }
+}
