@@ -60,7 +60,7 @@ extension JSCore {
 
 extension JSCore.LogLevel {
 
-  public static var all: [JSCore.LogLevel] {
+  public static var allCases: [JSCore.LogLevel] {
     return [.log, .trace, .debug, .info, .warn, .error]
   }
 
@@ -150,7 +150,7 @@ extension JSCore {
 extension JSCore {
 
   func polyfill() {
-    for level in LogLevel.all {
+    for level in LogLevel.allCases {
       self.globalObject["console"][level.name] = .init(in: self) { arguments, _ in
         self.context.logger(level, arguments)
       }
