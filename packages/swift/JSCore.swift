@@ -467,13 +467,13 @@ extension JSCore {
                     return .undefined
                 }
                 guard
-                    case let .value(buffer) = self.evaluateScript("new ArrayBuffer(\(length))").base
+                    case let .value(buffer) = self.evaluateScript("new Uint8Array(\(length))").base
                 else {
                     return .undefined
                 }
                 guard
                     let address = JSObjectGetArrayBufferBytesPtr(
-                        self.base.jsGlobalContextRef, buffer.jsValueRef, nil)
+                        self.base.jsGlobalContextRef, buffer.forProperty("buffer").jsValueRef, nil)
                 else {
                     return .undefined
                 }
