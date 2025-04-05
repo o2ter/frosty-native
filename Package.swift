@@ -34,7 +34,8 @@ let package = Package(
         .iOS(.v13),
     ],
     products: [
-        .executable(name: "test", targets: ["test"])
+        .executable(name: "test", targets: ["test"]),
+        .library(name: "FrostyNative", targets: ["FrostyNative"])
     ],
     dependencies: [
         .package(url: "https://github.com/apple/swift-crypto.git", from: "3.12.2"),
@@ -43,9 +44,14 @@ let package = Package(
         .target(
             name: "JSCore",
             dependencies: [
-                .product(name: "Crypto", package: "swift-crypto"),
+                .product(name: "Crypto", package: "swift-crypto")
             ],
             path: "packages/swift/JSCore",
+        ),
+        .target(
+            name: "FrostyNative",
+            dependencies: ["JSCore"],
+            path: "packages/swift/FrostyNative",
         ),
         .executableTarget(
             name: "test",
