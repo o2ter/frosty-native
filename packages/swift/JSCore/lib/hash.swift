@@ -80,16 +80,8 @@ extension HMAC: HashProtocol {
   }
 
   func update(_ data: JSValue) {
-    if data.isTypedArray {
-      let byteLength = JSObjectGetTypedArrayByteLength(
-        data.context.jsGlobalContextRef, data.jsValueRef, nil)
-      let address = JSObjectGetTypedArrayBytesPtr(
-        data.context.jsGlobalContextRef, data.jsValueRef, nil)
-      base.update(
-        bufferPointer: UnsafeRawBufferPointer(
-          start: address?.assumingMemoryBound(to: UInt8.self),
-          count: byteLength))
-    }
+    guard data.isTypedArray else { return }
+    base.update(bufferPointer: data.typedArrayBytes)
   }
 
   func digest() -> JSValue {

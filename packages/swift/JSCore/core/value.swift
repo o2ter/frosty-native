@@ -519,6 +519,22 @@ extension JSValue {
   public var isTypedArray: Bool {
     return self.typedArrayType != kJSTypedArrayTypeNone
   }
+
+  public var typedArrayBytes: UnsafeRawBufferPointer {
+    let byteLength = JSObjectGetTypedArrayByteLength(
+      self.context.jsGlobalContextRef, self.jsValueRef, nil)
+    let address = JSObjectGetTypedArrayBytesPtr(
+      self.context.jsGlobalContextRef, self.jsValueRef, nil)
+    return .init(start: address, count: byteLength)
+  }
+
+  public var typedArrayMutableBytes: UnsafeMutableRawBufferPointer {
+    let byteLength = JSObjectGetTypedArrayByteLength(
+      self.context.jsGlobalContextRef, self.jsValueRef, nil)
+    let address = JSObjectGetTypedArrayBytesPtr(
+      self.context.jsGlobalContextRef, self.jsValueRef, nil)
+    return .init(start: address, count: byteLength)
+  }
 }
 
 extension JSCore.Value {

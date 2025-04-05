@@ -72,16 +72,8 @@ extension JSCrypto {
 extension JSCrypto {
 
   func createHamc(_ algorithm: String, _ secret: JSValue) -> JSHash? {
-    let key: SymmetricKey
-    if secret.isTypedArray {
-      let byteLength = JSObjectGetTypedArrayByteLength(
-        secret.context.jsGlobalContextRef, secret.jsValueRef, nil)
-      let address = JSObjectGetTypedArrayBytesPtr(
-        secret.context.jsGlobalContextRef, secret.jsValueRef, nil)
-      key = .init(data: UnsafeRawBufferPointer(start: address, count: byteLength))
-    } else {
-      return nil
-    }
+    guard secret.isTypedArray else { return nil }
+    let key = SymmetricKey(data: secret.typedArrayBytes)
     switch algorithm {
     case "md5": return JSHash(HMAC<Insecure.MD5>(key: key))
     case "sha1": return JSHash(HMAC<Insecure.SHA1>(key: key))
