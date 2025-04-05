@@ -117,7 +117,7 @@ extension JSCore {
       guard let id = arguments[0].numberValue.map(Int.init) else { return }
       self.removeTimer(identifier: id)
     }
-    self.globalObject["_native"] = [
+    self.globalObject["_native_apple"] = [
       "crypto": .init(JSCrypto(), in: self),
       "processInfo": .init(JSProcessInfo(), in: self),
     ]

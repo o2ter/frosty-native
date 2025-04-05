@@ -64,25 +64,25 @@ let function = JSCore.Value(in: context) { args, this in
 
 print(function.call(withArguments: [context.globalObject, prototypes]))
 
-print(context.globalObject["_native"]["crypto"])
-print(context.globalObject["_native"]["crypto"].invokeMethod("randomUUID"))
-print(context.globalObject["_native"]["crypto"].invokeMethod("randomBytes", withArguments: [16]))
+print(context.globalObject["_native_apple"]["crypto"])
+print(context.globalObject["_native_apple"]["crypto"].invokeMethod("randomUUID"))
+print(context.globalObject["_native_apple"]["crypto"].invokeMethod("randomBytes", withArguments: [16]))
 
 context.evaluateScript(
   """
-  console.log(_native.processInfo.processName);
-  console.log(_native.processInfo.processIdentifier);
-  console.log(_native.processInfo.arguments);
-  console.log(_native.processInfo.userName);
-  console.log(_native.processInfo.fullUserName);
-  console.log(_native.processInfo.globallyUniqueString);
-  console.log(_native.processInfo.hostName);
+  console.log(_native_apple.processInfo.processName);
+  console.log(_native_apple.processInfo.processIdentifier);
+  console.log(_native_apple.processInfo.arguments);
+  console.log(_native_apple.processInfo.userName);
+  console.log(_native_apple.processInfo.fullUserName);
+  console.log(_native_apple.processInfo.globallyUniqueString);
+  console.log(_native_apple.processInfo.hostName);
   """
 )
 
 context.evaluateScript(
   """
-  const hash = _native.crypto.createHash('md5');
+  const hash = _native_apple.crypto.createHash('md5');
   hash.update(new Uint8Array([1, 2, 3, 4, 5]));
   hash.update(new Uint8Array([6, 7, 8, 9, 10]));
   console.log(hash.digest());
@@ -91,7 +91,7 @@ context.evaluateScript(
 
 context.evaluateScript(
   """
-  const hamc = _native.crypto.createHamc('md5', new Uint8Array([1, 2, 3, 4, 5]));
+  const hamc = _native_apple.crypto.createHamc('md5', new Uint8Array([1, 2, 3, 4, 5]));
   hamc.update(new Uint8Array([1, 2, 3, 4, 5]));
   hamc.update(new Uint8Array([6, 7, 8, 9, 10]));
   console.log(hamc.digest());
