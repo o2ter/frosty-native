@@ -1,5 +1,5 @@
 //
-//  FrostyNative.java
+//  CanvasView.kt
 //
 //  The MIT License
 //  Copyright (c) 2021 - 2025 O2ter Limited. All rights reserved.
@@ -23,8 +23,28 @@
 //  THE SOFTWARE.
 //
 
-package com.o2ter;
+package com.o2ter
 
-public class FrostyNative {
-    
+import android.content.Context
+import android.graphics.Bitmap
+import android.graphics.Canvas
+import android.view.View
+
+public class CanvasView(
+    ctx: Context
+): View(ctx) {
+
+    private lateinit var mBitmap: Bitmap
+    private lateinit var mCanvas: Canvas
+
+    override fun onSizeChanged(w: Int, h: Int, oldw: Int, oldh: Int) {
+        super.onSizeChanged(w, h, oldw, oldh)
+        mBitmap = Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_8888)
+        mCanvas = Canvas(mBitmap)
+    }
+
+    override fun onDraw(canvas: Canvas) {
+        super.onDraw(canvas)
+        canvas.drawBitmap(mBitmap, 0f, 0f, null)
+    }
 }
