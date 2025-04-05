@@ -26,20 +26,41 @@
 import JavaScriptCore
 
 @objc protocol JSProcessInfoExport: JSExport {
-
-  var processName: String { get }
-
-  var processIdentifier: Int32 { get }
-
   var environment: [String: String] { get }
-
   var arguments: [String] { get }
+  var processName: String { get }
+  var processIdentifier: Int32 { get }
+  var globallyUniqueString: String { get }
+  var userName: String { get }
+  var fullUserName: String { get }
+  var hostName: String { get }
+  @available(iOS 9.0, macCatalyst 13.1, macOS 12.0, tvOS 9.0, visionOS 1.0, watchOS 2.0, *)
+  var isLowPowerModeEnabled: Bool { get }
+  var isMacCatalystApp: Bool { get }
+  @available(iOS 14.0, macCatalyst 14.0, macOS 11.0, tvOS 14.0, visionOS 1.0, watchOS 7.0, *)
+  var isiOSAppOnMac: Bool { get }
+  var isOperatingSystemAtLeast: Bool { get }
+  var operatingSystemVersionString: String { get }
+  var operatingSystemVersion: [String: Int] { get }
+  var physicalMemory: UInt64 { get }
+  var processorCount: Int { get }
+  var activeProcessorCount: Int { get }
+  var systemUptime: TimeInterval { get }
+  var thermalState: ProcessInfo.ThermalState { get }
 }
 
 @objc class JSProcessInfo: NSObject, JSProcessInfoExport {
 }
 
 extension JSProcessInfo {
+
+  var environment: [String: String] {
+    return ProcessInfo.processInfo.environment
+  }
+
+  var arguments: [String] {
+    return ProcessInfo.processInfo.arguments
+  }
 
   var processName: String {
     return ProcessInfo.processInfo.processName
@@ -49,11 +70,71 @@ extension JSProcessInfo {
     return ProcessInfo.processInfo.processIdentifier
   }
 
-  var environment: [String: String] {
-    return ProcessInfo.processInfo.environment
+  var globallyUniqueString: String {
+    return ProcessInfo.processInfo.globallyUniqueString
   }
 
-  var arguments: [String] {
-    return ProcessInfo.processInfo.arguments
+  var userName: String {
+    return ProcessInfo.processInfo.userName
+  }
+
+  var fullUserName: String {
+    return ProcessInfo.processInfo.fullUserName
+  }
+
+  var hostName: String {
+    return ProcessInfo.processInfo.hostName
+  }
+
+  @available(iOS 9.0, macCatalyst 13.1, macOS 12.0, tvOS 9.0, visionOS 1.0, watchOS 2.0, *)
+  var isLowPowerModeEnabled: Bool {
+    return ProcessInfo.processInfo.isLowPowerModeEnabled
+  }
+
+  var isMacCatalystApp: Bool {
+    return ProcessInfo.processInfo.isMacCatalystApp
+  }
+
+  @available(iOS 14.0, macCatalyst 14.0, macOS 11.0, tvOS 14.0, visionOS 1.0, watchOS 7.0, *)
+  var isiOSAppOnMac: Bool {
+    return ProcessInfo.processInfo.isiOSAppOnMac
+  }
+
+  var isOperatingSystemAtLeast: Bool {
+    return ProcessInfo.processInfo.isOperatingSystemAtLeast(
+      .init(majorVersion: 10, minorVersion: 15, patchVersion: 0))
+  }
+
+  var operatingSystemVersionString: String {
+    return ProcessInfo.processInfo.operatingSystemVersionString
+  }
+
+  var operatingSystemVersion: [String: Int] {
+    let operatingSystemVersion = ProcessInfo.processInfo.operatingSystemVersion
+    return [
+      "majorVersion": operatingSystemVersion.majorVersion,
+      "minorVersion": operatingSystemVersion.minorVersion,
+      "patchVersion": operatingSystemVersion.patchVersion,
+    ]
+  }
+
+  var physicalMemory: UInt64 {
+    return ProcessInfo.processInfo.physicalMemory
+  }
+
+  var processorCount: Int {
+    return ProcessInfo.processInfo.processorCount
+  }
+
+  var activeProcessorCount: Int {
+    return ProcessInfo.processInfo.activeProcessorCount
+  }
+
+  var systemUptime: TimeInterval {
+    return ProcessInfo.processInfo.systemUptime
+  }
+
+  var thermalState: ProcessInfo.ThermalState {
+    return ProcessInfo.processInfo.thermalState
   }
 }

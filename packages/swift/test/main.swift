@@ -73,6 +73,7 @@ context.evaluateScript(
   console.log(_native.processInfo.processName);
   console.log(_native.processInfo.processIdentifier);
   console.log(_native.processInfo.arguments);
+  console.log(_native.processInfo.systemUptime);
   """
 )
 
