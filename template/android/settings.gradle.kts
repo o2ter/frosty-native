@@ -1,5 +1,4 @@
-pluginManagement { 
-    includeBuild("../node_modules/frosty-native/packages/android/gradle-plugin")
+pluginManagement {
     repositories {
         google {
             content {
@@ -11,6 +10,7 @@ pluginManagement {
         mavenCentral()
         gradlePluginPortal()
     }
+    includeBuild("../node_modules/frosty-native/packages/android/gradle-plugin")
 }
 dependencyResolutionManagement {
     repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
