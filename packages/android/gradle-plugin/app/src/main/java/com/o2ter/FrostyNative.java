@@ -1,5 +1,5 @@
 //
-//  native.swift
+//  FrostyNative.java
 //
 //  The MIT License
 //  Copyright (c) 2021 - 2025 O2ter Limited. All rights reserved.
@@ -23,8 +23,14 @@
 //  THE SOFTWARE.
 //
 
-import JSCore
+package com.o2ter;
 
-public func native() {
-  
+public class FrostyNative {
+    public String getGreeting() {
+        return "Hello World!";
+    }
+
+    public static void main(String[] args) {
+        System.out.println(new App().getGreeting());
+    }
 }
