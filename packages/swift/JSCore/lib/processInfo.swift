@@ -39,7 +39,6 @@ import JavaScriptCore
   var isMacCatalystApp: Bool { get }
   @available(iOS 14.0, macCatalyst 14.0, macOS 11.0, tvOS 14.0, visionOS 1.0, watchOS 7.0, *)
   var isiOSAppOnMac: Bool { get }
-  var isOperatingSystemAtLeast: Bool { get }
   var operatingSystemVersionString: String { get }
   var operatingSystemVersion: [String: Int] { get }
   var physicalMemory: UInt64 { get }
@@ -98,11 +97,6 @@ extension JSProcessInfo {
   @available(iOS 14.0, macCatalyst 14.0, macOS 11.0, tvOS 14.0, visionOS 1.0, watchOS 7.0, *)
   var isiOSAppOnMac: Bool {
     return ProcessInfo.processInfo.isiOSAppOnMac
-  }
-
-  var isOperatingSystemAtLeast: Bool {
-    return ProcessInfo.processInfo.isOperatingSystemAtLeast(
-      .init(majorVersion: 10, minorVersion: 15, patchVersion: 0))
   }
 
   var operatingSystemVersionString: String {
