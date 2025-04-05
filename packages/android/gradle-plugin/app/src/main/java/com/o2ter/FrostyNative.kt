@@ -25,5 +25,5 @@
 
 package com.o2ter
 
-public class FrostyNative {
+class FrostyNative {
 }

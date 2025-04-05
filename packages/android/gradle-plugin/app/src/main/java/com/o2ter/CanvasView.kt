@@ -30,7 +30,7 @@ import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.view.View
 
-public class CanvasView(
+class CanvasView(
     ctx: Context
 ): View(ctx) {
 
