@@ -85,7 +85,11 @@ context.evaluateScript(
   const hash = _native_apple.crypto.createHash('md5');
   hash.update(new Uint8Array([1, 2, 3, 4, 5]));
   hash.update(new Uint8Array([6, 7, 8, 9, 10]));
+  const clone = hash.clone();
   console.log(hash.digest());
+  hash.update(new Uint8Array([6, 7, 8, 9, 10]));
+  console.log(hash.digest());
+  console.log(clone.digest());
   """
 )
 
