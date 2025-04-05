@@ -64,14 +64,13 @@ let function = JSCore.Value(in: context) { args, this in
 
 print(function.call(withArguments: [context.globalObject, prototypes]))
 
-print(context.globalObject["Crypto"])
-print(context.globalObject["crypto"])
-print(context.globalObject["crypto"].invokeMethod("randomUUID"))
-print(context.globalObject["crypto"].invokeMethod("randomBytes", withArguments: [16]))
+print(context.globalObject["_native"]["crypto"])
+print(context.globalObject["_native"]["crypto"].invokeMethod("randomUUID"))
+print(context.globalObject["_native"]["crypto"].invokeMethod("randomBytes", withArguments: [16]))
 
 context.evaluateScript(
   """
-  const hash = crypto.createHash('md5');
+  const hash = _native.crypto.createHash('md5');
   hash.update(new Uint8Array([1, 2, 3, 4, 5]));
   hash.update(new Uint8Array([6, 7, 8, 9, 10]));
   console.log(hash.digest());
@@ -80,7 +79,7 @@ context.evaluateScript(
 
 context.evaluateScript(
   """
-  const hamc = crypto.createHamc('md5', new Uint8Array([1, 2, 3, 4, 5]));
+  const hamc = _native.crypto.createHamc('md5', new Uint8Array([1, 2, 3, 4, 5]));
   hamc.update(new Uint8Array([1, 2, 3, 4, 5]));
   hamc.update(new Uint8Array([6, 7, 8, 9, 10]));
   console.log(hamc.digest());

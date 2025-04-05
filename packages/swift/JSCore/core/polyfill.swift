@@ -99,8 +99,6 @@ extension JSCore {
         self.context.logger(level, arguments)
       }
     }
-    self.globalObject["Crypto"] = .init(JSCrypto.self, in: self)
-    self.globalObject["crypto"] = .init(JSCrypto(), in: self)
     self.globalObject["setTimeout"] = .init(in: self) { arguments, _ in
       guard let ms = arguments[1].numberValue else { return .undefined }
       let id = self.createTimer(callback: arguments[0], ms: ms, repeats: false)
@@ -119,5 +117,8 @@ extension JSCore {
       guard let id = arguments[0].numberValue.map(Int.init) else { return }
       self.removeTimer(identifier: id)
     }
+    self.globalObject["_native"] = [
+      "crypto": .init(JSCrypto(), in: self)
+    ]
   }
 }
