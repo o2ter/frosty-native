@@ -1,5 +1,5 @@
 //
-//  index.ts
+//  renderer.ts
 //
 //  The MIT License
 //  Copyright (c) 2021 - 2025 O2ter Limited. All rights reserved.
@@ -23,5 +23,32 @@
 //  THE SOFTWARE.
 //
 
-export { NativeNode } from './node';
-export { NativeRenderer } from './renderer';
+import _ from 'lodash';
+import { _Renderer, VNode } from 'frosty/dist/_native';
+import { NativeNode } from './node';
+
+export class NativeRenderer extends _Renderer<NativeNode> {
+
+  protected _beforeUpdate(): void {
+    throw new Error('Method not implemented.');
+  }
+  protected _afterUpdate(): void {
+    throw new Error('Method not implemented.');
+  }
+  protected _createElement(node: VNode, stack: VNode[]): NativeNode {
+    throw new Error('Method not implemented.');
+  }
+  protected _updateElement(node: VNode, element: NativeNode, stack: VNode[]): void {
+    throw new Error('Method not implemented.');
+  }
+  protected _destroyElement(node: VNode, element: NativeNode): void {
+    throw new Error('Method not implemented.');
+  }
+  protected _replaceChildren(node: VNode, element: NativeNode, children: (string | NativeNode)[]): void {
+    throw new Error('Method not implemented.');
+  }
+  get _server(): boolean {
+    throw new Error('Method not implemented.');
+  }
+
+}

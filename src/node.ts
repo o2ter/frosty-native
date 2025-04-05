@@ -1,5 +1,5 @@
 //
-//  index.ts
+//  renderer.ts
 //
 //  The MIT License
 //  Copyright (c) 2021 - 2025 O2ter Limited. All rights reserved.
@@ -23,5 +23,8 @@
 //  THE SOFTWARE.
 //
 
-export { NativeNode } from './node';
-export { NativeRenderer } from './renderer';
+import { NativeElementType } from 'frosty/dist/_native';
+
+export class NativeNode extends NativeElementType {
+
+}
