@@ -23,6 +23,6 @@
 //  THE SOFTWARE.
 //
 
-public func native() {
-  
+public class FrostyNative {
+
 }
