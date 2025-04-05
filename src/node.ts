@@ -27,4 +27,14 @@ import { NativeElementType } from 'frosty/dist/_native';
 
 export abstract class NativeNode extends NativeElementType {
 
+  static createElement(): NativeNode {
+    throw new Error('Method not implemented.');
+  }
+
+  abstract update(props: Record<string, any>): void;
+
+  abstract replaceChildren(children: (string | NativeNode)[]): void;
+
+  abstract destroy(): void;
+
 }

@@ -40,19 +40,26 @@ export class NativeRenderer extends _Renderer<NativeNode> {
   }
 
   protected _createElement(node: VNode, stack: VNode[]): NativeNode {
-    throw new Error('Method not implemented.');
+    const { type: _type, props } = node;
+    if (_.isString(_type)) throw Error('Invalid type');
+    if (!(_type.prototype instanceof NativeNode)) throw Error('Invalid type');
+    const ElementType = _type as typeof NativeNode;
+    const element = ElementType.createElement();
+    element.update(props);
+    return element;
   }
 
   protected _updateElement(node: VNode, element: NativeNode, stack: VNode[]) {
-    throw new Error('Method not implemented.');
+    const { props } = node;
+    element.update(props);
   }
 
   protected _destroyElement(node: VNode, element: NativeNode) {
-    throw new Error('Method not implemented.');
+    element.destroy();
   }
 
   protected _replaceChildren(node: VNode, element: NativeNode, children: (string | NativeNode)[]) {
-    throw new Error('Method not implemented.');
+    element.replaceChildren(children);
   }
 
 }
