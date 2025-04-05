@@ -23,6 +23,31 @@
 //  THE SOFTWARE.
 //
 
-public class FrostyNative {
+public final class FrostyNative: Sendable {
 
+  let context: JSCore
+
+  init(
+    _ vm: JSCore.VirtualMachine = FrostyNative.createVirtualMachine()
+  ) {
+    self.context = JSCore(vm)
+  }
+}
+
+extension FrostyNative {
+
+  static func createVirtualMachine() -> JSCore.VirtualMachine {
+    class Ref: @unchecked Sendable {
+      var vm: JSCore.VirtualMachine!
+    }
+    let signal = DispatchSemaphore(value: 0)
+    let ref = Ref()
+    Thread.detachNewThread {
+      ref.vm = JSCore.VirtualMachine()
+      signal.signal()
+      RunLoop.current.run()
+    }
+    signal.wait()
+    return ref.vm
+  }
 }
