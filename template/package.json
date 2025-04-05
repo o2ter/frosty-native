@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "dependencies": {
     "frosty": "^0.0.2",
-    "frosty-native": "^0.0.1",
+    "frosty-native": "^0.0.2",
     "lodash": "^4.17.21"
   },
   "devDependencies": {

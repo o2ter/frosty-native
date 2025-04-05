@@ -21,3 +21,4 @@ dependencyResolutionManagement {
 
 rootProject.name = "TemplateApp"
 include(":app")
+includeBuild("../node_modules/frosty-native/packages/android/gradle-plugin")
