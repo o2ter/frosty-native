@@ -1,4 +1,5 @@
-pluginManagement {
+pluginManagement { 
+    includeBuild("../node_modules/frosty-native/packages/android/gradle-plugin")
     repositories {
         google {
             content {
