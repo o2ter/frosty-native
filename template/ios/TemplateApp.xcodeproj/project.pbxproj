@@ -6,6 +6,10 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		080698752DA12C3C00AFDDB8 /* FrostyNative in Frameworks */ = {isa = PBXBuildFile; productRef = 080698742DA12C3C00AFDDB8 /* FrostyNative */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXContainerItemProxy section */
 		08853A212DA1170600AE75AC /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -52,6 +56,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				080698752DA12C3C00AFDDB8 /* FrostyNative in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -112,6 +117,7 @@
 			);
 			name = TemplateApp;
 			packageProductDependencies = (
+				080698742DA12C3C00AFDDB8 /* FrostyNative */,
 			);
 			productName = TemplateApp;
 			productReference = 08853A122DA1170500AE75AC /* TemplateApp.app */;
@@ -195,6 +201,9 @@
 			);
 			mainGroup = 08853A092DA1170500AE75AC;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				080698732DA12C3C00AFDDB8 /* XCLocalSwiftPackageReference "../node_modules/frosty-native" */,
+			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 08853A132DA1170500AE75AC /* Products */;
 			projectDirPath = "";
@@ -593,6 +602,20 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCLocalSwiftPackageReference section */
+		080698732DA12C3C00AFDDB8 /* XCLocalSwiftPackageReference "../node_modules/frosty-native" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = "../node_modules/frosty-native";
+		};
+/* End XCLocalSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		080698742DA12C3C00AFDDB8 /* FrostyNative */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = FrostyNative;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 08853A0A2DA1170500AE75AC /* Project object */;
 }

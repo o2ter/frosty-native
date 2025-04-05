@@ -2323,10 +2323,10 @@ fraction.js@^4.3.7:
   resolved "https://registry.yarnpkg.com/fraction.js/-/fraction.js-4.3.7.tgz#06ca0085157e42fda7f9e726e79fefc4068840f7"
   integrity sha512-ZsDfxO51wGAXREY55a7la9LScWpwv9RxIrYABrlvOFBlH/ShPnrtsXeuUIfXKKOVicNxQ+o8JTbJvjS4M89yew==
 
-frosty-native@^0.0.2:
-  version "0.0.2"
-  resolved "https://registry.yarnpkg.com/frosty-native/-/frosty-native-0.0.2.tgz#3c5d33ecae155d97f5693d8a47eb2491191ef944"
-  integrity sha512-X6QzEvW9ClBDi7XqXEa0WzUIiUGfbns0UPeOcI/81r7l0tp+U/k4CEUYP5hOIv2oFft1JTzKd90N4IEiVp9+PA==
+frosty-native@^0.0.4:
+  version "0.0.4"
+  resolved "https://registry.yarnpkg.com/frosty-native/-/frosty-native-0.0.4.tgz#b674e8c90af617ad29d31be49eb6ce07c7e35ccd"
+  integrity sha512-Y4WcpKYikUOUUazRUhGxzbnVfVf/KSxhZW/vI7WATAaX7PqW5VClmBGFBie3hgRXQronAgDrLJEQ3l3FXS63mg==
   dependencies:
     core-js "^3.41.0"
     frosty "^0.0.2"
