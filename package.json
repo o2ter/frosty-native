@@ -7,6 +7,7 @@
   "files": [
     "dist/*",
     "packages/*",
+    "template/*",
     "Package.swift"
   ],
   "repository": "https://github.com/o2ter/frosty-native.git",
