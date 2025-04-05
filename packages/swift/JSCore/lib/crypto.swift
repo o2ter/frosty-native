@@ -51,7 +51,7 @@ extension JSCrypto {
   }
 }
 
-@objc class JSCrypto: NSObject, JSCryptoExport {
+@objc final class JSCrypto: NSObject, JSCryptoExport {
 
 }
 

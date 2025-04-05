@@ -69,9 +69,11 @@ extension HMAC: HashProtocol {
   func update(_ data: JSValue)
 
   func digest() -> JSValue
+
+  func clone() -> Self
 }
 
-@objc class JSHash: NSObject, JSHashExport {
+@objc final class JSHash: NSObject, JSHashExport {
 
   var base: any HashProtocol
 
@@ -91,5 +93,9 @@ extension HMAC: HashProtocol {
         buffer.copyBytes(from: bytes)
       }
     }
+  }
+
+  func clone() -> JSHash {
+    return JSHash(base)
   }
 }

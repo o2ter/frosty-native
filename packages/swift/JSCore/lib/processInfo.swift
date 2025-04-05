@@ -48,7 +48,7 @@ import JavaScriptCore
   var thermalState: ProcessInfo.ThermalState { get }
 }
 
-@objc class JSProcessInfo: NSObject, JSProcessInfoExport {
+@objc final class JSProcessInfo: NSObject, JSProcessInfoExport {
 }
 
 extension JSProcessInfo {
