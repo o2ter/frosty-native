@@ -25,7 +25,7 @@
 
 public final class FrostyNative: Sendable {
 
-  let context: JSCore
+  public let context: JSCore
 
   init(
     _ vm: JSCore.VirtualMachine = FrostyNative.createVirtualMachine()
