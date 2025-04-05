@@ -23,4 +23,4 @@
 //  THE SOFTWARE.
 //
 
-import App from './App';
+import App from './src/App';
