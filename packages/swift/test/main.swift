@@ -73,7 +73,9 @@ context.evaluateScript(
   console.log(_native.processInfo.processName);
   console.log(_native.processInfo.processIdentifier);
   console.log(_native.processInfo.arguments);
-  console.log(_native.processInfo.systemUptime);
+  console.log(_native.processInfo.userName);
+  console.log(_native.processInfo.fullUserName);
+  console.log(_native.processInfo.globallyUniqueString);
   """
 )
 
