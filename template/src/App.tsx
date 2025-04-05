@@ -23,7 +23,7 @@
 //  THE SOFTWARE.
 //
 
-import { } from 'frosty';
+import {} from 'frosty';
 
 export default function App() {
 

@@ -2,7 +2,7 @@
   "name": "TemplateApp",
   "version": "1.0.0",
   "dependencies": {
-    "frosty": "^0.0.2",
+    "frosty": "^0.0.3",
     "frosty-native": "^0.0.4",
     "lodash": "^4.17.21"
   },
