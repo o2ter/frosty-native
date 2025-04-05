@@ -70,6 +70,14 @@ print(context.globalObject["_native"]["crypto"].invokeMethod("randomBytes", with
 
 context.evaluateScript(
   """
+  console.log(_native.processInfo.processName);
+  console.log(_native.processInfo.processIdentifier);
+  console.log(_native.processInfo.arguments);
+  """
+)
+
+context.evaluateScript(
+  """
   const hash = _native.crypto.createHash('md5');
   hash.update(new Uint8Array([1, 2, 3, 4, 5]));
   hash.update(new Uint8Array([6, 7, 8, 9, 10]));

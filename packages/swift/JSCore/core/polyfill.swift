@@ -118,7 +118,8 @@ extension JSCore {
       self.removeTimer(identifier: id)
     }
     self.globalObject["_native"] = [
-      "crypto": .init(JSCrypto(), in: self)
+      "crypto": .init(JSCrypto(), in: self),
+      "processInfo": .init(JSProcessInfo(), in: self),
     ]
   }
 }
