@@ -34,17 +34,17 @@ public class CanvasView(
     ctx: Context
 ): View(ctx) {
 
-    private lateinit var mBitmap: Bitmap
-    private lateinit var mCanvas: Canvas
+    private lateinit var bitmap: Bitmap
+    private lateinit var canvas: Canvas
 
     override fun onSizeChanged(w: Int, h: Int, oldw: Int, oldh: Int) {
         super.onSizeChanged(w, h, oldw, oldh)
-        mBitmap = Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_8888)
-        mCanvas = Canvas(mBitmap)
+        bitmap = Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_8888)
+        canvas = Canvas(bitmap)
     }
 
     override fun onDraw(canvas: Canvas) {
         super.onDraw(canvas)
-        canvas.drawBitmap(mBitmap, 0f, 0f, null)
+        canvas.drawBitmap(bitmap, 0f, 0f, null)
     }
 }
