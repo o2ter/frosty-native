@@ -1,5 +1,5 @@
 //
-//  native.swift
+//  Exported.swift
 //
 //  The MIT License
 //  Copyright (c) 2021 - 2025 O2ter Limited. All rights reserved.
@@ -23,6 +23,5 @@
 //  THE SOFTWARE.
 //
 
-public func native() {
-  
-}
+@_exported import Foundation
+@_exported import JSCore
