@@ -86,10 +86,10 @@ context.evaluateScript(
   hash.update(new Uint8Array([1, 2, 3, 4, 5]));
   hash.update(new Uint8Array([6, 7, 8, 9, 10]));
   const clone = hash.clone();
-  console.log(hash.digest());
+  console.log(hash.digest().toHex());
   hash.update(new Uint8Array([6, 7, 8, 9, 10]));
-  console.log(hash.digest());
-  console.log(clone.digest());
+  console.log(hash.digest().toHex());
+  console.log(clone.digest().toHex());
   """
 )
 
@@ -98,7 +98,7 @@ context.evaluateScript(
   const hamc = _native_apple.crypto.createHamc('md5', new Uint8Array([1, 2, 3, 4, 5]));
   hamc.update(new Uint8Array([1, 2, 3, 4, 5]));
   hamc.update(new Uint8Array([6, 7, 8, 9, 10]));
-  console.log(hamc.digest());
+  console.log(hamc.digest().toHex());
   """
 )
 
