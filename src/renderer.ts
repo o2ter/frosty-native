@@ -29,25 +29,29 @@ import { NativeNode } from './node';
 
 export class NativeRenderer extends _Renderer<NativeNode> {
 
-  protected _beforeUpdate(): void {
-    throw new Error('Method not implemented.');
+  get _server(): boolean {
+    return false;
   }
-  protected _afterUpdate(): void {
-    throw new Error('Method not implemented.');
+
+  protected _beforeUpdate() {
   }
+
+  protected _afterUpdate() {
+  }
+
   protected _createElement(node: VNode, stack: VNode[]): NativeNode {
     throw new Error('Method not implemented.');
   }
-  protected _updateElement(node: VNode, element: NativeNode, stack: VNode[]): void {
+
+  protected _updateElement(node: VNode, element: NativeNode, stack: VNode[]) {
     throw new Error('Method not implemented.');
   }
-  protected _destroyElement(node: VNode, element: NativeNode): void {
+
+  protected _destroyElement(node: VNode, element: NativeNode) {
     throw new Error('Method not implemented.');
   }
-  protected _replaceChildren(node: VNode, element: NativeNode, children: (string | NativeNode)[]): void {
-    throw new Error('Method not implemented.');
-  }
-  get _server(): boolean {
+
+  protected _replaceChildren(node: VNode, element: NativeNode, children: (string | NativeNode)[]) {
     throw new Error('Method not implemented.');
   }
 

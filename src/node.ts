@@ -25,6 +25,6 @@
 
 import { NativeElementType } from 'frosty/dist/_native';
 
-export class NativeNode extends NativeElementType {
+export abstract class NativeNode extends NativeElementType {
 
 }
