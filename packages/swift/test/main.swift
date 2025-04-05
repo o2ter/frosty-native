@@ -76,6 +76,7 @@ context.evaluateScript(
   console.log(_native.processInfo.userName);
   console.log(_native.processInfo.fullUserName);
   console.log(_native.processInfo.globallyUniqueString);
+  console.log(_native.processInfo.hostName);
   """
 )
 
