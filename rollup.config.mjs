@@ -1,3 +1,4 @@
+import _ from 'lodash';
 import resolve from '@rollup/plugin-node-resolve';
 import typescript from '@rollup/plugin-typescript';
 import commonjs from '@rollup/plugin-commonjs';
@@ -21,10 +22,11 @@ const resolvePlugin = resolve({
   ]
 });
 
-const rollupPlugins = [
+const rollupPlugins = (exts) => [
   typescript({
     declaration: false,
     exclude: ['tests/**/*'],
+    moduleSuffixes: exts,
   }),
   babel({
     babelrc: false,
@@ -37,31 +39,41 @@ const rollupPlugins = [
   json(),
 ];
 
+const moduleSuffixes = {
+  '.apple': ['.apple', ''],
+  '.web': ['.web', ''],
+};
+
 export default [
-  {
+  ..._.map(moduleSuffixes, (exts, suffix) => ({
     ...rollupConfig,
     output: [
       {
-        entryFileNames: '[name].js',
-        chunkFileNames: 'internals/[name]-[hash].js',
+        entryFileNames: `[name]${suffix}.js`,
+        chunkFileNames: `internals/[name]-[hash]${suffix}.js`,
         dir: './dist',
         format: 'cjs',
         sourcemap: true,
         exports: 'named',
       },
       {
-        entryFileNames: '[name].mjs',
-        chunkFileNames: 'internals/[name]-[hash].mjs',
+        entryFileNames: `[name]${suffix}.mjs`,
+        chunkFileNames: `internals/[name]-[hash]${suffix}.mjs`,
         dir: './dist',
         format: 'esm',
         sourcemap: true,
       },
     ],
     plugins: [
-      resolvePlugin,
-      ...rollupPlugins
+      resolve({
+        extensions: [
+          ...exts.flatMap(x => [`${x}.tsx`, `${x}.jsx`]),
+          ...exts.flatMap(x => [`${x}.ts`, `${x}.mjs`, `${x}.js`]),
+        ]
+      }),
+      ...rollupPlugins(exts),
     ],
-  },
+  })),
   {
     ...rollupConfig,
     output: [

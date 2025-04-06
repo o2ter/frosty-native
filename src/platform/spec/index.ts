@@ -23,6 +23,9 @@
 //  THE SOFTWARE.
 //
 
-export * from './platform/spec/index';
-export { NativeNode } from './node';
-export { NativeRenderer } from './renderer';
+import _ from 'lodash';
+
+export declare const Platform: {
+
+  get OS(): 'apple' | 'web';
+}

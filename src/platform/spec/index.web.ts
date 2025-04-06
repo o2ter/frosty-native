@@ -1,5 +1,5 @@
 //
-//  index.ts
+//  index.web.ts
 //
 //  The MIT License
 //  Copyright (c) 2021 - 2025 O2ter Limited. All rights reserved.
@@ -23,6 +23,11 @@
 //  THE SOFTWARE.
 //
 
-export * from './platform/spec/index';
-export { NativeNode } from './node';
-export { NativeRenderer } from './renderer';
+import _ from 'lodash';
+
+export class Platform {
+
+  static get OS() {
+    return 'web';
+  }
+}
