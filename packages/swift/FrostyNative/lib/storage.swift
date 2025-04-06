@@ -30,6 +30,7 @@ import JavaScriptCore
   func setItem(_ value: String, _ key: String)
   func getItem(_ key: String) -> String?
   func removeItem(_ key: String)
+  func clear()
 }
 
 @objc final class NativeLocalStorage: NSObject, NativeLocalStorageExport {
@@ -52,5 +53,12 @@ extension NativeLocalStorage {
 
   func removeItem(_ key: String) {
     UserDefaults.standard.removeObject(forKey: key)
+  }
+
+  func clear() {
+    guard let bundleID = Bundle.main.bundleIdentifier else {
+      return
+    }
+    UserDefaults.standard.removePersistentDomain(forName: bundleID)
   }
 }
