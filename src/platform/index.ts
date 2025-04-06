@@ -25,9 +25,19 @@
 
 import { _Platform } from './spec';
 
+type PlatformOS = typeof _Platform.OS;
+
 export class Platform {
 
-  get OS() {
+  static get OS() {
     return _Platform.OS;
+  }
+
+  static select<T>(config: {
+    [key in PlatformOS | (string & {})]?: T;
+  } & {
+    default: T;
+  }): T {
+    return config[this.OS] ?? config.default;
   }
 }
