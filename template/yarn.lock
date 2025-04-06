@@ -2337,30 +2337,13 @@ fraction.js@^4.3.7:
   resolved "https://registry.yarnpkg.com/fraction.js/-/fraction.js-4.3.7.tgz#06ca0085157e42fda7f9e726e79fefc4068840f7"
   integrity sha512-ZsDfxO51wGAXREY55a7la9LScWpwv9RxIrYABrlvOFBlH/ShPnrtsXeuUIfXKKOVicNxQ+o8JTbJvjS4M89yew==
 
-frosty-native@^0.0.4:
-  version "0.0.4"
-  resolved "https://registry.yarnpkg.com/frosty-native/-/frosty-native-0.0.4.tgz#b674e8c90af617ad29d31be49eb6ce07c7e35ccd"
-  integrity sha512-Y4WcpKYikUOUUazRUhGxzbnVfVf/KSxhZW/vI7WATAaX7PqW5VClmBGFBie3hgRXQronAgDrLJEQ3l3FXS63mg==
+frosty-native@^0.0.6:
+  version "0.0.6"
+  resolved "https://registry.yarnpkg.com/frosty-native/-/frosty-native-0.0.6.tgz#1b0065cf40521359d0d7ec7362e1c53dcaad6bbc"
+  integrity sha512-eD4YqVDcVRAVs90p+DEnGXjVtUmdK9diuCWrVltDsL8auWGrLcnNYn1LlJT9KrxJe7au72HzOiEetgT2jVRJjw==
   dependencies:
-    core-js "^3.41.0"
-    frosty "^0.0.2"
+    frosty "^0.0.6"
     lodash "^4.17.21"
-
-frosty@^0.0.2:
-  version "0.0.2"
-  resolved "https://registry.yarnpkg.com/frosty/-/frosty-0.0.2.tgz#a901c3c2798724f32a21555ffa878aedaf9cfe3b"
-  integrity sha512-EXEaHaK8yhj2QBzDr6ykdj2K/wfvmG1eFofHy8LZFIAQm6JLC7iNVScve3x5hHwfAT8tGN3E1r+x2AfcT3q3uw==
-  dependencies:
-    "@o2ter/utils-js" "^0.0.19"
-    autoprefixer "^10.4.21"
-    csstype "^3.1.3"
-    jsdom "^26.0.0"
-    lodash ">=4.17.21"
-    myers.js "^0.0.19"
-    nextick "^0.0.2"
-    postcss "^8.5.3"
-    postcss-js "^4.0.1"
-    postcss-nested "^7.0.2"
 
 frosty@^0.0.6:
   version "0.0.6"
