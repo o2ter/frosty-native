@@ -32,3 +32,13 @@ cd "$SCRIPT_DIR"
 source "${PROJECT_DIR}/.xcode.env"
 
 export PROJECT_ROOT="${PROJECT_DIR}/../"
+
+[ -z "$NODE_BINARY" ] && export NODE_BINARY="node"
+
+nodejs_not_found()
+{
+  echo "error: Can't find the '$NODE_BINARY' binary to build the Frosty Native bundle." >&2
+  exit 2
+}
+
+type "$NODE_BINARY" >/dev/null 2>&1 || nodejs_not_found
