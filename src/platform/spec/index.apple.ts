@@ -26,6 +26,37 @@
 import _ from 'lodash';
 import { _PlatformSpec } from './types';
 
+namespace global {
+  declare const __APPLE_SPEC__: {
+    processInfo: {
+      environment: {
+        [key: string]: string;
+      };
+    };
+    arguments: [string];
+    processName: string;
+    processIdentifier: number;
+    globallyUniqueString: string;
+    userName: string;
+    fullUserName: string;
+    hostName: string;
+    isLowPowerModeEnabled: boolean;
+    isMacCatalystApp: boolean;
+    isiOSAppOnMac: boolean;
+    operatingSystemVersionString: string;
+    operatingSystemVersion: {
+      majorVersion: number;
+      minorVersion: number;
+      patchVersion: number;
+    };
+    physicalMemory: number;
+    processorCount: number;
+    activeProcessorCount: number;
+    systemUptime: number;
+    thermalState: number;
+  };
+}
+
 export const _Platform: _PlatformSpec = {
   OS: 'apple'
 }
