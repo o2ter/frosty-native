@@ -29,9 +29,9 @@ set -e
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 cd "$SCRIPT_DIR"
 
-source "${PROJECT_DIR}/.xcode.env"
-
 export PROJECT_ROOT="${PROJECT_DIR}/../"
+
+source "${PROJECT_DIR}/.xcode.env"
 
 [ -z "$NODE_BINARY" ] && export NODE_BINARY="node"
 
