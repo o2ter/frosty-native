@@ -25,7 +25,7 @@
 
 import { _Platform } from './spec';
 
-export type PlatformSpec = typeof _Platform.spec;
+type PlatformSpec = typeof _Platform.spec;
 
 export class Platform {
 
