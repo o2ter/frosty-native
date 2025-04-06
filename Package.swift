@@ -29,9 +29,9 @@ import PackageDescription
 let package = Package(
     name: "FrostyNative",
     platforms: [
-        .macOS(.v10_15),
-        .macCatalyst(.v13),
-        .iOS(.v13),
+        .macOS(.v12),
+        .macCatalyst(.v14),
+        .iOS(.v14),
     ],
     products: [
         .executable(name: "test", targets: ["test"]),

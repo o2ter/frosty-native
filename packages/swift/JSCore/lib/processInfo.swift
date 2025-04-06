@@ -34,10 +34,8 @@ import JavaScriptCore
   var userName: String { get }
   var fullUserName: String { get }
   var hostName: String { get }
-  @available(iOS 9.0, macCatalyst 13.1, macOS 12.0, tvOS 9.0, visionOS 1.0, watchOS 2.0, *)
   var isLowPowerModeEnabled: Bool { get }
   var isMacCatalystApp: Bool { get }
-  @available(iOS 14.0, macCatalyst 14.0, macOS 11.0, tvOS 14.0, visionOS 1.0, watchOS 7.0, *)
   var isiOSAppOnMac: Bool { get }
   var operatingSystemVersionString: String { get }
   var operatingSystemVersion: [String: Int] { get }
@@ -85,7 +83,6 @@ extension JSProcessInfo {
     return ProcessInfo.processInfo.hostName
   }
 
-  @available(iOS 9.0, macCatalyst 13.1, macOS 12.0, tvOS 9.0, visionOS 1.0, watchOS 2.0, *)
   var isLowPowerModeEnabled: Bool {
     return ProcessInfo.processInfo.isLowPowerModeEnabled
   }
@@ -94,7 +91,6 @@ extension JSProcessInfo {
     return ProcessInfo.processInfo.isMacCatalystApp
   }
 
-  @available(iOS 14.0, macCatalyst 14.0, macOS 11.0, tvOS 14.0, visionOS 1.0, watchOS 7.0, *)
   var isiOSAppOnMac: Bool {
     return ProcessInfo.processInfo.isiOSAppOnMac
   }

@@ -1,5 +1,5 @@
 //
-//  TemplateApp.swift
+//  platform.swift
 //
 //  The MIT License
 //  Copyright (c) 2021 - 2025 O2ter Limited. All rights reserved.
@@ -23,16 +23,18 @@
 //  THE SOFTWARE.
 //
 
-import FrostyNative
+#if canImport(AppKit)
 
-@main
-struct TemplateApp: App {
-    
-    @ApplicationDelegateAdaptor private var appDelegate: AppDelegate
-    
-    var body: some Scene {
-        WindowGroup {
-            ContentView()
-        }
-    }
-}
+  public typealias Application = NSApplication
+  public typealias ApplicationDelegate = NSApplicationDelegate & ObservableObject
+
+  public typealias ApplicationDelegateAdaptor = NSApplicationDelegateAdaptor
+
+#elseif canImport(UIKit)
+
+  public typealias Application = UIApplication
+  public typealias ApplicationDelegate = UIApplicationDelegate & ObservableObject
+
+  public typealias ApplicationDelegateAdaptor = UIApplicationDelegateAdaptor
+
+#endif

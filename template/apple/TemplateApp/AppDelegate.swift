@@ -25,14 +25,11 @@
 
 import FrostyNative
 
-@main
-struct TemplateApp: App {
-    
-    @ApplicationDelegateAdaptor private var appDelegate: AppDelegate
-    
-    var body: some Scene {
-        WindowGroup {
-            ContentView()
-        }
+class AppDelegate: NSObject, ApplicationDelegate {
+    func application(
+        _ application: Application,
+        didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data
+    ) {
+        // Record the device token.
     }
 }
