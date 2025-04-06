@@ -23,6 +23,37 @@
 //  THE SOFTWARE.
 //
 
+declare global {
+  const __APPLE_SPEC__: {
+    processInfo: {
+      environment: {
+        [key: string]: string;
+      };
+      arguments: [string];
+      processName: string;
+      processIdentifier: number;
+      globallyUniqueString: string;
+      userName: string;
+      fullUserName: string;
+      hostName: string;
+      isLowPowerModeEnabled: boolean;
+      isMacCatalystApp: boolean;
+      isiOSAppOnMac: boolean;
+      operatingSystemVersionString: string;
+      operatingSystemVersion: {
+        majorVersion: number;
+        minorVersion: number;
+        patchVersion: number;
+      };
+      physicalMemory: number;
+      processorCount: number;
+      activeProcessorCount: number;
+      systemUptime: number;
+      thermalState: number;
+    };
+  };
+}
+
 export type _PlatformSpec = Readonly<{
   spec: 'android' | 'apple' | 'web';
   isMacCatalystApp: boolean;
