@@ -1,6 +1,6 @@
 #!/bin/sh
 #
-#  environment.sh
+#  bundler.sh
 #
 #  The MIT License
 #  Copyright (c) 2021 - 2025 O2ter Limited. All rights reserved.
@@ -29,13 +29,12 @@ set -e
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 cd "$SCRIPT_DIR"
 
-export PROJECT_ROOT="${PROJECT_ROOT:-"$PROJECT_DIR/.."}"
-export BUNDLE_FILE="${CONFIGURATION_BUILD_DIR}/main.jsbundle"
-export ENTRY_FILE="${1:-$(ls -1 index.* | head -1)}"
+[ -z "$NODE_BINARY" ] && export NODE_BINARY="node"
 
-source "${PROJECT_DIR}/.xcode.env"
+nodejs_not_found()
+{
+  echo "error: Can't find the '$NODE_BINARY' binary to build the Frosty Native bundle." >&2
+  exit 2
+}
 
-# Execute argument, if present
-if [ -n "$1" ]; then
-  $1
-fi
+type "$NODE_BINARY" >/dev/null 2>&1 || nodejs_not_found
