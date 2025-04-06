@@ -58,5 +58,5 @@ namespace global {
 }
 
 export const _Platform: _PlatformSpec = {
-  OS: 'apple'
+  spec: 'apple'
 }

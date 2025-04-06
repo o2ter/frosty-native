@@ -24,6 +24,5 @@
 //
 
 export type _PlatformSpec = {
-
-  OS: 'android' | 'apple' | 'web';
+  spec: 'android' | 'apple' | 'web';
 }
