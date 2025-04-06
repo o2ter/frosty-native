@@ -40,6 +40,7 @@ const rollupPlugins = (exts) => [
 ];
 
 const moduleSuffixes = {
+  '.android': ['.android', ''],
   '.apple': ['.apple', ''],
   '.web': ['.web', ''],
 };

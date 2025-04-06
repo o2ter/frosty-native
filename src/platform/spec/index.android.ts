@@ -1,5 +1,5 @@
 //
-//  index.ts
+//  index.apple.ts
 //
 //  The MIT License
 //  Copyright (c) 2021 - 2025 O2ter Limited. All rights reserved.
@@ -25,7 +25,9 @@
 
 import _ from 'lodash';
 
-export declare const Platform: {
+export class Platform {
 
-  get OS(): 'android' | 'apple' | 'web';
+  static get OS() {
+    return 'android';
+  }
 }
