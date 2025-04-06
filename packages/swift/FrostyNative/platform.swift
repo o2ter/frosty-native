@@ -26,14 +26,14 @@
 #if canImport(AppKit)
 
   public typealias Application = NSApplication
-  public typealias ApplicationDelegate = NSApplicationDelegate & ObservableObject
+  public typealias ApplicationDelegate = NSApplicationDelegate
 
   public typealias ApplicationDelegateAdaptor = NSApplicationDelegateAdaptor
 
 #elseif canImport(UIKit)
 
   public typealias Application = UIApplication
-  public typealias ApplicationDelegate = UIApplicationDelegate & ObservableObject
+  public typealias ApplicationDelegate = UIApplicationDelegate
 
   public typealias ApplicationDelegateAdaptor = UIApplicationDelegateAdaptor
 
