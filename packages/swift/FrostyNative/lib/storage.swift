@@ -1,5 +1,5 @@
 //
-//  index.ts
+//  storage.swift
 //
 //  The MIT License
 //  Copyright (c) 2021 - 2025 O2ter Limited. All rights reserved.
@@ -23,12 +23,16 @@
 //  THE SOFTWARE.
 //
 
-export * from './platform';
-export { NativeNode } from './node';
-export { NativeRenderer } from './renderer';
+import JavaScriptCore
 
-declare global {
-  const NativeModules: {
-    [key: string]: any;
-  };
+@objc protocol NativeLocalStorageExport: JSExport {
+
+}
+
+@objc final class NativeLocalStorage: NSObject, NativeLocalStorageExport {
+
+}
+
+extension NativeLocalStorage {
+
 }
