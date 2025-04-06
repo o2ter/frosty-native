@@ -23,7 +23,7 @@
 //  THE SOFTWARE.
 //
 
-export type PlatformSpec = {
+export type _PlatformSpec = {
 
-  get OS(): 'android' | 'apple' | 'web';
+  OS: 'android' | 'apple' | 'web';
 }

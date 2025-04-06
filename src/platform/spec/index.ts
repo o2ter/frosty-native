@@ -24,6 +24,6 @@
 //
 
 import _ from 'lodash';
-import { PlatformSpec } from './types';
+import { _PlatformSpec } from './types';
 
-export declare const Platform: PlatformSpec;
+export declare const _Platform: _PlatformSpec;

@@ -1,5 +1,5 @@
 //
-//  index.apple.ts
+//  index.ts
 //
 //  The MIT License
 //  Copyright (c) 2021 - 2025 O2ter Limited. All rights reserved.
@@ -23,9 +23,11 @@
 //  THE SOFTWARE.
 //
 
-import _ from 'lodash';
-import { _PlatformSpec } from './types';
+import { _Platform } from './spec';
 
-export const _Platform: _PlatformSpec = {
-  OS: 'apple'
+export class Platform {
+
+  get OS() {
+    return _Platform.OS;
+  }
 }

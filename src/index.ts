@@ -23,6 +23,6 @@
 //  THE SOFTWARE.
 //
 
-export * from './platform/spec';
+export * from './platform';
 export { NativeNode } from './node';
 export { NativeRenderer } from './renderer';

@@ -24,10 +24,8 @@
 //
 
 import _ from 'lodash';
-import { PlatformSpec } from './types';
+import { _PlatformSpec } from './types';
 
-export const Platform: PlatformSpec = {
-  get OS() {
-    return 'android' as const;
-  }
+export const _Platform: _PlatformSpec = {
+  OS: 'android'
 }
