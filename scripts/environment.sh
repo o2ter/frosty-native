@@ -31,6 +31,7 @@ cd "$SCRIPT_DIR"
 
 export PROJECT_ROOT="${PROJECT_ROOT:-"$PROJECT_DIR/.."}"
 export BUNDLE_FILE="${CONFIGURATION_BUILD_DIR}/main.jsbundle"
+export ENTRY_FILE="${1:-$(ls -1 index.* | head -1)}"
 
 source "${PROJECT_DIR}/.xcode.env"
 
