@@ -2337,10 +2337,10 @@ fraction.js@^4.3.7:
   resolved "https://registry.yarnpkg.com/fraction.js/-/fraction.js-4.3.7.tgz#06ca0085157e42fda7f9e726e79fefc4068840f7"
   integrity sha512-ZsDfxO51wGAXREY55a7la9LScWpwv9RxIrYABrlvOFBlH/ShPnrtsXeuUIfXKKOVicNxQ+o8JTbJvjS4M89yew==
 
-frosty-native@^0.0.6:
-  version "0.0.6"
-  resolved "https://registry.yarnpkg.com/frosty-native/-/frosty-native-0.0.6.tgz#1b0065cf40521359d0d7ec7362e1c53dcaad6bbc"
-  integrity sha512-eD4YqVDcVRAVs90p+DEnGXjVtUmdK9diuCWrVltDsL8auWGrLcnNYn1LlJT9KrxJe7au72HzOiEetgT2jVRJjw==
+frosty-native@^0.0.7:
+  version "0.0.7"
+  resolved "https://registry.yarnpkg.com/frosty-native/-/frosty-native-0.0.7.tgz#708193d81411547f3c0dfc6c85f96e17863e645c"
+  integrity sha512-5a2UBNP3xr76kwrMaX+ayIhdcWcSMG4f0WlGueVy/OXWq0gjuK0iwatghnfLFl5uHDBi+N7PAjb4z2Ii2kF30w==
   dependencies:
     frosty "^0.0.6"
     lodash "^4.17.21"
