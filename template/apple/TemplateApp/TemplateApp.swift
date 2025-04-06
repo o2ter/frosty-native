@@ -1,5 +1,5 @@
 //
-//  ContentView.swift
+//  TemplateApp.swift
 //
 //  The MIT License
 //  Copyright (c) 2021 - 2025 O2ter Limited. All rights reserved.
@@ -25,18 +25,11 @@
 
 import SwiftUI
 
-struct ContentView: View {
-    var body: some View {
-        VStack {
-            Image(systemName: "globe")
-                .imageScale(.large)
-                .foregroundStyle(.tint)
-            Text("Hello, world!")
+@main
+struct TemplateApp: App {
+    var body: some Scene {
+        WindowGroup {
+            ContentView()
         }
-        .padding()
     }
-}
-
-#Preview {
-    ContentView()
 }
