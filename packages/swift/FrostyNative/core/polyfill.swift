@@ -1,5 +1,5 @@
 //
-//  native.swift
+//  polyfill.swift
 //
 //  The MIT License
 //  Copyright (c) 2021 - 2025 O2ter Limited. All rights reserved.
@@ -23,31 +23,8 @@
 //  THE SOFTWARE.
 //
 
-public final class FrostyNative: Sendable {
-
-  public let context: JSCore
-
-  init(
-    _ vm: JSCore.VirtualMachine = FrostyNative.createVirtualMachine()
-  ) {
-    self.context = JSCore(vm)
-  }
-}
-
 extension FrostyNative {
 
-  static func createVirtualMachine() -> JSCore.VirtualMachine {
-    class Ref: @unchecked Sendable {
-      var vm: JSCore.VirtualMachine!
-    }
-    let signal = DispatchSemaphore(value: 0)
-    let ref = Ref()
-    Thread.detachNewThread {
-      ref.vm = JSCore.VirtualMachine()
-      signal.signal()
-      RunLoop.current.run()
-    }
-    signal.wait()
-    return ref.vm
+  func polyfill() {
   }
 }
