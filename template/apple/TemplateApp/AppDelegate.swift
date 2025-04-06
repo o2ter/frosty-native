@@ -25,7 +25,7 @@
 
 import FrostyNative
 
-class AppDelegate: NSObject, ApplicationDelegate, ObservableObject {
+class AppDelegate: NSObject, ApplicationDelegate {
     func application(
         _ application: Application,
         didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data
