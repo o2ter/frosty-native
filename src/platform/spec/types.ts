@@ -23,6 +23,7 @@
 //  THE SOFTWARE.
 //
 
+/** @internal */
 declare global {
   const __APPLE_SPEC__: {
     processInfo: {
