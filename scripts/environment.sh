@@ -30,6 +30,7 @@ SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 cd "$SCRIPT_DIR"
 
 export PROJECT_ROOT="${PROJECT_ROOT:-"$PROJECT_DIR/.."}"
+export BUNDLE_FILE="${CONFIGURATION_BUILD_DIR}/main.jsbundle"
 
 source "${PROJECT_DIR}/.xcode.env"
 
