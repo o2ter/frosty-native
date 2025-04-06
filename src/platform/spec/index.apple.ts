@@ -26,8 +26,8 @@
 import _ from 'lodash';
 import { _PlatformSpec } from './types';
 
-namespace global {
-  declare const __APPLE_SPEC__: {
+declare global {
+  const __APPLE_SPEC__: {
     processInfo: {
       environment: {
         [key: string]: string;
@@ -58,5 +58,11 @@ namespace global {
 }
 
 export const _Platform: _PlatformSpec = {
-  spec: 'apple'
-}
+  spec: 'apple',
+  get isMacCatalystApp() {
+    return __APPLE_SPEC__.processInfo.isMacCatalystApp;
+  },
+  get isiOSAppOnMac() {
+    return __APPLE_SPEC__.processInfo.isiOSAppOnMac;
+  },
+};

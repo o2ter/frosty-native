@@ -23,6 +23,8 @@
 //  THE SOFTWARE.
 //
 
-export type _PlatformSpec = {
+export type _PlatformSpec = Readonly<{
   spec: 'android' | 'apple' | 'web';
-}
+  isMacCatalystApp: boolean;
+  isiOSAppOnMac: boolean;
+}>;

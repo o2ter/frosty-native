@@ -27,5 +27,11 @@ import _ from 'lodash';
 import { _PlatformSpec } from './types';
 
 export const _Platform: _PlatformSpec = {
-  spec: 'android'
-}
+  spec: 'android',
+  get isMacCatalystApp() {
+    return false;
+  },
+  get isiOSAppOnMac() {
+    return false;
+  },
+};
