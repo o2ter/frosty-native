@@ -32,28 +32,28 @@ namespace global {
       environment: {
         [key: string]: string;
       };
+      arguments: [string];
+      processName: string;
+      processIdentifier: number;
+      globallyUniqueString: string;
+      userName: string;
+      fullUserName: string;
+      hostName: string;
+      isLowPowerModeEnabled: boolean;
+      isMacCatalystApp: boolean;
+      isiOSAppOnMac: boolean;
+      operatingSystemVersionString: string;
+      operatingSystemVersion: {
+        majorVersion: number;
+        minorVersion: number;
+        patchVersion: number;
+      };
+      physicalMemory: number;
+      processorCount: number;
+      activeProcessorCount: number;
+      systemUptime: number;
+      thermalState: number;
     };
-    arguments: [string];
-    processName: string;
-    processIdentifier: number;
-    globallyUniqueString: string;
-    userName: string;
-    fullUserName: string;
-    hostName: string;
-    isLowPowerModeEnabled: boolean;
-    isMacCatalystApp: boolean;
-    isiOSAppOnMac: boolean;
-    operatingSystemVersionString: string;
-    operatingSystemVersion: {
-      majorVersion: number;
-      minorVersion: number;
-      patchVersion: number;
-    };
-    physicalMemory: number;
-    processorCount: number;
-    activeProcessorCount: number;
-    systemUptime: number;
-    thermalState: number;
   };
 }
 
