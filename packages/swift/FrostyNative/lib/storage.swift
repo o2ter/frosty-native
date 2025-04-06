@@ -26,7 +26,11 @@
 import JavaScriptCore
 
 @objc protocol NativeLocalStorageExport: JSExport {
-
+  func keys() -> [String]
+  func setItem(_ value: String, _ key: String)
+  func getItem(_ key: String) -> String?
+  func removeItem(_ key: String)
+  func clear()
 }
 
 @objc final class NativeLocalStorage: NSObject, NativeLocalStorageExport {
@@ -35,4 +39,23 @@ import JavaScriptCore
 
 extension NativeLocalStorage {
 
+  func keys() -> [String] {
+    return UserDefaults.standard.dictionaryRepresentation().keys.map { $0 }
+  }
+
+  func setItem(_ value: String, _ key: String) {
+    UserDefaults.standard.set(value, forKey: key)
+  }
+
+  func getItem(_ key: String) -> String? {
+    return UserDefaults.standard.string(forKey: key)
+  }
+
+  func removeItem(_ key: String) {
+    UserDefaults.standard.removeObject(forKey: key)
+  }
+
+  func clear() {
+    UserDefaults.standard.removePersistentDomain(forName: Bundle.main.bundleIdentifier ?? "")
+  }
 }
