@@ -1,6 +1,9 @@
 {
   "name": "TemplateApp",
   "version": "1.0.0",
+  "scripts": {
+    "postinstall": "./scripts/post_install.sh"
+  },
   "dependencies": {
     "frosty": "^0.0.6",
     "frosty-native": "^0.0.7",

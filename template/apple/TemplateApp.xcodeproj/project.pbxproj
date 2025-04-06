@@ -107,6 +107,7 @@
 				08853A0E2DA1170500AE75AC /* Sources */,
 				08853A0F2DA1170500AE75AC /* Frameworks */,
 				08853A102DA1170500AE75AC /* Resources */,
+				08AD7B162DA2BC6600DAE3E8 /* Bundle Frosty Native code and images */,
 			);
 			buildRules = (
 			);
@@ -240,6 +241,27 @@
 		};
 /* End PBXResourcesBuildPhase section */
 
+/* Begin PBXShellScriptBuildPhase section */
+		08AD7B162DA2BC6600DAE3E8 /* Bundle Frosty Native code and images */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = "Bundle Frosty Native code and images";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "set -e\n\nWITH_ENVIRONMENT=\"../node_modules/frosty-native/scripts/environment.sh\"\n\n/bin/sh -c \"$WITH_ENVIRONMENT\"\n";
+		};
+/* End PBXShellScriptBuildPhase section */
+
 /* Begin PBXSourcesBuildPhase section */
 		08853A0E2DA1170500AE75AC /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
@@ -316,7 +338,6 @@
 				DEVELOPMENT_TEAM = SP5JSJN93J;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
-				ENABLE_USER_SCRIPT_SANDBOXING = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu17;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_NO_COMMON_BLOCKS = YES;
@@ -378,7 +399,6 @@
 				DEVELOPMENT_TEAM = SP5JSJN93J;
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
-				ENABLE_USER_SCRIPT_SANDBOXING = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu17;
 				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
