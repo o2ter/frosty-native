@@ -40,4 +40,12 @@ export class Platform {
   }): T {
     return config[this.spec] ?? config.default;
   }
+
+  static isMacCatalystApp() {
+    return _Platform.isMacCatalystApp;
+  }
+
+  static isiOSAppOnMac() {
+    return _Platform.isiOSAppOnMac;
+  }
 }
