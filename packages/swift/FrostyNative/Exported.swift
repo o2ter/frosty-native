@@ -25,3 +25,4 @@
 
 @_exported import Foundation
 @_exported import JSCore
+@_exported import SwiftUI
