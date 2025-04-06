@@ -24,10 +24,10 @@
 //
 
 import _ from 'lodash';
+import { PlatformSpec } from './types';
 
-export class Platform {
-
-  static get OS() {
-    return 'web';
+export const Platform: PlatformSpec = {
+  get OS() {
+    return 'web' as const;
   }
 }

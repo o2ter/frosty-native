@@ -1,5 +1,5 @@
 //
-//  index.ts
+//  types.ts
 //
 //  The MIT License
 //  Copyright (c) 2021 - 2025 O2ter Limited. All rights reserved.
@@ -23,7 +23,7 @@
 //  THE SOFTWARE.
 //
 
-import _ from 'lodash';
-import { PlatformSpec } from './types';
+export type PlatformSpec = {
 
-export declare const Platform: PlatformSpec;
+  get OS(): 'android' | 'apple' | 'web';
+}
