@@ -41,6 +41,8 @@
 
 open class FTAppDelegate: NSObject, _ApplicationDelegate, ObservableObject {
 
+  public let runtime = FrostyNative()
+
   open func sourceURL() -> URL? {
     return Bundle.main.url(forResource: "main", withExtension: "jsbundle")
   }
