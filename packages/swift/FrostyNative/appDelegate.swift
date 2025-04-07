@@ -25,72 +25,83 @@
 
 #if canImport(AppKit)
 
-  public typealias FTApplication = NSApplication
-  public typealias _ApplicationDelegate = NSApplicationDelegate
+public typealias FTApplication = NSApplication
+public typealias _ApplicationDelegate = NSApplicationDelegate
 
-  public typealias FTApplicationDelegateAdaptor = NSApplicationDelegateAdaptor
+public typealias FTApplicationDelegateAdaptor = NSApplicationDelegateAdaptor
 
 #elseif canImport(UIKit)
 
-  public typealias FTApplication = UIApplication
-  public typealias _ApplicationDelegate = UIApplicationDelegate
+public typealias FTApplication = UIApplication
+public typealias _ApplicationDelegate = UIApplicationDelegate
 
-  public typealias FTApplicationDelegateAdaptor = UIApplicationDelegateAdaptor
+public typealias FTApplicationDelegateAdaptor = UIApplicationDelegateAdaptor
 
 #endif
 
 open class FTAppDelegate: NSObject, _ApplicationDelegate, ObservableObject {
-
-  public let runtime = FrostyNative()
-
-  open func sourceURL() -> URL? {
-    return Bundle.main.url(forResource: "main", withExtension: "jsbundle")
-  }
+    
+    public let runtime = FrostyNative()
+    
+    open func sourceURL() -> URL? {
+        return Bundle.main.url(forResource: "main", withExtension: "jsbundle")
+    }
 }
 
 extension FTAppDelegate {
-
-  #if canImport(AppKit)
+    
+#if canImport(AppKit)
     open func applicationWillFinishLaunching(_ notification: Notification) {
-
-      guard
-        let sourceUrl = self.sourceURL(),
-        let source = try? String(contentsOf: sourceUrl)
-      else {
-        return
-      }
-
-      self.runtime.context.evaluateScript(source)
+        
+        guard
+            let sourceUrl = self.sourceURL(),
+            let source = try? String(contentsOf: sourceUrl)
+        else {
+            return
+        }
+        
+        self.runtime.context.evaluateScript(source)
     }
-  #endif
-
-  #if canImport(UIKit)
+    
+    open func applicationDidFinishLaunching(_ notification: Notification) {
+    }
+#endif
+    
+#if canImport(UIKit)
     open func application(
-      _ application: FTApplication,
-      willFinishLaunchingWithOptions launchOptions: [FTApplication.LaunchOptionsKey: Any]? = nil
+        _ application: FTApplication,
+        willFinishLaunchingWithOptions launchOptions: [FTApplication.LaunchOptionsKey: Any]? = nil
     ) -> Bool {
-
-      guard
-        let sourceUrl = self.sourceURL(),
-        let source = try? String(contentsOf: sourceUrl)
-      else {
+        
+        guard
+            let sourceUrl = self.sourceURL(),
+            let source = try? String(contentsOf: sourceUrl)
+        else {
+            return true
+        }
+        
+        self.runtime.context.evaluateScript(source)
+        
         return true
-      }
-
-      self.runtime.context.evaluateScript(source)
-
-      return true
     }
-  #endif
-
+    
+    open func application(
+        _ application: FTApplication,
+        didFinishLaunchingWithOptions launchOptions: [FTApplication.LaunchOptionsKey: Any]? = nil
+    ) -> Bool {
+        
+        return true
+    }
+#endif
+    
 }
 
 extension FTAppDelegate {
-
-  open func application(
-    _ application: FTApplication,
-    didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data
-  ) {
-
-  }
+    
+    open func application(
+        _ application: FTApplication,
+        didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data
+    ) {
+        
+    }
 }
