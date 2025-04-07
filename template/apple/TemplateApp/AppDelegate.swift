@@ -26,10 +26,16 @@
 import FrostyNative
 
 class AppDelegate: NSObject, ApplicationDelegate {
-    func application(
-        _ application: Application,
-        didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data
-    ) {
-        // Record the device token.
-    }
 }
+
+#if canImport(UIKit)
+    extension ApplicationDelegate {
+
+        func application(
+            _ application: Application,
+            didFinishLaunchingWithOptions launchOptions: [Application.LaunchOptionsKey: Any]? = nil
+        ) -> Bool {
+
+        }
+    }
+#endif

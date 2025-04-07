@@ -45,4 +45,22 @@ public protocol ApplicationDelegate: _ApplicationDelegate, ObservableObject {
 
 extension ApplicationDelegate {
 
+  func application(
+    _ application: Application,
+    didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data
+  ) {
+    
+  }
 }
+
+#if canImport(UIKit)
+  extension ApplicationDelegate {
+
+    func application(
+      _ application: Application,
+      didFinishLaunchingWithOptions launchOptions: [Application.LaunchOptionsKey: Any]? = nil
+    ) -> Bool {
+
+    }
+  }
+#endif
