@@ -66,6 +66,7 @@ print(function.call(withArguments: [context.globalObject, prototypes]))
 
 print(context.globalObject["__APPLE_SPEC__"]["crypto"])
 print(context.globalObject["__APPLE_SPEC__"]["crypto"].invokeMethod("randomUUID"))
+print(context.globalObject["crypto"].invokeMethod("randomUUID"))
 print(
   context.globalObject["__APPLE_SPEC__"]["crypto"].invokeMethod("randomBytes", withArguments: [16]))
 

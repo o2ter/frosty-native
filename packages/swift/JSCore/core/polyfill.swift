@@ -122,5 +122,12 @@ extension JSCore {
       "processInfo": .init(JSProcessInfo(), in: self),
       "Bundle": .init(JSBundle.self, in: self),
     ]
+    self.globalObject["crypto"] = self.evaluateScript("""
+    new class Crypto {
+      randomUUID() {
+        return __APPLE_SPEC__.randomUUID();
+      }
+    }
+    """)
   }
 }
