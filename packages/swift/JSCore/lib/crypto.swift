@@ -30,6 +30,8 @@ import JavaScriptCore
 
   func randomUUID() -> String
 
+  func getRandomValues(_ buffer: JSValue) -> JSValue
+
   func randomBytes(_ length: Int) -> JSValue
 
   func createHash(_ algorithm: String) -> JSHash?
@@ -42,6 +44,13 @@ extension JSCrypto {
   func randomUUID() -> String {
     let uuid = UUID()
     return .init(uuid.uuidString)
+  }
+
+  func getRandomValues(_ buffer: JSValue) -> JSValue {
+    guard buffer.isTypedArray else { return buffer }
+    let bytes = buffer.typedArrayMutableBytes
+    _ = SecRandomCopyBytes(kSecRandomDefault, bytes.count, bytes.baseAddress!)
+    return buffer
   }
 
   func randomBytes(_ length: Int) -> JSValue {
