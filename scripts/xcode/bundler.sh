@@ -26,8 +26,7 @@
 
 set -e
 
-SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-cd "$SCRIPT_DIR"
+cd $PROJECT_ROOT
 
 [ -z "$NODE_BINARY" ] && export NODE_BINARY="node"
 
@@ -38,3 +37,6 @@ nodejs_not_found()
 }
 
 type "$NODE_BINARY" >/dev/null 2>&1 || nodejs_not_found
+
+NODE_BIN_DIR="$( dirname "$( which $NODE_BINARY )" )"
+exec $NODE_BIN_DIR/yarn frosty-native bundle
