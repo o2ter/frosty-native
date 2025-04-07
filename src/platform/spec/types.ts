@@ -25,8 +25,10 @@
 
 /** @internal */
 declare global {
-  const __APPLE_SPEC__: {
-    processInfo: {
+
+  namespace __NS_APPLE_SPEC__ {
+
+    interface ProcessInfo {
       environment: {
         [key: string]: string;
       };
@@ -51,6 +53,18 @@ declare global {
       activeProcessorCount: number;
       systemUptime: number;
       thermalState: number;
+    }
+
+    interface Bundle {
+      get infoDictionary(): { [key: string]: string; }
+    }
+
+  }
+
+  const __APPLE_SPEC__: {
+    get processInfo(): __NS_APPLE_SPEC__.ProcessInfo;
+    get Bundle(): {
+      main: __NS_APPLE_SPEC__.Bundle;
     };
   };
 }
