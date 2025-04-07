@@ -43,5 +43,5 @@ source "$PROJECT_DIR/.xcode.env"
 
 # Execute argument, if present
 if [ -n "$PROJECT_DIR/$1" ]; then
-  $1
+  source "$PROJECT_DIR/$1"
 fi
