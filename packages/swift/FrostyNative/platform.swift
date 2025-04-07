@@ -67,6 +67,7 @@ extension FTAppDelegate {
       didFinishLaunchingWithOptions launchOptions: [FTApplication.LaunchOptionsKey: Any]? = nil
     ) -> Bool {
 
+      return true
     }
   #endif
 
