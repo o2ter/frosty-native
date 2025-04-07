@@ -56,6 +56,16 @@ extension JSCore {
 extension JSCore.ValueBase: @unchecked Sendable {}
 extension JSCore.Value: Sendable {}
 
+extension JSValue: @unchecked @retroactive Sendable {}
+extension JSValue: @retroactive Error {}
+
+extension JSCore.Value: Error {
+
+  public init(newErrorFromMessage message: String, in context: JSCore) {
+    self.init(JSValue(newErrorFromMessage: message, in: context.base))
+  }
+}
+
 extension JSCore.Value {
 
   public static var null: JSCore.Value {
@@ -91,23 +101,32 @@ extension JSValue {
 
   public convenience init(
     in context: JSContext,
-    _ callback: @escaping (_ arguments: [JSValue], _ this: JSValue) -> JSValue
+    _ callback: @escaping (_ arguments: [JSValue], _ this: JSValue) throws -> JSValue
   ) {
     let closure: @convention(block) () -> JSValue = {
-      let result = callback(
-        JSContext.currentArguments().map { $0 as! JSValue },
-        JSContext.currentThis() ?? JSValue(undefinedIn: context))
-      return result
+      do {
+        let result = try callback(
+          JSContext.currentArguments().map { $0 as! JSValue },
+          JSContext.currentThis() ?? JSValue(undefinedIn: context))
+        return result
+      } catch let error {
+        if let error = error as? JSValue {
+          context.exception = error
+        } else {
+          context.exception = JSValue(newErrorFromMessage: "\(error)", in: context)
+        }
+        return JSValue(undefinedIn: context)
+      }
     }
     self.init(object: closure, in: context)
   }
 
   public convenience init(
     in context: JSContext,
-    _ callback: @escaping (_ arguments: [JSValue], _ this: JSValue) -> Void
+    _ callback: @escaping (_ arguments: [JSValue], _ this: JSValue) throws -> Void
   ) {
     self.init(in: context) { arguments, this in
-      callback(arguments, this)
+      try callback(arguments, this)
       return JSValue(undefinedIn: context)
     }
   }
@@ -117,21 +136,21 @@ extension JSCore.Value {
 
   public init(
     in context: JSCore,
-    _ callback: @escaping (_ arguments: [JSCore.Value], _ this: JSCore.Value) -> JSCore.Value
+    _ callback: @escaping (_ arguments: [JSCore.Value], _ this: JSCore.Value) throws -> JSCore.Value
   ) {
     self.init(
       JSValue(in: context.base) { arguments, this in
-        let result = callback(arguments.map { .init($0) }, JSCore.Value(this))
+        let result = try callback(arguments.map { .init($0) }, JSCore.Value(this))
         return result.toJSValue(inContext: context.base)
       })
   }
 
   public init(
     in context: JSCore,
-    _ callback: @escaping (_ arguments: [JSCore.Value], _ this: JSCore.Value) -> Void
+    _ callback: @escaping (_ arguments: [JSCore.Value], _ this: JSCore.Value) throws -> Void
   ) {
     self.init(in: context) { arguments, this in
-      callback(arguments, this)
+      try callback(arguments, this)
       return .undefined
     }
   }
