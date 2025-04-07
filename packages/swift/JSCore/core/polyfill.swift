@@ -125,7 +125,7 @@ extension JSCore {
     self.globalObject["crypto"] = self.evaluateScript("""
     new class Crypto {
       randomUUID() {
-        return __APPLE_SPEC__.randomUUID();
+        return __APPLE_SPEC__.crypto.randomUUID();
       }
     }
     """)
