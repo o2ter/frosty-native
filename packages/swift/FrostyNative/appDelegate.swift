@@ -51,7 +51,7 @@ open class FTAppDelegate: NSObject, _ApplicationDelegate, ObservableObject {
 extension FTAppDelegate {
 
   #if canImport(AppKit)
-    open func applicationDidFinishLaunching(_ notification: Notification) {
+    open func applicationWillFinishLaunching(_ notification: Notification) {
 
       guard
         let sourceUrl = self.sourceURL(),
@@ -67,7 +67,7 @@ extension FTAppDelegate {
   #if canImport(UIKit)
     open func application(
       _ application: FTApplication,
-      didFinishLaunchingWithOptions launchOptions: [FTApplication.LaunchOptionsKey: Any]? = nil
+      willFinishLaunchingWithOptions launchOptions: [FTApplication.LaunchOptionsKey: Any]? = nil
     ) -> Bool {
 
       guard
