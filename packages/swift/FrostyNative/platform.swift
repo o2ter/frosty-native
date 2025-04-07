@@ -39,16 +39,16 @@
 
 #endif
 
-public class ApplicationDelegate: NSObject, _ApplicationDelegate, ObservableObject {
+open class ApplicationDelegate: NSObject, _ApplicationDelegate, ObservableObject {
 
-  public func sourceURL() -> URL? {
+  open func sourceURL() -> URL? {
     return Bundle.main.url(forResource: "main", withExtension: "jsbundle")
   }
 }
 
 extension ApplicationDelegate {
 
-  public func application(
+  open func application(
     _ application: Application,
     didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data
   ) {
@@ -56,13 +56,13 @@ extension ApplicationDelegate {
   }
 
   #if canImport(AppKit)
-    public func applicationDidFinishLaunching(_ notification: Notification) {
+    open func applicationDidFinishLaunching(_ notification: Notification) {
 
     }
   #endif
 
   #if canImport(UIKit)
-    public func application(
+    open func application(
       _ application: Application,
       didFinishLaunchingWithOptions launchOptions: [Application.LaunchOptionsKey: Any]? = nil
     ) -> Bool {
