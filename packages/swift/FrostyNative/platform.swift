@@ -25,31 +25,31 @@
 
 #if canImport(AppKit)
 
-  public typealias Application = NSApplication
+  public typealias FTApplication = NSApplication
   public typealias _ApplicationDelegate = NSApplicationDelegate
 
-  public typealias ApplicationDelegateAdaptor = NSApplicationDelegateAdaptor
+  public typealias FTApplicationDelegateAdaptor = NSApplicationDelegateAdaptor
 
 #elseif canImport(UIKit)
 
-  public typealias Application = UIApplication
+  public typealias FTApplication = UIApplication
   public typealias _ApplicationDelegate = UIApplicationDelegate
 
-  public typealias ApplicationDelegateAdaptor = UIApplicationDelegateAdaptor
+  public typealias FTApplicationDelegateAdaptor = UIApplicationDelegateAdaptor
 
 #endif
 
-open class ApplicationDelegate: NSObject, _ApplicationDelegate, ObservableObject {
+open class FTAppDelegate: NSObject, _ApplicationDelegate, ObservableObject {
 
   open func sourceURL() -> URL? {
     return Bundle.main.url(forResource: "main", withExtension: "jsbundle")
   }
 }
 
-extension ApplicationDelegate {
+extension FTAppDelegate {
 
   open func application(
-    _ application: Application,
+    _ application: FTApplication,
     didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data
   ) {
 
@@ -63,8 +63,8 @@ extension ApplicationDelegate {
 
   #if canImport(UIKit)
     open func application(
-      _ application: Application,
-      didFinishLaunchingWithOptions launchOptions: [Application.LaunchOptionsKey: Any]? = nil
+      _ application: FTApplication,
+      didFinishLaunchingWithOptions launchOptions: [FTApplication.LaunchOptionsKey: Any]? = nil
     ) -> Bool {
 
     }

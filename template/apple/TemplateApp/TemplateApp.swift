@@ -28,7 +28,7 @@ import FrostyNative
 @main
 struct TemplateApp: App {
     
-    @ApplicationDelegateAdaptor private var appDelegate: AppDelegate
+    @FTApplicationDelegateAdaptor private var appDelegate: AppDelegate
     
     var body: some Scene {
         WindowGroup {
