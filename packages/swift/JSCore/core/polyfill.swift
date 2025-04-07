@@ -100,21 +100,29 @@ extension JSCore {
       }
     }
     self.globalObject["setTimeout"] = .init(in: self) { arguments, _ in
-      guard let ms = arguments[1].numberValue else { return .undefined }
+      guard let ms = arguments[1].numberValue else {
+        throw JSCore.Value(newErrorFromMessage: "Invalid type of delay", in: self)
+      }
       let id = self.createTimer(callback: arguments[0], ms: ms, repeats: false)
       return .init(integerLiteral: id)
     }
-    self.globalObject["clearTimeout"] = .init(in: self) { arguments, _ in
-      guard let id = arguments[0].numberValue.map(Int.init) else { return }
+    self.globalObject["clearTimeout"] = .init(in: self) { arguments, _ -> Void in
+      guard let id = arguments[0].numberValue.map(Int.init) else {
+        throw JSCore.Value(newErrorFromMessage: "Invalid type of timeoutID", in: self)
+      }
       self.removeTimer(identifier: id)
     }
     self.globalObject["setInterval"] = .init(in: self) { arguments, _ in
-      guard let ms = arguments[1].numberValue else { return .undefined }
+      guard let ms = arguments[1].numberValue else {
+        throw JSCore.Value(newErrorFromMessage: "Invalid type of delay", in: self)
+      }
       let id = self.createTimer(callback: arguments[0], ms: ms, repeats: true)
       return .init(integerLiteral: id)
     }
-    self.globalObject["clearInterval"] = .init(in: self) { arguments, _ in
-      guard let id = arguments[0].numberValue.map(Int.init) else { return }
+    self.globalObject["clearInterval"] = .init(in: self) { arguments, _ -> Void in
+      guard let id = arguments[0].numberValue.map(Int.init) else {
+        throw JSCore.Value(newErrorFromMessage: "Invalid type of intervalID", in: self)
+      }
       self.removeTimer(identifier: id)
     }
     self.globalObject["__APPLE_SPEC__"] = [
@@ -122,12 +130,13 @@ extension JSCore {
       "processInfo": .init(JSProcessInfo(), in: self),
       "Bundle": .init(JSBundle.self, in: self),
     ]
-    self.globalObject["crypto"] = self.evaluateScript("""
-    new class Crypto {
-      randomUUID() {
-        return __APPLE_SPEC__.crypto.randomUUID();
+    self.globalObject["crypto"] = self.evaluateScript(
+      """
+      new class Crypto {
+        randomUUID() {
+          return __APPLE_SPEC__.crypto.randomUUID();
+        }
       }
-    }
-    """)
+      """)
   }
 }
