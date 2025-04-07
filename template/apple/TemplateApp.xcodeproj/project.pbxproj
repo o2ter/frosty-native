@@ -258,7 +258,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "set -e\n\nWITH_ENVIRONMENT=\"../node_modules/frosty-native/scripts/environment.sh\"\nJS_BUNDLER=\"../node_modules/frosty-native/scripts/bundler.sh\"\n\n/bin/sh -c \"$WITH_ENVIRONMENT $JS_BUNDLER\"\n";
+			shellScript = "set -e\n\nWITH_ENVIRONMENT=\"../node_modules/frosty-native/scripts/xcode/environment.sh\"\nJS_BUNDLER=\"../node_modules/frosty-native/scripts/xcode/bundler.sh\"\n\n/bin/sh -c \"$WITH_ENVIRONMENT $JS_BUNDLER\"\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 
