@@ -48,4 +48,8 @@ export class Platform {
   static isiOSAppOnMac() {
     return _Platform.isiOSAppOnMac;
   }
+
+  static infoDictionary() {
+    return _Platform.infoDictionary;
+  }
 }

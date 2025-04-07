@@ -34,4 +34,7 @@ export const _Platform: _PlatformSpec = {
   get isiOSAppOnMac() {
     return false;
   },
+  get infoDictionary() {
+    return {};
+  },
 };

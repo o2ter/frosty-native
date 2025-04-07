@@ -73,4 +73,7 @@ export type _PlatformSpec = Readonly<{
   spec: 'android' | 'apple' | 'web';
   isMacCatalystApp: boolean;
   isiOSAppOnMac: boolean;
+  infoDictionary: {
+    [key: string]: string;
+  };
 }>;
