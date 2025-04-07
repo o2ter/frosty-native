@@ -71,13 +71,13 @@ extension JSCore.Context: @unchecked Sendable {}
 
 extension JSCore {
 
-  fileprivate func createTimer(callback: JSCore.Value, ms: Double, repeats: Bool) -> Int {
+  fileprivate func createTimer(callback: JSCore.Value, ms: Double, repeats: Bool, arguments: [JSCore.Value]) -> Int {
     let id = self.context.timerId
     self.context.timer[id] = Timer.scheduledTimer(
       withTimeInterval: ms / 1000,
       repeats: repeats,
       block: { _ in
-        _ = callback.call(withArguments: [])
+        _ = callback.call(withArguments: arguments)
       }
     )
     self.context.timerId += 1
@@ -106,7 +106,7 @@ extension JSCore {
       guard let ms = arguments[1].numberValue else {
         throw JSCore.Value(newErrorFromMessage: "Invalid type of delay", in: self)
       }
-      let id = self.createTimer(callback: arguments[0], ms: ms, repeats: false)
+      let id = self.createTimer(callback: arguments[0], ms: ms, repeats: false, arguments: Array(arguments.dropFirst(2)))
       return .init(integerLiteral: id)
     }
     self.globalObject["clearTimeout"] = .init(in: self) { arguments, _ -> Void in
@@ -122,7 +122,7 @@ extension JSCore {
       guard let ms = arguments[1].numberValue else {
         throw JSCore.Value(newErrorFromMessage: "Invalid type of delay", in: self)
       }
-      let id = self.createTimer(callback: arguments[0], ms: ms, repeats: true)
+      let id = self.createTimer(callback: arguments[0], ms: ms, repeats: true, arguments: Array(arguments.dropFirst(2)))
       return .init(integerLiteral: id)
     }
     self.globalObject["clearInterval"] = .init(in: self) { arguments, _ -> Void in
