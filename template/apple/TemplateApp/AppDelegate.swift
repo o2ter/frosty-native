@@ -28,14 +28,20 @@ import FrostyNative
 class AppDelegate: NSObject, ApplicationDelegate {
 }
 
-#if canImport(UIKit)
-    extension ApplicationDelegate {
+extension AppDelegate {
 
+    #if canImport(AppKit)
+        override func applicationDidFinishLaunching(_ notification: Notification) {
+            super.applicationDidFinishLaunching(notification)
+        }
+    #endif
+
+    #if canImport(UIKit)
         func application(
             _ application: Application,
             didFinishLaunchingWithOptions launchOptions: [Application.LaunchOptionsKey: Any]? = nil
         ) -> Bool {
-
+            return super.application(application, didFinishLaunchingWithOptions: launchOptions)
         }
-    }
-#endif
+    #endif
+}

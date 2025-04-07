@@ -53,6 +53,15 @@ extension ApplicationDelegate {
   }
 }
 
+#if canImport(AppKit)
+  extension ApplicationDelegate {
+
+    func applicationDidFinishLaunching(_ notification: Notification) {
+      
+    }
+  }
+#endif
+
 #if canImport(UIKit)
   extension ApplicationDelegate {
 
