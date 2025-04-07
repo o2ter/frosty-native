@@ -28,7 +28,3 @@ set -e
 
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 cd "$SCRIPT_DIR"
-
-echo export NODE_BINARY=${NODE} > ../apple/.xcode.env
-
-source "../node_modules/frosty-native/scripts/post_install.sh"
