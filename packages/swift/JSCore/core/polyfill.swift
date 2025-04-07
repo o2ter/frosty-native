@@ -100,6 +100,9 @@ extension JSCore {
       }
     }
     self.globalObject["setTimeout"] = .init(in: self) { arguments, _ in
+      guard arguments[0].isFunction else {
+        throw JSCore.Value(newErrorFromMessage: "Invalid type of callback", in: self)
+      }
       guard let ms = arguments[1].numberValue else {
         throw JSCore.Value(newErrorFromMessage: "Invalid type of delay", in: self)
       }
@@ -113,6 +116,9 @@ extension JSCore {
       self.removeTimer(identifier: id)
     }
     self.globalObject["setInterval"] = .init(in: self) { arguments, _ in
+      guard arguments[0].isFunction else {
+        throw JSCore.Value(newErrorFromMessage: "Invalid type of callback", in: self)
+      }
       guard let ms = arguments[1].numberValue else {
         throw JSCore.Value(newErrorFromMessage: "Invalid type of delay", in: self)
       }
