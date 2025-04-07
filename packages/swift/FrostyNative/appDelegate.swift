@@ -53,6 +53,14 @@ extension FTAppDelegate {
   #if canImport(AppKit)
     open func applicationDidFinishLaunching(_ notification: Notification) {
 
+      guard
+        let sourceUrl = self.sourceURL(),
+        let source = try? String(contentsOf: sourceUrl)
+      else {
+        return
+      }
+
+      self.runtime.context.evaluateScript(source)
     }
   #endif
 
@@ -61,6 +69,15 @@ extension FTAppDelegate {
       _ application: FTApplication,
       didFinishLaunchingWithOptions launchOptions: [FTApplication.LaunchOptionsKey: Any]? = nil
     ) -> Bool {
+
+      guard
+        let sourceUrl = self.sourceURL(),
+        let source = try? String(contentsOf: sourceUrl)
+      else {
+        return true
+      }
+
+      self.runtime.context.evaluateScript(source)
 
       return true
     }
