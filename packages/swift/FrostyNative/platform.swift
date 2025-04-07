@@ -39,37 +39,35 @@
 
 #endif
 
-public protocol ApplicationDelegate: _ApplicationDelegate, ObservableObject {
+public class ApplicationDelegate: NSObject, _ApplicationDelegate, ObservableObject {
 
+  public func sourceURL() -> URL? {
+    return Bundle.main.url(forResource: "main", withExtension: "jsbundle")
+  }
 }
 
 extension ApplicationDelegate {
 
-  func application(
+  public func application(
     _ application: Application,
     didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data
   ) {
-    
+
   }
-}
 
-#if canImport(AppKit)
-  extension ApplicationDelegate {
+  #if canImport(AppKit)
+    public func applicationDidFinishLaunching(_ notification: Notification) {
 
-    func applicationDidFinishLaunching(_ notification: Notification) {
-      
     }
-  }
-#endif
+  #endif
 
-#if canImport(UIKit)
-  extension ApplicationDelegate {
-
-    func application(
+  #if canImport(UIKit)
+    public func application(
       _ application: Application,
       didFinishLaunchingWithOptions launchOptions: [Application.LaunchOptionsKey: Any]? = nil
     ) -> Bool {
 
     }
-  }
-#endif
+  #endif
+
+}

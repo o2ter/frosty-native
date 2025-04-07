@@ -25,7 +25,7 @@
 
 import FrostyNative
 
-class AppDelegate: NSObject, ApplicationDelegate {
+class AppDelegate: ApplicationDelegate {
 }
 
 extension AppDelegate {
