@@ -1,6 +1,6 @@
 #!/bin/sh
 #
-#  environment.sh
+#  bundle.sh
 #
 #  The MIT License
 #  Copyright (c) 2021 - 2025 O2ter Limited. All rights reserved.
@@ -26,19 +26,13 @@
 
 set -e
 
-SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-cd "$SCRIPT_DIR"
+FROSTY_NATIVE_DIR="${PROJECT_ROOT}/node_modules/frosty-native"
+WEBPACK_CONFIG="${FROSTY_NATIVE_DIR}/packages/bundler/webpack.config.js"
 
-export PROJECT_ROOT="${PROJECT_ROOT:-"$PROJECT_DIR/.."}"
-export ENTRY_FILE="${ENTRY_FILE:-$(ls -1 index.* | head -1)}"
-export OUTPUT_DIR="${OUTPUT_DIR:-"$CONFIGURATION_BUILD_DIR"}"
-export OUTPUT_FILE="${OUTPUT_FILE:-"main.jsbundle"}"
+cd $PROJECT_ROOT
 
-export BUILD_PLATFORM="apple"
-
-source "$PROJECT_DIR/.xcode.env"
-
-# Execute argument, if present
-if [ -n "$1" ]; then
-  $1
-fi
+yarn webpack -c $WEBPACK_CONFIG \
+  --env BUILD_PLATFORM=$BUILD_PLATFORM \
+  --env ENTRY_FILE=$ENTRY_FILE \
+  --env OUTPUT_DIR=$OUTPUT_DIRE \
+  --env OUTPUT_FILE=$OUTPUT_FILE

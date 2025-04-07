@@ -9,7 +9,7 @@ const appConfig = require(path.resolve(process.cwd(), 'app.config.js'));
 
 module.exports = (env, argv) => {
 
-  const { PLATFORM, ENTRY_FILE, OUTPUT_DIR } = env;
+  const { BUILD_PLATFORM, ENTRY_FILE, OUTPUT_DIR, OUTPUT_FILE } = env;
 
   const config = _.isFunction(appConfig) ? appConfig(env, argv) : appConfig;
   const IS_PRODUCTION = argv.mode !== 'development';
@@ -127,20 +127,19 @@ module.exports = (env, argv) => {
         ...config.options?.plugins ?? [],
         config.assets && new CopyPlugin({ patterns: config.assets }),
       ]),
-      entry: {
-        jsbundle: [
-          'core-js/full',
-          path.resolve(process.cwd(), ENTRY_FILE),
-        ],
-      },
+      entry: [
+        'core-js/full',
+        path.resolve(process.cwd(), ENTRY_FILE),
+      ],
       output: {
         path: OUTPUT_DIR,
+        filename: OUTPUT_FILE,
       },
       resolve: {
         ...webpackConfiguration.resolve,
         extensions: [
-          ...moduleSuffixes[PLATFORM].flatMap(x => [`${x}.tsx`, `${x}.jsx`]),
-          ...moduleSuffixes[PLATFORM].flatMap(x => [`${x}.ts`, `${x}.mjs`, `${x}.js`]),
+          ...moduleSuffixes[BUILD_PLATFORM].flatMap(x => [`${x}.tsx`, `${x}.jsx`]),
+          ...moduleSuffixes[BUILD_PLATFORM].flatMap(x => [`${x}.ts`, `${x}.mjs`, `${x}.js`]),
           '...'
         ],
       },
