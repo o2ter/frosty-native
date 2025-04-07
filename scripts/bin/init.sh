@@ -1,6 +1,6 @@
-#!/bin/bash
+#!/bin/sh
 #
-#  post_install.sh
+#  init.sh
 #
 #  The MIT License
 #  Copyright (c) 2021 - 2025 O2ter Limited. All rights reserved.
@@ -26,10 +26,7 @@
 
 set -e
 
-SCRIPT_DIR="$( dirname $( realpath "${BASH_SOURCE[0]}" ) )"
+SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 cd "$SCRIPT_DIR"
 
-COMMAND="$1"
-shift 1
-
-source "../scripts/bin/$COMMAND.sh" $@
+echo hello
