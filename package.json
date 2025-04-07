@@ -18,6 +18,9 @@
     "clean": "rm -rf ./dist/*",
     "rollup": "yarn clean && rollup -c"
   },
+  "bin": {
+    "frosty-native": "./bin/frosty-native.sh"
+  },
   "dependencies": {
     "frosty": "^0.0.6",
     "lodash": "^4.17.21"
