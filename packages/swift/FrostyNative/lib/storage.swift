@@ -56,9 +56,6 @@ extension NativeLocalStorage {
   }
 
   func clear() {
-    guard let bundleId = Bundle.main.bundleIdentifier else {
-      return
-    }
-    UserDefaults.standard.removePersistentDomain(forName: bundleId)
+    UserDefaults.resetStandardUserDefaults()
   }
 }
