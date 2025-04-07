@@ -48,13 +48,6 @@ open class FTAppDelegate: NSObject, _ApplicationDelegate, ObservableObject {
 
 extension FTAppDelegate {
 
-  open func application(
-    _ application: FTApplication,
-    didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data
-  ) {
-
-  }
-
   #if canImport(AppKit)
     open func applicationDidFinishLaunching(_ notification: Notification) {
 
@@ -71,4 +64,14 @@ extension FTAppDelegate {
     }
   #endif
 
+}
+
+extension FTAppDelegate {
+
+  open func application(
+    _ application: FTApplication,
+    didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data
+  ) {
+
+  }
 }
