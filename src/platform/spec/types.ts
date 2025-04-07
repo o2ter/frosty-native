@@ -56,7 +56,9 @@ declare global {
     }
 
     interface Bundle {
+      get bundleIdentifier(): string | undefined;
       get infoDictionary(): { [key: string]: string; }
+      get localizedInfoDictionary(): { [key: string]: string; }
     }
 
   }
@@ -73,7 +75,11 @@ export type _PlatformSpec = Readonly<{
   spec: 'android' | 'apple' | 'web';
   isMacCatalystApp: boolean;
   isiOSAppOnMac: boolean;
+  bundleIdentifier: string | undefined;
   infoDictionary: {
+    [key: string]: string;
+  };
+  localizedInfoDictionary: {
     [key: string]: string;
   };
 }>;

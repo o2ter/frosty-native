@@ -34,7 +34,13 @@ export const _Platform: _PlatformSpec = {
   get isiOSAppOnMac() {
     return false;
   },
+  get bundleIdentifier() {
+    return undefined;
+  },
   get infoDictionary() {
+    return {};
+  },
+  get localizedInfoDictionary() {
     return {};
   },
 };

@@ -27,7 +27,9 @@ import JavaScriptCore
 
 @objc protocol JSBundleExport: JSExport {
   static var main: Self { get }
+  var bundleIdentifier: String? { get }
   var infoDictionary: [String: Any] { get }
+  var localizedInfoDictionary: [String: Any] { get }
 }
 
 @objc final class JSBundle: NSObject, JSBundleExport {
@@ -45,7 +47,15 @@ extension JSBundle {
     return JSBundle(Bundle.main)
   }
 
+  var bundleIdentifier: String? {
+    return self.bundle.bundleIdentifier
+  }
+
   var infoDictionary: [String: Any] {
     return self.bundle.infoDictionary ?? [:]
+  }
+
+  var localizedInfoDictionary: [String: Any] {
+    return self.bundle.localizedInfoDictionary ?? [:]
   }
 }

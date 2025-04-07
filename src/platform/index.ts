@@ -52,4 +52,8 @@ export class Platform {
   static infoDictionary() {
     return _Platform.infoDictionary;
   }
+
+  static localizedInfoDictionary() {
+    return _Platform.localizedInfoDictionary;
+  }
 }
