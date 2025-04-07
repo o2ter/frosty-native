@@ -56,7 +56,10 @@ let package = Package(
         .executableTarget(
             name: "test",
             dependencies: ["JSCore"],
-            path: "packages/swift/test"
+            path: "packages/swift/test",
+            resources: [
+                .copy("resources/corejs.js")
+            ]
         ),
     ]
 )

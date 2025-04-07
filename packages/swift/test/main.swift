@@ -104,4 +104,11 @@ context.evaluateScript(
   """
 )
 
+let corejsURL = Bundle.module.url(forResource: "corejs", withExtension: "js")
+let corejs = try String(contentsOf: corejsURL!)
+
+context.evaluateScript(corejs)
+
+print(props.call(withArguments: [context.globalObject, prototypes]))
+
 RunLoop.main.run()
