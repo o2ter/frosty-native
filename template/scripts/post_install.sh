@@ -31,4 +31,4 @@ cd "$SCRIPT_DIR"
 
 echo export NODE_BINARY=${NODE} > ../apple/.xcode.env
 
-source "../node_modules/frosty-native/scripts/post_install.sh"
+frosty-native post_install
