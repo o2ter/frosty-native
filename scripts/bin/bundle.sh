@@ -31,7 +31,14 @@ WEBPACK_CONFIG="${FROSTY_NATIVE_DIR}/packages/bundler/webpack.config.js"
 
 cd $PROJECT_ROOT
 
+if [[ "$CONFIGURATION" == "Release" ]]; then
+  MODE="production"
+else
+  MODE="development"
+if
+
 yarn webpack -c $WEBPACK_CONFIG \
+  --mode=$MODE \
   --env BUILD_PLATFORM=$BUILD_PLATFORM \
   --env ENTRY_FILE=$ENTRY_FILE \
   --env OUTPUT_DIR=$OUTPUT_DIR \
