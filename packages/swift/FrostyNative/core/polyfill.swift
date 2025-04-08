@@ -26,8 +26,10 @@
 extension FrostyNative {
 
   func polyfill() {
-    self.context.globalObject["NativeModules"] = [
-      "localStorage": .init(NativeLocalStorage(), in: self.context),
+    self.context.globalObject["__FROSTY_SPEC__"] = [
+      "NativeModules": [
+        "localStorage": .init(NativeLocalStorage(), in: self.context)
+      ]
     ]
   }
 }
