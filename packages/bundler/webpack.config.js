@@ -72,97 +72,81 @@ module.exports = (env, argv) => {
     }
   });
 
-  const webpackOptimization = () => ({
-    minimize: IS_PRODUCTION,
-    minimizer: [
-      new TerserPlugin({
-        parallel: true,
-        extractComments: false,
-        terserOptions: {
-          sourceMap: false,
-          compress: true,
-          format: {
-            comments: !IS_PRODUCTION,
-          },
-        },
-      }),
-    ],
-  });
-
-  const webpackConfiguration = {
-    mode: IS_PRODUCTION ? 'production' : 'development',
-    devtool: IS_PRODUCTION ? false : 'cheap-module-source-map',
-    experiments: {
-      topLevelAwait: true,
-    },
-    resolve: {
-      ...config.options?.resolve ?? {},
-      alias: {
-        ...config.options?.resolve?.alias ?? {},
-      },
-    },
-    externals: config.options?.externals,
-  };
-
-  const webpackPlugins = [
-    new webpack.DefinePlugin({ __DEV__: JSON.stringify(!IS_PRODUCTION) }),
-    new webpack.ProvidePlugin({
-      _: 'lodash',
-    }),
-    ...config.options?.plugins ?? [],
-  ];
-
   const moduleSuffixes = {
     android: config.moduleSuffixes?.android ?? ['.android', '.native', ''],
     apple: config.moduleSuffixes?.apple ?? ['.apple', '.native', ''],
     web: config.moduleSuffixes?.web ?? ['.browser', '.web', ''],
   };
 
-  return [
-    {
-      ...webpackConfiguration,
-      optimization: webpackOptimization(),
-      plugins: _.compact([
-        ...webpackPlugins,
-        ...config.options?.plugins ?? [],
-        config.assets && new CopyPlugin({ patterns: config.assets }),
-      ]),
-      entry: [
-        'core-js/full',
-        path.resolve(process.cwd(), ENTRY_FILE),
-      ],
-      output: {
-        path: OUTPUT_DIR,
-        filename: OUTPUT_FILE,
-      },
-      resolve: {
-        ...webpackConfiguration.resolve,
-        extensions: [
-          ...moduleSuffixes[BUILD_PLATFORM].flatMap(x => [`${x}.tsx`, `${x}.jsx`]),
-          ...moduleSuffixes[BUILD_PLATFORM].flatMap(x => [`${x}.ts`, `${x}.mjs`, `${x}.js`]),
-          '...'
-        ],
-      },
-      module: {
-        rules: [
-          babelLoaderConfiguration(),
-          imageLoaderConfiguration(),
-          fontLoaderConfiguration(),
-          {
-            test: /\.node$/,
-            use: {
-              loader: 'node-loader',
-              options: {
-                name: '[name].[contenthash].[ext]',
-              }
-            }
+  return {
+    mode: IS_PRODUCTION ? 'production' : 'development',
+    devtool: IS_PRODUCTION ? false : 'cheap-module-source-map',
+    experiments: {
+      topLevelAwait: true,
+    },
+    externals: config.options?.externals,
+    optimization: {
+      minimize: IS_PRODUCTION,
+      minimizer: [
+        new TerserPlugin({
+          parallel: true,
+          extractComments: false,
+          terserOptions: {
+            sourceMap: false,
+            compress: true,
+            format: {
+              comments: !IS_PRODUCTION,
+            },
           },
-          ...config.options?.module?.rules ?? [],
-        ]
+        }),
+      ],
+    },
+    plugins: _.compact([
+      new webpack.DefinePlugin({ __DEV__: JSON.stringify(!IS_PRODUCTION) }),
+      new webpack.ProvidePlugin({
+        _: 'lodash',
+      }),
+      ...config.options?.plugins ?? [],
+      config.assets && new CopyPlugin({ patterns: config.assets }),
+    ]),
+    entry: [
+      'core-js/full',
+      path.resolve(process.cwd(), ENTRY_FILE),
+    ],
+    output: {
+      path: OUTPUT_DIR,
+      filename: OUTPUT_FILE,
+    },
+    resolve: {
+      ...config.options?.resolve ?? {},
+      alias: {
+        ...config.options?.resolve?.alias ?? {},
       },
-      performance: {
-        hints: false,
-      }
+      extensions: [
+        ...moduleSuffixes[BUILD_PLATFORM].flatMap(x => [`${x}.tsx`, `${x}.jsx`]),
+        ...moduleSuffixes[BUILD_PLATFORM].flatMap(x => [`${x}.ts`, `${x}.mjs`, `${x}.js`]),
+        '...'
+      ],
+    },
+    module: {
+      rules: [
+        babelLoaderConfiguration(),
+        imageLoaderConfiguration(),
+        fontLoaderConfiguration(),
+        {
+          test: /\.node$/,
+          use: {
+            loader: 'node-loader',
+            options: {
+              name: '[name].[contenthash].[ext]',
+            }
+          }
+        },
+        ...config.options?.module?.rules ?? [],
+      ]
+    },
+    performance: {
+      hints: false,
     }
-  ];
+  };
 };
