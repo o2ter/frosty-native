@@ -41,6 +41,9 @@ export BUILD_PLATFORM="apple"
 
 source "$PROJECT_DIR/.xcode.env"
 
+NODE_BIN_DIR="$( dirname "$( which $NODE_BINARY )" )"
+export PATH=$NODE_BIN_DIR:$PATH
+
 # Execute argument, if present
 if [ -n "$PROJECT_DIR/$1" ]; then
   source "$PROJECT_DIR/$1"
