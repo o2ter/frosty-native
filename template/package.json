@@ -6,14 +6,10 @@
   },
   "dependencies": {
     "frosty": "^0.0.6",
-    "frosty-native": "^0.0.20",
+    "frosty-native": "^0.0.21",
     "lodash": "^4.17.21"
   },
   "devDependencies": {
-    "@babel/core": "^7.24.5",
-    "@babel/preset-env": "^7.24.5",
-    "@babel/preset-react": "^7.26.3",
-    "@babel/preset-typescript": "^7.24.1",
     "@types/lodash": "^4.17.16"
   }
 }
