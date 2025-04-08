@@ -6,7 +6,7 @@
   },
   "dependencies": {
     "frosty": "^0.0.6",
-    "frosty-native": "^0.0.16",
+    "frosty-native": "^0.0.17",
     "lodash": "^4.17.21"
   },
   "devDependencies": {
