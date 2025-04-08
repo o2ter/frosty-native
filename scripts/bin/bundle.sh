@@ -35,7 +35,7 @@ if [[ "$CONFIGURATION" == "Release" ]]; then
   MODE="production"
 else
   MODE="development"
-if
+fi
 
 yarn webpack -c $WEBPACK_CONFIG \
   --mode=$MODE \
