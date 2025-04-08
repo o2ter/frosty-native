@@ -34,7 +34,7 @@ export PROJECT_ROOT="${PROJECT_ROOT:-$( realpath "$PROJECT_DIR/.." )}"
 cd $PROJECT_ROOT
 
 export ENTRY_FILE="${ENTRY_FILE:-$(ls -1 index.* | head -1)}"
-export OUTPUT_DIR="${OUTPUT_DIR:-"$CONFIGURATION_BUILD_DIR"}"
+export OUTPUT_DIR="${OUTPUT_DIR:-"$CONFIGURATION_BUILD_DIR/$UNLOCALIZED_RESOURCES_FOLDER_PATH"}"
 export OUTPUT_FILE="${OUTPUT_FILE:-"main.jsbundle"}"
 
 export BUILD_PLATFORM="apple"

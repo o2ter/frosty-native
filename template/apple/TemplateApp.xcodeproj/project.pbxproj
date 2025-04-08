@@ -244,6 +244,7 @@
 /* Begin PBXShellScriptBuildPhase section */
 		08AD7B162DA2BC6600DAE3E8 /* Bundle Frosty Native code and images */ = {
 			isa = PBXShellScriptBuildPhase;
+			alwaysOutOfDate = 1;
 			buildActionMask = 2147483647;
 			files = (
 			);
