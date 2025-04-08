@@ -27,8 +27,17 @@ export * from './platform';
 export { NativeNode } from './node';
 export { NativeRenderer } from './renderer';
 
+/** @internal */
 declare global {
-  const NativeModules: {
-    [key: string]: any;
+
+  namespace __NS_FROSTY_SPEC__ {
+  }
+
+  const __FROSTY_SPEC__: {
+    get NativeModules(): {
+      [key: string]: any;
+    };
   };
 }
+
+export const NativeModules = __FROSTY_SPEC__.NativeModules;
