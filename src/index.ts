@@ -40,4 +40,6 @@ declare global {
   };
 }
 
-export const NativeModules = __FROSTY_SPEC__.NativeModules;
+export const NativeModules = {
+  ...__FROSTY_SPEC__.NativeModules,
+};
