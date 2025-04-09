@@ -240,9 +240,11 @@ extension JSCore.ValueBase {
     case let .string(value): return JSValue(object: value, in: context)
     case let .date(value): return JSValue(object: value, in: context)
     case let .array(elements):
+      if elements.isEmpty { return JSValue(newArrayIn: context) }
       let array = elements.map { $0.toJSValue(inContext: context) }
       return JSValue(object: array, in: context)
     case let .object(dictionary):
+      if dictionary.isEmpty { return JSValue(newObjectIn: context) }
       let object = dictionary.mapValues { $0.toJSValue(inContext: context) }
       return JSValue(object: object, in: context)
     case let .value(value):
