@@ -36,19 +36,52 @@ public final class FrostyNative: Sendable {
 }
 
 extension FrostyNative {
+    
+    static func createVirtualMachine() -> JSCore.VirtualMachine {
+        class Ref: @unchecked Sendable {
+            var vm: JSCore.VirtualMachine!
+        }
+        let signal = DispatchSemaphore(value: 0)
+        let ref = Ref()
+        Thread.detachNewThread {
+            ref.vm = JSCore.VirtualMachine()
+            signal.signal()
+            RunLoop.current.run()
+        }
+        signal.wait()
+        return ref.vm
+    }
+}
 
-  static func createVirtualMachine() -> JSCore.VirtualMachine {
-    class Ref: @unchecked Sendable {
-      var vm: JSCore.VirtualMachine!
+extension FrostyNative {
+    
+    public var virtualMachine: JSCore.VirtualMachine {
+        return self.context.virtualMachine
     }
-    let signal = DispatchSemaphore(value: 0)
-    let ref = Ref()
-    Thread.detachNewThread {
-      ref.vm = JSCore.VirtualMachine()
-      signal.signal()
-      RunLoop.current.run()
+    
+    public var runloop: RunLoop {
+        return self.context.runloop
     }
-    signal.wait()
-    return ref.vm
-  }
+    
+}
+
+extension FrostyNative {
+
+    public var globalObject: JSCore.Value {
+        return self.context.globalObject
+    }
+    
+    public var exception: JSCore.Value {
+        return self.context.exception
+    }
+    
+    @discardableResult
+    public func evaluateScript(_ script: String) -> JSCore.Value {
+        return self.context.evaluateScript(script)
+    }
+    
+    @discardableResult
+    public func evaluateScript(_ script: String, withSourceURL sourceURL: URL) -> JSCore.Value {
+        return self.context.evaluateScript(script, withSourceURL: sourceURL)
+    }
 }
