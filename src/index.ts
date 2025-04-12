@@ -24,7 +24,8 @@
 //
 
 import _ from 'lodash';
-import { ComponentType } from 'frosty';
+import { ComponentType, createElement } from 'frosty';
+import { NativeRenderer } from './renderer';
 
 export * from './platform';
 export { NativeNode } from './node';
@@ -56,9 +57,17 @@ export const AppRegistry = (() => {
       return _.keys(registry);
     },
     getRunnable(appKey: string) {
-      const component = registry[appKey];
-      if (!component) return;
-      return { component };
+      const Component = registry[appKey];
+      if (!Component) return;
+      return {
+        component: Component,
+        run(options?: {
+          props?: {},
+        }) {
+          const renderer = new NativeRenderer();
+          renderer.createRoot().mount(createElement(Component, options?.props));
+        },
+       };
     },
     registerComponent(appKey: string, component: ComponentType<any>) {
       registry[appKey] = component;
