@@ -50,24 +50,14 @@ export const NativeModules = {
 
 export const AppRegistry = (() => {
 
-  const registry: Record<string, ComponentType<any>> = {};
+  const registry: Record<string, ComponentType<any> | undefined> = {};
 
   return {
     keys() {
       return _.keys(registry);
     },
-    getRunnable(appKey: string) {
-      const Component = registry[appKey];
-      if (!Component) return;
-      return {
-        component: Component,
-        run(options?: {
-          props?: {},
-        }) {
-          const renderer = new NativeRenderer();
-          renderer.createRoot().mount(createElement(Component, options?.props));
-        },
-       };
+    getComponent(appKey: string) {
+      return registry[appKey];
     },
     registerComponent(appKey: string, component: ComponentType<any>) {
       registry[appKey] = component;
