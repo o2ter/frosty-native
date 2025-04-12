@@ -25,19 +25,15 @@
 
 public struct FTRoot: View {
     
-    let appKey: String
-    let runtime: FrostyNative
-    let registry: JSCore.Value
-    let component: JSCore.Value
+    @State
+    var appKey: String
     
-    public init(
-        appKey: String,
-        runtime: FrostyNative
-    ) {
+    @Binding
+    var runtime: FrostyNative
+    
+    init(appKey: String, runtime: Binding<FrostyNative>) {
         self.appKey = appKey
-        self.runtime = runtime
-        self.registry = runtime.evaluateScript("__FROSTY_SPEC__.AppRegistry")
-        self.component = registry.invokeMethod("getComponent", withArguments: [.init(appKey)])
+        self._runtime = runtime
     }
     
     public var body: some View {
