@@ -32,6 +32,9 @@ extension AppDelegate {
 
 #if canImport(AppKit)
     override func applicationDidFinishLaunching(_ notification: Notification) {
+        
+        print(self.runtime.context.evaluateScript("__FROSTY_SPEC__.AppRegistry"))
+        
         super.applicationDidFinishLaunching(notification)
     }
 #endif
