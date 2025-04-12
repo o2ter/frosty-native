@@ -63,3 +63,8 @@ export const AppRegistry = (() => {
     },
   };
 })();
+
+Object.defineProperty(__FROSTY_SPEC__, 'AppRegistry', {
+  value: AppRegistry,
+  writable: false,
+});
