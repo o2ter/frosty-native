@@ -28,15 +28,17 @@ public struct FTRoot: View {
     let appKey: String
     let runtime: FrostyNative
     
-    @State var runner: JSCore.Value
+    @State var runner: JSCore.Value?
     
     public init(appKey: String, runtime: FrostyNative) {
         self.appKey = appKey
         self.runtime = runtime
-        self.runner = FTRoot.run(appKey: appKey, runtime: runtime)
     }
     
     public var body: some View {
+        EmptyView().onAppear {
+            self.runner = FTRoot.run(appKey: appKey, runtime: runtime)
+        }
     }
 }
 
