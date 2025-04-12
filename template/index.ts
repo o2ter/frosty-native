@@ -23,4 +23,7 @@
 //  THE SOFTWARE.
 //
 
+import { AppRegistry } from 'frosty-native';
 import App from './src/App';
+
+AppRegistry.registerComponent('main', App);
