@@ -24,7 +24,9 @@
 //
 
 import _ from 'lodash';
-import { ComponentType } from 'frosty';
+import { ComponentType, createElement } from 'frosty';
+import { NativeRenderer } from './renderer';
+import { NativeNode } from './node';
 
 export * from './platform';
 export { NativeNode } from './node';
@@ -48,15 +50,33 @@ export const NativeModules = {
 };
 
 export const AppRegistry = (() => {
-
-  const registry: Record<string, ComponentType<any> | undefined> = {};
-
+  const registry: Record<string, ComponentType<any>> = {};
   return {
     keys() {
       return _.keys(registry);
     },
-    getComponent(appKey: string) {
-      return registry[appKey];
+    getRunnable(appKey: string) {
+      const component = registry[appKey];
+      if (!component) return;
+      return {
+        component,
+        run(options?: {
+          root?: NativeNode,
+          props?: Record<string, any> | null,
+        }) {
+          const renderer = new NativeRenderer();
+          const runner = renderer.createRoot(options?.root);
+          runner.mount(createElement(component, options?.props));
+          return {
+            get root() {
+              return runner.root;
+            },
+            unmount() {
+              runner.unmount();
+            },
+          };
+        },
+      };
     },
     registerComponent(appKey: string, component: ComponentType<any>) {
       registry[appKey] = component;
