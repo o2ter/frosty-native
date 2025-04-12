@@ -25,8 +25,7 @@
 
 public struct FTRoot: View {
     
-    @State
-    var appKey: String
+    let appKey: String
     
     @Binding
     var runtime: FrostyNative
