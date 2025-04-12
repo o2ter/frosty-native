@@ -36,3 +36,11 @@ public struct FTRoot: View {
     public var body: some View {
     }
 }
+
+extension FTRoot {
+    
+    static func run(appKey: String, runtime: FrostyNative) {
+        let registry = runtime.evaluateScript("__FROSTY_SPEC__.AppRegistry")
+        let component = registry.invokeMethod("getComponent", withArguments: [.init(appKey)])
+    }
+}
