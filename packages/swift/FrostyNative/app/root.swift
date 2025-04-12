@@ -36,9 +36,14 @@ public struct FTRoot: View {
     }
     
     public var body: some View {
-        EmptyView().onAppear {
-            self.runner = FTRoot.run(appKey: appKey, runtime: runtime)
-        }
+        EmptyView()
+            .onAppear {
+                self.runner = FTRoot.run(appKey: appKey, runtime: runtime)
+            }
+            .onDisappear {
+                self.runner?.invokeMethod("unmount")
+                self.runner = nil
+            }
     }
 }
 
@@ -46,10 +51,7 @@ extension FTRoot {
     
     static func run(appKey: String, runtime: FrostyNative) -> JSCore.Value {
         let registry = runtime.evaluateScript("__FROSTY_SPEC__.AppRegistry")
-        let component = registry.invokeMethod("getComponent", withArguments: [.init(appKey)])
-        
-        
-        
-        return component
+        let runner = registry.invokeMethod("getRunnable", withArguments: [.init(appKey)])
+        return runner
     }
 }
