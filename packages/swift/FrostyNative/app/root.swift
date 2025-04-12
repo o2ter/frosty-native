@@ -52,6 +52,8 @@ extension FTRoot {
     static func run(appKey: String, runtime: FrostyNative) -> JSCore.Value {
         let registry = runtime.evaluateScript("__FROSTY_SPEC__.AppRegistry")
         let runner = registry.invokeMethod("getRunnable", withArguments: [.init(appKey)])
-        return runner
+        return runner.invokeMethod("run", withArguments: [[
+            "root": .undefined,
+        ]])
     }
 }
