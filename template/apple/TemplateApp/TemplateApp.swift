@@ -32,6 +32,7 @@ struct TemplateApp: App {
     
     var body: some Scene {
         WindowGroup {
+            FTRoot(appKey: "app", runtime: appDelegate.runtime)
         }
     }
 }
