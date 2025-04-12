@@ -24,8 +24,7 @@
 //
 
 import _ from 'lodash';
-import { ComponentType, createElement } from 'frosty';
-import { NativeRenderer } from './renderer';
+import { ComponentType } from 'frosty';
 
 export * from './platform';
 export { NativeNode } from './node';
