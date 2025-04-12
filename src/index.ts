@@ -23,6 +23,9 @@
 //  THE SOFTWARE.
 //
 
+import _ from 'lodash';
+import { ComponentType } from 'frosty';
+
 export * from './platform';
 export { NativeNode } from './node';
 export { NativeRenderer } from './renderer';
@@ -43,3 +46,22 @@ declare global {
 export const NativeModules = {
   ...__FROSTY_SPEC__.NativeModules,
 };
+
+export const AppRegistry = (() => {
+
+  const registry: Record<string, ComponentType<any>> = {};
+
+  return {
+    keys() {
+      return _.keys(registry);
+    },
+    getRunnable(appKey: string) {
+      const component = registry[appKey];
+      if (!component) return;
+      return { component };
+    },
+    registerComponent(appKey: string, component: ComponentType<any>) {
+      registry[appKey] = component;
+    },
+  };
+})();
