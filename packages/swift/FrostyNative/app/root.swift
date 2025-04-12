@@ -31,7 +31,7 @@ public struct FTRoot: View {
     @Binding
     var runtime: FrostyNative
     
-    init(appKey: String, runtime: Binding<FrostyNative>) {
+    public init(appKey: String, runtime: Binding<FrostyNative>) {
         self.appKey = appKey
         self._runtime = runtime
     }
