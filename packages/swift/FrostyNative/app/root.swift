@@ -28,9 +28,12 @@ public struct FTRoot: View {
     let appKey: String
     let runtime: FrostyNative
     
+    @State var runner: JSCore.Value
+    
     public init(appKey: String, runtime: FrostyNative) {
         self.appKey = appKey
         self.runtime = runtime
+        self.runner = FTRoot.run(appKey: appKey, runtime: runtime)
     }
     
     public var body: some View {
@@ -39,8 +42,12 @@ public struct FTRoot: View {
 
 extension FTRoot {
     
-    static func run(appKey: String, runtime: FrostyNative) {
+    static func run(appKey: String, runtime: FrostyNative) -> JSCore.Value {
         let registry = runtime.evaluateScript("__FROSTY_SPEC__.AppRegistry")
         let component = registry.invokeMethod("getComponent", withArguments: [.init(appKey)])
+        
+        
+        
+        return component
     }
 }
