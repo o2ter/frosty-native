@@ -105,6 +105,13 @@ extension FTAppDelegate {
         
     }
     
+    open func application(
+        _ application: NSApplication,
+        didReceiveRemoteNotification userInfo: [String : Any]
+    ) {
+        
+    }
+    
 #elseif canImport(UIKit)
     
     open func application(
@@ -153,6 +160,14 @@ extension FTAppDelegate {
         options: [UIApplication.OpenURLOptionsKey : Any] = [:]
     ) -> Bool {
         return true
+    }
+    
+    open func application(
+        _ application: UIApplication,
+        didReceiveRemoteNotification userInfo: [AnyHashable : Any],
+        fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void
+    ) {
+        completionHandler(.noData)
     }
 #endif
     
