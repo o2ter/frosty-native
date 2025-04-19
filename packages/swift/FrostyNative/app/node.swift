@@ -65,7 +65,6 @@ extension FTNode {
 
 extension FTNode {
     
-    @MainActor
     class State: NSObject, ObservableObject, FTNodeExport {
         
         let type: any FTViewProtocol.Type
@@ -84,26 +83,11 @@ extension FTNode {
 
 extension FTNode.State {
     
-    func _update(_ props: [String: any Sendable]) async {
+    func update(_ props: [String: any Sendable]) {
         self.props = props
     }
     
-    func _replaceChildren(_ children: [FTNode.State]) async {
+    func replaceChildren(_ children: [FTNode.State]) {
         self.children = children
-    }
-}
-
-extension FTNode.State {
-    
-    nonisolated func update(_ props: [String: any Sendable]) {
-        Task {
-            await self._update(props)
-        }
-    }
-    
-    nonisolated func replaceChildren(_ children: [FTNode.State]) {
-        Task {
-            await self._replaceChildren(children)
-        }
     }
 }

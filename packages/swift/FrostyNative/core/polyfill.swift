@@ -27,9 +27,35 @@ extension FrostyNative {
     
     func polyfill() {
         self.context.globalObject["__FROSTY_SPEC__"] = [
-            "NativeModules": [
-                "localStorage": .init(NativeLocalStorage(), in: self.context)
-            ]
+            "NativeModules": [:]
         ]
+        self.register(name: "localStorage", module: NativeLocalStorage())
+    }
+}
+
+extension FrostyNative {
+    
+    public var nativeModules: JSCore.Value {
+        return self.context.globalObject["__FROSTY_SPEC__"]["NativeModules"]
+    }
+}
+
+extension FrostyNative {
+    
+    public func register(name: String, module: JSCore.Export) {
+        self.nativeModules[name] = .init(module, in: self.context)
+    }
+    
+    public func register(name: String, module: JSCore.Export.Type) {
+        self.nativeModules[name] = .init(module, in: self.context)
+    }
+}
+
+extension FrostyNative {
+    
+    public func register(name: String, type: any FTViewProtocol.Type) {
+        self.nativeModules[name] = .init(in: self.context) { _, _ in
+            return .init(FTNode.State(type: type), in: self.context)
+        }
     }
 }
