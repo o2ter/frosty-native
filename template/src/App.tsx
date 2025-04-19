@@ -29,7 +29,7 @@ export default function App() {
 
   return (
     <View>
-      <Text>test</Text>
+      <Text>Hello World!</Text>
     </View>
   );
 }
