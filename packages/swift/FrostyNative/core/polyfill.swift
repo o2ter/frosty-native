@@ -30,6 +30,8 @@ extension FrostyNative {
             "NativeModules": [:]
         ]
         self.register(name: "localStorage", module: NativeLocalStorage())
+        self.register(name: "FTView", type: FTView.self)
+        self.register(name: "FTTextView", type: FTTextView.self)
     }
 }
 
