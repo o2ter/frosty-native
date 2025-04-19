@@ -131,6 +131,74 @@ extension JSCore {
       }
       self.removeTimer(identifier: id)
     }
+    self.globalObject["EventTarget"] = self.evaluateScript(
+      """
+      class EventTarget {
+        constructor() {
+          this.listeners = {};
+        }
+        addEventListener(type, listener) {
+          if (!this.listeners[type]) {
+            this.listeners[type] = [];
+          }
+          this.listeners[type].push(listener);
+        }
+        removeEventListener(type, listener) {
+          if (!this.listeners[type]) return;
+          this.listeners[type] = this.listeners[type].filter(l => l !== listener);
+        }
+        dispatchEvent(event) {
+          if (!this.listeners[event.type]) return;
+          for (const listener of this.listeners[event.type]) {
+            listener(event);
+          }
+        }
+      }
+      """)
+    self.globalObject["AbortSignal"] = self.evaluateScript(
+      """
+      class AbortSignal extends EventTarget {
+        #aborted;
+        #onabort;
+        constructor() {
+          super();
+          this.#aborted = false;
+        }
+        get aborted() {
+          return this.#aborted;
+        }
+        get onabort() {
+          return this.#onabort;
+        }
+        set onabort(listener) {
+          const existing = this.#onabort;
+          if (existing) {
+            this.removeEventListener("abort", existing);
+          }
+          this.#onabort = callback;
+          this.addEventListener("abort", callback);
+        }
+      }
+      """)
+    self.globalObject["AbortController"] = self.evaluateScript(
+      """
+      class AbortController {
+        #signal;
+        constructor() {
+          this.#signal = new AbortSignal();
+        }
+        get signal() {
+          return this.#signal;
+        }
+        abort() {
+          const signal = this.signal;
+          if (!signal.aborted) {
+            signal._aborted = true;
+            signal.dispatchEvent(new Event("abort"));
+          }
+        }
+      }
+      """)
     self.globalObject["__APPLE_SPEC__"] = [
       "crypto": .init(JSCrypto(), in: self),
       "processInfo": .init(JSProcessInfo(), in: self),
