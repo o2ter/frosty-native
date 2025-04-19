@@ -26,20 +26,23 @@
 public protocol FTViewProtocol: View {
     
     init(
-        props: Binding<[String: any Sendable]>,
+        props: [String: any Sendable],
         children: [any View]
     )
 }
 
 struct FTView: FTViewProtocol {
     
-    @Binding var props: [String: any Sendable]
+    var props: [String: any Sendable]
+    
+    var children: [any View]
     
     init(
-        props: Binding<[String: any Sendable]>,
+        props: [String: any Sendable],
         children: [any View]
     ) {
-        self._props = props
+        self.props = props
+        self.children = children
     }
     
     var body: some View {

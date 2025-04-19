@@ -47,13 +47,17 @@ extension FTNode {
         self.node.type
     }
     
+    var props: [String: any Sendable] {
+        self.node.props
+    }
+    
     var children: [FTNode] {
         self.node.children.map(FTNode.init)
     }
     
     var body: some View {
         AnyView(self.type.init(
-            props: self.$node.props,
+            props: self.props,
             children: self.children
         ))
     }
