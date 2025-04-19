@@ -68,7 +68,9 @@ struct FTTextView: FTViewProtocol {
         let attributes = props["attributes"] as? [String: Any] ?? [:]
         var result: [NSAttributedString.Key: Any] = [:]
         for (key, value) in attributes {
-            result[NSAttributedString.Key(rawValue: key)] = value
+            let _key = NSAttributedString.Key(rawValue: key)
+            guard let decoded = FTTextView.decodeAttribute(value, forKey: _key) else { continue }
+            result[_key] = decoded
         }
         return AttributeContainer(result)
     }
@@ -78,6 +80,16 @@ struct FTTextView: FTViewProtocol {
             Text(AttributedString(content, attributes: self.attributes))
         } else {
             Text(self.content)
+        }
+    }
+}
+
+extension FTTextView {
+    
+    static func decodeAttribute(_ value: Any, forKey key: NSAttributedString.Key) -> Any? {
+        switch key {
+        case .strokeWidth: return value as? Double
+        default: return nil
         }
     }
 }
