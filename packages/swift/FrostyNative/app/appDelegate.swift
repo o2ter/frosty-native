@@ -50,17 +50,22 @@ open class FTAppDelegate: NSObject, _ApplicationDelegate, ObservableObject {
 
 extension FTAppDelegate {
     
-#if canImport(AppKit)
-    open func applicationWillFinishLaunching(_ notification: Notification) {
+    func loadBundle() {
         
         guard
             let sourceUrl = self.sourceURL(),
             let source = try? String(contentsOf: sourceUrl)
-        else {
-            return
-        }
+        else { return }
         
         self.runtime.context.evaluateScript(source)
+    }
+}
+
+extension FTAppDelegate {
+    
+#if canImport(AppKit)
+    open func applicationWillFinishLaunching(_ notification: Notification) {
+        self.loadBundle()
     }
     
     open func applicationDidFinishLaunching(_ notification: Notification) {
@@ -72,16 +77,7 @@ extension FTAppDelegate {
         _ application: FTApplication,
         willFinishLaunchingWithOptions launchOptions: [FTApplication.LaunchOptionsKey: Any]? = nil
     ) -> Bool {
-        
-        guard
-            let sourceUrl = self.sourceURL(),
-            let source = try? String(contentsOf: sourceUrl)
-        else {
-            return true
-        }
-        
-        self.runtime.context.evaluateScript(source)
-        
+        self.loadBundle()
         return true
     }
     
