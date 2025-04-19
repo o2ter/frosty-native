@@ -101,6 +101,10 @@ extension FTAppDelegate {
     open func applicationProtectedDataDidBecomeAvailable(_ notification: Notification) {
     }
     
+    open func application(_ application: NSApplication, open urls: [URL]) {
+        
+    }
+    
 #elseif canImport(UIKit)
     
     open func application(
@@ -142,6 +146,14 @@ extension FTAppDelegate {
     open func applicationDidReceiveMemoryWarning(_ application: UIApplication) {
         
     }
+    
+    open func application(
+        _ app: UIApplication,
+        open url: URL,
+        options: [UIApplication.OpenURLOptionsKey : Any] = [:]
+    ) -> Bool {
+        return true
+    }
 #endif
     
 }
@@ -152,6 +164,11 @@ extension FTAppDelegate {
         _ application: FTApplication,
         didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data
     ) {
+        
+    }
+    
+    open func application(_ application: FTApplication, didFailToRegisterForRemoteNotificationsWithError error: any Error) {
+        
         
     }
 }
