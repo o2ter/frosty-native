@@ -155,22 +155,23 @@ extension JSCore {
     self.globalObject["EventTarget"] = self.evaluateScript(
       """
       class EventTarget {
+        #listeners;
         constructor() {
-          this.listeners = {};
+          this.#listeners = {};
         }
         addEventListener(type, listener) {
-          if (!this.listeners[type]) {
-            this.listeners[type] = [];
+          if (!this.#listeners[type]) {
+            this.#listeners[type] = [];
           }
-          this.listeners[type].push(listener);
+          this.#listeners[type].push(listener);
         }
         removeEventListener(type, listener) {
-          if (!this.listeners[type]) return;
-          this.listeners[type] = this.listeners[type].filter(l => l !== listener);
+          if (!this.#listeners[type]) return;
+          this.#listeners[type] = this.#listeners[type].filter(l => l !== listener);
         }
         dispatchEvent(event) {
-          if (!this.listeners[event.type]) return;
-          for (const listener of this.listeners[event.type]) {
+          if (!this.#listeners[event.type]) return;
+          for (const listener of this.#listeners[event.type]) {
             listener(event);
           }
         }
