@@ -63,24 +63,8 @@ struct FTTextView: FTViewProtocol {
         return props["text"] as? String ?? ""
     }
     
-    @available(macOS 12, iOS 15, tvOS 15, watchOS 8, *)
-    var attributes: AttributeContainer {
-        let attributes = props["attributes"] as? [String: Any] ?? [:]
-        var result: [NSAttributedString.Key: Any] = [:]
-        for (key, value) in attributes {
-            let _key = NSAttributedString.Key(rawValue: key)
-            guard let decoded = FTTextView.decodeAttribute(value, forKey: _key) else { continue }
-            result[_key] = decoded
-        }
-        return AttributeContainer(result)
-    }
-    
     var body: some View {
-        if #available(macOS 12, iOS 15, tvOS 15, watchOS 8, *) {
-            Text(AttributedString(content, attributes: self.attributes))
-        } else {
-            Text(self.content)
-        }
+        Text(self.content)
     }
 }
 
