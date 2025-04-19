@@ -1,5 +1,5 @@
 //
-//  renderer.ts
+//  index.ts
 //
 //  The MIT License
 //  Copyright (c) 2021 - 2025 O2ter Limited. All rights reserved.
@@ -23,42 +23,4 @@
 //  THE SOFTWARE.
 //
 
-import _ from 'lodash';
-import { _Renderer, VNode } from 'frosty/dist/_native';
-import { NativeNode } from './node';
-
-export class NativeRenderer extends _Renderer<NativeNode> {
-
-  get _server(): boolean {
-    return false;
-  }
-
-  protected _beforeUpdate() {
-  }
-
-  protected _afterUpdate() {
-  }
-
-  protected _createElement(node: VNode, stack: VNode[]): NativeNode {
-    const { type: _type, props } = node;
-    if (_.isString(_type) || !(_type.prototype instanceof NativeNode)) throw Error('Invalid type');
-    const ElementType = _type as typeof NativeNode;
-    const element = ElementType.createElement();
-    element.update(props);
-    return element;
-  }
-
-  protected _updateElement(node: VNode, element: NativeNode, stack: VNode[]) {
-    const { props } = node;
-    element.update(props);
-  }
-
-  protected _destroyElement(node: VNode, element: NativeNode) {
-    element.destroy();
-  }
-
-  protected _replaceChildren(node: VNode, element: NativeNode, children: (string | NativeNode)[]) {
-    element.replaceChildren(children);
-  }
-
-}
+export { NativeRenderer } from './spec';
