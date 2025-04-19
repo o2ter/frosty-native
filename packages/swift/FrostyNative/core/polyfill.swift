@@ -29,9 +29,9 @@ extension FrostyNative {
         self.context.globalObject["__FROSTY_SPEC__"] = [
             "NativeModules": [:]
         ]
-        self.register(name: "localStorage", module: NativeLocalStorage())
-        self.register(name: "FTView", type: FTView.self)
-        self.register(name: "FTTextView", type: FTTextView.self)
+        self.register(name: "localStorage", NativeLocalStorage())
+        self.register(name: "FTView", FTView.self)
+        self.register(name: "FTTextView", FTTextView.self)
     }
 }
 
@@ -44,18 +44,18 @@ extension FrostyNative {
 
 extension FrostyNative {
     
-    public func register(name: String, module: JSCore.Export) {
+    public func register(name: String, _ module: JSCore.Export) {
         self.nativeModules[name] = .init(module, in: self.context)
     }
     
-    public func register(name: String, module: JSCore.Export.Type) {
+    public func register(name: String, _ module: JSCore.Export.Type) {
         self.nativeModules[name] = .init(module, in: self.context)
     }
 }
 
 extension FrostyNative {
     
-    public func register(name: String, type: any FTViewProtocol.Type) {
+    public func register(name: String, _ type: any FTViewProtocol.Type) {
         self.nativeModules[name] = .init(in: self.context) { _, _ in
             return .init(FTNode.State(type: type), in: self.context)
         }
