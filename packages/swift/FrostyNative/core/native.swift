@@ -25,14 +25,14 @@
 
 public final class FrostyNative: Sendable {
 
-  public let context: JSCore
+    public let context: JSCore
 
-  init(
-    _ vm: JSCore.VirtualMachine = FrostyNative.createVirtualMachine()
-  ) {
-    self.context = JSCore(vm)
-    self.polyfill()
-  }
+    init(
+        _ vm: JSCore.VirtualMachine = FrostyNative.createVirtualMachine()
+    ) {
+        self.context = JSCore(vm)
+        self.polyfill()
+    }
 }
 
 extension FrostyNative {
