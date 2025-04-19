@@ -26,7 +26,10 @@
 import JavaScriptCore
 
 @objc protocol FTNodeExport: JSExport {
-
+    
+    func update(_ props: [String: any Sendable])
+    
+    func replaceChildren(_ children: [FTNode.State])
 }
 
 public protocol FTView: View {
@@ -49,7 +52,7 @@ extension FTNode {
         self.node.type
     }
     
-    var props: [String : Any] {
+    var props: [String: Any] {
         self.node.props
     }
     
@@ -72,7 +75,7 @@ extension FTNode {
         
         let type: any FTView.Type
         
-        @Published var props: [String: Any]
+        @Published var props: [String: any Sendable]
         
         @Published var children: [FTNode.State]
         
@@ -80,6 +83,32 @@ extension FTNode {
             self.type = type
             self.props = [:]
             self.children = []
+        }
+    }
+}
+
+extension FTNode.State {
+    
+    func _update(_ props: [String: any Sendable]) async {
+        self.props = props
+    }
+    
+    func _replaceChildren(_ children: [FTNode.State]) async {
+        self.children = children
+    }
+}
+
+extension FTNode.State {
+    
+    nonisolated func update(_ props: [String: any Sendable]) {
+        Task {
+            await self._update(props)
+        }
+    }
+    
+    nonisolated func replaceChildren(_ children: [FTNode.State]) {
+        Task {
+            await self._replaceChildren(children)
         }
     }
 }
