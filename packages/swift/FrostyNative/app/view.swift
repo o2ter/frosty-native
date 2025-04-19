@@ -46,6 +46,7 @@ struct FTView: FTViewProtocol {
     }
     
     var body: some View {
-        EmptyView()
+        VStack {
+        }
     }
 }
