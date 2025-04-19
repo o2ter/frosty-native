@@ -30,13 +30,11 @@ class AppDelegate: FTAppDelegate {
 
 extension AppDelegate {
 
-#if canImport(AppKit)
+#if canImport(AppKit) && !targetEnvironment(macCatalyst)
     override func applicationDidFinishLaunching(_ notification: Notification) {
         super.applicationDidFinishLaunching(notification)
     }
-#endif
-
-#if canImport(UIKit)
+#elseif canImport(UIKit)
     override func application(
         _ application: FTApplication,
         didFinishLaunchingWithOptions launchOptions: [FTApplication.LaunchOptionsKey: Any]? = nil
