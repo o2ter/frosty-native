@@ -33,11 +33,13 @@ public protocol FTViewProtocol: View {
 
 struct FTView: FTViewProtocol {
     
+    @Binding var props: [String: any Sendable]
+    
     init(
         props: Binding<[String: any Sendable]>,
         children: [any View]
     ) {
-        
+        self._props = props
     }
     
     var body: some View {
