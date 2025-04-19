@@ -126,6 +126,22 @@ extension FTAppDelegate {
     open func applicationWillResignActive(_ application: UIApplication) {
         
     }
+    
+    open func applicationWillEnterForeground(_ application: UIApplication) {
+        
+    }
+    
+    open func applicationDidEnterBackground(_ application: UIApplication) {
+        
+    }
+    
+    open func applicationWillTerminate(_ application: UIApplication) {
+        
+    }
+    
+    open func applicationDidReceiveMemoryWarning(_ application: UIApplication) {
+        
+    }
 #endif
     
 }
