@@ -131,6 +131,27 @@ extension JSCore {
       }
       self.removeTimer(identifier: id)
     }
+    self.globalObject["Event"] = self.evaluateScript(
+      """
+      class Event {
+        constructor(type, options) {
+          this.type = type;
+          this.target = null;
+          this.currentTarget = null;
+          this.eventPhase = 0;
+          this.bubbles = options?.bubbles || false;
+          this.cancelable = options?.cancelable || false;
+        }
+        stopPropagation() {
+          this.eventPhase = 1;
+        }
+        preventDefault() {
+          if (this.cancelable) {
+            this.defaultPrevented = true;
+          }
+        }
+      }
+      """)
     self.globalObject["EventTarget"] = self.evaluateScript(
       """
       class EventTarget {
