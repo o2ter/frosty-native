@@ -100,9 +100,9 @@ extension FTAppDelegate {
     }
     open func applicationProtectedDataDidBecomeAvailable(_ notification: Notification) {
     }
-#endif
     
-#if canImport(UIKit)
+#elseif canImport(UIKit)
+    
     open func application(
         _ application: FTApplication,
         willFinishLaunchingWithOptions launchOptions: [FTApplication.LaunchOptionsKey: Any]? = nil
