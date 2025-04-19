@@ -38,10 +38,6 @@ struct FTNode: View {
     
     @StateObject var node: FTNode.State
     
-    init(type: any FTView.Type) {
-        self._node = StateObject(wrappedValue: FTNode.State(type: type))
-    }
-    
     init(state: FTNode.State) {
         self._node = StateObject(wrappedValue: state)
     }
