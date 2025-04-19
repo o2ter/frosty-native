@@ -23,11 +23,13 @@
 //  THE SOFTWARE.
 //
 
-import { View } from 'frosty-native';
+import { Text, View } from 'frosty-native';
 
 export default function App() {
 
   return (
-    <View></View>
+    <View>
+      <Text>test</Text>
+    </View>
   );
 }
