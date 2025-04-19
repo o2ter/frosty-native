@@ -32,11 +32,6 @@ import JavaScriptCore
     func replaceChildren(_ children: [FTNode.State])
 }
 
-public protocol FTView: View {
-    
-    init(props: [String: Any], children: [any View])
-}
-
 struct FTNode: View {
     
     @StateObject var node: FTNode.State
@@ -48,7 +43,7 @@ struct FTNode: View {
 
 extension FTNode {
     
-    var type: any FTView.Type {
+    var type: any FTViewProtocol.Type {
         self.node.type
     }
     
@@ -73,13 +68,13 @@ extension FTNode {
     @MainActor
     class State: NSObject, ObservableObject, FTNodeExport {
         
-        let type: any FTView.Type
+        let type: any FTViewProtocol.Type
         
         @Published var props: [String: any Sendable]
         
         @Published var children: [FTNode.State]
         
-        init(type: any FTView.Type) {
+        init(type: any FTViewProtocol.Type) {
             self.type = type
             self.props = [:]
             self.children = []

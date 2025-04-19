@@ -29,16 +29,22 @@ public struct FTRoot: View {
     let runtime: FrostyNative
     
     @State var runner: JSCore.Value?
+    @StateObject var node: FTNode.State
     
     public init(appKey: String, runtime: FrostyNative) {
         self.appKey = appKey
         self.runtime = runtime
+        self._node = StateObject(wrappedValue: FTNode.State(type: FTView.self))
     }
     
     public var body: some View {
-        EmptyView()
+        FTNode(state: self.node)
             .onAppear {
-                self.runner = FTRoot.run(appKey: appKey, runtime: runtime)
+                self.runner = FTRoot.run(
+                    appKey: appKey,
+                    runtime: runtime,
+                    node: node
+                )
             }
             .onDisappear {
                 self.runner?.invokeMethod("unmount")
@@ -49,11 +55,15 @@ public struct FTRoot: View {
 
 extension FTRoot {
     
-    static func run(appKey: String, runtime: FrostyNative) -> JSCore.Value {
+    fileprivate static func run(
+        appKey: String,
+        runtime: FrostyNative,
+        node: FTNode.State
+    ) -> JSCore.Value {
         let registry = runtime.evaluateScript("__FROSTY_SPEC__.AppRegistry")
         let runner = registry.invokeMethod("getRunnable", withArguments: [.init(appKey)])
         return runner.invokeMethod("run", withArguments: [[
-            "root": .undefined,
+            "root": JSCore.Value(node, in: runtime.context),
         ]])
     }
 }
