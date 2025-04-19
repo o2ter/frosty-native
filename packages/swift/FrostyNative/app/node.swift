@@ -52,11 +52,4 @@ public class FTNode: NSObject, ObservableObject, FTNodeExport {
         self.props = props
         self.children = children
     }
-    
-    var body: any View {
-        self.type.init(
-            props: self.props,
-            children: self.children.map { $0.body }
-        )
-    }
 }
