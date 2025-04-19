@@ -23,7 +23,7 @@
 //  THE SOFTWARE.
 //
 
-#if canImport(AppKit)
+#if canImport(AppKit) && !targetEnvironment(macCatalyst)
 
 public typealias FTApplication = NSApplication
 public typealias _ApplicationDelegate = NSApplicationDelegate
@@ -63,7 +63,8 @@ extension FTAppDelegate {
 
 extension FTAppDelegate {
     
-#if canImport(AppKit)
+#if canImport(AppKit) && !targetEnvironment(macCatalyst)
+    
     open func applicationWillFinishLaunching(_ notification: Notification) {
         self.loadBundle()
     }
@@ -116,6 +117,14 @@ extension FTAppDelegate {
     ) -> Bool {
         
         return true
+    }
+    
+    open func applicationDidBecomeActive(_ application: UIApplication) {
+        
+    }
+    
+    open func applicationWillResignActive(_ application: UIApplication) {
+        
     }
 #endif
     
