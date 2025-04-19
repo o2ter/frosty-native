@@ -51,8 +51,8 @@ extension FTNode {
         self.node.props
     }
     
-    var children: [FTNode] {
-        self.node.children.map(FTNode.init)
+    var children: [AnyView] {
+        self.node.children.map { AnyView(FTNode(state: $0)) }
     }
     
     var body: some View {

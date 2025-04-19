@@ -25,28 +25,25 @@
 
 public protocol FTViewProtocol: View {
     
-    init(
-        props: [String: any Sendable],
-        children: [any View]
-    )
+    init(props: [String: any Sendable], children: [AnyView])
 }
 
 struct FTView: FTViewProtocol {
     
     var props: [String: any Sendable]
     
-    var children: [any View]
+    var children: [AnyView]
     
-    init(
-        props: [String: any Sendable],
-        children: [any View]
-    ) {
+    init(props: [String: any Sendable], children: [AnyView]) {
         self.props = props
         self.children = children
     }
     
     var body: some View {
         VStack {
+            ForEach(0..<children.count) {
+                children[$0]
+            }
         }
     }
 }
