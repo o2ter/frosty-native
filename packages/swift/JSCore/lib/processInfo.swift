@@ -31,8 +31,6 @@ import JavaScriptCore
   var processName: String { get }
   var processIdentifier: Int32 { get }
   var globallyUniqueString: String { get }
-  var userName: String { get }
-  var fullUserName: String { get }
   var hostName: String { get }
   var isLowPowerModeEnabled: Bool { get }
   var isMacCatalystApp: Bool { get }
@@ -69,14 +67,6 @@ extension JSProcessInfo {
 
   var globallyUniqueString: String {
     return ProcessInfo.processInfo.globallyUniqueString
-  }
-
-  var userName: String {
-    return ProcessInfo.processInfo.userName
-  }
-
-  var fullUserName: String {
-    return ProcessInfo.processInfo.fullUserName
   }
 
   var hostName: String {

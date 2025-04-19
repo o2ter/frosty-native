@@ -36,8 +36,6 @@ declare global {
       processName: string;
       processIdentifier: number;
       globallyUniqueString: string;
-      userName: string;
-      fullUserName: string;
       hostName: string;
       isLowPowerModeEnabled: boolean;
       isMacCatalystApp: boolean;

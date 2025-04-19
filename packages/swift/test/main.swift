@@ -75,8 +75,6 @@ context.evaluateScript(
   console.log(__APPLE_SPEC__.processInfo.processName);
   console.log(__APPLE_SPEC__.processInfo.processIdentifier);
   console.log(__APPLE_SPEC__.processInfo.arguments);
-  console.log(__APPLE_SPEC__.processInfo.userName);
-  console.log(__APPLE_SPEC__.processInfo.fullUserName);
   console.log(__APPLE_SPEC__.processInfo.globallyUniqueString);
   console.log(__APPLE_SPEC__.processInfo.hostName);
   """
