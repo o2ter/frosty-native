@@ -34,22 +34,56 @@ public protocol FTView: View {
     init(props: [String: Any], children: [any View])
 }
 
-@MainActor
-public class FTNode: NSObject, ObservableObject, FTNodeExport {
+struct FTNode: View {
     
-    var type: any FTView.Type
+    @StateObject var node: FTNode.State
     
-    var props: [String: Any]
+    init(type: any FTView.Type) {
+        self._node = StateObject(wrappedValue: FTNode.State(type: type))
+    }
     
-    var children: [FTNode]
+    init(state: FTNode.State) {
+        self._node = StateObject(wrappedValue: state)
+    }
+}
+
+extension FTNode {
     
-    init(
-        type: any FTView.Type,
-        props: [String : Any] = [:],
-        children: [FTNode] = []
-    ) {
-        self.type = type
-        self.props = props
-        self.children = children
+    var type: any FTView.Type {
+        self.node.type
+    }
+    
+    var props: [String : Any] {
+        self.node.props
+    }
+    
+    var children: [FTNode.State] {
+        self.node.children
+    }
+    
+    var body: some View {
+        AnyView(self.type.init(
+            props: self.props,
+            children: self.children.map(FTNode.init)
+        ))
+    }
+}
+
+extension FTNode {
+    
+    @MainActor
+    class State: NSObject, ObservableObject, FTNodeExport {
+        
+        let type: any FTView.Type
+        
+        @Published var props: [String: Any]
+        
+        @Published var children: [FTNode.State]
+        
+        init(type: any FTView.Type) {
+            self.type = type
+            self.props = [:]
+            self.children = []
+        }
     }
 }
