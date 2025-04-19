@@ -41,8 +41,8 @@ struct FTView: FTViewProtocol {
     
     var body: some View {
         VStack {
-            ForEach(0..<children.count) {
-                children[$0]
+            ForEach(Array(children.enumerated()), id: \.offset) {
+                $0.element
             }
         }
     }
