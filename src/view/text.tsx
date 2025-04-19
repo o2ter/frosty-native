@@ -23,6 +23,7 @@
 //  THE SOFTWARE.
 //
 
+import _ from 'lodash';
 import { ComponentType, PropsWithChildren } from 'frosty';
 import { _createNativeElement } from 'frosty/dist/_native';
 import { FTTextView } from './native/text';
@@ -31,6 +32,6 @@ type TextViewProps = PropsWithChildren<{
 }>;
 
 export const Text: ComponentType<TextViewProps> = ({ children }) => {
-
-  return _createNativeElement(FTTextView, {});
+  const text = _.filter(_.castArray(children), x => _.isString(x)).join(' ');
+  return _createNativeElement(FTTextView, { text });
 };
