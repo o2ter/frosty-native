@@ -67,13 +67,3 @@ struct FTTextView: FTViewProtocol {
         Text(self.content)
     }
 }
-
-extension FTTextView {
-    
-    static func decodeAttribute(_ value: Any, forKey key: NSAttributedString.Key) -> Any? {
-        switch key {
-        case .strokeWidth: return value as? Double
-        default: return nil
-        }
-    }
-}
