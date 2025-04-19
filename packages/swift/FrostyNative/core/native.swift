@@ -43,11 +43,13 @@ extension FrostyNative {
         }
         let signal = DispatchSemaphore(value: 0)
         let ref = Ref()
-        Thread.detachNewThread {
+        let thread = Thread {
             ref.vm = JSCore.VirtualMachine()
             signal.signal()
             RunLoop.current.run()
         }
+        thread.qualityOfService = .userInteractive
+        thread.start()
         signal.wait()
         return ref.vm
     }
