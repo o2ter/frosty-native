@@ -31,7 +31,7 @@ import JavaScriptCore
 
 public protocol FTView: View {
     
-    init(props: [String: Any], children: [FTNode])
+    init(props: [String: Any], children: [any View])
 }
 
 @MainActor
@@ -54,6 +54,9 @@ public class FTNode: NSObject, ObservableObject, FTNodeExport {
     }
     
     var body: any View {
-        self.type.init(props: self.props, children: self.children)
+        self.type.init(
+            props: self.props,
+            children: self.children.map { $0.body }
+        )
     }
 }
