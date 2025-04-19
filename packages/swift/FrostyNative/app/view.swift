@@ -47,3 +47,23 @@ struct FTView: FTViewProtocol {
         }
     }
 }
+
+struct FTTextView: FTViewProtocol {
+    
+    var props: [String: any Sendable]
+    
+    var children: [AnyView]
+    
+    init(props: [String: any Sendable], children: [AnyView]) {
+        self.props = props
+        self.children = children
+    }
+    
+    var content: String {
+        return props["text"] as? String ?? ""
+    }
+    
+    var body: some View {
+        Text(self.content)
+    }
+}
