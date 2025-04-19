@@ -28,6 +28,7 @@ import { ComponentType, createElement } from 'frosty';
 import { NativeRenderer } from './renderer';
 import { NativeNode } from './node';
 
+export * from './view';
 export * from './platform';
 export { NativeNode } from './node';
 export { NativeRenderer } from './renderer';

@@ -1,5 +1,5 @@
 //
-//  App.tsx
+//  index.ts
 //
 //  The MIT License
 //  Copyright (c) 2021 - 2025 O2ter Limited. All rights reserved.
@@ -23,11 +23,5 @@
 //  THE SOFTWARE.
 //
 
-import { View } from 'frosty-native';
-
-export default function App() {
-
-  return (
-    <View></View>
-  );
-}
+export { View } from './view';
+export { Text } from './text';
