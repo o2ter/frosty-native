@@ -30,6 +30,8 @@ import JavaScriptCore
     func update(_ props: [String: any Sendable])
     
     func replaceChildren(_ children: [FTNode.State])
+    
+    func destroy()
 }
 
 struct FTNode: View {
@@ -89,5 +91,10 @@ extension FTNode.State {
     
     func replaceChildren(_ children: [FTNode.State]) {
         self.children = children
+    }
+    
+    func destroy() {
+        self.props = [:]
+        self.children = []
     }
 }
