@@ -31,23 +31,7 @@ import { NativeNode } from './node';
 export * from './platform';
 export { NativeNode } from './node';
 export { NativeRenderer } from './renderer';
-
-/** @internal */
-declare global {
-
-  namespace __NS_FROSTY_SPEC__ {
-  }
-
-  const __FROSTY_SPEC__: {
-    get NativeModules(): {
-      [key: string]: any;
-    };
-  };
-}
-
-export const NativeModules = {
-  ...__FROSTY_SPEC__.NativeModules,
-};
+export { NativeModules } from './global';
 
 export const AppRegistry = (() => {
   const registry: Record<string, ComponentType<any>> = {};
