@@ -50,7 +50,7 @@ open class FTAppDelegate: NSObject, _ApplicationDelegate, ObservableObject {
 
 extension FTAppDelegate {
     
-    func loadBundle() {
+    fileprivate func loadBundle() {
         
         guard
             let sourceUrl = self.sourceURL(),
@@ -67,8 +67,37 @@ extension FTAppDelegate {
     open func applicationWillFinishLaunching(_ notification: Notification) {
         self.loadBundle()
     }
-    
     open func applicationDidFinishLaunching(_ notification: Notification) {
+    }
+    open func applicationWillHide(_ notification: Notification) {
+    }
+    open func applicationDidHide(_ notification: Notification) {
+    }
+    open func applicationWillUnhide(_ notification: Notification) {
+    }
+    open func applicationDidUnhide(_ notification: Notification) {
+    }
+    open func applicationWillBecomeActive(_ notification: Notification) {
+    }
+    open func applicationDidBecomeActive(_ notification: Notification) {
+    }
+    open func applicationWillResignActive(_ notification: Notification) {
+    }
+    open func applicationDidResignActive(_ notification: Notification) {
+    }
+    open func applicationWillUpdate(_ notification: Notification) {
+    }
+    open func applicationDidUpdate(_ notification: Notification) {
+    }
+    open func applicationWillTerminate(_ notification: Notification) {
+    }
+    open func applicationDidChangeScreenParameters(_ notification: Notification) {
+    }
+    open func applicationDidChangeOcclusionState(_ notification: Notification) {
+    }
+    open func applicationProtectedDataWillBecomeUnavailable(_ notification: Notification) {
+    }
+    open func applicationProtectedDataDidBecomeAvailable(_ notification: Notification) {
     }
 #endif
     
