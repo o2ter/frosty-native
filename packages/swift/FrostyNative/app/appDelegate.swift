@@ -53,11 +53,11 @@ extension FTAppDelegate {
     fileprivate func loadBundle() {
         
         guard
-            let sourceUrl = self.sourceURL(),
-            let source = try? String(contentsOf: sourceUrl)
+            let sourceURL = self.sourceURL(),
+            let source = try? String(contentsOf: sourceURL)
         else { return }
         
-        self.runtime.context.evaluateScript(source)
+        self.runtime.context.evaluateScript(source, withSourceURL: sourceURL)
     }
 }
 
