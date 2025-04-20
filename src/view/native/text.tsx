@@ -26,7 +26,7 @@
 import _ from 'lodash';
 import { ComponentType, PropsWithChildren } from 'frosty';
 import { _createNativeElement } from 'frosty/dist/_native';
-import { FTTextView } from './native/text';
+import { FTTextView } from './FTTextView';
 
 type TextViewProps = PropsWithChildren<{
 }>;

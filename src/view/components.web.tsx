@@ -1,5 +1,5 @@
 //
-//  index.web.tsx
+//  components.web.tsx
 //
 //  The MIT License
 //  Copyright (c) 2021 - 2025 O2ter Limited. All rights reserved.

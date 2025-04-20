@@ -1,5 +1,5 @@
 //
-//  index.ts
+//  index.tsx
 //
 //  The MIT License
 //  Copyright (c) 2021 - 2025 O2ter Limited. All rights reserved.
@@ -23,4 +23,5 @@
 //  THE SOFTWARE.
 //
 
-export * from './components';
+export { View } from './native/view';
+export { Text } from './native/text';
