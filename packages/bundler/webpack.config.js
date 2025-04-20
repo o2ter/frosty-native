@@ -75,7 +75,6 @@ module.exports = (env, argv) => {
   const moduleSuffixes = {
     android: config.moduleSuffixes?.android ?? ['.android', '.native', ''],
     apple: config.moduleSuffixes?.apple ?? ['.apple', '.native', ''],
-    web: config.moduleSuffixes?.web ?? ['.browser', '.web', ''],
   };
 
   return {
