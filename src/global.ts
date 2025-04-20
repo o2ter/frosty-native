@@ -30,6 +30,7 @@ declare global {
   }
 
   const __FROSTY_SPEC__: {
+    get SOURCE_URL(): string;
     get NativeModules(): {
       [key: string]: any;
     };
