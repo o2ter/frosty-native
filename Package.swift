@@ -47,6 +47,9 @@ let package = Package(
                 .product(name: "Crypto", package: "swift-crypto")
             ],
             path: "packages/swift/JSCore",
+            resources: [
+                .copy("resources/polyfill.js")
+            ]
         ),
         .target(
             name: "FrostyNative",
