@@ -35,7 +35,7 @@ export default function App() {
   return (
     <View>
       <Text>Hello World!</Text>
-      <Text>{`${counter}`}</Text>
+      <Text>{counter}</Text>
     </View>
   );
 }
