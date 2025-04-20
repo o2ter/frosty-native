@@ -57,6 +57,7 @@ extension FTAppDelegate {
             let source = try? String(contentsOf: sourceURL)
         else { return }
         
+        self.runtime.context.globalObject["__FROSTY_SPEC__"]["SOURCE_URL"] = .init(sourceURL.absoluteString)
         self.runtime.context.evaluateScript(source, withSourceURL: sourceURL)
     }
 }
