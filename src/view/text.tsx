@@ -32,6 +32,6 @@ type TextViewProps = PropsWithChildren<{
 }>;
 
 export const Text: ComponentType<TextViewProps> = ({ children }) => {
-  const text = _.filter(_.castArray(children), x => _.isString(x)).join(' ');
+  const text = _.filter(_.castArray(children), x => _.isNumber(x) || _.isString(x)).join(' ');
   return _createNativeElement(FTTextView, { text });
 };
