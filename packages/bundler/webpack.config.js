@@ -54,8 +54,8 @@ module.exports = (env, argv) => {
       loader: 'file-loader',
       options: {
         name: '[name].[contenthash].[ext]',
-        publicPath: '/images',
-        outputPath: '/images',
+        publicPath: 'images',
+        outputPath: 'images',
       }
     }
   });
@@ -66,8 +66,8 @@ module.exports = (env, argv) => {
       loader: 'file-loader',
       options: {
         name: '[name].[contenthash].[ext]',
-        publicPath: '/fonts',
-        outputPath: '/fonts',
+        publicPath: 'fonts',
+        outputPath: 'fonts',
       }
     }
   });
