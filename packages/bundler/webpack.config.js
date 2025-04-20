@@ -132,15 +132,6 @@ module.exports = (env, argv) => {
         babelLoaderConfiguration(),
         imageLoaderConfiguration(),
         fontLoaderConfiguration(),
-        {
-          test: /\.node$/,
-          use: {
-            loader: 'node-loader',
-            options: {
-              name: '[name].[contenthash].[ext]',
-            }
-          }
-        },
         ...config.options?.module?.rules ?? [],
       ]
     },
