@@ -25,17 +25,17 @@
 
 public protocol FTViewProtocol: View {
     
-    init(props: [String: any Sendable], children: [AnyView])
+    init(props: Binding<[String: any Sendable]>, children: [AnyView])
 }
 
 struct FTView: FTViewProtocol {
     
-    var props: [String: any Sendable]
+    @Binding var props: [String: any Sendable]
     
     var children: [AnyView]
     
-    init(props: [String: any Sendable], children: [AnyView]) {
-        self.props = props
+    init(props: Binding<[String: any Sendable]>, children: [AnyView]) {
+        self._props = props
         self.children = children
     }
     
@@ -50,12 +50,12 @@ struct FTView: FTViewProtocol {
 
 struct FTTextView: FTViewProtocol {
     
-    var props: [String: any Sendable]
+    @Binding var props: [String: any Sendable]
     
     var children: [AnyView]
     
-    init(props: [String: any Sendable], children: [AnyView]) {
-        self.props = props
+    init(props: Binding<[String: any Sendable]>, children: [AnyView]) {
+        self._props = props
         self.children = children
     }
     

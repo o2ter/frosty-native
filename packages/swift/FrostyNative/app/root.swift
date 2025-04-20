@@ -29,16 +29,16 @@ public struct FTRoot: View {
     let runtime: FrostyNative
     
     @State var runner: JSCore.Value?
-    @StateObject var node: FTNode.State
+    @State var node: FTNode.State
     
     public init(appKey: String, runtime: FrostyNative) {
         self.appKey = appKey
         self.runtime = runtime
-        self._node = StateObject(wrappedValue: FTNode.State(type: FTView.self))
+        self.node = FTNode.State(type: FTView.self)
     }
     
     public var body: some View {
-        FTNode(state: self.node)
+        FTNode(state: self.$node)
             .onAppear {
                 self.runner = FTRoot.run(
                     appKey: appKey,

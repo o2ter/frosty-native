@@ -29,7 +29,7 @@ import { Text, View } from 'frosty-native';
 export default function App() {
   const [counter, setCounter] = useState(0);
   useEffect(() => {
-    const handle = setInterval(() => { setCounter(v => v + 1); }, 1);
+    const handle = setInterval(() => { setCounter(v => v + 1); }, 1000);
     return () => clearTimeout(handle);
   }, []);
   return (

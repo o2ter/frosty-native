@@ -36,10 +36,10 @@ import JavaScriptCore
 
 struct FTNode: View {
     
-    @StateObject var node: FTNode.State
+    @Binding var node: FTNode.State
     
-    init(state: FTNode.State) {
-        self._node = StateObject(wrappedValue: state)
+    init(state: Binding<FTNode.State>) {
+        self._node = state
     }
 }
 
@@ -49,31 +49,23 @@ extension FTNode {
         self.node.type
     }
     
-    var props: [String: any Sendable] {
-        self.node.props
-    }
-    
-    var children: [AnyView] {
-        self.node.children.map { AnyView(FTNode(state: $0)) }
-    }
-    
     var body: some View {
         AnyView(self.type.init(
-            props: self.props,
-            children: self.children
+            props: self.$node.props,
+            children: self.$node.children.map { AnyView(FTNode(state: $0)) }
         ))
     }
 }
 
 extension FTNode {
     
-    class State: NSObject, ObservableObject, FTNodeExport {
+    @Observable class State: NSObject, FTNodeExport {
         
         let type: any FTViewProtocol.Type
         
-        @Published var props: [String: any Sendable]
+        var props: [String: any Sendable]
         
-        @Published var children: [FTNode.State]
+        var children: [FTNode.State]
         
         init(type: any FTViewProtocol.Type) {
             self.type = type
