@@ -10,7 +10,7 @@
     "resolveJsonModule": true,
     "skipLibCheck": true,
     "jsx": "react-jsx",
-    "jsxImportSource": "~",
+    "jsxImportSource": "frosty/dist",
     "declaration": false,
     "outDir": "dist",
     "moduleResolution": "node",

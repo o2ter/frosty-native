@@ -1,5 +1,5 @@
 //
-//  index.web.ts
+//  index.web.tsx
 //
 //  The MIT License
 //  Copyright (c) 2021 - 2025 O2ter Limited. All rights reserved.
@@ -23,8 +23,38 @@
 //  THE SOFTWARE.
 //
 
-import { NativeNode } from '../../../node';
+import { ComponentType, PropsWithChildren } from 'frosty';
 
-export abstract class FTView extends NativeNode {
+type ViewProps = PropsWithChildren<{
+}>;
 
-}
+export const View: ComponentType<ViewProps> = ({ children }) => {
+
+  return (
+    <div style={{
+      display: 'flex',
+      flexDirection: 'column',
+      width: '100%',
+      height: '100%',
+    }}>
+      {children}
+    </div>
+  );
+};
+
+type TextViewProps = PropsWithChildren<{
+}>;
+
+export const Text: ComponentType<TextViewProps> = ({ children }) => {
+
+  return (
+    <div style={{
+      display: 'flex',
+      flexDirection: 'column',
+      width: '100%',
+      height: '100%',
+    }}>
+      {children}
+    </div>
+  );
+};
