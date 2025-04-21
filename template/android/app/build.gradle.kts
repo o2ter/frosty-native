@@ -50,8 +50,10 @@ android {
             versionCode = 1
             versionName = "1.0"
 
-            manifestPlaceholders["appIcon"] = "@drawable/ic_launcher_dev"
-            manifestPlaceholders["appIconRound"] = "@drawable/ic_launcher_round_dev"
+            manifestPlaceholders.apply {
+                set("appIcon", "@drawable/ic_launcher_dev")
+                set("appIconRound", "@drawable/ic_launcher_round_dev")
+            }
 
             signingConfig = signingConfigs.getByName("dev")
         }
@@ -60,8 +62,10 @@ android {
             versionCode = 1
             versionName = "1.0"
 
-            manifestPlaceholders["appIcon"] = "@drawable/ic_launcher"
-            manifestPlaceholders["appIconRound"] = "@drawable/ic_launcher_round"
+            manifestPlaceholders.apply {
+                set("appIcon", "@drawable/ic_launcher")
+                set("appIconRound", "@drawable/ic_launcher_round")
+            }
 
             // Caution! In production, you need to generate your own keystore file.
             // see https://reactnative.dev/docs/signed-apk-android.
