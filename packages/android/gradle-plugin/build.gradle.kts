@@ -28,14 +28,7 @@ plugins {
     alias(libs.plugins.kotlin.android) apply false
 }
 
-tasks.register<Exec>("bundle") {
-    commandLine("echo", "hello")
-}
-
-gradle.projectsEvaluated {
-    println("Projects evaluated!")
-
-
+fun bundle() {
 //    val targetName = variant.name.capitalizeCompat()
 //    val targetPath = variant.name
 //
@@ -47,3 +40,5 @@ gradle.projectsEvaluated {
 //    // Sourcemap: generated/sourcemaps/react/<variant>/index.android.bundle.map
 //    val jsSourceMapsDir = File(buildDir, "generated/sourcemaps/react/$targetPath")
 }
+
+bundle()
