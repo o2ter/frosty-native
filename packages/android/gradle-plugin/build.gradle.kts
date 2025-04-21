@@ -61,8 +61,8 @@ private fun Project.configureBundleTasks(variant: Variant) {
     val jsBundleDir = File(buildDir, "generated/assets/react/$targetPath")
 
     val bundleTask = tasks.register("createBundle${targetName}JsAndAssets", BundleTask::class.java) {
-        it.jsBundleDir.set(jsBundleDir)
-        it.resourcesDir.set(resourcesDir)
+        this.jsBundleDir.set(jsBundleDir)
+        this.resourcesDir.set(resourcesDir)
     }
     variant.sources.res?.addGeneratedSourceDirectory(bundleTask, BundleTask::resourcesDir)
     variant.sources.assets?.addGeneratedSourceDirectory(bundleTask, BundleTask::jsBundleDir)
