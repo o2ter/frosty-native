@@ -1,3 +1,5 @@
+apply(plugin = "com.o2ter.frosty")
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)

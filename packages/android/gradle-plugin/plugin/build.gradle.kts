@@ -1,5 +1,5 @@
 //
-//  settings.gradle.kts
+//  build.gradle.kts
 //
 //  The MIT License
 //  Copyright (c) 2021 - 2025 O2ter Limited. All rights reserved.
@@ -23,28 +23,19 @@
 //  THE SOFTWARE.
 //
 
-pluginManagement {
-    repositories {
-        google {
-            content {
-                includeGroupByRegex("com\\.android.*")
-                includeGroupByRegex("com\\.google.*")
-                includeGroupByRegex("androidx.*")
-            }
-        }
-        mavenCentral()
-        gradlePluginPortal()
-    }
+plugins {
+    id("java-gradle-plugin")
 }
-dependencyResolutionManagement {
-    repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
-    repositories {
-        google()
-        mavenCentral()
-        gradlePluginPortal()
+
+gradlePlugin {
+    plugins {
+        create("frosty") {
+            id = "com.o2ter"
+            implementationClass = "com.o2ter.FrostyPlugin"
+        }
     }
 }
 
-rootProject.name = "frosty-native-gradle-plugin"
-include("app")
-include("plugin")
+dependencies {
+    implementation(gradleApi())
+}

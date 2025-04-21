@@ -1,5 +1,5 @@
 //
-//  settings.gradle.kts
+//  FrostyPlugin.kt
 //
 //  The MIT License
 //  Copyright (c) 2021 - 2025 O2ter Limited. All rights reserved.
@@ -23,28 +23,26 @@
 //  THE SOFTWARE.
 //
 
-pluginManagement {
-    repositories {
-        google {
-            content {
-                includeGroupByRegex("com\\.android.*")
-                includeGroupByRegex("com\\.google.*")
-                includeGroupByRegex("androidx.*")
+package com.o2ter
+
+import org.gradle.api.Plugin
+import org.gradle.api.Project
+
+/**
+ * Gradle plugin applied to the `android/build.gradle` file.
+ *
+ * This plugin allows to specify project wide configurations that can be applied to both apps and
+ * libraries before they're evaluated.
+ */
+class FrostyPlugin : Plugin<Project> {
+    override fun apply(project: Project) {
+        project.subprojects {
+            // As the :app project (i.e. ReactPlugin) configures both namespaces and JVM toolchains
+            // for libraries, its evaluation must happen before the libraries' evaluation.
+            // Eventually the configuration of namespace/JVM toolchain can be moved inside this plugin.
+            if (it.path != ":app") {
+                it.evaluationDependsOn(":app")
             }
         }
-        mavenCentral()
-        gradlePluginPortal()
     }
 }
-dependencyResolutionManagement {
-    repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
-    repositories {
-        google()
-        mavenCentral()
-        gradlePluginPortal()
-    }
-}
-
-rootProject.name = "frosty-native-gradle-plugin"
-include("app")
-include("plugin")
