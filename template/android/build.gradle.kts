@@ -3,3 +3,13 @@ plugins {
     alias(libs.plugins.android.application) apply false
     alias(libs.plugins.kotlin.android) apply false
 }
+
+buildscript {
+    extra.apply {
+        set("namespace", "com.o2ter.templateapp")
+        set("applicationId", "com.o2ter.templateapp")
+        set("minSdkVersion", 23)
+        set("compileSdkVersion", 34)
+        set("targetSdkVersion", 34)
+    }
+}

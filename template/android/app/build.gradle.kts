@@ -3,20 +3,15 @@ plugins {
     alias(libs.plugins.kotlin.android)
 }
 
-var NAMESPACE = "com.o2ter.templateapp"
-
 android {
-    namespace = NAMESPACE
-    compileSdk = 34
+    namespace = rootProject.extra["namespace"] as String
+    compileSdk = rootProject.extra["compileSdkVersion"] as Int
 
     defaultConfig {
-        applicationId = "com.o2ter.templateapp"
-        minSdk = 24
-        targetSdk = 34
-        versionCode = 1
-        versionName = "1.0"
+        applicationId = rootProject.extra["applicationId"] as String
+        minSdk = rootProject.extra["minSdkVersion"] as Int
+        targetSdk = rootProject.extra["targetSdkVersion"] as Int
 
-        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
             useSupportLibrary = true
         }
@@ -71,23 +66,8 @@ android {
             // see https://reactnative.dev/docs/signed-apk-android.
             signingConfig = signingConfigs.getByName("dev")
         }
-    }
-    compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
-    }
-    kotlinOptions {
-        jvmTarget = "1.8"
-    }
-    buildFeatures {
-        compose = true
-    }
-    composeOptions {
-        kotlinCompilerExtensionVersion = "1.5.1"
-    }
-    packaging {
-        resources {
-            excludes += "/META-INF/{AL2.0,LGPL2.1}"
+        kotlinOptions {
+            jvmTarget = "1.8"
         }
     }
 }
