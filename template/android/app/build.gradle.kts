@@ -3,8 +3,10 @@ plugins {
     alias(libs.plugins.kotlin.android)
 }
 
+var NAMESPACE = "com.o2ter.templateapp"
+
 android {
-    namespace = "com.o2ter.templateapp"
+    namespace = NAMESPACE
     compileSdk = 34
 
     defaultConfig {
@@ -19,14 +21,51 @@ android {
             useSupportLibrary = true
         }
     }
-
+    signingConfigs {
+        create("dev") {
+            storeFile = file("debug.keystore")
+            storePassword = "android"
+            keyAlias = "androiddebugkey"
+            keyPassword = "android"
+        }
+    }
+    buildFeatures {
+        flavorDimensions += listOf("env")
+    }
     buildTypes {
+        debug {
+        }
         release {
-            isMinifyEnabled = false
+            isMinifyEnabled = true
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+        }
+    }
+    productFlavors {
+        create("dev") {
+            dimension = "env"
+            applicationIdSuffix = ".dev"
+            versionCode = 1
+            versionName = "1.0"
+
+            manifestPlaceholders["appIcon"] = "@drawable/ic_launcher_dev"
+            manifestPlaceholders["appIconRound"] = "@drawable/ic_launcher_round_dev"
+
+            signingConfig = signingConfigs.getByName("dev")
+        }
+        create("prd") {
+            dimension = "env"
+            versionCode = 1
+            versionName = "1.0"
+
+            manifestPlaceholders["appIcon"] = "@drawable/ic_launcher"
+            manifestPlaceholders["appIconRound"] = "@drawable/ic_launcher_round"
+
+            // Caution! In production, you need to generate your own keystore file.
+            // see https://reactnative.dev/docs/signed-apk-android.
+            signingConfig = signingConfigs.getByName("dev")
         }
     }
     compileOptions {
