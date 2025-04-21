@@ -50,7 +50,7 @@ struct FTView: FTViewProtocol {
     var body: some View {
         switch (lazy, layoutRow) {
         case (true, true):
-            LazyVStack {
+            LazyHStack {
                 ForEach(Array(children.enumerated()), id: \.offset) {
                     $0.element
                 }
@@ -62,13 +62,13 @@ struct FTView: FTViewProtocol {
                 }
             }
         case (false, true):
-            VStackLayout {
+            HStackLayout {
                 ForEach(Array(children.enumerated()), id: \.offset) {
                     $0.element
                 }
             }
         case (false, false):
-            HStackLayout {
+            VStackLayout {
                 ForEach(Array(children.enumerated()), id: \.offset) {
                     $0.element
                 }
