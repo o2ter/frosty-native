@@ -31,7 +31,7 @@ plugins {
     alias(libs.plugins.kotlin.android) apply false
 }
 
-private abstract class BundleTask : DefaultTask() {
+abstract class BundleTask : DefaultTask() {
 
     @get:OutputDirectory abstract val jsBundleDir: DirectoryProperty
 
