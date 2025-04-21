@@ -29,6 +29,11 @@ plugins {
 }
 
 fun bundle() {
+    val application = gradle.parent?.rootProject
+    if (application == null) {
+        return
+    }
+
 //    val targetName = variant.name.capitalizeCompat()
 //    val targetPath = variant.name
 //
