@@ -62,13 +62,13 @@ struct FTView: FTViewProtocol {
                 }
             }
         case (false, true):
-            VStack {
+            VStackLayout {
                 ForEach(Array(children.enumerated()), id: \.offset) {
                     $0.element
                 }
             }
         case (false, false):
-            HStack {
+            HStackLayout {
                 ForEach(Array(children.enumerated()), id: \.offset) {
                     $0.element
                 }
