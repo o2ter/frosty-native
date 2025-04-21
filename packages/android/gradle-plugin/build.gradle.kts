@@ -33,9 +33,19 @@ plugins {
 
 abstract class BundleTask : DefaultTask() {
 
+    @get:Input abstract val variant: Property<Variant>
+
     @get:OutputDirectory abstract val jsBundleDir: DirectoryProperty
 
     @get:OutputDirectory abstract val resourcesDir: DirectoryProperty
+
+    @TaskAction
+    fun run() {
+        jsBundleDir.get().asFile.mkdirs()
+        resourcesDir.get().asFile.mkdirs()
+
+
+    }
 
 }
 
@@ -61,6 +71,7 @@ private fun Project.configureBundleTasks(variant: Variant) {
     val jsBundleDir = File(buildDir, "generated/assets/react/$targetPath")
 
     val bundleTask = tasks.register("createBundle${targetName}JsAndAssets", BundleTask::class.java) {
+        this.variant.set(variant)
         this.jsBundleDir.set(jsBundleDir)
         this.resourcesDir.set(resourcesDir)
     }
