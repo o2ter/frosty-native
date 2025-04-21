@@ -32,7 +32,7 @@ public protocol FTViewProtocol: View {
     init(props: Binding<[String: any Sendable]>, children: [AnyView])
 }
 
-protocol FTLayoutViewProtocol: FTViewProtocol {
+public protocol FTLayoutViewProtocol: FTViewProtocol {
     
     associatedtype Content: View
     
