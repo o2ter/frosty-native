@@ -34,6 +34,9 @@ fun bundle() {
         return
     }
 
+    val buildDir = application.layout.buildDirectory.get().asFile
+    println(buildDir)
+
 //    val targetName = variant.name.capitalizeCompat()
 //    val targetPath = variant.name
 //
