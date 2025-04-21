@@ -82,7 +82,9 @@ extension FTNode.State {
     }
     
     func replaceChildren(_ children: [FTNode.State]) {
-        self.children = children
+        if self.children != children {
+            self.children = children
+        }
     }
     
     func destroy() {
