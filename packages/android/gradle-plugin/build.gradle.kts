@@ -28,6 +28,6 @@ plugins {
     alias(libs.plugins.kotlin.android) apply false
 }
 
-gradle.buildFinished {
-    println("Build finished!")
+gradle.projectsEvaluated {
+    println("Projects evaluated!")
 }
