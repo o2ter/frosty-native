@@ -34,4 +34,16 @@ tasks.register<Exec>("bundle") {
 
 gradle.projectsEvaluated {
     println("Projects evaluated!")
+
+
+//    val targetName = variant.name.capitalizeCompat()
+//    val targetPath = variant.name
+//
+//    val buildDir = layout.buildDirectory.get().asFile
+//    // Resources: generated/assets/react/<variant>/index.android.bundle
+//    val resourcesDir = File(buildDir, "generated/res/react/$targetPath")
+//    // Bundle: generated/assets/react/<variant>/index.android.bundle
+//    val jsBundleDir = File(buildDir, "generated/assets/react/$targetPath")
+//    // Sourcemap: generated/sourcemaps/react/<variant>/index.android.bundle.map
+//    val jsSourceMapsDir = File(buildDir, "generated/sourcemaps/react/$targetPath")
 }
