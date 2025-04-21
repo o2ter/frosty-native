@@ -46,15 +46,10 @@ abstract class BundleTask : DefaultTask() {
         jsBundleDir.get().asFile.mkdirs()
         resourcesDir.get().asFile.mkdirs()
 
-        project.exec {
+        println(project.providers.exec {
             this.workingDir(root.get().asFile)
             this.commandLine("pwd")
-        }
-
-//        project.providers.exec {
-//            this.workingDir(root.get().asFile)
-//            this.commandLine("pwd")
-//        }.result.get()
+        }.result.get())
     }
 
 }
