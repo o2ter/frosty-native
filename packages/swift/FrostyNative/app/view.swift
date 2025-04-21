@@ -25,10 +25,49 @@
 
 public protocol FTViewProtocol: View {
     
+    var props: [String: any Sendable] { get }
+    
+    var children: [AnyView] { get }
+    
     init(props: Binding<[String: any Sendable]>, children: [AnyView])
 }
 
-struct FTView: FTViewProtocol {
+protocol FTLayoutViewProtocol: FTViewProtocol {
+    
+    associatedtype Content: View
+    
+    @ViewBuilder @MainActor @preconcurrency var content: Self.Content { get }
+}
+
+extension FTLayoutViewProtocol {
+    
+    var paddingTop: CGFloat {
+        return props["paddingTop"] as? CGFloat ?? 0
+    }
+    
+    var paddingLeft: CGFloat {
+        return props["paddingLeft"] as? CGFloat ?? 0
+    }
+    
+    var paddingRight: CGFloat {
+        return props["paddingRight"] as? CGFloat ?? 0
+    }
+    
+    var paddingBottom: CGFloat {
+        return props["paddingBottom"] as? CGFloat ?? 0
+    }
+    
+    var body: some View {
+        self.content.padding(EdgeInsets(
+            top: paddingTop,
+            leading: paddingLeft,
+            bottom: paddingBottom,
+            trailing: paddingRight
+        ))
+    }
+}
+
+struct FTView: FTLayoutViewProtocol {
     
     @Binding var props: [String: any Sendable]
     
@@ -47,78 +86,41 @@ struct FTView: FTViewProtocol {
         return props["spacing"] as? CGFloat ?? 0
     }
     
-    var paddingTop: CGFloat {
-        return props["paddingTop"] as? CGFloat ?? 0
-    }
-    
-    var paddingLeft: CGFloat {
-        return props["paddingLeft"] as? CGFloat ?? 0
-    }
-    
-    var paddingRight: CGFloat {
-        return props["paddingRight"] as? CGFloat ?? 0
-    }
-    
-    var paddingBottom: CGFloat {
-        return props["paddingBottom"] as? CGFloat ?? 0
-    }
-    
     var layoutRow: Bool {
         return props["layoutRow"] as? Bool ?? false
     }
     
-    struct LayoutBase: View {
-        var lazy: Bool
-        var layoutRow: Bool
-        var spacing: CGFloat
-        var children: [AnyView]
-        
-        var body: some View {
-            switch (lazy, layoutRow) {
-            case (true, true):
-                LazyHStack(spacing: spacing) {
-                    ForEach(Array(children.enumerated()), id: \.offset) {
-                        $0.element
-                    }
+    var content: some View {
+        switch (lazy, layoutRow) {
+        case (true, true):
+            LazyHStack(spacing: spacing) {
+                ForEach(Array(children.enumerated()), id: \.offset) {
+                    $0.element
                 }
-            case (true, false):
-                LazyVStack(spacing: spacing) {
-                    ForEach(Array(children.enumerated()), id: \.offset) {
-                        $0.element
-                    }
+            }
+        case (true, false):
+            LazyVStack(spacing: spacing) {
+                ForEach(Array(children.enumerated()), id: \.offset) {
+                    $0.element
                 }
-            case (false, true):
-                HStackLayout(spacing: spacing) {
-                    ForEach(Array(children.enumerated()), id: \.offset) {
-                        $0.element
-                    }
+            }
+        case (false, true):
+            HStackLayout(spacing: spacing) {
+                ForEach(Array(children.enumerated()), id: \.offset) {
+                    $0.element
                 }
-            case (false, false):
-                VStackLayout(spacing: spacing) {
-                    ForEach(Array(children.enumerated()), id: \.offset) {
-                        $0.element
-                    }
+            }
+        case (false, false):
+            VStackLayout(spacing: spacing) {
+                ForEach(Array(children.enumerated()), id: \.offset) {
+                    $0.element
                 }
             }
         }
     }
-    
-    var body: some View {
-        LayoutBase(
-            lazy: lazy,
-            layoutRow: layoutRow,
-            spacing: spacing,
-            children: children
-        ).padding(EdgeInsets(
-            top: paddingTop,
-            leading: paddingLeft,
-            bottom: paddingBottom,
-            trailing: paddingRight
-        ))
-    }
 }
 
-struct FTTextView: FTViewProtocol {
+struct FTTextView: FTLayoutViewProtocol {
     
     @Binding var props: [String: any Sendable]
     
@@ -129,11 +131,11 @@ struct FTTextView: FTViewProtocol {
         self.children = children
     }
     
-    var content: String {
+    var text: String {
         return props["text"] as? String ?? ""
     }
     
-    var body: some View {
-        Text(self.content)
+    var content: some View {
+        Text(self.text)
     }
 }
