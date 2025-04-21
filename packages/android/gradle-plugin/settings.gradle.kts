@@ -47,4 +47,3 @@ dependencyResolutionManagement {
 
 rootProject.name = "frosty-native-gradle-plugin"
 include("app")
-include("plugin")

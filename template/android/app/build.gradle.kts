@@ -1,4 +1,4 @@
-apply(plugin = "com.o2ter.frosty")
+apply(from = "../../node_modules/frosty-native/packages/android/gradle-plugin/plugin.gradle.kts")
 
 plugins {
     alias(libs.plugins.android.application)
