@@ -28,6 +28,10 @@ plugins {
     alias(libs.plugins.kotlin.android) apply false
 }
 
+tasks.register<Exec>("bundle") {
+    commandLine("echo", "hello")
+}
+
 gradle.projectsEvaluated {
     println("Projects evaluated!")
 }
