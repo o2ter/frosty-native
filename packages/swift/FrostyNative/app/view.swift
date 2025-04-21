@@ -39,10 +39,39 @@ struct FTView: FTViewProtocol {
         self.children = children
     }
     
+    var lazy: Bool {
+        return props["lazy"] as? Bool ?? false
+    }
+    
+    var layoutRow: Bool {
+        return props["layoutRow"] as? Bool ?? false
+    }
+    
     var body: some View {
-        VStack {
-            ForEach(Array(children.enumerated()), id: \.offset) {
-                $0.element
+        switch (lazy, layoutRow) {
+        case (true, true):
+            LazyVStack {
+                ForEach(Array(children.enumerated()), id: \.offset) {
+                    $0.element
+                }
+            }
+        case (true, false):
+            LazyVStack {
+                ForEach(Array(children.enumerated()), id: \.offset) {
+                    $0.element
+                }
+            }
+        case (false, true):
+            VStack {
+                ForEach(Array(children.enumerated()), id: \.offset) {
+                    $0.element
+                }
+            }
+        case (false, false):
+            HStack {
+                ForEach(Array(children.enumerated()), id: \.offset) {
+                    $0.element
+                }
             }
         }
     }
