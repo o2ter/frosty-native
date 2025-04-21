@@ -2,10 +2,5 @@
 plugins {
     alias(libs.plugins.android.application) apply false
     alias(libs.plugins.kotlin.android) apply false
-}
-
-buildscript {
-    dependencies {
-        classpath("com.o2ter:frosty-native-gradle-plugin")
-    }
+    id("com.o2ter.frosty")
 }
