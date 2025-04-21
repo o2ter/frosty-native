@@ -31,15 +31,41 @@ plugins {
     alias(libs.plugins.kotlin.android) apply false
 }
 
-private fun configureBundleTasks(variant: Variant, application: Project) {
-    val buildDir = application.layout.buildDirectory.get().asFile
+private abstract class BundleTask : DefaultTask() {
+
+    @get:OutputDirectory abstract val jsBundleDir: DirectoryProperty
+
+    @get:OutputDirectory abstract val resourcesDir: DirectoryProperty
+
+}
+
+private fun String.capitalizeCompat(): String =
+    if (isNotEmpty()) {
+        val firstChar = this[0]
+        val uppercaseChar = Character.toUpperCase(firstChar)
+        val restString = this@capitalizeCompat.substring(1)
+        uppercaseChar + restString
+    } else {
+        this
+    }
+
+private fun Project.configureBundleTasks(variant: Variant) {
+
+    val buildDir = layout.buildDirectory.get().asFile
+    val targetName = variant.name.capitalizeCompat()
     val targetPath = variant.name
-    // Resources: generated/assets/react/<variant>/index.android.bundle
+
+    // Resources: generated/res/react/<variant>/index.android.bundle
     val resourcesDir = File(buildDir, "generated/res/react/$targetPath")
     // Bundle: generated/assets/react/<variant>/index.android.bundle
     val jsBundleDir = File(buildDir, "generated/assets/react/$targetPath")
-    // Sourcemap: generated/sourcemaps/react/<variant>/index.android.bundle.map
-    val jsSourceMapsDir = File(buildDir, "generated/sourcemaps/react/$targetPath")
+
+    val bundleTask = tasks.register("createBundle${targetName}JsAndAssets", BundleTask::class.java) {
+        it.jsBundleDir.set(jsBundleDir)
+        it.resourcesDir.set(resourcesDir)
+    }
+    variant.sources.res?.addGeneratedSourceDirectory(bundleTask, BundleTask::resourcesDir)
+    variant.sources.assets?.addGeneratedSourceDirectory(bundleTask, BundleTask::jsBundleDir)
 }
 
 gradle.projectsEvaluated {
@@ -48,7 +74,7 @@ gradle.projectsEvaluated {
     application?.pluginManager?.withPlugin("com.android.application") {
         application.extensions.getByType(AndroidComponentsExtension::class.java).apply {
             onVariants(selector().all()) { variant ->
-                configureBundleTasks(variant, application)
+                application.configureBundleTasks(variant)
             }
         }
     }
