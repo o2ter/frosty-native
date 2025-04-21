@@ -32,12 +32,6 @@
 class FrostyPlugin : Plugin<Project> {
     override fun apply(project: Project) {
         project.subprojects {
-            // As the :app project (i.e. ReactPlugin) configures both namespaces and JVM toolchains
-            // for libraries, its evaluation must happen before the libraries' evaluation.
-            // Eventually the configuration of namespace/JVM toolchain can be moved inside this plugin.
-            if (it.path != ":app") {
-                it.evaluationDependsOn(":app")
-            }
         }
     }
 }
