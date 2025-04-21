@@ -1,5 +1,3 @@
-apply(from = "../../node_modules/frosty-native/packages/android/gradle-plugin/plugin.gradle.kts")
-
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
