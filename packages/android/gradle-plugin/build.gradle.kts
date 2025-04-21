@@ -49,20 +49,10 @@ abstract class BundleTask : DefaultTask() {
 
 }
 
-private fun String.capitalizeCompat(): String =
-    if (isNotEmpty()) {
-        val firstChar = this[0]
-        val uppercaseChar = Character.toUpperCase(firstChar)
-        val restString = this@capitalizeCompat.substring(1)
-        uppercaseChar + restString
-    } else {
-        this
-    }
-
 private fun Project.configureBundleTasks(variant: Variant) {
 
     val buildDir = layout.buildDirectory.get().asFile
-    val targetName = variant.name.capitalizeCompat()
+    val targetName = variant.name.replaceFirstChar { c -> c.uppercase() }
     val targetPath = variant.name
 
     // Resources: generated/res/react/<variant>/index.android.bundle
