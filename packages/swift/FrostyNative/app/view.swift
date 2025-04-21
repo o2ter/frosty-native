@@ -43,37 +43,78 @@ struct FTView: FTViewProtocol {
         return props["lazy"] as? Bool ?? false
     }
     
+    var spacing: CGFloat {
+        return props["spacing"] as? CGFloat ?? 0
+    }
+    
+    var paddingTop: CGFloat {
+        return props["paddingTop"] as? CGFloat ?? 0
+    }
+    
+    var paddingLeft: CGFloat {
+        return props["paddingLeft"] as? CGFloat ?? 0
+    }
+    
+    var paddingRight: CGFloat {
+        return props["paddingRight"] as? CGFloat ?? 0
+    }
+    
+    var paddingBottom: CGFloat {
+        return props["paddingBottom"] as? CGFloat ?? 0
+    }
+    
     var layoutRow: Bool {
         return props["layoutRow"] as? Bool ?? false
     }
     
-    var body: some View {
-        switch (lazy, layoutRow) {
-        case (true, true):
-            LazyHStack {
-                ForEach(Array(children.enumerated()), id: \.offset) {
-                    $0.element
+    struct LayoutBase: View {
+        var lazy: Bool
+        var layoutRow: Bool
+        var spacing: CGFloat
+        var children: [AnyView]
+        
+        var body: some View {
+            switch (lazy, layoutRow) {
+            case (true, true):
+                LazyHStack(spacing: spacing) {
+                    ForEach(Array(children.enumerated()), id: \.offset) {
+                        $0.element
+                    }
                 }
-            }
-        case (true, false):
-            LazyVStack {
-                ForEach(Array(children.enumerated()), id: \.offset) {
-                    $0.element
+            case (true, false):
+                LazyVStack(spacing: spacing) {
+                    ForEach(Array(children.enumerated()), id: \.offset) {
+                        $0.element
+                    }
                 }
-            }
-        case (false, true):
-            HStackLayout {
-                ForEach(Array(children.enumerated()), id: \.offset) {
-                    $0.element
+            case (false, true):
+                HStackLayout(spacing: spacing) {
+                    ForEach(Array(children.enumerated()), id: \.offset) {
+                        $0.element
+                    }
                 }
-            }
-        case (false, false):
-            VStackLayout {
-                ForEach(Array(children.enumerated()), id: \.offset) {
-                    $0.element
+            case (false, false):
+                VStackLayout(spacing: spacing) {
+                    ForEach(Array(children.enumerated()), id: \.offset) {
+                        $0.element
+                    }
                 }
             }
         }
+    }
+    
+    var body: some View {
+        LayoutBase(
+            lazy: lazy,
+            layoutRow: layoutRow,
+            spacing: spacing,
+            children: children
+        ).padding(EdgeInsets(
+            top: paddingTop,
+            leading: paddingLeft,
+            bottom: paddingBottom,
+            trailing: paddingRight
+        ))
     }
 }
 
