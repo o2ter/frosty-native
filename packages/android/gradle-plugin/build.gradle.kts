@@ -28,11 +28,6 @@ plugins {
     alias(libs.plugins.kotlin.android) apply false
 }
 
-class FrostyPlugin : Plugin<Project> {
-    override fun apply(project: Project) {
-        project.subprojects {
-        }
-    }
+gradle.buildFinished {
+    println("Build finished!")
 }
-
-apply<FrostyPlugin>()
