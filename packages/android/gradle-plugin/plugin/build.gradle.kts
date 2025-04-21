@@ -30,7 +30,7 @@ plugins {
 gradlePlugin {
     plugins {
         create("frosty") {
-            id = "com.o2ter"
+            id = "com.o2ter.frosty"
             implementationClass = "com.o2ter.FrostyPlugin"
         }
     }
