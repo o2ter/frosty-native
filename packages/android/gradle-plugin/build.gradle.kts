@@ -33,9 +33,9 @@ plugins {
 
 abstract class BundleTask : DefaultTask() {
 
-    @get:InputDirectory abstract val root: DirectoryProperty
+    @get:Internal abstract val root: DirectoryProperty
 
-    @get:Input abstract val buildType: Property<String>
+    @get:Internal abstract val buildType: Property<String>
 
     @get:OutputDirectory abstract val jsBundleDir: DirectoryProperty
 
