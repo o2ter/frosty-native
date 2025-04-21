@@ -41,20 +41,24 @@ protocol FTLayoutViewProtocol: FTViewProtocol {
 
 extension FTLayoutViewProtocol {
     
+    var layout: [String: any Sendable] {
+        return props["layout"] as? [String: any Sendable] ?? [:]
+    }
+    
     var paddingTop: CGFloat {
-        return props["paddingTop"] as? CGFloat ?? 0
+        return layout["paddingTop"] as? CGFloat ?? 0
     }
     
     var paddingLeft: CGFloat {
-        return props["paddingLeft"] as? CGFloat ?? 0
+        return layout["paddingLeft"] as? CGFloat ?? 0
     }
     
     var paddingRight: CGFloat {
-        return props["paddingRight"] as? CGFloat ?? 0
+        return layout["paddingRight"] as? CGFloat ?? 0
     }
     
     var paddingBottom: CGFloat {
-        return props["paddingBottom"] as? CGFloat ?? 0
+        return layout["paddingBottom"] as? CGFloat ?? 0
     }
     
     var body: some View {
@@ -86,12 +90,12 @@ struct FTView: FTLayoutViewProtocol {
         return props["spacing"] as? CGFloat ?? 0
     }
     
-    var layoutRow: Bool {
-        return props["layoutRow"] as? Bool ?? false
+    var row: Bool {
+        return props["row"] as? Bool ?? false
     }
     
     var content: some View {
-        switch (lazy, layoutRow) {
+        switch (lazy, row) {
         case (true, true):
             LazyHStack(spacing: spacing) {
                 ForEach(Array(children.enumerated()), id: \.offset) {
