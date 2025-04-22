@@ -33,6 +33,20 @@ plugins {
 
 abstract class BundleTask : DefaultTask() {
 
+    @get:InputFiles
+    val sources: ConfigurableFileTree =
+        project.fileTree(root) {
+            this.include("src/**/*.*")
+            this.include("**/*.js")
+            this.include("**/*.jsx")
+            this.include("**/*.ts")
+            this.include("**/*.tsx")
+            this.exclude("**/android/**/*")
+            this.exclude("**/ios/**/*")
+            this.exclude("**/build/**/*")
+            this.exclude("**/node_modules/**/*")
+        }
+
     @get:Internal abstract val root: DirectoryProperty
 
     @get:Internal abstract val buildType: Property<String>
@@ -66,7 +80,7 @@ private fun Project.configureBundleTasks(variant: Variant) {
     val jsBundleDir = File(buildDir, "generated/assets/react/$targetPath")
 
     val bundleTask = tasks.register("createBundle${targetName}JsAndAssets", BundleTask::class.java) {
-        this.root.set(layout.projectDirectory)
+        this.root.set(layout.projectDirectory.asFile.parentFile.parentFile)
         this.buildType.set(variant.buildType)
         this.jsBundleDir.set(jsBundleDir)
         this.resourcesDir.set(resourcesDir)
