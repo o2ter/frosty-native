@@ -53,17 +53,20 @@ abstract class BundleTask : DefaultTask() {
 
     @get:OutputDirectory abstract val jsBundleDir: DirectoryProperty
 
-    @get:OutputDirectory abstract val resourcesDir: DirectoryProperty
-
     @TaskAction
     fun run() {
         jsBundleDir.get().asFile.mkdirs()
-        resourcesDir.get().asFile.mkdirs()
 
-        println(project.providers.exec {
+        val frostyNativeDir = root.dir("node_modules/frosty-native")
+        val bundleScript = File(frostyNativeDir.get().asFile, "scripts/bin/bundle.sh")
+
+        project.exec {
             this.workingDir(root.get().asFile)
-            this.commandLine("pwd")
-        }.result.get())
+            this.environment("PROJECT_ROOT", root.get().asFile)
+            this.environment("BUILD_PLATFORM", "android")
+            this.environment("OUTPUT_DIR", jsBundleDir.get().asFile)
+            this.commandLine(bundleScript)
+        }
     }
 
 }
@@ -74,8 +77,6 @@ private fun Project.configureBundleTasks(variant: Variant) {
     val targetName = variant.name.replaceFirstChar { c -> c.uppercase() }
     val targetPath = variant.name
 
-    // Resources: generated/assets/react/<variant>/index.android.bundle
-    val resourcesDir = File(buildDir, "generated/assets/react/$targetPath")
     // Bundle: generated/assets/react/<variant>/index.android.bundle
     val jsBundleDir = File(buildDir, "generated/assets/react/$targetPath")
 
@@ -83,9 +84,7 @@ private fun Project.configureBundleTasks(variant: Variant) {
         this.root.set(layout.projectDirectory.asFile.parentFile.parentFile)
         this.buildType.set(variant.buildType)
         this.jsBundleDir.set(jsBundleDir)
-        this.resourcesDir.set(resourcesDir)
     }
-    variant.sources.res?.addGeneratedSourceDirectory(bundleTask, BundleTask::resourcesDir)
     variant.sources.assets?.addGeneratedSourceDirectory(bundleTask, BundleTask::jsBundleDir)
 }
 
