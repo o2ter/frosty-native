@@ -92,7 +92,8 @@ val application = main?.project(":app")
 
 application?.afterEvaluate {
     application.pluginManager.withPlugin("com.android.application") {
-        application.extensions.getByType(AndroidComponentsExtension::class.java).apply {
+        val android = application.extensions.findByType(AndroidComponentsExtension::class.java)
+        android?.apply {
             onVariants(selector().all()) { variant ->
                 application.configureBundleTasks(variant)
             }
