@@ -77,7 +77,6 @@ private fun Project.configureBundleTasks(variant: Variant) {
     val targetName = variant.name.replaceFirstChar { c -> c.uppercase() }
     val targetPath = variant.name
 
-    // Bundle: generated/assets/react/<variant>/index.android.bundle
     val jsBundleDir = File(buildDir, "generated/assets/react/$targetPath")
 
     val bundleTask = tasks.register("createBundle${targetName}JsAndAssets", BundleTask::class.java) {
