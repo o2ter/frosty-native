@@ -79,7 +79,7 @@ private fun Project.configureBundleTasks(variant: Variant) {
 
     val jsBundleDir = File(buildDir, "generated/assets/react/$targetPath")
 
-    val bundleTask = tasks.register("createBundle${targetName}JsAndAssets", BundleTask::class.java) {
+    val bundleTask = tasks.register("createBundle${targetName}JsAndAssets", BundleTask::class) {
         this.root.set(layout.projectDirectory.asFile.parentFile.parentFile)
         this.buildType.set(variant.buildType)
         this.jsBundleDir.set(jsBundleDir)
@@ -92,8 +92,8 @@ val application = main?.project(":app")
 
 application?.afterEvaluate {
     application.pluginManager.withPlugin("com.android.application") {
-        val android = application.extensions.findByType(AndroidComponentsExtension::class.java)
-        android?.apply {
+        val android = application.extensions.getByType(AndroidComponentsExtension::class)
+        android.apply {
             onVariants(selector().all()) { variant ->
                 application.configureBundleTasks(variant)
             }
