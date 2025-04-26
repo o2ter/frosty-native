@@ -87,8 +87,7 @@ private fun Project.configureBundleTasks(variant: Variant) {
     variant.sources.assets?.addGeneratedSourceDirectory(bundleTask, BundleTask::jsBundleDir)
 }
 
-val main = gradle.parent?.rootProject
-val application = main?.project(":app")
+val application = gradle.parent?.rootProject?.project(":app")
 
 application?.pluginManager?.withPlugin("com.android.application") {
     val android = application.extensions.getByType(AndroidComponentsExtension::class)
