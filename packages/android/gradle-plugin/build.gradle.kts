@@ -31,7 +31,7 @@ plugins {
     alias(libs.plugins.kotlin.android) apply false
 }
 
-abstract class BundleTask : DefaultTask() {
+private abstract class BundleTask : DefaultTask() {
 
     @get:InputFiles
     val sources: ConfigurableFileTree =
