@@ -91,9 +91,7 @@ val application = gradle.parent?.rootProject?.project(":app")
 
 application?.pluginManager?.withPlugin("com.android.application") {
     val android = application.extensions.getByType(AndroidComponentsExtension::class)
-    android.apply {
-        onVariants(selector().all()) { variant ->
-            application.configureBundleTasks(variant)
-        }
+    android.onVariants { variant ->
+        application.configureBundleTasks(variant)
     }
 }
