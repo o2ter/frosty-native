@@ -90,13 +90,11 @@ private fun Project.configureBundleTasks(variant: Variant) {
 val main = gradle.parent?.rootProject
 val application = main?.project(":app")
 
-application?.afterEvaluate {
-    application.pluginManager.withPlugin("com.android.application") {
-        val android = application.extensions.getByType(AndroidComponentsExtension::class)
-        android.apply {
-            onVariants(selector().all()) { variant ->
-                application.configureBundleTasks(variant)
-            }
+application?.pluginManager?.withPlugin("com.android.application") {
+    val android = application.extensions.getByType(AndroidComponentsExtension::class)
+    android.apply {
+        onVariants(selector().all()) { variant ->
+            application.configureBundleTasks(variant)
         }
     }
 }
