@@ -1,3 +1,6 @@
+import com.android.build.api.variant.AndroidComponentsExtension
+import com.android.build.api.variant.Variant
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
@@ -104,4 +107,71 @@ dependencies {
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
+}
+
+abstract class BundleTask : DefaultTask() {
+
+    @get:InputFiles
+    val sources: ConfigurableFileTree =
+        project.fileTree(root) {
+            this.include("src/**/*.*")
+            this.include("**/*.js")
+            this.include("**/*.jsx")
+            this.include("**/*.ts")
+            this.include("**/*.tsx")
+            this.exclude("**/android/**/*")
+            this.exclude("**/ios/**/*")
+            this.exclude("**/build/**/*")
+            this.exclude("**/node_modules/**/*")
+        }
+
+    @get:Internal abstract val root: DirectoryProperty
+
+    @get:Internal abstract val buildType: Property<String>
+
+    @get:OutputDirectory abstract val jsBundleDir: DirectoryProperty
+
+    @TaskAction
+    fun run() {
+        jsBundleDir.get().asFile.mkdirs()
+
+        val frostyNativeDir = root.dir("node_modules/frosty-native")
+        val bundleScript = File(frostyNativeDir.get().asFile, "scripts/bin/bundle.sh")
+
+        project.exec {
+            this.workingDir(root.get().asFile)
+            this.environment("PROJECT_ROOT", root.get().asFile)
+            this.environment("BUILD_PLATFORM", "android")
+            this.environment("OUTPUT_DIR", jsBundleDir.get().asFile)
+            this.commandLine(bundleScript)
+        }
+    }
+
+}
+
+public fun Project.configureBundleTasks(variant: Variant) {
+
+    val buildDir = layout.buildDirectory.get().asFile
+    val targetName = variant.name.replaceFirstChar { c -> c.uppercase() }
+    val targetPath = variant.name
+
+    val jsBundleDir = File(buildDir, "generated/assets/react/$targetPath")
+
+    val bundleTask = tasks.register("createBundle${targetName}JsAndAssets", BundleTask::class) {
+        this.root.set(layout.projectDirectory.asFile.parentFile.parentFile)
+        this.buildType.set(variant.buildType)
+        this.jsBundleDir.set(jsBundleDir)
+    }
+    variant.sources.assets?.addGeneratedSourceDirectory(bundleTask, BundleTask::jsBundleDir)
+}
+
+pluginManager.withPlugin("com.android.application") {
+    val android = extensions.findByType(AndroidComponentsExtension::class)
+    println("check")
+    println(android)
+    android?.apply {
+        onVariants(selector().all()) { variant ->
+            configureBundleTasks(variant)
+        }
+    }
 }
