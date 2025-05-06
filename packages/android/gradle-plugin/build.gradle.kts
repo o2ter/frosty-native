@@ -30,6 +30,8 @@ plugins {
     alias(libs.plugins.kotlin.android) apply false
 }
 
+group = "com.o2ter"
+
 private abstract class BundleTask : DefaultTask() {
 
     @get:InputFiles
