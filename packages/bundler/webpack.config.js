@@ -36,7 +36,7 @@ module.exports = (env, argv) => {
             "@babel/preset-react",
             {
               runtime: 'automatic',
-              importSource: 'frosty/dist',
+              importSource: 'frosty',
             }
           ],
           '@babel/preset-typescript',
