@@ -23,7 +23,7 @@
 //  THE SOFTWARE.
 //
 
-import { NativeElementType } from 'frosty/dist/_native';
+import { NativeElementType } from 'frosty/_native';
 
 export abstract class NativeNode extends NativeElementType {
 

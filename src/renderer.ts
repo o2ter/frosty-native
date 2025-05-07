@@ -24,7 +24,7 @@
 //
 
 import _ from 'lodash';
-import { _Renderer, VNode } from 'frosty/dist/_native';
+import { _Renderer, VNode } from 'frosty/_native';
 import { NativeNode } from './node';
 
 export class NativeRenderer extends _Renderer<NativeNode> {

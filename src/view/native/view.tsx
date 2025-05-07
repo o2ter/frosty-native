@@ -24,7 +24,7 @@
 //
 
 import { ComponentType, PropsWithChildren } from 'frosty';
-import { _createNativeElement } from 'frosty/dist/_native';
+import { _createNativeElement } from 'frosty/_native';
 import { FTView } from './FTView';
 
 type ViewProps = PropsWithChildren<{
