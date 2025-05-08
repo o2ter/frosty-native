@@ -24,6 +24,20 @@
 //
 
 plugins {
-    alias(libs.plugins.android.application) apply false
-    alias(libs.plugins.kotlin.android) apply false
+    id("java-gradle-plugin")
+}
+
+gradlePlugin {
+    plugins {
+        create("frosty") {
+            id = "com.o2ter.frosty"
+            implementationClass = "com.o2ter.FrostyNativePlugin"
+        }
+    }
+}
+
+group = "com.o2ter"
+
+dependencies {
+    implementation(gradleApi())
 }

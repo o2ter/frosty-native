@@ -1,12 +1,11 @@
 [versions]
-agp = "8.9.2"
 javascriptengine = "1.0.0-rc01"
 kotlin = "1.9.0"
+androidGradlePlugin = "8.9.2"
 
 [libraries]
 androidx-javascriptengine = { module = "androidx.javascriptengine:javascriptengine", version.ref = "javascriptengine" }
 
 [plugins]
-android-application = { id = "com.android.application", version.ref = "agp" }
+android-application = { id = "com.android.application", version.ref = "androidGradlePlugin" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
-
