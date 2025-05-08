@@ -40,4 +40,5 @@ group = "com.o2ter"
 
 dependencies {
     implementation(gradleApi())
+    implementation(libs.android.gradle.plugin)
 }
