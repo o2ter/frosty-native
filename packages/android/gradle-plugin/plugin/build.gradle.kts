@@ -25,6 +25,7 @@
 
 plugins {
     id("java-gradle-plugin")
+    kotlin("jvm")
 }
 
 gradlePlugin {
@@ -40,5 +41,6 @@ group = "com.o2ter"
 
 dependencies {
     implementation(gradleApi())
+    implementation(libs.kotlin.gradle.plugin)
     implementation(libs.android.gradle.plugin)
 }
