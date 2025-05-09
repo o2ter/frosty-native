@@ -97,8 +97,6 @@ fun Project.configureBundleTasks(variant: Variant) {
 
 class FrostyNativePlugin : Plugin<Project> {
     override fun apply(project: Project) {
-        println("hello FrostyNativePlugin")
-
         project.pluginManager.withPlugin("com.android.application") {
             val android = project.extensions.getByType(AndroidComponentsExtension::class.java)
             android.onVariants { variant ->
