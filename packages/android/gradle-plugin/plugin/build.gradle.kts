@@ -34,7 +34,7 @@ gradlePlugin {
     plugins {
         create("frosty") {
             id = "com.o2ter.frosty"
-            implementationClass = "com.o2ter.FrostyNativePlugin"
+            implementationClass = "com.o2ter.FrostyRootProjectPlugin"
         }
     }
 }

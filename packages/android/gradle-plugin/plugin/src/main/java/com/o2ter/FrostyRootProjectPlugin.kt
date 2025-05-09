@@ -95,7 +95,7 @@ fun Project.configureBundleTasks(variant: Variant) {
     variant.sources.assets?.addGeneratedSourceDirectory(bundleTask, BundleTask::jsBundleDir)
 }
 
-class FrostyNativePlugin : Plugin<Project> {
+class FrostyRootProjectPlugin : Plugin<Project> {
     override fun apply(project: Project) {
         project.pluginManager.withPlugin("com.android.application") {
             val android = project.extensions.getByType(AndroidComponentsExtension::class.java)
