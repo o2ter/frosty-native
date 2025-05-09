@@ -44,15 +44,15 @@ abstract class BundleTask : DefaultTask() {
     @get:InputFiles
     val sources: ConfigurableFileTree =
         project.fileTree(root) {
-            this.include("src/**/*.*")
-            this.include("**/*.js")
-            this.include("**/*.jsx")
-            this.include("**/*.ts")
-            this.include("**/*.tsx")
-            this.exclude("**/android/**/*")
-            this.exclude("**/ios/**/*")
-            this.exclude("**/build/**/*")
-            this.exclude("**/node_modules/**/*")
+            it.include("src/**/*.*")
+            it.include("**/*.js")
+            it.include("**/*.jsx")
+            it.include("**/*.ts")
+            it.include("**/*.tsx")
+            it.exclude("**/android/**/*")
+            it.exclude("**/ios/**/*")
+            it.exclude("**/build/**/*")
+            it.exclude("**/node_modules/**/*")
         }
 
     @get:Internal abstract val root: DirectoryProperty
@@ -69,11 +69,11 @@ abstract class BundleTask : DefaultTask() {
         val bundleScript = File(frostyNativeDir.get().asFile, "scripts/bin/bundle.sh")
 
         project.exec {
-            this.workingDir(root.get().asFile)
-            this.environment("PROJECT_ROOT", root.get().asFile)
-            this.environment("BUILD_PLATFORM", "android")
-            this.environment("OUTPUT_DIR", jsBundleDir.get().asFile)
-            this.commandLine(bundleScript)
+            it.workingDir(root.get().asFile)
+            it.environment("PROJECT_ROOT", root.get().asFile)
+            it.environment("BUILD_PLATFORM", "android")
+            it.environment("OUTPUT_DIR", jsBundleDir.get().asFile)
+            it.commandLine(bundleScript)
         }
     }
 
@@ -87,10 +87,10 @@ fun Project.configureBundleTasks(variant: Variant) {
 
     val jsBundleDir = File(buildDir, "generated/assets/react/$targetPath")
 
-    val bundleTask = tasks.register("createBundle${targetName}JsAndAssets", BundleTask::class.java) { task ->
-        task.root.set(layout.projectDirectory.asFile.parentFile.parentFile)
-        task.buildType.set(variant.buildType)
-        task.jsBundleDir.set(jsBundleDir)
+    val bundleTask = tasks.register("createBundle${targetName}JsAndAssets", BundleTask::class.java) {
+        it.root.set(layout.projectDirectory.asFile.parentFile.parentFile)
+        it.buildType.set(variant.buildType)
+        it.jsBundleDir.set(jsBundleDir)
     }
     variant.sources.assets?.addGeneratedSourceDirectory(bundleTask, BundleTask::jsBundleDir)
 }
