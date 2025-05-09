@@ -23,6 +23,8 @@
 //  THE SOFTWARE.
 //
 
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+
 plugins {
     id("java-gradle-plugin")
     kotlin("jvm")
@@ -34,6 +36,18 @@ gradlePlugin {
             id = "com.o2ter.frosty"
             implementationClass = "com.o2ter.FrostyNativePlugin"
         }
+    }
+}
+
+java { targetCompatibility = JavaVersion.VERSION_11 }
+
+kotlin { jvmToolchain(17) }
+
+tasks.withType<KotlinCompile>().configureEach {
+    kotlinOptions {
+        apiVersion = "1.6"
+        jvmTarget = "11"
+        allWarningsAsErrors = true
     }
 }
 
