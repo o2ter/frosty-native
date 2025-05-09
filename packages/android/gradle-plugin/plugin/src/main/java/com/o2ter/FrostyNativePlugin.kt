@@ -87,7 +87,7 @@ fun Project.configureBundleTasks(variant: Variant) {
 
     val jsBundleDir = File(buildDir, "generated/assets/react/$targetPath")
 
-    val bundleTask = tasks.register("createBundle${targetName}JsAndAssets", BundleTask::class) {
+    val bundleTask = tasks.register("createBundle${targetName}JsAndAssets", BundleTask::class.java) {
         this.root.set(layout.projectDirectory.asFile.parentFile.parentFile)
         this.buildType.set(variant.buildType)
         this.jsBundleDir.set(jsBundleDir)
@@ -100,7 +100,7 @@ class FrostyNativePlugin : Plugin<Project> {
         println("hello FrostyNativePlugin")
 
         project.pluginManager.withPlugin("com.android.application") {
-            val android = project.extensions.getByType(AndroidComponentsExtension::class)
+            val android = project.extensions.getByType(AndroidComponentsExtension::class.java)
             android.onVariants { variant ->
                 project.configureBundleTasks(variant)
             }
