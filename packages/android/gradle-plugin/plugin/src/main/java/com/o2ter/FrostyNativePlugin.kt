@@ -25,18 +25,19 @@
 
 package com.o2ter
 
-import com.android.build.api.variant.AndroidComponentsExtension
-import com.android.build.api.variant.Variant
-import org.gradle.api.DefaultTask
 import java.io.File
+import org.gradle.api.DefaultTask
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.file.ConfigurableFileTree
 import org.gradle.api.file.DirectoryProperty
 import org.gradle.api.provider.Property
+import org.gradle.api.tasks.Internal
 import org.gradle.api.tasks.InputFiles
 import org.gradle.api.tasks.OutputDirectory
 import org.gradle.api.tasks.TaskAction
+import com.android.build.api.variant.AndroidComponentsExtension
+import com.android.build.api.variant.Variant
 
 abstract class BundleTask : DefaultTask() {
 
