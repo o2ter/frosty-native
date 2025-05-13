@@ -1,6 +1,3 @@
-import com.android.build.api.variant.AndroidComponentsExtension
-import com.android.build.api.variant.Variant
-import org.gradle.kotlin.dsl.module
 
 plugins {
     alias(libs.plugins.android.application)
