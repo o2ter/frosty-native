@@ -22,8 +22,4 @@ dependencyResolutionManagement {
 
 rootProject.name = "TemplateApp"
 include(":app")
-includeBuild("../node_modules/frosty-native/packages/android/gradle-plugin") {
-    dependencySubstitution {
-        substitute(module("com.o2ter:frosty-native-gradle-plugin")).using(project(":frosty-native-gradle-plugin"))
-    }
-}
+includeBuild("../node_modules/frosty-native/packages/android/gradle-plugin")

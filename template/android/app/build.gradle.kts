@@ -1,5 +1,6 @@
 import com.android.build.api.variant.AndroidComponentsExtension
 import com.android.build.api.variant.Variant
+import org.gradle.kotlin.dsl.module
 
 plugins {
     alias(libs.plugins.android.application)
@@ -90,7 +91,7 @@ kotlin { jvmToolchain(17) }
 
 dependencies {
 
-    implementation("com.o2ter:frosty-native-gradle-plugin")
+    implementation(":frosty-native-gradle-plugin")
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
