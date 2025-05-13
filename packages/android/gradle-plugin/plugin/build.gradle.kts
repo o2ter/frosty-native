@@ -30,6 +30,8 @@ plugins {
     kotlin("jvm")
 }
 
+group = "com.o2ter"
+
 gradlePlugin {
     plugins {
         create("frosty") {

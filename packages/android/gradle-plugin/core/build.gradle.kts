@@ -28,6 +28,8 @@ plugins {
     alias(libs.plugins.kotlin.android)
 }
 
+group = "com.o2ter"
+
 android {
     namespace = "com.o2ter"
     compileSdk = 34
