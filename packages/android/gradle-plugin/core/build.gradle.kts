@@ -47,6 +47,10 @@ android {
     }
 }
 
+java { targetCompatibility = JavaVersion.VERSION_11 }
+
+kotlin { jvmToolchain(17) }
+
 dependencies {
     implementation(libs.androidx.javascriptengine)
 }
