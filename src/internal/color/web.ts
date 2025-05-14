@@ -24,6 +24,7 @@
 //
 
 export const WEB_COLORS = {
+  transparent: 0x00000000,
   aliceblue: 0xf0f8ffff,
   antiquewhite: 0xfaebd7ff,
   aqua: 0x00ffffff,
