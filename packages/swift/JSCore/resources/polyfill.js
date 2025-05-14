@@ -85,4 +85,12 @@ globalThis.crypto = new class Crypto {
   randomUUID() {
     return __APPLE_SPEC__.crypto.randomUUID();
   }
+  getRandomValues(b) {
+    if (!ArrayBuffer.isView(b)) {
+      throw Error('Invalid type of buffer');
+    }
+    const bytes = new Uint8Array(b.buffer, b.byteOffset, b.byteLength);
+    __APPLE_SPEC__.crypto.getRandomValues(bytes);
+    return b;
+  }
 }
