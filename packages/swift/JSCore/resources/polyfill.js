@@ -89,7 +89,7 @@ globalThis.crypto = new class Crypto {
     if (!ArrayBuffer.isView(b)) {
       throw Error('Invalid type of buffer');
     }
-    const bytes = new Uint8Array(b.buffer, b.byteOffset, b.byteLength);
+    const bytes = b instanceof Uint8Array ? b : new Uint8Array(b.buffer, b.byteOffset, b.byteLength);
     __APPLE_SPEC__.crypto.getRandomValues(bytes);
     return b;
   }
