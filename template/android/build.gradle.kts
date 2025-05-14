@@ -8,7 +8,7 @@ buildscript {
     extra.apply {
         set("namespace", "com.o2ter.templateapp")
         set("applicationId", "com.o2ter.templateapp")
-        set("minSdkVersion", 23)
+        set("minSdkVersion", 26)
         set("compileSdkVersion", 35)
         set("targetSdkVersion", 35)
     }
