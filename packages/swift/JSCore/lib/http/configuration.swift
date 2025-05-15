@@ -27,9 +27,15 @@ import JavaScriptCore
 
 @objc protocol JSURLSessionConfigurationExport: JSExport {
     
+    static var `default`: JSURLSessionConfiguration { get }
+
 }
 
 @objc final class JSURLSessionConfiguration: NSObject, JSURLSessionConfigurationExport {
+    
+    class var `default`: JSURLSessionConfiguration {
+        return JSURLSessionConfiguration(configuration: .default)
+    }
     
     let configuration: URLSessionConfiguration
     

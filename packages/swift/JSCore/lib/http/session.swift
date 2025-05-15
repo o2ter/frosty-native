@@ -35,7 +35,7 @@ import JavaScriptCore
 @objc final class JSURLSession: NSObject, JSURLSessionExport {
     
     class var shared: JSURLSession {
-        return JSURLSession(session: URLSession.shared)
+        return JSURLSession(session: .shared)
     }
     
     let session: URLSession
