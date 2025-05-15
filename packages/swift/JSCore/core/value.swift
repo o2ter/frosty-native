@@ -192,6 +192,30 @@ extension JSCore.Value {
     }
 }
 
+extension JSCore.Value {
+    
+    public init(
+        in context: JSCore,
+        _ callback: @Sendable @escaping (_ arguments: [JSCore.Value], _ this: JSCore.Value) async throws -> JSCore.Value
+    ) {
+        self.init(
+            JSValue(in: context.base) { arguments, this in
+                let result = try await callback(arguments.map { .init($0) }, JSCore.Value(this))
+                return result.toJSValue(inContext: context.base)
+            })
+    }
+    
+    public init(
+        in context: JSCore,
+        _ callback: @Sendable @escaping (_ arguments: [JSCore.Value], _ this: JSCore.Value) async throws -> Void
+    ) {
+        self.init(in: context) { arguments, this in
+            try await callback(arguments, this)
+            return .undefined
+        }
+    }
+}
+
 extension JSValue {
     
     public static func arrayBuffer(
