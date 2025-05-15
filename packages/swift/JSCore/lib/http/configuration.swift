@@ -1,5 +1,5 @@
 //
-//  request.swift
+//  configuration.swift
 //
 //  The MIT License
 //  Copyright (c) 2021 - 2025 O2ter Limited. All rights reserved.
@@ -25,20 +25,15 @@
 
 import JavaScriptCore
 
-@objc protocol JSURLSessionExport: JSExport {
+@objc protocol JSURLSessionConfigurationExport: JSExport {
     
-    static var shared: JSURLSession { get }
 }
 
-@objc final class JSURLSession: NSObject, JSURLSessionExport {
+@objc final class JSURLSessionConfiguration: NSObject, JSURLSessionConfigurationExport {
     
-    class var shared: JSURLSession {
-        return JSURLSession(session: URLSession.shared)
-    }
+    let configuration: URLSessionConfiguration
     
-    private let session: URLSession
-    
-    private init(session: URLSession) {
-        self.session = session
+    private init(configuration: URLSessionConfiguration) {
+        self.configuration = configuration
     }
 }
