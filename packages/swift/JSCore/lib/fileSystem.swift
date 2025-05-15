@@ -30,6 +30,7 @@ import JavaScriptCore
     static var temporaryDirectory: String { get }
     static var currentDirectoryPath: String { get }
     static func changeCurrentDirectoryPath(_ path: String) -> Bool
+    static func removeItem(_ path: String)
 }
 
 @objc final class JSFileSystem: NSObject, JSFileSystemExport {
@@ -48,5 +49,18 @@ import JavaScriptCore
     
     static func changeCurrentDirectoryPath(_ path: String) -> Bool {
         return FileManager.default.changeCurrentDirectoryPath(path)
+    }
+    
+    static func removeItem(_ path: String) {
+        do {
+            try FileManager.default.removeItem(atPath: path)
+        } catch {
+            let context = JSContext.current()!
+            if let error = error as? JSValue {
+                context.exception = error
+            } else {
+                context.exception = JSValue(newErrorFromMessage: "\(error)", in: context)
+            }
+        }
     }
 }
