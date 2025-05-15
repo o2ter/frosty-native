@@ -143,7 +143,8 @@ extension JSCore {
             "crypto": .init(JSCrypto(), in: self),
             "processInfo": .init(JSProcessInfo(), in: self),
             "Bundle": .init(JSBundle.self, in: self),
-            "URLSession": .init(JSURLSession.self, in: self),
+            "URLSession": .init(JSURLSession.self, in: self)
+            "URLSessionConfiguration": .init(JSURLSessionConfiguration.self, in: self),
         ]
         
         if let polyfillJs = Bundle.module.url(forResource: "polyfill", withExtension: "js"),
