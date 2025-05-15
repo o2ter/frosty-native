@@ -26,43 +26,43 @@
 import JavaScriptCore
 
 extension JSCore {
-
-  public enum LogLevel {
-    case log
-    case trace
-    case debug
-    case info
-    case warn
-    case error
-  }
+    
+    public enum LogLevel {
+        case log
+        case trace
+        case debug
+        case info
+        case warn
+        case error
+    }
 }
 
 extension JSCore.LogLevel {
-
-  public static var allCases: [JSCore.LogLevel] {
-    return [.log, .trace, .debug, .info, .warn, .error]
-  }
-
-  public var name: String {
-    switch self {
-    case .log: return "log"
-    case .trace: return "trace"
-    case .debug: return "debug"
-    case .info: return "info"
-    case .warn: return "warn"
-    case .error: return "error"
+    
+    public static var allCases: [JSCore.LogLevel] {
+        return [.log, .trace, .debug, .info, .warn, .error]
     }
-  }
+    
+    public var name: String {
+        switch self {
+        case .log: return "log"
+        case .trace: return "trace"
+        case .debug: return "debug"
+        case .info: return "info"
+        case .warn: return "warn"
+        case .error: return "error"
+        }
+    }
 }
 
 extension JSCore {
-
-  public var logger: @Sendable (LogLevel, [JSCore.Value]) -> Void {
-    get { self.context.logger }
-    nonmutating set {
-      self.runloop.perform {
-        self.context.logger = newValue
-      }
+    
+    public var logger: @Sendable (LogLevel, [JSCore.Value]) -> Void {
+        get { self.context.logger }
+        nonmutating set {
+            self.runloop.perform {
+                self.context.logger = newValue
+            }
+        }
     }
-  }
 }
