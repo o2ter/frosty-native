@@ -61,7 +61,9 @@ let package = Package(
             dependencies: ["JSCore"],
             path: "packages/swift/test",
             resources: [
-                .copy("resources/corejs.js")
+                .copy("resources/corejs.js"),
+                .copy("resources/script_1.js"),
+                .copy("resources/script_2.js")
             ]
         ),
     ]
