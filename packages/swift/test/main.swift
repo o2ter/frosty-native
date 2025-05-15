@@ -69,6 +69,8 @@ print(context.globalObject["__APPLE_SPEC__"]["crypto"].invokeMethod("randomUUID"
 print(context.globalObject["crypto"].invokeMethod("randomUUID"))
 print(
   context.globalObject["__APPLE_SPEC__"]["crypto"].invokeMethod("randomBytes", withArguments: [16]))
+print(
+  context.globalObject["crypto"].invokeMethod("randomBytes", withArguments: [16]))
 
 context.evaluateScript(
   """

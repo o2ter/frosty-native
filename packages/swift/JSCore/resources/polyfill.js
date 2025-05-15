@@ -85,6 +85,12 @@ globalThis.crypto = new class Crypto {
   randomUUID() {
     return __APPLE_SPEC__.crypto.randomUUID();
   }
+  randomBytes(length) {
+    if (!Number.isSafeInteger(length) || length < 0) {
+      throw Error('Invalid length');
+    }
+    return __APPLE_SPEC__.crypto.randomBytes(length);
+  }
   getRandomValues(b) {
     if (!ArrayBuffer.isView(b)) {
       throw Error('Invalid type of buffer');
