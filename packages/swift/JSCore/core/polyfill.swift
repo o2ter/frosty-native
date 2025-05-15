@@ -28,12 +28,12 @@ import JavaScriptCore
 extension JSCore {
     
     class Context {
-
+        
         var timerId: Int = 0
         var timer: [Int: Timer] = [:]
-
+        
         var logger: @Sendable (LogLevel, [JSCore.Value]) -> Void
-
+        
         init() {
             self.logger = { level, message in
                 print(
@@ -41,7 +41,7 @@ extension JSCore {
                 )
             }
         }
-
+        
         deinit {
             for (_, timer) in self.timer {
                 timer.invalidate()
@@ -54,7 +54,7 @@ extension JSCore {
 extension JSCore {
     
     public typealias Export = JSExport & NSObject
-
+    
 }
 
 extension JSCore.Value {
@@ -62,7 +62,7 @@ extension JSCore.Value {
     public init(_ value: JSCore.Export, in context: JSCore) {
         self.init(JSValue(object: value, in: context.base))
     }
-
+    
     public init(_ value: JSCore.Export.Type, in context: JSCore) {
         self.init(JSValue(object: value, in: context.base))
     }
@@ -86,12 +86,12 @@ extension JSCore {
         self.context.timerId += 1
         return id
     }
-
+    
     fileprivate func removeTimer(identifier: Int) {
         let timer = self.context.timer.removeValue(forKey: identifier)
         timer?.invalidate()
     }
-
+    
 }
 
 extension JSCore {
@@ -143,10 +143,11 @@ extension JSCore {
             "crypto": .init(JSCrypto(), in: self),
             "processInfo": .init(JSProcessInfo(), in: self),
             "Bundle": .init(JSBundle.self, in: self),
+            "URLSession": .init(JSURLSession.self, in: self),
         ]
-
+        
         if let polyfillJs = Bundle.module.url(forResource: "polyfill", withExtension: "js"),
-            let content = try? String(contentsOf: polyfillJs, encoding: .utf8)
+           let content = try? String(contentsOf: polyfillJs, encoding: .utf8)
         {
             self.evaluateScript(content, withSourceURL: polyfillJs)
         }
