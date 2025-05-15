@@ -139,9 +139,7 @@ extension JSValue {
         in context: JSContext,
         _ callback: @Sendable @escaping (_ arguments: [JSValue], _ this: JSValue) async throws -> JSValue
     ) {
-        let closure: @convention(block) () -> JSValue = {
-            let arguments = JSContext.currentArguments()!.map { $0 as! JSValue }
-            let this = JSContext.currentThis() ?? JSValue(undefinedIn: context)!
+        self.init(in: context) { arguments, this in
             return JSValue(newPromiseIn: context) { resolve, reject in
                 Task {
                     do {
@@ -157,7 +155,6 @@ extension JSValue {
                 }
             }
         }
-        self.init(object: closure, in: context)
     }
     
     public convenience init(
