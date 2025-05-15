@@ -53,3 +53,7 @@ const hamc = __APPLE_SPEC__.crypto.createHamc('md5', new Uint8Array([1, 2, 3, 4,
 hamc.update(new Uint8Array([1, 2, 3, 4, 5]));
 hamc.update(new Uint8Array([6, 7, 8, 9, 10]));
 console.log(hamc.digest().toHex());
+
+
+console.log(__APPLE_SPEC__.FileSystem.homeDirectory());
+console.log(__APPLE_SPEC__.FileSystem.temporaryDirectory());

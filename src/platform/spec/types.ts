@@ -74,6 +74,8 @@ declare global {
     }
 
     interface FileSystem {
+      homeDirectory(): string;
+      temporaryDirectory(): string;
     }
 
   }

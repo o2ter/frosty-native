@@ -26,8 +26,17 @@
 import JavaScriptCore
 
 @objc protocol JSFileSystemExport: JSExport {
+    static var homeDirectory: String { get }
+    static var temporaryDirectory: String { get }
 }
 
 @objc final class JSFileSystem: NSObject, JSFileSystemExport {
     
+    static var homeDirectory: String {
+        return NSHomeDirectory()
+    }
+    
+    static var temporaryDirectory: String {
+        return NSTemporaryDirectory()
+    }
 }
