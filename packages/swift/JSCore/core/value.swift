@@ -56,6 +56,7 @@ extension JSCore {
 extension JSCore.ValueBase: @unchecked Sendable {}
 extension JSCore.Value: Sendable {}
 
+extension JSContext: @unchecked @retroactive Sendable {}
 extension JSValue: @unchecked @retroactive Sendable {}
 extension JSValue: @retroactive Error {}
 
@@ -106,7 +107,7 @@ extension JSValue {
         let closure: @convention(block) () -> JSValue = {
             do {
                 let result = try callback(
-                    JSContext.currentArguments().map { $0 as! JSValue },
+                    JSContext.currentArguments()!.map { $0 as! JSValue },
                     JSContext.currentThis() ?? JSValue(undefinedIn: context))
                 return result
             } catch let error {
@@ -129,6 +130,34 @@ extension JSValue {
             try callback(arguments, this)
             return JSValue(undefinedIn: context)
         }
+    }
+}
+
+extension JSValue {
+    
+    public convenience init(
+        in context: JSContext,
+        _ callback: @Sendable @escaping (_ arguments: [JSValue], _ this: JSValue) async throws -> JSValue
+    ) {
+        let closure: @convention(block) () -> JSValue = {
+            let arguments = JSContext.currentArguments()!.map { $0 as! JSValue }
+            let this = JSContext.currentThis() ?? JSValue(undefinedIn: context)!
+            return JSValue(newPromiseIn: context) { resolve, reject in
+                Task {
+                    do {
+                        let result = try await callback(arguments, this)
+                        resolve?.call(withArguments: [result])
+                    } catch let error {
+                        if let error = error as? JSValue {
+                            reject?.call(withArguments: [error])
+                        } else {
+                            reject?.call(withArguments: [JSValue(newErrorFromMessage: "\(error)", in: context)!])
+                        }
+                    }
+                }
+            }
+        }
+        self.init(object: closure, in: context)
     }
 }
 
