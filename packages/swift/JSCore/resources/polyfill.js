@@ -11,6 +11,10 @@ globalThis.process = new class Process {
   get argv() {
     return this.#argv;
   }
+
+  chdir(directory) {
+    __APPLE_SPEC__.FileSystem.changeCurrentDirectoryPath(directory);
+  }
 }
 
 globalThis.Event = class Event {
