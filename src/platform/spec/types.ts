@@ -76,6 +76,7 @@ declare global {
     interface FileSystem {
       homeDirectory(): string;
       temporaryDirectory(): string;
+      currentDirectoryPath(): string;
       changeCurrentDirectoryPath(path: string): boolean;
     }
 

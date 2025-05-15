@@ -12,8 +12,12 @@ globalThis.process = new class Process {
     return this.#argv;
   }
 
+  cwd() {
+    return __APPLE_SPEC__.FileSystem.currentDirectoryPath();
+  }
+
   chdir(directory) {
-    __APPLE_SPEC__.FileSystem.changeCurrentDirectoryPath(directory);
+    return __APPLE_SPEC__.FileSystem.changeCurrentDirectoryPath(directory);
   }
 }
 
