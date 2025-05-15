@@ -28,6 +28,20 @@ declare global {
 
   namespace __NS_APPLE_SPEC__ {
 
+    interface Hash {
+      update(buffer: Uint8Array): void;
+      digest(): Uint8Array;
+      clone(): Hash;
+    }
+
+    interface Crypto {
+      randomUUID(): string;
+      getRandomValues(buffer: Uint8Array): Uint8Array;
+      randomBytes(length: number): Uint8Array;
+      createHash(algorithm: string): Hash;
+      createHamc(algorithm: string, secret: Uint8Array): Hash;
+    }
+
     interface ProcessInfo {
       environment: {
         [key: string]: string;
@@ -59,13 +73,18 @@ declare global {
       get localizedInfoDictionary(): { [key: string]: string; }
     }
 
+    interface FileSystem {
+    }
+
   }
 
   const __APPLE_SPEC__: {
+    get crypto(): __NS_APPLE_SPEC__.Crypto;
     get processInfo(): __NS_APPLE_SPEC__.ProcessInfo;
     get Bundle(): {
       main: __NS_APPLE_SPEC__.Bundle;
     };
+    get FileSystem(): __NS_APPLE_SPEC__.FileSystem;
   };
 }
 
