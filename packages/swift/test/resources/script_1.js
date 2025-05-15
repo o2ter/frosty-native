@@ -20,7 +20,10 @@ const props = (x) => [x, ...prototypes(x)].flatMap(x => Object.getOwnPropertyNam
 
 console.log(props(globalThis));
 
-console.log(props(__APPLE_SPEC__))
+console.log(props(__APPLE_SPEC__));
+
+console.log(JSON.stringify(process.env));
+console.log(JSON.stringify(process.argv));
 
 console.log(crypto.randomUUID());
 console.log(crypto.randomBytes(16));

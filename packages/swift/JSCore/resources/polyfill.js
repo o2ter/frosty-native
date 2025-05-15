@@ -1,4 +1,18 @@
 
+globalThis.process = new class Process {
+
+  #env = { ...__APPLE_SPEC__.processInfo.environment };
+  #argv = [...__APPLE_SPEC__.processInfo.arguments];
+
+  get env() {
+    return this.#env;
+  }
+
+  get argv() {
+    return this.#argv;
+  }
+}
+
 globalThis.Event = class Event {
   constructor(type, options) {
     this.type = type;
