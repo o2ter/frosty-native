@@ -26,10 +26,8 @@
 import JavaScriptCore
 
 @objc protocol JSURLSessionExport: JSExport {
-    
     static var shared: JSURLSession { get }
-    
-    init(_ configuration: JSURLSessionConfiguration)
+    init(configuration: JSURLSessionConfiguration)
 }
 
 @objc final class JSURLSession: NSObject, JSURLSessionExport {
@@ -44,7 +42,7 @@ import JavaScriptCore
         self.session = session
     }
     
-    init(_ configuration: JSURLSessionConfiguration) {
+    init(configuration: JSURLSessionConfiguration) {
         self.session = URLSession(configuration: configuration.configuration)
     }
 }

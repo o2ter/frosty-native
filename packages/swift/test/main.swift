@@ -72,6 +72,11 @@ print(
 print(
   context.globalObject["crypto"].invokeMethod("randomBytes", withArguments: [16]))
 
+context.evaluateScript("""
+    console.log(__APPLE_SPEC__.URLSessionConfiguration.default());
+    console.log(new __APPLE_SPEC__.URLSession(__APPLE_SPEC__.URLSessionConfiguration.default()));
+  """)
+
 context.evaluateScript(
   """
   console.log(__APPLE_SPEC__.processInfo.processName);
