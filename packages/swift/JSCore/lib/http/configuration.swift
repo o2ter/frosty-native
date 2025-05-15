@@ -26,9 +26,8 @@
 import JavaScriptCore
 
 @objc protocol JSURLSessionConfigurationExport: JSExport {
-    
     static var `default`: JSURLSessionConfiguration { get }
-
+    static var ephemeral: JSURLSessionConfiguration { get }
 }
 
 @objc final class JSURLSessionConfiguration: NSObject, JSURLSessionConfigurationExport {
@@ -36,10 +35,14 @@ import JavaScriptCore
     class var `default`: JSURLSessionConfiguration {
         return JSURLSessionConfiguration(configuration: .default)
     }
-    
+
+    class var ephemeral: JSURLSessionConfiguration {
+        return JSURLSessionConfiguration(configuration: .default)
+    }
+
     let configuration: URLSessionConfiguration
     
-    private init(configuration: URLSessionConfiguration) {
+    init(configuration: URLSessionConfiguration) {
         self.configuration = configuration
     }
 }

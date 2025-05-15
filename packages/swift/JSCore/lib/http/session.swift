@@ -28,21 +28,25 @@ import JavaScriptCore
 @objc protocol JSURLSessionExport: JSExport {
     static var shared: JSURLSession { get }
     init(configuration: JSURLSessionConfiguration)
+    var configuration: JSURLSessionConfiguration { get }
 }
 
 @objc final class JSURLSession: NSObject, JSURLSessionExport {
     
-    class var shared: JSURLSession {
-        return JSURLSession(session: .shared)
-    }
+    nonisolated(unsafe) 
+    static let shared: JSURLSession = JSURLSession(session: .shared)
     
     let session: URLSession
     
-    private init(session: URLSession) {
+    init(session: URLSession) {
         self.session = session
     }
     
     init(configuration: JSURLSessionConfiguration) {
         self.session = URLSession(configuration: configuration.configuration)
+    }
+
+    var configuration: JSURLSessionConfiguration {
+        return JSURLSessionConfiguration(configuration: self.session.configuration)
     }
 }
