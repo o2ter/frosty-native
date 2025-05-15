@@ -28,6 +28,7 @@ import JavaScriptCore
 @objc protocol JSFileSystemExport: JSExport {
     static var homeDirectory: String { get }
     static var temporaryDirectory: String { get }
+    static func changeCurrentDirectoryPath(_ path: String) -> Bool
 }
 
 @objc final class JSFileSystem: NSObject, JSFileSystemExport {
@@ -38,5 +39,9 @@ import JavaScriptCore
     
     static var temporaryDirectory: String {
         return NSTemporaryDirectory()
+    }
+    
+    static func changeCurrentDirectoryPath(_ path: String) -> Bool {
+        return FileManager.default.changeCurrentDirectoryPath(path)
     }
 }
