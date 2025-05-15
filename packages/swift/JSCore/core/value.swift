@@ -159,6 +159,16 @@ extension JSValue {
         }
         self.init(object: closure, in: context)
     }
+    
+    public convenience init(
+        in context: JSContext,
+        _ callback: @Sendable @escaping (_ arguments: [JSValue], _ this: JSValue) async throws -> Void
+    ) {
+        self.init(in: context) { arguments, this in
+            try await callback(arguments, this)
+            return JSValue(undefinedIn: context)
+        }
+    }
 }
 
 extension JSCore.Value {
