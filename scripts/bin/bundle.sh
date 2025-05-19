@@ -31,7 +31,7 @@ WEBPACK_CONFIG="${FROSTY_NATIVE_DIR}/packages/bundler/webpack.config.js"
 
 cd $PROJECT_ROOT
 
-if [[ "$CONFIGURATION" == "Release" ]]; then
+if [[ "$(echo "$CONFIGURATION" | tr '[:upper:]' '[:lower:]')" == "release" ]]; then
   MODE="production"
 else
   MODE="development"

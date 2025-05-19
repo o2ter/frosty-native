@@ -25,19 +25,19 @@
 
 package com.o2ter
 
-import java.io.File
+import com.android.build.api.variant.AndroidComponentsExtension
+import com.android.build.api.variant.Variant
 import org.gradle.api.DefaultTask
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.file.ConfigurableFileTree
 import org.gradle.api.file.DirectoryProperty
 import org.gradle.api.provider.Property
-import org.gradle.api.tasks.Internal
 import org.gradle.api.tasks.InputFiles
+import org.gradle.api.tasks.Internal
 import org.gradle.api.tasks.OutputDirectory
 import org.gradle.api.tasks.TaskAction
-import com.android.build.api.variant.AndroidComponentsExtension
-import com.android.build.api.variant.Variant
+import java.io.File
 
 abstract class BundleTask : DefaultTask() {
 
@@ -72,6 +72,7 @@ abstract class BundleTask : DefaultTask() {
             it.workingDir(root.get().asFile)
             it.environment("PROJECT_ROOT", root.get().asFile)
             it.environment("BUILD_PLATFORM", "android")
+            it.environment("CONFIGURATION", buildType.get())
             it.environment("OUTPUT_DIR", jsBundleDir.get().asFile)
             it.commandLine(bundleScript)
         }
