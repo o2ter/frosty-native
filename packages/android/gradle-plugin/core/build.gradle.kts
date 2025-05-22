@@ -1,3 +1,5 @@
+import java.util.Properties
+
 //
 //  build.gradle.kts
 //
@@ -29,6 +31,12 @@ plugins {
 }
 
 group = "com.o2ter"
+
+val localProperties = Properties()
+val localPropertiesFile = gradle.parent?.rootProject?.file("local.properties")
+if (localPropertiesFile?.exists() == true) {
+    localProperties.load(localPropertiesFile.inputStream())
+}
 
 android {
     namespace = "com.o2ter"
