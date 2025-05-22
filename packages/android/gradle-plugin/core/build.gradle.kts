@@ -1,5 +1,3 @@
-import java.util.Properties
-
 //
 //  build.gradle.kts
 //
@@ -32,12 +30,6 @@ plugins {
 
 group = "com.o2ter"
 
-val localProperties = Properties()
-val localPropertiesFile = gradle.parent?.rootProject?.file("local.properties")
-if (localPropertiesFile?.exists() == true) {
-    localProperties.load(localPropertiesFile.inputStream())
-}
-
 android {
     namespace = "com.o2ter"
     compileSdk = 34
@@ -61,4 +53,15 @@ kotlin { jvmToolchain(17) }
 
 dependencies {
     implementation(libs.androidx.javascriptengine)
+}
+
+tasks.preBuild {
+    val parentLocalPropertiesFile = gradle.parent?.rootProject?.file("local.properties")
+    if (parentLocalPropertiesFile?.exists() == true) {
+        val localPropertiesFile = rootProject.file("local.properties")
+        if (!localPropertiesFile.exists()) {
+            localPropertiesFile.createNewFile()
+        }
+        parentLocalPropertiesFile.copyTo(localPropertiesFile, true)
+    }
 }
