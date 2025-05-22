@@ -38,8 +38,6 @@ android {
         applicationId = "com.o2ter"
         minSdk = 26
         targetSdk = 34
-        versionCode = 1
-        versionName = "1.0"
 
         vectorDrawables {
             useSupportLibrary = true
