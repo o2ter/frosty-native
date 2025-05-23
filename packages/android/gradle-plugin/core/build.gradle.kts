@@ -24,7 +24,7 @@
 //
 
 plugins {
-    alias(libs.plugins.android.application)
+    alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.android)
 }
 
@@ -33,16 +33,6 @@ group = "com.o2ter"
 android {
     namespace = "com.o2ter"
     compileSdk = 34
-
-    defaultConfig {
-        applicationId = "com.o2ter"
-        minSdk = 26
-        targetSdk = 34
-
-        vectorDrawables {
-            useSupportLibrary = true
-        }
-    }
 }
 
 java { targetCompatibility = JavaVersion.VERSION_11 }
