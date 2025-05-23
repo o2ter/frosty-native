@@ -1,6 +1,6 @@
 [versions]
 javascriptengine = "1.0.0-rc01"
-kotlin = "1.7.20"
+kotlin = "1.9.25"
 androidGradlePlugin = "8.10.0"
 
 [libraries]
