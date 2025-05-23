@@ -1,5 +1,6 @@
 
 plugins {
+    alias(libs.plugins.compose.compiler)
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     id("com.o2ter.frosty")
@@ -71,9 +72,6 @@ android {
     }
     buildFeatures {
         compose = true
-    }
-    composeOptions {
-        kotlinCompilerExtensionVersion = "1.5.15"
     }
     packaging {
         resources {
