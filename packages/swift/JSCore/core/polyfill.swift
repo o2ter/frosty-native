@@ -106,9 +106,7 @@ extension JSCore {
             guard arguments[0].isFunction else {
                 throw JSCore.Value(newErrorFromMessage: "Invalid type of callback", in: self)
             }
-            guard let ms = arguments[1].numberValue else {
-                throw JSCore.Value(newErrorFromMessage: "Invalid type of delay", in: self)
-            }
+            let ms = arguments[1].numberValue ?? 0
             let id = self.createTimer(
                 callback: arguments[0], ms: ms, repeats: false,
                 arguments: Array(arguments.dropFirst(2)))
@@ -124,9 +122,7 @@ extension JSCore {
             guard arguments[0].isFunction else {
                 throw JSCore.Value(newErrorFromMessage: "Invalid type of callback", in: self)
             }
-            guard let ms = arguments[1].numberValue else {
-                throw JSCore.Value(newErrorFromMessage: "Invalid type of delay", in: self)
-            }
+            let ms = arguments[1].numberValue ?? 0
             let id = self.createTimer(
                 callback: arguments[0], ms: ms, repeats: true,
                 arguments: Array(arguments.dropFirst(2)))
