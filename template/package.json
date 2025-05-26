@@ -5,7 +5,7 @@
     "postinstall": "./scripts/post_install.sh"
   },
   "dependencies": {
-    "frosty-native": "^0.0.71",
+    "frosty-native": "^0.0.72",
     "lodash": "^4.17.21"
   },
   "devDependencies": {
