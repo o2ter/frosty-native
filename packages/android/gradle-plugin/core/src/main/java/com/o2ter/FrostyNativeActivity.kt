@@ -38,24 +38,32 @@ import androidx.compose.ui.Modifier
 import com.o2ter.ui.theme.AppTheme
 
 open class FrostyNativeActivity : ComponentActivity() {
-
-    val engine = JSContext()
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            AppTheme {
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    Greeting(
-                        name = "Android",
-                        modifier = Modifier.padding(innerPadding)
-                    )
+            AppEngine {
+                AppTheme {
+                    Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
+                        Greeting(
+                            name = "Android",
+                            modifier = Modifier.padding(innerPadding)
+                        )
+                    }
                 }
             }
         }
     }
 }
+
+@Composable
+internal fun AppEngine(
+    content: @Composable () -> Unit
+) {
+    // val engine = JSContext(LocalContext.current)
+    content()
+}
+
 
 @Composable
 internal fun Greeting(name: String, modifier: Modifier = Modifier) {

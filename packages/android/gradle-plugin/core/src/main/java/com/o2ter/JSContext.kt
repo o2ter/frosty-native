@@ -26,7 +26,6 @@
 package com.o2ter
 
 import android.content.Context
-import androidx.compose.ui.platform.LocalContext
 import androidx.javascriptengine.JavaScriptIsolate
 import androidx.javascriptengine.JavaScriptSandbox
 
@@ -35,7 +34,7 @@ class JSContext {
     private var vm: JavaScriptSandbox
     private var isolate: JavaScriptIsolate
 
-    constructor(context: Context = LocalContext.current) {
+    constructor(context: Context) {
         vm = JavaScriptSandbox.createConnectedInstanceAsync(context).get()
         isolate = vm.createIsolate()
     }
