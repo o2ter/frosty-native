@@ -26,6 +26,7 @@
 package com.o2ter
 
 import android.content.Context
+import androidx.compose.ui.platform.LocalContext
 import androidx.javascriptengine.JavaScriptIsolate
 import androidx.javascriptengine.JavaScriptSandbox
 
@@ -34,7 +35,7 @@ class FrostyNative {
     private var vm: JavaScriptSandbox
     private var jscontext: JavaScriptIsolate
 
-    constructor(context: Context) {
+    constructor(context: Context = LocalContext.current) {
         vm = JavaScriptSandbox.createConnectedInstanceAsync(context).get()
         jscontext = vm.createIsolate()
     }
