@@ -1,5 +1,5 @@
 //
-//  FrostyNative.kt
+//  JSContext.kt
 //
 //  The MIT License
 //  Copyright (c) 2021 - 2025 O2ter Limited. All rights reserved.
@@ -30,13 +30,13 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.javascriptengine.JavaScriptIsolate
 import androidx.javascriptengine.JavaScriptSandbox
 
-class FrostyNative {
+class JSContext {
 
     private var vm: JavaScriptSandbox
-    private var jscontext: JavaScriptIsolate
+    private var context: JavaScriptIsolate
 
     constructor(context: Context = LocalContext.current) {
-        vm = JavaScriptSandbox.createConnectedInstanceAsync(context).get()
-        jscontext = vm.createIsolate()
+        this.vm = JavaScriptSandbox.createConnectedInstanceAsync(context).get()
+        this.context = vm.createIsolate()
     }
 }

@@ -39,7 +39,7 @@ import com.o2ter.ui.theme.AppTheme
 
 open class FrostyNativeActivity : ComponentActivity() {
 
-    val engine = FrostyNative()
+    val engine = JSContext()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
