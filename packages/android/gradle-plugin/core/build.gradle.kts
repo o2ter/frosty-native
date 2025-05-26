@@ -40,6 +40,9 @@ java { targetCompatibility = JavaVersion.VERSION_11 }
 kotlin { jvmToolchain(17) }
 
 dependencies {
+    implementation(libs.guava)
+    implementation(libs.androidx.concurrent.futures)
+    implementation(libs.kotlinx.coroutines.guava)
     implementation(libs.androidx.javascriptengine)
     implementation(libs.androidx.activity.compose)
     implementation(platform(libs.androidx.compose.bom))

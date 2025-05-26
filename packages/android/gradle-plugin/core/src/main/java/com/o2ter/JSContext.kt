@@ -28,14 +28,21 @@ package com.o2ter
 import android.content.Context
 import androidx.javascriptengine.JavaScriptIsolate
 import androidx.javascriptengine.JavaScriptSandbox
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.guava.await
+import kotlinx.coroutines.launch
 
 class JSContext {
 
-    private var vm: JavaScriptSandbox
-    private var isolate: JavaScriptIsolate
+    private val scope = CoroutineScope(Dispatchers.Default)
+    private lateinit var vm: JavaScriptSandbox
+    private lateinit var isolate: JavaScriptIsolate
 
     constructor(context: Context) {
-        vm = JavaScriptSandbox.createConnectedInstanceAsync(context).get()
-        isolate = vm.createIsolate()
+        scope.launch {
+            vm = JavaScriptSandbox.createConnectedInstanceAsync(context).await()
+            isolate = vm.createIsolate()
+        }
     }
 }
