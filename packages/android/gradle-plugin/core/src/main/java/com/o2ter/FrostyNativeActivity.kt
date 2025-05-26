@@ -35,14 +35,18 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import com.o2ter.ui.theme.AppTheme
 
 open class FrostyNativeActivity : ComponentActivity() {
+
+    var engine: JSContext? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            AppEngine {
+            AppEngine(this) {
                 AppTheme {
                     Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
                         Greeting(
@@ -58,9 +62,12 @@ open class FrostyNativeActivity : ComponentActivity() {
 
 @Composable
 internal fun AppEngine(
+    activity: FrostyNativeActivity,
     content: @Composable () -> Unit
 ) {
-    // val engine = JSContext(LocalContext.current)
+    if (activity.engine == null) {
+        activity.engine = JSContext(LocalContext.current)
+    }
     content()
 }
 
