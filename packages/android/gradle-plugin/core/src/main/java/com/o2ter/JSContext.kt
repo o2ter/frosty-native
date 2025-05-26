@@ -45,6 +45,7 @@ class JSContext {
             val vm = JavaScriptSandbox.createConnectedInstanceAsync(context)
             vm.await().createIsolate()
         }
+        this.evaluateJavaScriptAsync(context.assets.open("polyfill.js"))
     }
 
     fun <T> withIsolate(block: suspend CoroutineScope.(JavaScriptIsolate) -> T): Deferred<T> {
