@@ -23,77 +23,78 @@
 //  THE SOFTWARE.
 //
 
-public protocol FTViewProtocol: View {
-    
+protocol FTViewProtocol: View {
+
     var props: [String: any Sendable] { get }
-    
+
     var children: [AnyView] { get }
-    
+
     init(props: Binding<[String: any Sendable]>, children: [AnyView])
 }
 
-public protocol FTLayoutViewProtocol: FTViewProtocol {
-    
+protocol FTLayoutViewProtocol: FTViewProtocol {
+
     associatedtype Content: View
-    
+
     @ViewBuilder @MainActor @preconcurrency var content: Self.Content { get }
 }
 
 extension FTLayoutViewProtocol {
-    
+
     var layout: [String: any Sendable] {
         return props["layout"] as? [String: any Sendable] ?? [:]
     }
-    
+
     var paddingTop: CGFloat {
         return layout["paddingTop"] as? CGFloat ?? 0
     }
-    
+
     var paddingLeft: CGFloat {
         return layout["paddingLeft"] as? CGFloat ?? 0
     }
-    
+
     var paddingRight: CGFloat {
         return layout["paddingRight"] as? CGFloat ?? 0
     }
-    
+
     var paddingBottom: CGFloat {
         return layout["paddingBottom"] as? CGFloat ?? 0
     }
-    
+
     var body: some View {
-        self.content.padding(EdgeInsets(
-            top: paddingTop,
-            leading: paddingLeft,
-            bottom: paddingBottom,
-            trailing: paddingRight
-        ))
+        self.content.padding(
+            EdgeInsets(
+                top: paddingTop,
+                leading: paddingLeft,
+                bottom: paddingBottom,
+                trailing: paddingRight
+            ))
     }
 }
 
 struct FTView: FTLayoutViewProtocol {
-    
+
     @Binding var props: [String: any Sendable]
-    
+
     var children: [AnyView]
-    
+
     init(props: Binding<[String: any Sendable]>, children: [AnyView]) {
         self._props = props
         self.children = children
     }
-    
+
     var lazy: Bool {
         return props["lazy"] as? Bool ?? false
     }
-    
+
     var spacing: CGFloat {
         return props["spacing"] as? CGFloat ?? 0
     }
-    
+
     var row: Bool {
         return props["row"] as? Bool ?? false
     }
-    
+
     var content: some View {
         switch (lazy, row) {
         case (true, true):
@@ -125,20 +126,20 @@ struct FTView: FTLayoutViewProtocol {
 }
 
 struct FTTextView: FTLayoutViewProtocol {
-    
+
     @Binding var props: [String: any Sendable]
-    
+
     var children: [AnyView]
-    
+
     init(props: Binding<[String: any Sendable]>, children: [AnyView]) {
         self._props = props
         self.children = children
     }
-    
+
     var text: String {
         return props["text"] as? String ?? ""
     }
-    
+
     var content: some View {
         Text(self.text)
     }

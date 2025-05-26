@@ -26,48 +26,50 @@
 import JavaScriptCore
 
 @objc protocol FTNodeExport: JSExport {
-    
+
     func update(_ props: [String: any Sendable])
-    
+
     func replaceChildren(_ children: [FTNode.State])
-    
+
     func destroy()
 }
 
 struct FTNode: View {
-    
+
     @Binding var node: FTNode.State
-    
+
     init(state: Binding<FTNode.State>) {
         self._node = state
     }
 }
 
 extension FTNode {
-    
-    var type: any FTViewProtocol.Type {
+
+    var type: FrostyNative.ViewProvider {
         self.node.type
     }
-    
+
     var body: some View {
-        AnyView(self.type.init(
-            props: self.$node.props,
-            children: self.$node.children.map { AnyView(FTNode(state: $0)) }
-        ))
+        AnyView(
+            self.type(
+                self.$node.props,
+                self.$node.children.map { AnyView(FTNode(state: $0)) }
+            )
+        )
     }
 }
 
 extension FTNode {
-    
+
     @Observable class State: NSObject, FTNodeExport {
-        
-        let type: any FTViewProtocol.Type
-        
+
+        let type: FrostyNative.ViewProvider
+
         var props: [String: any Sendable]
-        
+
         var children: [FTNode.State]
-        
-        init(type: any FTViewProtocol.Type) {
+
+        init(type: @escaping FrostyNative.ViewProvider) {
             self.type = type
             self.props = [:]
             self.children = []
@@ -76,17 +78,24 @@ extension FTNode {
 }
 
 extension FTNode.State {
-    
+
+    convenience init(type: any FTViewProtocol.Type) {
+        self.init(type: type.init(props:children:))
+    }
+}
+
+extension FTNode.State {
+
     func update(_ props: [String: any Sendable]) {
         self.props = props
     }
-    
+
     func replaceChildren(_ children: [FTNode.State]) {
         if self.children != children {
             self.children = children
         }
     }
-    
+
     func destroy() {
         self.props = [:]
         self.children = []

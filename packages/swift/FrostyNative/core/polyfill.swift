@@ -24,7 +24,7 @@
 //
 
 extension FrostyNative {
-    
+
     func polyfill() {
         self.context.globalObject["__FROSTY_SPEC__"] = [
             "NativeModules": [:]
@@ -36,26 +36,38 @@ extension FrostyNative {
 }
 
 extension FrostyNative {
-    
+
     public var nativeModules: JSCore.Value {
         return self.context.globalObject["__FROSTY_SPEC__"]["NativeModules"]
     }
 }
 
 extension FrostyNative {
-    
+
     public func register(name: String, _ module: JSCore.Export) {
         self.nativeModules[name] = .init(module, in: self.context)
     }
-    
+
     public func register(name: String, _ module: JSCore.Export.Type) {
         self.nativeModules[name] = .init(module, in: self.context)
     }
 }
 
 extension FrostyNative {
-    
-    public func register(name: String, _ type: any FTViewProtocol.Type) {
+
+    func register(name: String, _ type: any FTViewProtocol.Type) {
+        self.register(name: name, type.init(props:children:))
+    }
+}
+
+extension FrostyNative {
+
+    public typealias ViewProvider = @MainActor @Sendable (
+        _ props: Binding<[String: any Sendable]>,
+        _ children: [AnyView]
+    ) -> any View
+
+    public func register(name: String, _ type: @escaping ViewProvider) {
         self.nativeModules[name] = .init(in: self.context) { _, _ in
             return .init(FTNode.State(type: type), in: self.context)
         }
