@@ -37,6 +37,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import com.o2ter.ui.theme.AppTheme
+import java.io.InputStream
 
 open class FrostyNativeActivity : ComponentActivity() {
 
@@ -47,7 +48,7 @@ open class FrostyNativeActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             engine = JSContext(LocalContext.current)
-            this.loadBundle()
+            engine.evaluateJavaScriptAsync(this.loadBundle())
             AppTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
                     Greeting(
@@ -59,9 +60,8 @@ open class FrostyNativeActivity : ComponentActivity() {
         }
     }
 
-    open fun loadBundle() {
-        val file = assets.open("main.jsbundle")
-        this.engine.evaluateJavaScriptAsync(file)
+    open fun loadBundle(): InputStream {
+        return assets.open("main.jsbundle")
     }
 }
 
