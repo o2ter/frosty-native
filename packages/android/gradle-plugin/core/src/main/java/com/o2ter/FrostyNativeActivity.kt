@@ -1,5 +1,5 @@
 //
-//  FrostyNative.kt
+//  FrostyNativeActivity.kt
 //
 //  The MIT License
 //  Copyright (c) 2021 - 2025 O2ter Limited. All rights reserved.
@@ -25,17 +25,39 @@
 
 package com.o2ter
 
-import android.content.Context
-import androidx.javascriptengine.JavaScriptIsolate
-import androidx.javascriptengine.JavaScriptSandbox
+import android.os.Bundle
+import androidx.activity.ComponentActivity
+import androidx.activity.compose.setContent
+import androidx.activity.enableEdgeToEdge
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import com.o2ter.ui.theme.AppTheme
 
-internal class FrostyNative {
-
-    private var vm: JavaScriptSandbox
-    private var jscontext: JavaScriptIsolate
-
-    constructor(context: Context) {
-        vm = JavaScriptSandbox.createConnectedInstanceAsync(context).get()
-        jscontext = vm.createIsolate()
+class FrostyNativeActivity : ComponentActivity() {
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        enableEdgeToEdge()
+        setContent {
+            AppTheme {
+                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
+                    Greeting(
+                        name = "Android",
+                        modifier = Modifier.padding(innerPadding)
+                    )
+                }
+            }
+        }
     }
+}
+
+@Composable
+internal fun Greeting(name: String, modifier: Modifier = Modifier) {
+    Text(
+        text = "Hello $name!",
+        modifier = modifier
+    )
 }
