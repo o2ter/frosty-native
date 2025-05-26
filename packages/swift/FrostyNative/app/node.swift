@@ -45,13 +45,13 @@ struct FTNode: View {
 
 extension FTNode {
 
-    var type: FrostyNative.ViewProvider {
-        self.node.type
+    var provider: FrostyNative.ViewProvider {
+        self.node.provider
     }
 
     var body: some View {
         AnyView(
-            self.type(
+            self.provider(
                 self.$node.props,
                 self.$node.children.map { AnyView(FTNode(state: $0)) }
             )
@@ -63,14 +63,14 @@ extension FTNode {
 
     @Observable class State: NSObject, FTNodeExport {
 
-        let type: FrostyNative.ViewProvider
+        let provider: FrostyNative.ViewProvider
 
         var props: [String: any Sendable]
 
         var children: [FTNode.State]
 
-        init(type: @escaping FrostyNative.ViewProvider) {
-            self.type = type
+        init(provider: @escaping FrostyNative.ViewProvider) {
+            self.provider = provider
             self.props = [:]
             self.children = []
         }
@@ -80,7 +80,7 @@ extension FTNode {
 extension FTNode.State {
 
     convenience init(type: any FTViewProtocol.Type) {
-        self.init(type: type.init(props:children:))
+        self.init(provider: type.init(props:children:))
     }
 }
 

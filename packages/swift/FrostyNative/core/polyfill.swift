@@ -67,9 +67,9 @@ extension FrostyNative {
         _ children: [AnyView]
     ) -> any View
 
-    public func register(name: String, _ type: @escaping ViewProvider) {
+    public func register(name: String, _ provider: @escaping ViewProvider) {
         self.nativeModules[name] = .init(in: self.context) { _, _ in
-            return .init(FTNode.State(type: type), in: self.context)
+            return .init(FTNode.State(provider: provider), in: self.context)
         }
     }
 }
