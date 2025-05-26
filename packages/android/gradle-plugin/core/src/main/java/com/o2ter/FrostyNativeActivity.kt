@@ -38,6 +38,9 @@ import androidx.compose.ui.Modifier
 import com.o2ter.ui.theme.AppTheme
 
 open class FrostyNativeActivity : ComponentActivity() {
+
+    val engine = FrostyNative()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()

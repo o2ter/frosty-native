@@ -29,7 +29,7 @@ import android.content.Context
 import androidx.javascriptengine.JavaScriptIsolate
 import androidx.javascriptengine.JavaScriptSandbox
 
-internal class FrostyNative {
+class FrostyNative {
 
     private var vm: JavaScriptSandbox
     private var jscontext: JavaScriptIsolate
