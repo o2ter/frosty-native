@@ -29,20 +29,23 @@ import android.content.Context
 import androidx.javascriptengine.JavaScriptIsolate
 import androidx.javascriptengine.JavaScriptSandbox
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.guava.await
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.async
+import kotlinx.coroutines.guava.asDeferred
 
 class JSContext {
 
     private val scope = CoroutineScope(Dispatchers.Default)
-    private lateinit var vm: JavaScriptSandbox
-    private lateinit var isolate: JavaScriptIsolate
+    private var vm: Deferred<JavaScriptSandbox>
+    private var isolate: Deferred<JavaScriptIsolate>
 
     constructor(context: Context) {
-        scope.launch {
-            vm = JavaScriptSandbox.createConnectedInstanceAsync(context).await()
-            isolate = vm.createIsolate()
-        }
+        vm = JavaScriptSandbox.createConnectedInstanceAsync(context).asDeferred()
+        isolate = scope.async { vm.await().createIsolate() }
+    }
+
+    fun <T> withIsolate(block: suspend CoroutineScope.(JavaScriptIsolate) -> T): Deferred<T> {
+        return scope.async { block(isolate.await()) }
     }
 }
