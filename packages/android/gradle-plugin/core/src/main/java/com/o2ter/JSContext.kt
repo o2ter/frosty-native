@@ -49,4 +49,10 @@ class JSContext {
     fun <T> withIsolate(block: suspend CoroutineScope.(JavaScriptIsolate) -> T): Deferred<T> {
         return scope.async { block(isolate.await()) }
     }
+
+    fun evaluateJavaScriptAsync(code: String): Deferred<String> {
+        return this.withIsolate {
+            it.evaluateJavaScriptAsync(code).await()
+        }
+    }
 }
