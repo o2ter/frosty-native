@@ -24,6 +24,7 @@
 //
 
 plugins {
+    alias(libs.plugins.compose.compiler)
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.android)
 }
@@ -33,6 +34,10 @@ group = "com.o2ter"
 android {
     namespace = "com.o2ter"
     compileSdk = 34
+
+    buildFeatures {
+        compose = true
+    }
 }
 
 java { targetCompatibility = JavaVersion.VERSION_11 }
