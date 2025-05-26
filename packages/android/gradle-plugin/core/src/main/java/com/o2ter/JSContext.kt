@@ -32,17 +32,18 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
-import kotlinx.coroutines.guava.asDeferred
+import kotlinx.coroutines.guava.await
 
 class JSContext {
 
     private val scope = CoroutineScope(Dispatchers.Default)
-    private var vm: Deferred<JavaScriptSandbox>
     private var isolate: Deferred<JavaScriptIsolate>
 
     constructor(context: Context) {
-        vm = JavaScriptSandbox.createConnectedInstanceAsync(context).asDeferred()
-        isolate = scope.async { vm.await().createIsolate() }
+        isolate = scope.async {
+            val vm = JavaScriptSandbox.createConnectedInstanceAsync(context)
+            vm.await().createIsolate()
+        }
     }
 
     fun <T> withIsolate(block: suspend CoroutineScope.(JavaScriptIsolate) -> T): Deferred<T> {
