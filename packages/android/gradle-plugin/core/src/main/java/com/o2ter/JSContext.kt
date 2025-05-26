@@ -26,6 +26,9 @@
 package com.o2ter
 
 import android.content.Context
+import android.content.res.AssetFileDescriptor
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.javascriptengine.JavaScriptIsolate
 import androidx.javascriptengine.JavaScriptSandbox
 import kotlinx.coroutines.CoroutineScope
@@ -54,5 +57,11 @@ class JSContext {
         return this.withIsolate {
             it.evaluateJavaScriptAsync(code).await()
         }
+    }
+
+    @RequiresApi(Build.VERSION_CODES.CUPCAKE)
+    fun evaluateJavaScriptAsync(afd: AssetFileDescriptor): Deferred<String> {
+        val source = afd.createInputStream().bufferedReader().readText()
+        return this.evaluateJavaScriptAsync(source)
     }
 }
