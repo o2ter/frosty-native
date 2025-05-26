@@ -33,10 +33,10 @@ import androidx.javascriptengine.JavaScriptSandbox
 class JSContext {
 
     private var vm: JavaScriptSandbox
-    private var context: JavaScriptIsolate
+    private var isolate: JavaScriptIsolate
 
     constructor(context: Context = LocalContext.current) {
-        this.vm = JavaScriptSandbox.createConnectedInstanceAsync(context).get()
-        this.context = vm.createIsolate()
+        vm = JavaScriptSandbox.createConnectedInstanceAsync(context).get()
+        isolate = vm.createIsolate()
     }
 }
