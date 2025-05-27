@@ -43,8 +43,15 @@ struct FTNode: View {
     }
 }
 
-extension FTNode {
+extension FTNode: @preconcurrency Identifiable {
+    
+    var id: ObjectIdentifier {
+        ObjectIdentifier(node)
+    }
+}
 
+extension FTNode {
+    
     var provider: FrostyNative.ViewProvider {
         self.node.provider
     }
