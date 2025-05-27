@@ -38,12 +38,13 @@ import java.io.InputStream
 class JSContext {
 
     private val scope = CoroutineScope(Dispatchers.Default)
-    private var isolate: Deferred<JavaScriptIsolate>
+    private lateinit var vm: JavaScriptSandbox
+    private val isolate: Deferred<JavaScriptIsolate>
 
     constructor(context: Context) {
         isolate = scope.async {
-            val vm = JavaScriptSandbox.createConnectedInstanceAsync(context)
-            vm.await().createIsolate()
+            vm = JavaScriptSandbox.createConnectedInstanceAsync(context).await()
+            vm.createIsolate()
         }
         this.evaluateJavaScriptAsync(context.assets.open("polyfill.js"))
     }
@@ -61,5 +62,13 @@ class JSContext {
     fun evaluateJavaScriptAsync(stream: InputStream): Deferred<String> {
         val source = stream.bufferedReader().readText()
         return this.evaluateJavaScriptAsync(source)
+    }
+
+    fun provideNamedData(name: String, inputBytes: ByteArray): Deferred<Unit> {
+        return this.withIsolate {
+            if (vm.isFeatureSupported(JavaScriptSandbox.JS_FEATURE_PROVIDE_CONSUME_ARRAY_BUFFER)) {
+                it.provideNamedData(name, inputBytes)
+            }
+        }
     }
 }
