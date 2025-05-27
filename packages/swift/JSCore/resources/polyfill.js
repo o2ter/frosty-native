@@ -12,6 +12,10 @@ globalThis.process = new class Process {
     return this.#argv;
   }
 
+  get pid() {
+    return __APPLE_SPEC__.processInfo.processIdentifier;
+  }
+
   cwd() {
     return __APPLE_SPEC__.FileSystem.currentDirectoryPath();
   }
