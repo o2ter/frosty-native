@@ -26,23 +26,53 @@
 package com.o2ter
 
 import android.content.Context
+import android.util.Log
 import com.eclipsesource.v8.V8
+import com.eclipsesource.v8.V8Array
+import com.eclipsesource.v8.V8Object
 import java.io.InputStream
+
+private class Console {
+
+    fun log(message: V8Array) {
+        Log.d("Log", message.toString())
+    }
+}
 
 class JSContext {
 
-    val runtime: V8 = V8.createV8Runtime()
+    private val runtime: V8 = V8.createV8Runtime()
 
     constructor(context: Context) {
-        this.evaluateJavaScriptAsync(context.assets.open("polyfill.js"))
+        this.polyfill()
+        this.executeScript(context.assets.open("polyfill.js"))
     }
 
-    fun evaluateJavaScriptAsync(code: String) {
-        runtime.executeScript(code)
+    private fun polyfill() {
+        this.createObject("console") {
+            val console = Console()
+            it.registerJavaMethod(
+                console, "log", "log", arrayOf(V8Array::class.java)
+            )
+        }
+        this.createObject("__ANDROID_SPEC__") {
+
+        }
     }
 
-    fun evaluateJavaScriptAsync(stream: InputStream) {
+    private fun createObject(key: String, callback: (V8Object) -> Unit) {
+        val obj = V8Object(runtime)
+        callback(obj)
+        runtime.add(key, obj)
+        obj.close()
+    }
+
+    fun executeScript(code: String): Any {
+        return runtime.executeScript(code)
+    }
+
+    fun executeScript(stream: InputStream): Any {
         val source = stream.bufferedReader().readText()
-        return this.evaluateJavaScriptAsync(source)
+        return this.executeScript(source)
     }
 }
