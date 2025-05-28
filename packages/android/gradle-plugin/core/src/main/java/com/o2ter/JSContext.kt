@@ -26,6 +26,8 @@
 package com.o2ter
 
 import android.content.Context
+import android.util.Log
+import androidx.javascriptengine.JavaScriptConsoleCallback.ConsoleMessage.*
 import androidx.javascriptengine.JavaScriptIsolate
 import androidx.javascriptengine.JavaScriptSandbox
 import kotlinx.coroutines.CoroutineScope
@@ -45,6 +47,20 @@ class JSContext {
         isolate = scope.async {
             vm = JavaScriptSandbox.createConnectedInstanceAsync(context).await()
             vm.createIsolate()
+        }
+        this.withIsolate {
+            if (vm.isFeatureSupported(JavaScriptSandbox.JS_FEATURE_CONSOLE_MESSAGING)) {
+                it.setConsoleCallback {
+                    when (it.level) {
+                        LEVEL_LOG -> Log.v("JSContext", it.message)
+                        LEVEL_DEBUG -> Log.d("JSContext", it.message)
+                        LEVEL_INFO -> Log.i("JSContext", it.message)
+                        LEVEL_ERROR -> Log.e("JSContext", it.message)
+                        LEVEL_WARNING -> Log.w("JSContext", it.message)
+                        else -> Log.v("JSContext", it.message)
+                    }
+                }
+            }
         }
         this.evaluateJavaScriptAsync(context.assets.open("polyfill.js"))
     }
