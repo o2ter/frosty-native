@@ -27,7 +27,11 @@ package com.o2ter
 
 import android.content.Context
 import android.util.Log
-import androidx.javascriptengine.JavaScriptConsoleCallback.ConsoleMessage.*
+import androidx.javascriptengine.JavaScriptConsoleCallback.ConsoleMessage.LEVEL_DEBUG
+import androidx.javascriptengine.JavaScriptConsoleCallback.ConsoleMessage.LEVEL_ERROR
+import androidx.javascriptengine.JavaScriptConsoleCallback.ConsoleMessage.LEVEL_INFO
+import androidx.javascriptengine.JavaScriptConsoleCallback.ConsoleMessage.LEVEL_LOG
+import androidx.javascriptengine.JavaScriptConsoleCallback.ConsoleMessage.LEVEL_WARNING
 import androidx.javascriptengine.JavaScriptIsolate
 import androidx.javascriptengine.JavaScriptSandbox
 import kotlinx.coroutines.CoroutineScope
@@ -65,7 +69,7 @@ class JSContext {
         this.evaluateJavaScriptAsync(context.assets.open("polyfill.js"))
     }
 
-    fun <T> withIsolate(block: suspend CoroutineScope.(JavaScriptIsolate) -> T): Deferred<T> {
+    private fun <T> withIsolate(block: suspend CoroutineScope.(JavaScriptIsolate) -> T): Deferred<T> {
         return scope.async { block(isolate.await()) }
     }
 
