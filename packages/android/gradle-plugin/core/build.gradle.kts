@@ -48,13 +48,13 @@ dependencies {
     implementation(libs.guava)
     implementation(libs.androidx.concurrent.futures)
     implementation(libs.kotlinx.coroutines.guava)
-    implementation(libs.androidx.javascriptengine)
     implementation(libs.androidx.activity.compose)
     implementation(platform(libs.androidx.compose.bom))
     implementation(libs.androidx.ui)
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
+    implementation("com.eclipsesource.j2v8:j2v8:6.2.1@aar")
 }
 
 tasks.preBuild {

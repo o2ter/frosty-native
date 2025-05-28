@@ -26,69 +26,23 @@
 package com.o2ter
 
 import android.content.Context
-import android.util.Log
-import androidx.javascriptengine.JavaScriptConsoleCallback.ConsoleMessage.LEVEL_DEBUG
-import androidx.javascriptengine.JavaScriptConsoleCallback.ConsoleMessage.LEVEL_ERROR
-import androidx.javascriptengine.JavaScriptConsoleCallback.ConsoleMessage.LEVEL_INFO
-import androidx.javascriptengine.JavaScriptConsoleCallback.ConsoleMessage.LEVEL_LOG
-import androidx.javascriptengine.JavaScriptConsoleCallback.ConsoleMessage.LEVEL_WARNING
-import androidx.javascriptengine.JavaScriptIsolate
-import androidx.javascriptengine.JavaScriptSandbox
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Deferred
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
-import kotlinx.coroutines.guava.await
+import com.eclipsesource.v8.V8
 import java.io.InputStream
 
 class JSContext {
 
-    private val scope = CoroutineScope(Dispatchers.Default)
-    private lateinit var vm: JavaScriptSandbox
-    private val isolate: Deferred<JavaScriptIsolate>
+    val runtime: V8 = V8.createV8Runtime()
 
     constructor(context: Context) {
-        isolate = scope.async {
-            vm = JavaScriptSandbox.createConnectedInstanceAsync(context).await()
-            vm.createIsolate()
-        }
-        this.withIsolate {
-            if (vm.isFeatureSupported(JavaScriptSandbox.JS_FEATURE_CONSOLE_MESSAGING)) {
-                it.setConsoleCallback {
-                    when (it.level) {
-                        LEVEL_LOG -> Log.v("JSContext", it.message)
-                        LEVEL_DEBUG -> Log.d("JSContext", it.message)
-                        LEVEL_INFO -> Log.i("JSContext", it.message)
-                        LEVEL_ERROR -> Log.e("JSContext", it.message)
-                        LEVEL_WARNING -> Log.w("JSContext", it.message)
-                        else -> Log.v("JSContext", it.message)
-                    }
-                }
-            }
-        }
         this.evaluateJavaScriptAsync(context.assets.open("polyfill.js"))
     }
 
-    private fun <T> withIsolate(block: suspend CoroutineScope.(JavaScriptIsolate) -> T): Deferred<T> {
-        return scope.async { block(isolate.await()) }
+    fun evaluateJavaScriptAsync(code: String) {
+        runtime.executeScript(code)
     }
 
-    fun evaluateJavaScriptAsync(code: String): Deferred<String> {
-        return this.withIsolate {
-            it.evaluateJavaScriptAsync(code).await()
-        }
-    }
-
-    fun evaluateJavaScriptAsync(stream: InputStream): Deferred<String> {
+    fun evaluateJavaScriptAsync(stream: InputStream) {
         val source = stream.bufferedReader().readText()
         return this.evaluateJavaScriptAsync(source)
-    }
-
-    fun provideNamedData(name: String, inputBytes: ByteArray): Deferred<Unit> {
-        return this.withIsolate {
-            if (vm.isFeatureSupported(JavaScriptSandbox.JS_FEATURE_PROVIDE_CONSUME_ARRAY_BUFFER)) {
-                it.provideNamedData(name, inputBytes)
-            }
-        }
     }
 }

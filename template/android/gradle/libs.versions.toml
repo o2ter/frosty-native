@@ -4,7 +4,6 @@ concurrentFutures = "1.2.0"
 guava = "31.1-android"
 kotlin = "2.0.0"
 coreKtx = "1.16.0"
-javascriptengine = "1.0.0-rc01"
 junit = "4.13.2"
 junitVersion = "1.2.1"
 espressoCore = "3.6.1"
@@ -16,7 +15,6 @@ composeBom = "2025.05.01"
 [libraries]
 androidx-concurrent-futures = { module = "androidx.concurrent:concurrent-futures", version.ref = "concurrentFutures" }
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
-androidx-javascriptengine = { module = "androidx.javascriptengine:javascriptengine", version.ref = "javascriptengine" }
 android-gradle-plugin = { group = "com.android.tools.build", name = "gradle", version.ref = "androidGradlePlugin" }
 frosty-core = { module = "com.o2ter:core" }
 guava = { module = "com.google.guava:guava", version.ref = "guava" }
