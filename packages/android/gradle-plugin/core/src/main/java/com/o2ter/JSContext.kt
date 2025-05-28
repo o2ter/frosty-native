@@ -26,18 +26,9 @@
 package com.o2ter
 
 import android.content.Context
-import android.util.Log
 import com.eclipsesource.v8.V8
-import com.eclipsesource.v8.V8Array
 import com.eclipsesource.v8.V8Object
 import java.io.InputStream
-
-private class Console {
-
-    fun log(message: V8Array) {
-        Log.d("Log", message.toString())
-    }
-}
 
 class JSContext {
 
@@ -50,10 +41,9 @@ class JSContext {
 
     private fun polyfill() {
         this.createObject("console") {
-            val console = Console()
-            it.registerJavaMethod(
-                console, "log", "log", arrayOf(V8Array::class.java)
-            )
+            it.registerJavaMethod({ self, args ->
+                println(args)
+            }, "log")
         }
         this.createObject("__ANDROID_SPEC__") {
 
