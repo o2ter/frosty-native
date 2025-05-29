@@ -40,9 +40,7 @@ class FTContext {
 
     private fun polyfill() {
         this.addGlobalObject("__FROSTY_SPEC__") {
-            it.addObject("NativeModules") {
-                
-            }
+            it.addObject("NativeModules") { }
         }
     }
 
