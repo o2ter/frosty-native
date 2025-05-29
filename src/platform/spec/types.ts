@@ -91,7 +91,15 @@ declare global {
     get FileSystem(): __NS_APPLE_SPEC__.FileSystem;
   };
 
+  namespace __NS_ANDROID_SPEC__ {
+
+    interface Crypto {
+      randomUUID(): string;
+    }
+  }
+
   const __ANDROID_SPEC__: {
+    get crypto(): __NS_ANDROID_SPEC__.Crypto;
   };
 }
 

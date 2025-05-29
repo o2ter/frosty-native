@@ -28,8 +28,10 @@ package com.o2ter
 import android.content.Context
 import android.util.Log
 import com.eclipsesource.v8.V8
+import com.eclipsesource.v8.V8Array
 import com.eclipsesource.v8.V8Object
 import java.io.InputStream
+import java.util.UUID
 
 class JSCore {
 
@@ -50,7 +52,11 @@ class JSCore {
             it.registerJavaMethod({ self, args -> Log.e("JSContext", args.toString()) }, "error")
         }
         this.addGlobalObject("__ANDROID_SPEC__") {
-
+            it.addObject("crypto") {
+                it.registerJavaMethodWithReturn({ self, args ->
+                    UUID.randomUUID().toString()
+                }, "randomUUID")
+            }
         }
     }
 
@@ -69,6 +75,10 @@ class JSCore {
         val source = stream.bufferedReader().readText()
         return this.executeScript(source)
     }
+}
+
+fun V8Object.registerJavaMethodWithReturn(callback: (V8Object, V8Array) -> Any, jsFunctionName: String) {
+    this.registerJavaMethod(callback, jsFunctionName)
 }
 
 fun V8Object.addObject(key: String, callback: (V8Object) -> Unit) {
