@@ -26,6 +26,7 @@
 package com.o2ter
 
 import android.content.Context
+import android.util.Log
 import com.eclipsesource.v8.V8
 import com.eclipsesource.v8.V8Object
 import java.io.InputStream
@@ -41,9 +42,12 @@ class JSContext {
 
     private fun polyfill() {
         this.createObject("console") {
-            it.registerJavaMethod({ self, args ->
-                println(args)
-            }, "log")
+            it.registerJavaMethod({ self, args -> Log.v("JSContext", args.toString()) }, "log")
+            it.registerJavaMethod({ self, args -> Log.v("JSContext", args.toString()) }, "trace")
+            it.registerJavaMethod({ self, args -> Log.d("JSContext", args.toString()) }, "debug")
+            it.registerJavaMethod({ self, args -> Log.i("JSContext", args.toString()) }, "info")
+            it.registerJavaMethod({ self, args -> Log.w("JSContext", args.toString()) }, "warn")
+            it.registerJavaMethod({ self, args -> Log.e("JSContext", args.toString()) }, "error")
         }
         this.createObject("__ANDROID_SPEC__") {
 
