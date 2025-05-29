@@ -27,7 +27,6 @@ package com.o2ter
 
 import android.content.Context
 import android.util.Log
-import com.eclipsesource.v8.JavaCallback
 import com.eclipsesource.v8.V8
 import com.eclipsesource.v8.V8Array
 import com.eclipsesource.v8.V8ArrayBuffer
@@ -91,7 +90,7 @@ class JSCore {
     }
 }
 
-fun V8.createFunction(callback: JavaCallback): V8Function {
+fun V8.createFunction(callback: (V8Object, V8Array) -> Any): V8Function {
     return V8Function(this, callback)
 }
 
