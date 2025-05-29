@@ -95,6 +95,7 @@ declare global {
 
     interface Crypto {
       randomUUID(): string;
+      randomBytes(length: number): Uint8Array;
     }
   }
 
