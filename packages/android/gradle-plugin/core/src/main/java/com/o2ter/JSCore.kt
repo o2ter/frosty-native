@@ -71,7 +71,7 @@ class JSCore {
         this.addGlobalObject("__ANDROID_SPEC__") {
             it.addObject("crypto") {
                 it.registerJavaMethod(object : JavaCallback {
-                    override fun invoke(receiver: V8Object?, args: V8Array): Any {
+                    override fun invoke(receiver: V8Object?, args: V8Array): String {
                         return UUID.randomUUID().toString()
                     }
                 }, "randomUUID")
