@@ -27,9 +27,11 @@ package com.o2ter
 
 import android.content.Context
 import android.util.Log
+import com.eclipsesource.v8.JavaCallback
 import com.eclipsesource.v8.V8
 import com.eclipsesource.v8.V8Array
 import com.eclipsesource.v8.V8ArrayBuffer
+import com.eclipsesource.v8.V8Function
 import com.eclipsesource.v8.V8Object
 import com.eclipsesource.v8.V8TypedArray
 import com.eclipsesource.v8.V8Value
@@ -87,6 +89,10 @@ class JSCore {
         val source = stream.bufferedReader().readText()
         return this.executeScript(source)
     }
+}
+
+fun V8.createFunction(callback: JavaCallback): V8Function {
+    return V8Function(this, callback)
 }
 
 fun V8.createArrayBuffer(length: Int): V8ArrayBuffer {
