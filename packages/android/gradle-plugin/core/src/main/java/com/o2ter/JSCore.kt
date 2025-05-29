@@ -64,13 +64,16 @@ class JSCore {
                 it.registerJavaMethodWithReturn({ self, args ->
                     val length = args.getInteger(0)
                     val random = SecureRandom()
-                    val bytes = ByteBuffer.allocateDirect(length)
-                    random.nextBytes(bytes.array())
-                    val buffer = V8ArrayBuffer(runtime, bytes)
+                    val buffer = createArrayBuffer(length)
+                    random.nextBytes(buffer.array())
                     V8TypedArray(runtime, buffer, V8Value.BYTE, 0, length)
                 }, "randomBytes")
             }
         }
+    }
+    
+    fun createArrayBuffer(length: Int): V8ArrayBuffer {
+        return V8ArrayBuffer(runtime, ByteBuffer.allocateDirect(length))
     }
 
     fun addGlobalObject(key: String, callback: (V8Object) -> Unit) {
