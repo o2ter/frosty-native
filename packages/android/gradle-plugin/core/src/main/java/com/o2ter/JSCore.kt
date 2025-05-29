@@ -27,6 +27,8 @@ package com.o2ter
 
 import android.content.Context
 import android.util.Log
+import com.eclipsesource.v8.JavaCallback
+import com.eclipsesource.v8.JavaVoidCallback
 import com.eclipsesource.v8.V8
 import com.eclipsesource.v8.V8Array
 import com.eclipsesource.v8.V8ArrayBuffer
@@ -38,6 +40,7 @@ import java.io.InputStream
 import java.nio.ByteBuffer
 import java.security.SecureRandom
 import java.util.UUID
+
 
 class JSCore {
 
@@ -57,17 +60,29 @@ class JSCore {
             it.registerJavaMethod({ self, args -> Log.w("JSContext", args.toString()) }, "warn")
             it.registerJavaMethod({ self, args -> Log.e("JSContext", args.toString()) }, "error")
         }
+        runtime.registerJavaMethod(object : JavaVoidCallback {
+            override fun invoke(receiver: V8Object?, args: V8Array) {
+            }
+        }, "setTimeout")
+        this.runtime.registerJavaMethod({ self, args ->
+
+            val ms = args.getInteger(1)
+        }, "setTimeout")
         this.addGlobalObject("__ANDROID_SPEC__") {
             it.addObject("crypto") {
-                it.registerJavaMethodWithReturn({ self, args ->
-                    UUID.randomUUID().toString()
+                it.registerJavaMethod(object : JavaCallback {
+                    override fun invoke(receiver: V8Object?, args: V8Array): Any {
+                        return UUID.randomUUID().toString()
+                    }
                 }, "randomUUID")
-                it.registerJavaMethodWithReturn({ self, args ->
-                    val length = args.getInteger(0)
-                    val random = SecureRandom()
-                    val buffer = runtime.createArrayBuffer(length)
-                    random.nextBytes(buffer.array())
-                    V8TypedArray(runtime, buffer, V8Value.BYTE, 0, length)
+                it.registerJavaMethod(object : JavaCallback {
+                    override fun invoke(receiver: V8Object?, args: V8Array): Any {
+                        val length = args.getInteger(0)
+                        val random = SecureRandom()
+                        val buffer = runtime.createArrayBuffer(length)
+                        random.nextBytes(buffer.array())
+                        return V8TypedArray(runtime, buffer, V8Value.BYTE, 0, length)
+                    }
                 }, "randomBytes")
             }
         }
@@ -96,10 +111,6 @@ fun V8.createFunction(callback: (V8Object, V8Array) -> Any): V8Function {
 
 fun V8.createArrayBuffer(length: Int): V8ArrayBuffer {
     return V8ArrayBuffer(this, ByteBuffer.allocateDirect(length))
-}
-
-fun V8Object.registerJavaMethodWithReturn(callback: (V8Object, V8Array) -> Any, jsFunctionName: String) {
-    this.registerJavaMethod(callback, jsFunctionName)
 }
 
 fun V8Object.addObject(key: String, callback: (V8Object) -> Unit) {
