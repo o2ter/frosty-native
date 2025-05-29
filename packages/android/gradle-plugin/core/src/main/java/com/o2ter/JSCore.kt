@@ -29,8 +29,13 @@ import android.content.Context
 import android.util.Log
 import com.eclipsesource.v8.V8
 import com.eclipsesource.v8.V8Array
+import com.eclipsesource.v8.V8ArrayBuffer
 import com.eclipsesource.v8.V8Object
+import com.eclipsesource.v8.V8TypedArray
+import com.eclipsesource.v8.V8Value
 import java.io.InputStream
+import java.nio.ByteBuffer
+import java.security.SecureRandom
 import java.util.UUID
 
 class JSCore {
@@ -56,6 +61,14 @@ class JSCore {
                 it.registerJavaMethodWithReturn({ self, args ->
                     UUID.randomUUID().toString()
                 }, "randomUUID")
+                it.registerJavaMethodWithReturn({ self, args ->
+                    val length = args.getInteger(0)
+                    val random = SecureRandom()
+                    val bytes = ByteBuffer.allocateDirect(length)
+                    random.nextBytes(bytes.array())
+                    val buffer = V8ArrayBuffer(runtime, bytes)
+                    V8TypedArray(runtime, buffer, V8Value.BYTE, 0, length)
+                }, "randomBytes")
             }
         }
     }
