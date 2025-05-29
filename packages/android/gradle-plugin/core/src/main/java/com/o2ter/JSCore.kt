@@ -68,8 +68,8 @@ class JSCore {
         runtime.registerJavaMethod(object : JavaVoidCallback {
             override fun invoke(receiver: V8Object?, args: V8Array) {
                 if (args.length() < 2) { return }
-                val timeout = args.getInteger(1)
                 val callback = args.get(0) as? V8Function
+                val timeout = args.getInteger(1)
                 if (callback == null) { return }
                 val res = V8ObjectUtils.toV8Array(runtime, V8ObjectUtils.toList(args).subList(2))
                 val timer = Timer()
@@ -92,8 +92,8 @@ class JSCore {
         runtime.registerJavaMethod(object : JavaVoidCallback {
             override fun invoke(receiver: V8Object?, args: V8Array) {
                 if (args.length() < 2) { return }
-                val timeout = args.getInteger(1)
                 val callback = args.get(0) as? V8Function
+                val timeout = args.getInteger(1)
                 if (callback == null) { return }
                 val res = V8ObjectUtils.toV8Array(runtime, V8ObjectUtils.toList(args).subList(2))
                 val timer = Timer()
