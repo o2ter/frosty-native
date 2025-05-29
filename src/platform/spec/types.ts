@@ -90,6 +90,9 @@ declare global {
     };
     get FileSystem(): __NS_APPLE_SPEC__.FileSystem;
   };
+
+  const __ANDROID_SPEC__: {
+  };
 }
 
 export type _PlatformSpec = Readonly<{
