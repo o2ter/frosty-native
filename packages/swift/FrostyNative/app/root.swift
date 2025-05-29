@@ -26,12 +26,12 @@
 public struct FTRoot: View {
     
     let appKey: String
-    let runtime: FrostyNative
+    let runtime: FTContext
     
     @State var runner: JSCore.Value?
     @State var node: FTNode.State
     
-    public init(appKey: String, runtime: FrostyNative) {
+    public init(appKey: String, runtime: FTContext) {
         self.appKey = appKey
         self.runtime = runtime
         self.node = FTNode.State(type: FTView.self)
@@ -57,7 +57,7 @@ extension FTRoot {
     
     fileprivate static func run(
         appKey: String,
-        runtime: FrostyNative,
+        runtime: FTContext,
         node: FTNode.State
     ) -> JSCore.Value {
         let registry = runtime.evaluateScript("__FROSTY_SPEC__.AppRegistry")

@@ -23,19 +23,19 @@
 //  THE SOFTWARE.
 //
 
-public final class FrostyNative: Sendable {
+public final class FTContext: Sendable {
 
     public let context: JSCore
 
     init(
-        _ vm: JSCore.VirtualMachine = FrostyNative.createVirtualMachine()
+        _ vm: JSCore.VirtualMachine = FTContext.createVirtualMachine()
     ) {
         self.context = JSCore(vm)
         self.polyfill()
     }
 }
 
-extension FrostyNative {
+extension FTContext {
     
     static func createVirtualMachine() -> JSCore.VirtualMachine {
         class Ref: @unchecked Sendable {
@@ -55,7 +55,7 @@ extension FrostyNative {
     }
 }
 
-extension FrostyNative {
+extension FTContext {
     
     public var virtualMachine: JSCore.VirtualMachine {
         return self.context.virtualMachine
@@ -67,7 +67,7 @@ extension FrostyNative {
     
 }
 
-extension FrostyNative {
+extension FTContext {
 
     public var globalObject: JSCore.Value {
         return self.context.globalObject

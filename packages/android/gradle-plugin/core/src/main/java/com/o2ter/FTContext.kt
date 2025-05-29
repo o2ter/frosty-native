@@ -1,5 +1,5 @@
 //
-//  JSContext.kt
+//  FTContext.kt
 //
 //  The MIT License
 //  Copyright (c) 2021 - 2025 O2ter Limited. All rights reserved.
@@ -26,47 +26,35 @@
 package com.o2ter
 
 import android.content.Context
-import android.util.Log
-import com.eclipsesource.v8.V8
 import com.eclipsesource.v8.V8Object
 import java.io.InputStream
 
-class JSContext {
+class FTContext {
 
-    private val runtime: V8 = V8.createV8Runtime()
+    private val context: JSCore
 
     constructor(context: Context) {
+        this.context = JSCore(context)
         this.polyfill()
-        this.executeScript(context.assets.open("polyfill.js"))
     }
 
     private fun polyfill() {
-        this.addGlobalObject("console") {
-            it.registerJavaMethod({ self, args -> Log.v("JSContext", args.toString()) }, "log")
-            it.registerJavaMethod({ self, args -> Log.v("JSContext", args.toString()) }, "trace")
-            it.registerJavaMethod({ self, args -> Log.d("JSContext", args.toString()) }, "debug")
-            it.registerJavaMethod({ self, args -> Log.i("JSContext", args.toString()) }, "info")
-            it.registerJavaMethod({ self, args -> Log.w("JSContext", args.toString()) }, "warn")
-            it.registerJavaMethod({ self, args -> Log.e("JSContext", args.toString()) }, "error")
-        }
-        this.addGlobalObject("__ANDROID_SPEC__") {
-
+        this.addGlobalObject("__FROSTY_SPEC__") {
+            it.addObject("NativeModules") {
+                
+            }
         }
     }
 
     fun addGlobalObject(key: String, callback: (V8Object) -> Unit) {
-        val obj = V8Object(runtime)
-        callback(obj)
-        runtime.add(key, obj)
-        obj.close()
+        context.addGlobalObject(key, callback)
     }
 
     fun executeScript(code: String): Any {
-        return runtime.executeScript(code)
+        return context.executeScript(code)
     }
 
     fun executeScript(stream: InputStream): Any {
-        val source = stream.bufferedReader().readText()
-        return this.executeScript(source)
+        return context.executeScript(stream)
     }
 }

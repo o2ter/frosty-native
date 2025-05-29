@@ -52,7 +52,7 @@ extension FTNode: @preconcurrency Identifiable {
 
 extension FTNode {
     
-    var provider: FrostyNative.ViewProvider {
+    var provider: FTContext.ViewProvider {
         self.node.provider
     }
 
@@ -70,13 +70,13 @@ extension FTNode {
 
     @Observable class State: NSObject, FTNodeExport {
 
-        let provider: FrostyNative.ViewProvider
+        let provider: FTContext.ViewProvider
 
         var props: [String: any Sendable]
 
         var children: [FTNode.State]
 
-        init(provider: @escaping FrostyNative.ViewProvider) {
+        init(provider: @escaping FTContext.ViewProvider) {
             self.provider = provider
             self.props = [:]
             self.children = []

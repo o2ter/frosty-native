@@ -41,7 +41,7 @@ public typealias FTApplicationDelegateAdaptor = UIApplicationDelegateAdaptor
 
 open class FTAppDelegate: NSObject, _ApplicationDelegate, ObservableObject {
     
-    public let runtime = FrostyNative()
+    public let runtime = FTContext()
     
     open func sourceURL() -> URL? {
         return Bundle.main.url(forResource: "main", withExtension: "jsbundle")

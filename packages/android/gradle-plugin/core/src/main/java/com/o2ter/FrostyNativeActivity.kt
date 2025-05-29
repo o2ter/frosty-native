@@ -41,14 +41,14 @@ import java.io.InputStream
 
 open class FrostyNativeActivity : ComponentActivity() {
 
-    lateinit var engine: JSContext
+    lateinit var engine: FTContext
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            engine = JSContext(LocalContext.current)
-            engine.evaluateJavaScriptAsync(this.loadBundle())
+            engine = FTContext(LocalContext.current)
+            engine.executeScript(this.loadBundle())
             AppTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
                     Greeting(
