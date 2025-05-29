@@ -71,7 +71,7 @@ class JSCore {
             }
         }
     }
-    
+
     fun createArrayBuffer(length: Int): V8ArrayBuffer {
         return V8ArrayBuffer(runtime, ByteBuffer.allocateDirect(length))
     }
