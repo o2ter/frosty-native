@@ -41,7 +41,7 @@ class JSContext {
     }
 
     private fun polyfill() {
-        this.createObject("console") {
+        this.addGlobalObject("console") {
             it.registerJavaMethod({ self, args -> Log.v("JSContext", args.toString()) }, "log")
             it.registerJavaMethod({ self, args -> Log.v("JSContext", args.toString()) }, "trace")
             it.registerJavaMethod({ self, args -> Log.d("JSContext", args.toString()) }, "debug")
@@ -49,12 +49,12 @@ class JSContext {
             it.registerJavaMethod({ self, args -> Log.w("JSContext", args.toString()) }, "warn")
             it.registerJavaMethod({ self, args -> Log.e("JSContext", args.toString()) }, "error")
         }
-        this.createObject("__ANDROID_SPEC__") {
+        this.addGlobalObject("__ANDROID_SPEC__") {
 
         }
     }
 
-    private fun createObject(key: String, callback: (V8Object) -> Unit) {
+    fun addGlobalObject(key: String, callback: (V8Object) -> Unit) {
         val obj = V8Object(runtime)
         callback(obj)
         runtime.add(key, obj)
