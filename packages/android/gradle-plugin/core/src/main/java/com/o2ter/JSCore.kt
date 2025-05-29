@@ -151,7 +151,7 @@ class JSCore {
 }
 
 fun <E> List<E>.subList(from: Int): List<E> {
-    return this.subList(from, this.size)
+    return this.subList(from.coerceAtMost(this.size), this.size)
 }
 
 fun V8.createFunction(callback: (V8Object, V8Array) -> Any): V8Function {
