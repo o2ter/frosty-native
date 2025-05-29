@@ -64,16 +64,12 @@ class JSCore {
                 it.registerJavaMethodWithReturn({ self, args ->
                     val length = args.getInteger(0)
                     val random = SecureRandom()
-                    val buffer = createArrayBuffer(length)
+                    val buffer = runtime.createArrayBuffer(length)
                     random.nextBytes(buffer.array())
                     V8TypedArray(runtime, buffer, V8Value.BYTE, 0, length)
                 }, "randomBytes")
             }
         }
-    }
-
-    fun createArrayBuffer(length: Int): V8ArrayBuffer {
-        return V8ArrayBuffer(runtime, ByteBuffer.allocateDirect(length))
     }
 
     fun addGlobalObject(key: String, callback: (V8Object) -> Unit) {
@@ -91,6 +87,10 @@ class JSCore {
         val source = stream.bufferedReader().readText()
         return this.executeScript(source)
     }
+}
+
+fun V8.createArrayBuffer(length: Int): V8ArrayBuffer {
+    return V8ArrayBuffer(this, ByteBuffer.allocateDirect(length))
 }
 
 fun V8Object.registerJavaMethodWithReturn(callback: (V8Object, V8Array) -> Any, jsFunctionName: String) {
