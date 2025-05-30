@@ -39,13 +39,11 @@ class FTContext(context: Context) {
     }
 
     private fun polyfill() {
-        this.addGlobalObject("__FROSTY_SPEC__") {
-            it.addObject("NativeModules") { }
+        context.withRuntime { runtime ->
+            runtime.addGlobalObject("__FROSTY_SPEC__") {
+                it.addObject("NativeModules") { }
+            }
         }.discard()
-    }
-
-    fun addGlobalObject(key: String, callback: (V8Object) -> Unit): Deferred<Unit> {
-        return context.addGlobalObject(key, callback)
     }
 
     fun executeScript(code: String): Deferred<Any> {

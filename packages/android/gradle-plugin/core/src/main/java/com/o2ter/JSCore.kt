@@ -65,14 +65,14 @@ class JSCore(context: Context) {
 
     private fun polyfill(open: InputStream) {
         withRuntime { runtime ->
-            addGlobalObject("console") {
+            runtime.addGlobalObject("console") {
                 it.registerJavaMethod({ _, args -> Log.v("JSContext", args.toString()) }, "log")
                 it.registerJavaMethod({ _, args -> Log.v("JSContext", args.toString()) }, "trace")
                 it.registerJavaMethod({ _, args -> Log.d("JSContext", args.toString()) }, "debug")
                 it.registerJavaMethod({ _, args -> Log.i("JSContext", args.toString()) }, "info")
                 it.registerJavaMethod({ _, args -> Log.w("JSContext", args.toString()) }, "warn")
                 it.registerJavaMethod({ _, args -> Log.e("JSContext", args.toString()) }, "error")
-            }.await()
+            }
             runtime.registerJavaMethod({ receiver, args ->
                 val callback = args.get(0) as? V8Function
                 val timeout = if (args.length() < 2) 0 else args.getInteger(1)
@@ -125,7 +125,7 @@ class JSCore(context: Context) {
                 timers[id]?.cancel()
                 timers.remove(id)
             }, "clearInterval")
-            addGlobalObject("__ANDROID_SPEC__") {
+            runtime.addGlobalObject("__ANDROID_SPEC__") {
                 it.addObject("crypto") {
                     it.registerJavaMethod(JavaCallback { _, _ -> UUID.randomUUID().toString() }, "randomUUID")
                     it.registerJavaMethod(JavaCallback { _, args ->
@@ -136,18 +136,9 @@ class JSCore(context: Context) {
                         V8TypedArray(runtime, buffer, V8Value.BYTE, 0, length)
                     }, "randomBytes")
                 }
-            }.await()
+            }
             executeScript(open).await()
         }.discard()
-    }
-
-    fun addGlobalObject(key: String, callback: (V8Object) -> Unit): Deferred<Unit> {
-        return this.withRuntime { runtime ->
-            val obj = V8Object(runtime)
-            callback(obj)
-            runtime.add(key, obj)
-            obj.close()
-        }
     }
 
     fun executeScript(code: String): Deferred<Any> {
@@ -166,6 +157,13 @@ fun Any?.discard() = Unit
 
 fun <E> List<E>.subList(from: Int): List<E> {
     return this.subList(from.coerceAtMost(this.size), this.size)
+}
+
+fun V8.addGlobalObject(key: String, callback: (V8Object) -> Unit) {
+    val obj = V8Object(this)
+    callback(obj)
+    this.add(key, obj)
+    obj.close()
 }
 
 fun V8.createFunction(callback: (V8Object, V8Array) -> Any): V8Function {
