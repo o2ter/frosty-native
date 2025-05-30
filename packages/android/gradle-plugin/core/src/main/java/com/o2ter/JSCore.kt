@@ -35,6 +35,7 @@ import com.eclipsesource.v8.V8Function
 import com.eclipsesource.v8.V8Object
 import com.eclipsesource.v8.V8TypedArray
 import com.eclipsesource.v8.V8Value
+import com.eclipsesource.v8.utils.MemoryManager
 import com.eclipsesource.v8.utils.V8ObjectUtils
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Deferred
@@ -60,7 +61,11 @@ class JSCore(context: Context) {
     }
 
     fun <T> withRuntime(block: suspend CoroutineScope.(V8) -> T): Deferred<T> {
-        return scope.async { block(runtime.await()) }
+        return scope.async {
+            runtime.await().memoryScope {
+                block(it)
+            }
+        }
     }
 
     private fun polyfill(open: InputStream) {
@@ -157,6 +162,15 @@ fun Any?.discard() = Unit
 
 fun <E> List<E>.subList(from: Int): List<E> {
     return this.subList(from.coerceAtMost(this.size), this.size)
+}
+
+inline fun <T> V8.memoryScope(body: (V8) -> T) : T {
+    val scope = MemoryManager(this)
+    try {
+        return body(this)
+    } finally {
+        scope.release()
+    }
 }
 
 fun V8.addGlobalObject(key: String, callback: (V8Object) -> Unit) {
