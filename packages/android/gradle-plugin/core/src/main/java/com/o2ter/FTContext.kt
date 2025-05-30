@@ -26,31 +26,31 @@
 package com.o2ter
 
 import android.content.Context
-import com.eclipsesource.v8.V8Object
+import com.eclipsesource.v8.V8
 import kotlinx.coroutines.Deferred
 import java.io.InputStream
 
 class FTContext(context: Context) {
 
-    private val context: JSCore = JSCore(context)
+    private val core: JSCore = JSCore(context)
 
     init {
-        this.polyfill()
-    }
-
-    private fun polyfill() {
-        context.withRuntime { runtime ->
-            runtime.addGlobalObject("__FROSTY_SPEC__") {
-                it.addObject("NativeModules") { }
-            }
+        core.withRuntime {
+            polyfill(it)
         }.discard()
     }
 
+    private fun polyfill(runtime: V8) {
+        runtime.addGlobalObject("__FROSTY_SPEC__") {
+            it.addObject("NativeModules") { }
+        }
+    }
+
     fun executeScript(code: String): Deferred<Any> {
-        return context.executeScript(code)
+        return core.executeScript(code)
     }
 
     fun executeScript(stream: InputStream): Deferred<Any> {
-        return context.executeScript(stream)
+        return core.executeScript(stream)
     }
 }
