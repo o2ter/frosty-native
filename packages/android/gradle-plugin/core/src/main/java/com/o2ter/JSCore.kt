@@ -47,7 +47,7 @@ import java.util.Timer
 import java.util.TimerTask
 import java.util.UUID
 
-class JSCore {
+class JSCore(context: Context) {
 
     private val scope = CoroutineScope(Dispatchers.Default)
     private val runtime = scope.async { V8.createV8Runtime() }
@@ -55,7 +55,7 @@ class JSCore {
     private var timerId = 0
     private var timers = HashMap<Int, Timer>()
 
-    constructor(context: Context) {
+    init {
         this.polyfill()
         this.executeScript(context.assets.open("polyfill.js"))
     }
