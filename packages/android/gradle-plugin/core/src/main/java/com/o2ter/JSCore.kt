@@ -37,6 +37,9 @@ import com.eclipsesource.v8.V8Object
 import com.eclipsesource.v8.V8TypedArray
 import com.eclipsesource.v8.V8Value
 import com.eclipsesource.v8.utils.V8ObjectUtils
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
 import java.io.InputStream
 import java.nio.ByteBuffer
 import java.security.SecureRandom
@@ -46,7 +49,8 @@ import java.util.UUID
 
 class JSCore {
 
-    private val runtime = V8.createV8Runtime()
+    private val scope = CoroutineScope(Dispatchers.Default)
+    private val runtime = scope.async { V8.createV8Runtime() }
 
     private var timerId = 0
     private var timers = HashMap<Int, Timer>()
