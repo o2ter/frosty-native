@@ -39,8 +39,11 @@ import com.eclipsesource.v8.utils.MemoryManager
 import com.eclipsesource.v8.utils.V8ObjectUtils
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Deferred
+import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.async
+import kotlinx.coroutines.newSingleThreadContext
 import java.io.InputStream
 import java.nio.ByteBuffer
 import java.security.SecureRandom
@@ -48,9 +51,11 @@ import java.util.Timer
 import java.util.TimerTask
 import java.util.UUID
 
+@OptIn(ExperimentalCoroutinesApi::class)
 class JSCore(context: Context) {
 
-    private val scope = CoroutineScope(Dispatchers.Default)
+    @OptIn(DelicateCoroutinesApi::class)
+    private val scope = CoroutineScope(newSingleThreadContext("JSCoreThread"))
     private val runtime = scope.async { V8.createV8Runtime() }
 
     private var timerId = 0
