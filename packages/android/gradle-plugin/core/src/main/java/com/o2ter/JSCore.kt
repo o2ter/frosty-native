@@ -126,7 +126,7 @@ class JSCore(context: Context) {
                         callback.call(receiver, res)
                     }.discard()
                 }
-            }, 0, timeout.toLong())
+            }, timeout.toLong(), timeout.toLong())
             timers[timerId++] = timer
         }, "setInterval")
         runtime.registerJavaMethod({ receiver, args ->
