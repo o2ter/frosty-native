@@ -75,65 +75,57 @@ class JSCore(context: Context) {
                 it.registerJavaMethod({ _, args -> Log.w("JSContext", args.toString()) }, "warn")
                 it.registerJavaMethod({ _, args -> Log.e("JSContext", args.toString()) }, "error")
             }.await()
-            runtime.registerJavaMethod(object : JavaVoidCallback {
-                override fun invoke(receiver: V8Object?, args: V8Array) {
-                    val callback = args.get(0) as? V8Function
-                    val timeout = if (args.length() < 2) 0 else args.getInteger(1)
-                    if (callback == null) {
-                        return
-                    }
-                    val res =
-                        V8ObjectUtils.toV8Array(runtime, V8ObjectUtils.toList(args).subList(2))
-                    val timer = Timer()
-                    timer.schedule(object : TimerTask() {
-                        override fun run() {
-                            withRuntime {
-                                callback.call(receiver, res)
-                            }.discard()
-                        }
-                    }, timeout.toLong())
-                    timers[timerId++] = timer
+            runtime.registerJavaMethod({ receiver, args ->
+                val callback = args.get(0) as? V8Function
+                val timeout = if (args.length() < 2) 0 else args.getInteger(1)
+                if (callback == null) {
+                    return@registerJavaMethod
                 }
+                val res =
+                    V8ObjectUtils.toV8Array(runtime, V8ObjectUtils.toList(args).subList(2))
+                val timer = Timer()
+                timer.schedule(object : TimerTask() {
+                    override fun run() {
+                        withRuntime {
+                            callback.call(receiver, res)
+                        }.discard()
+                    }
+                }, timeout.toLong())
+                timers[timerId++] = timer
             }, "setTimeout")
-            runtime.registerJavaMethod(object : JavaVoidCallback {
-                override fun invoke(receiver: V8Object?, args: V8Array) {
-                    if (args.length() != 1) {
-                        return
-                    }
-                    val id = args.getInteger(0)
-                    timers[id]?.cancel()
-                    timers.remove(id)
+            runtime.registerJavaMethod({ receiver, args ->
+                if (args.length() != 1) {
+                    return@registerJavaMethod
                 }
+                val id = args.getInteger(0)
+                timers[id]?.cancel()
+                timers.remove(id)
             }, "clearTimeout")
-            runtime.registerJavaMethod(object : JavaVoidCallback {
-                override fun invoke(receiver: V8Object?, args: V8Array) {
-                    val callback = args.get(0) as? V8Function
-                    val timeout = if (args.length() < 2) 0 else args.getInteger(1)
-                    if (callback == null) {
-                        return
-                    }
-                    val res =
-                        V8ObjectUtils.toV8Array(runtime, V8ObjectUtils.toList(args).subList(2))
-                    val timer = Timer()
-                    timer.schedule(object : TimerTask() {
-                        override fun run() {
-                            withRuntime {
-                                callback.call(receiver, res)
-                            }.discard()
-                        }
-                    }, 0, timeout.toLong())
-                    timers[timerId++] = timer
+            runtime.registerJavaMethod({ receiver, args ->
+                val callback = args.get(0) as? V8Function
+                val timeout = if (args.length() < 2) 0 else args.getInteger(1)
+                if (callback == null) {
+                    return@registerJavaMethod
                 }
+                val res =
+                    V8ObjectUtils.toV8Array(runtime, V8ObjectUtils.toList(args).subList(2))
+                val timer = Timer()
+                timer.schedule(object : TimerTask() {
+                    override fun run() {
+                        withRuntime {
+                            callback.call(receiver, res)
+                        }.discard()
+                    }
+                }, 0, timeout.toLong())
+                timers[timerId++] = timer
             }, "setInterval")
-            runtime.registerJavaMethod(object : JavaVoidCallback {
-                override fun invoke(receiver: V8Object?, args: V8Array) {
-                    if (args.length() != 1) {
-                        return
-                    }
-                    val id = args.getInteger(0)
-                    timers[id]?.cancel()
-                    timers.remove(id)
+            runtime.registerJavaMethod({ receiver, args ->
+                if (args.length() != 1) {
+                    return@registerJavaMethod
                 }
+                val id = args.getInteger(0)
+                timers[id]?.cancel()
+                timers.remove(id)
             }, "clearInterval")
             addGlobalObject("__ANDROID_SPEC__") {
                 it.addObject("crypto") {
