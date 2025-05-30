@@ -177,7 +177,6 @@ fun V8.addGlobalObject(key: String, callback: (V8Object) -> Unit) {
     val obj = V8Object(this)
     callback(obj)
     this.add(key, obj)
-    obj.close()
 }
 
 fun V8.createFunction(callback: (V8Object, V8Array) -> Any): V8Function {
