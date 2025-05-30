@@ -28,7 +28,6 @@ package com.o2ter
 import android.content.Context
 import android.util.Log
 import com.eclipsesource.v8.JavaCallback
-import com.eclipsesource.v8.JavaVoidCallback
 import com.eclipsesource.v8.V8
 import com.eclipsesource.v8.V8Array
 import com.eclipsesource.v8.V8ArrayBuffer
@@ -57,15 +56,14 @@ class JSCore(context: Context) {
     private var timers = HashMap<Int, Timer>()
 
     init {
-        this.polyfill()
-        this.executeScript(context.assets.open("polyfill.js")).discard()
+        this.polyfill(context.assets.open("polyfill.js"))
     }
 
     fun <T> withRuntime(block: suspend CoroutineScope.(V8) -> T): Deferred<T> {
         return scope.async { block(runtime.await()) }
     }
 
-    private fun polyfill() {
+    private fun polyfill(open: InputStream) {
         withRuntime { runtime ->
             addGlobalObject("console") {
                 it.registerJavaMethod({ _, args -> Log.v("JSContext", args.toString()) }, "log")
@@ -139,6 +137,7 @@ class JSCore(context: Context) {
                     }, "randomBytes")
                 }
             }.await()
+            executeScript(open).await()
         }.discard()
     }
 
