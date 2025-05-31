@@ -170,10 +170,6 @@ class JSCore(context: Context) {
         val args = args.twin()
         val callback = callback.twin()
         override fun run() {
-            println(args.isReleased)
-            println(callback.isReleased)
-            println(this.args.isReleased)
-            println(this.callback.isReleased)
             val self = this
             withRuntime {
                 self.callback.call(receiver, self.args)
