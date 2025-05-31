@@ -99,7 +99,6 @@ class JSCore(context: Context) {
             val timer = Timer()
             val task = createTimerTask(
                 callback,
-                receiver,
                 V8ObjectUtils.toV8Array(runtime, V8ObjectUtils.toList(args).subList(2))
             )
             timer.schedule(task, timeout.toLong())
@@ -122,7 +121,6 @@ class JSCore(context: Context) {
             val timer = Timer()
             val task = createTimerTask(
                 callback,
-                receiver,
                 V8ObjectUtils.toV8Array(runtime, V8ObjectUtils.toList(args).subList(2))
             )
             timer.schedule(task, timeout.toLong(), timeout.toLong())
@@ -163,7 +161,6 @@ class JSCore(context: Context) {
 
     private fun createTimerTask(
         callback: V8Function,
-        receiver: V8Object,
         args: V8Array
     ) = object : TimerTask() {
         val args = args.twin()
@@ -171,7 +168,7 @@ class JSCore(context: Context) {
         override fun run() {
             val self = this
             withRuntime {
-                self.callback.call(receiver, self.args)
+                self.callback.call(null, self.args)
             }.discard()
         }
     }
