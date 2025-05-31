@@ -171,6 +171,10 @@ class JSCore(context: Context) {
                 self.callback.call(null, self.args)
             }.discard()
         }
+        protected fun finalize() {
+            this.args.close()
+            this.callback.close()
+        }
     }
 
 }
