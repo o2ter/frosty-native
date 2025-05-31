@@ -62,8 +62,8 @@ class JSCore(context: Context) {
     private var timers = HashMap<Int, Timer>()
 
     init {
-        withRuntime { runtime ->
-            polyfill(runtime)
+        withRuntime {
+            polyfill(it)
             executeScript(context.assets.open("polyfill.js")).await()
         }.discard()
     }
@@ -96,16 +96,13 @@ class JSCore(context: Context) {
             if (callback == null) {
                 return@registerJavaMethod
             }
-            val res =
-                V8ObjectUtils.toV8Array(runtime, V8ObjectUtils.toList(args).subList(2))
             val timer = Timer()
-            timer.schedule(object : TimerTask() {
-                override fun run() {
-                    withRuntime {
-                        callback.call(receiver, res)
-                    }.discard()
-                }
-            }, timeout.toLong())
+            timer.schedule(createTimerTask(
+                runtime,
+                callback,
+                receiver,
+                V8ObjectUtils.toV8Array(runtime, V8ObjectUtils.toList(args).subList(2))
+            ), timeout.toLong())
             timers[timerId++] = timer
         }, "setTimeout")
         runtime.registerJavaMethod({ receiver, args ->
@@ -122,16 +119,13 @@ class JSCore(context: Context) {
             if (callback == null) {
                 return@registerJavaMethod
             }
-            val res =
-                V8ObjectUtils.toV8Array(runtime, V8ObjectUtils.toList(args).subList(2))
             val timer = Timer()
-            timer.schedule(object : TimerTask() {
-                override fun run() {
-                    withRuntime {
-                        callback.call(receiver, res)
-                    }.discard()
-                }
-            }, timeout.toLong(), timeout.toLong())
+            timer.schedule(createTimerTask(
+                runtime,
+                callback,
+                receiver,
+                V8ObjectUtils.toV8Array(runtime, V8ObjectUtils.toList(args).subList(2))
+            ), timeout.toLong(), timeout.toLong())
             timers[timerId++] = timer
         }, "setInterval")
         runtime.registerJavaMethod({ receiver, args ->
@@ -166,6 +160,27 @@ class JSCore(context: Context) {
         val source = stream.bufferedReader().readText()
         return this.executeScript(source)
     }
+
+    private fun createTimerTask(
+        runtime: V8,
+        callback: V8Function,
+        receiver: V8Object,
+        args: V8Array
+    ) = object : TimerTask() {
+        val args = args.twin()
+        val callback = callback.twin()
+        override fun run() {
+            println(args.isReleased)
+            println(callback.isReleased)
+            println(this.args.isReleased)
+            println(this.callback.isReleased)
+            val self = this
+            withRuntime {
+                self.callback.call(receiver, self.args)
+            }.discard()
+        }
+    }
+
 }
 
 fun Any?.discard() = Unit
