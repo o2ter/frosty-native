@@ -97,11 +97,12 @@ class JSCore(context: Context) {
                 return@registerJavaMethod
             }
             val timer = Timer()
-            timer.schedule(createTimerTask(
+            val task = createTimerTask(
                 callback,
                 receiver,
                 V8ObjectUtils.toV8Array(runtime, V8ObjectUtils.toList(args).subList(2))
-            ), timeout.toLong())
+            )
+            timer.schedule(task, timeout.toLong())
             timers[timerId++] = timer
         }, "setTimeout")
         runtime.registerJavaMethod({ receiver, args ->
@@ -119,11 +120,12 @@ class JSCore(context: Context) {
                 return@registerJavaMethod
             }
             val timer = Timer()
-            timer.schedule(createTimerTask(
+            val task = createTimerTask(
                 callback,
                 receiver,
                 V8ObjectUtils.toV8Array(runtime, V8ObjectUtils.toList(args).subList(2))
-            ), timeout.toLong(), timeout.toLong())
+            )
+            timer.schedule(task, timeout.toLong(), timeout.toLong())
             timers[timerId++] = timer
         }, "setInterval")
         runtime.registerJavaMethod({ receiver, args ->
