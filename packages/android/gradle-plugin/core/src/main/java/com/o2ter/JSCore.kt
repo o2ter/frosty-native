@@ -28,7 +28,6 @@ package com.o2ter
 import android.content.Context
 import android.util.Log
 import com.eclipsesource.v8.JavaCallback
-import com.eclipsesource.v8.Releasable
 import com.eclipsesource.v8.V8
 import com.eclipsesource.v8.V8Array
 import com.eclipsesource.v8.V8ArrayBuffer
