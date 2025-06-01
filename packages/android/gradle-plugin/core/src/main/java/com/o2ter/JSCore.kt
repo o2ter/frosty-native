@@ -28,6 +28,7 @@ package com.o2ter
 import android.content.Context
 import android.util.Log
 import com.eclipsesource.v8.JavaCallback
+import com.eclipsesource.v8.Releasable
 import com.eclipsesource.v8.V8
 import com.eclipsesource.v8.V8Array
 import com.eclipsesource.v8.V8ArrayBuffer
@@ -40,7 +41,6 @@ import com.eclipsesource.v8.utils.V8ObjectUtils
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.DelicateCoroutinesApi
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.async
 import kotlinx.coroutines.newSingleThreadContext
@@ -99,7 +99,7 @@ class JSCore(context: Context) {
             val timer = Timer()
             val task = createTimerTask(
                 callback,
-                V8ObjectUtils.toV8Array(runtime, V8ObjectUtils.toList(args).subList(2))
+                V8ObjectUtils.toV8Array(runtime, args.toList().subList(2))
             )
             timer.schedule(task, timeout.toLong())
             timers[timerId++] = timer
@@ -121,7 +121,7 @@ class JSCore(context: Context) {
             val timer = Timer()
             val task = createTimerTask(
                 callback,
-                V8ObjectUtils.toV8Array(runtime, V8ObjectUtils.toList(args).subList(2))
+                V8ObjectUtils.toV8Array(runtime, args.toList().subList(2))
             )
             timer.schedule(task, timeout.toLong(), timeout.toLong())
             timers[timerId++] = timer
@@ -174,13 +174,21 @@ class JSCore(context: Context) {
         }
     }
 
-
 }
 
 fun Any?.discard() = Unit
 
 fun <E> List<E>.subList(from: Int): List<E> {
+    println(this)
     return this.subList(from.coerceAtMost(this.size), this.size)
+}
+
+fun V8Array.toList(): List<Any> {
+    val result = ArrayList<Any>()
+    for (i in 0..<this.length()) {
+        result.add(this.get(i))
+    }
+    return result
 }
 
 inline fun <T> V8.memoryScope(body: (V8) -> T) : T {
