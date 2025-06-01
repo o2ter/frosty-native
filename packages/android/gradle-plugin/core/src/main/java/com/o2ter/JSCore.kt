@@ -90,7 +90,7 @@ class JSCore(context: Context) {
             it.registerJavaMethod({ _, args -> Log.w("JSContext", args.toString()) }, "warn")
             it.registerJavaMethod({ _, args -> Log.e("JSContext", args.toString()) }, "error")
         }
-        runtime.registerJavaMethod({ receiver, args ->
+        runtime.registerJavaMethod({ _, args ->
             val callback = args.get(0) as? V8Function
             val timeout = if (args.length() < 2) 0 else args.getInteger(1)
             if (callback == null) {
@@ -104,7 +104,7 @@ class JSCore(context: Context) {
             timer.schedule(task, timeout.toLong())
             timers[timerId++] = timer
         }, "setTimeout")
-        runtime.registerJavaMethod({ receiver, args ->
+        runtime.registerJavaMethod({ _, args ->
             if (args.length() != 1) {
                 return@registerJavaMethod
             }
@@ -112,7 +112,7 @@ class JSCore(context: Context) {
             timers[id]?.cancel()
             timers.remove(id)
         }, "clearTimeout")
-        runtime.registerJavaMethod({ receiver, args ->
+        runtime.registerJavaMethod({ _, args ->
             val callback = args.get(0) as? V8Function
             val timeout = if (args.length() < 2) 0 else args.getInteger(1)
             if (callback == null) {
@@ -126,7 +126,7 @@ class JSCore(context: Context) {
             timer.schedule(task, timeout.toLong(), timeout.toLong())
             timers[timerId++] = timer
         }, "setInterval")
-        runtime.registerJavaMethod({ receiver, args ->
+        runtime.registerJavaMethod({ _, args ->
             if (args.length() != 1) {
                 return@registerJavaMethod
             }
