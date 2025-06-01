@@ -161,19 +161,17 @@ class JSCore(context: Context) {
         callback: V8Function,
         args: V8Array
     ) = object : TimerTask() {
-        val args = args
-        val callback = callback
         override fun run() {
-            val self = this
             withRuntime {
-                self.callback.call(null, self.args)
+                callback.call(null, args)
             }.discard()
         }
         protected fun finalize() {
-            this.args.close()
-            this.callback.close()
+            args.close()
+            callback.close()
         }
     }
+
 
 }
 
