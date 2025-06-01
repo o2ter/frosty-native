@@ -57,27 +57,41 @@ class JSCore(context: Context) {
     private val scope = CoroutineScope(newSingleThreadContext("JSCoreThread"))
     private val runtime = scope.async { V8.createV8Runtime() }
 
+    private val managers = ArrayList<MemoryManager>()
+
     private var timerId = 0
     private var timers = HashMap<Int, Timer>()
 
     init {
         withRuntime {
-            it.memoryScope {
-                polyfill(it)
-            }
+            polyfill(it)
             executeScript(context.assets.open("polyfill.js")).await()
         }.discard()
     }
 
     fun <T> withRuntime(block: suspend CoroutineScope.(V8) -> T): Deferred<T> {
         return scope.async {
+            val v8 = runtime.await()
+            val scope = MemoryManager(v8)
+            managers.add(scope)
             try {
-                block(runtime.await())
+                val result = block(v8)
+                if (result is V8Value) persist(result) else result
             } catch (e: Exception) {
                 Log.e("JSContext", e.stackTraceToString())
                 throw e
+            } finally {
+                managers.remove(scope)
+                scope.release()
             }
         }
+    }
+
+    fun <T: V8Value> persist(obj: T): T {
+        for (manager in managers) {
+            manager.persist(obj)
+        }
+        return obj as T
     }
 
     private fun polyfill(runtime: V8) {
@@ -162,14 +176,17 @@ class JSCore(context: Context) {
         callback: V8Function,
         args: V8Array
     ) = object : TimerTask() {
+        val callback = persist(callback)
+        val args = persist(args)
         override fun run() {
+            val self = this
             withRuntime {
-                callback.call(null, args)
+                self.callback.call(null, self.args)
             }.discard()
         }
         protected fun finalize() {
-            args.close()
-            callback.close()
+            this.args.close()
+            this.callback.close()
         }
     }
 
@@ -187,15 +204,6 @@ fun V8Array.toList(): List<Any> {
         result.add(this.get(i))
     }
     return result
-}
-
-inline fun <T> V8.memoryScope(body: (V8) -> T) : T {
-    val scope = MemoryManager(this)
-    try {
-        return body(this)
-    } finally {
-        scope.release()
-    }
 }
 
 fun V8.addGlobalObject(key: String, callback: (V8Object) -> Unit) {
