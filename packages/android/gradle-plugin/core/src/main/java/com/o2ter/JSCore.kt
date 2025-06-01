@@ -178,7 +178,6 @@ class JSCore(context: Context) {
 fun Any?.discard() = Unit
 
 fun <E> List<E>.subList(from: Int): List<E> {
-    println(this)
     return this.subList(from.coerceAtMost(this.size), this.size)
 }
 
