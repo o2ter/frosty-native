@@ -70,13 +70,11 @@ class JSCore(context: Context) {
 
     fun <T> withRuntime(block: suspend CoroutineScope.(V8) -> T): Deferred<T> {
         return scope.async {
-            runtime.await().memoryScope {
-                try {
-                    block(it)
-                } catch (e: Exception) {
-                    Log.e("JSContext", e.stackTraceToString())
-                    throw e
-                }
+            try {
+                block(runtime.await())
+            } catch (e: Exception) {
+                Log.e("JSContext", e.stackTraceToString())
+                throw e
             }
         }
     }
