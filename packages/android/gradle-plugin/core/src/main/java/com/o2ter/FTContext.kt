@@ -36,7 +36,9 @@ class FTContext(context: Context) {
 
     init {
         core.withRuntime {
-            polyfill(it)
+            it.memoryScope {
+                polyfill(it)
+            }
         }.discard()
     }
 

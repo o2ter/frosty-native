@@ -63,7 +63,9 @@ class JSCore(context: Context) {
 
     init {
         withRuntime {
-            polyfill(it)
+            it.memoryScope {
+                polyfill(it)
+            }
             executeScript(context.assets.open("polyfill.js")).await()
         }.discard()
     }
