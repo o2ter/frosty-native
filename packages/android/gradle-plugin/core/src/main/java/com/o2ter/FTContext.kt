@@ -26,11 +26,12 @@
 package com.o2ter
 
 import android.content.Context
+import com.eclipsesource.v8.JavaCallback
 import com.eclipsesource.v8.V8
 import kotlinx.coroutines.Deferred
 import java.io.InputStream
 
-class FTContext(context: Context) {
+class FTContext(private val activity: FrostyNativeActivity, context: Context) {
 
     private val core: JSCore = JSCore(context)
 
@@ -41,8 +42,15 @@ class FTContext(context: Context) {
     }
 
     private fun polyfill(runtime: V8) {
+        val preferences = activity.getPreferences(Context.MODE_PRIVATE)
         runtime.addGlobalObject("__FROSTY_SPEC__") {
-            it.addObject("NativeModules") { }
+            it.addObject("NativeModules") {
+                it.addObject("localStorage") {
+                    it.registerJavaMethod(JavaCallback {_, _, ->
+                        preferences.all.map { it.key }
+                    }, "keys")
+                }
+            }
         }
     }
 
