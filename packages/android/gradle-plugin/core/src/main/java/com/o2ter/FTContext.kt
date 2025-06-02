@@ -51,8 +51,30 @@ class FTContext(private val activity: FrostyNativeActivity, context: Context) {
                     it.registerJavaMethod(JavaCallback { _, _ ->
                         V8ObjectUtils.toV8Array(runtime, preferences.all.map { it.key })
                     }, "keys")
+                    it.registerJavaMethod(JavaCallback { _, args ->
+                        if (args.length() != 1) throw IllegalArgumentException()
+                        val key = args.getString(0)
+                        preferences.getString(key, null)
+                    }, "getItem")
+                    it.registerJavaMethod({ _, args ->
+                        if (args.length() != 2) throw IllegalArgumentException()
+                        val key = args.getString(0)
+                        val value = args.getString(1)
+                        preferences.edit(commit = true) {
+                            putString(key, value)
+                        }
+                    }, "setItem")
+                    it.registerJavaMethod({ _, args ->
+                        if (args.length() != 1) throw IllegalArgumentException()
+                        val key = args.getString(0)
+                        preferences.edit(commit = true) {
+                            remove(key)
+                        }
+                    }, "removeItem")
                     it.registerJavaMethod({ _, _ ->
-                        preferences.edit(commit = true) { clear() }
+                        preferences.edit(commit = true) {
+                            clear()
+                        }
                     }, "clear")
                 }
             }
