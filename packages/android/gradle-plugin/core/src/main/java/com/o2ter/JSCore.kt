@@ -43,6 +43,7 @@ import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.async
 import kotlinx.coroutines.newSingleThreadContext
+import java.io.Closeable
 import java.io.InputStream
 import java.nio.ByteBuffer
 import java.security.SecureRandom
@@ -60,7 +61,7 @@ class JSCore(context: Context) {
     private val managers = ArrayList<MemoryManager>()
 
     private var timerId = 0
-    private var timers = HashMap<Int, Timer>()
+    private var timers = HashMap<Int, CloseableTimerTask>()
 
     init {
         withRuntime {
@@ -110,12 +111,13 @@ class JSCore(context: Context) {
                 return@registerJavaMethod
             }
             val timer = Timer()
-            val task = createTimerTask(
+            val task = CloseableTimerTask(
+                this,
                 callback,
                 V8ObjectUtils.toV8Array(runtime, args.toList().subList(2))
             )
             timer.schedule(task, timeout.toLong())
-            timers[timerId++] = timer
+            timers[timerId++] = task
         }, "setTimeout")
         runtime.registerJavaMethod({ _, args ->
             if (args.length() != 1) {
@@ -123,6 +125,7 @@ class JSCore(context: Context) {
             }
             val id = args.getInteger(0)
             timers[id]?.cancel()
+            timers[id]?.close()
             timers.remove(id)
         }, "clearTimeout")
         runtime.registerJavaMethod({ _, args ->
@@ -132,12 +135,13 @@ class JSCore(context: Context) {
                 return@registerJavaMethod
             }
             val timer = Timer()
-            val task = createTimerTask(
+            val task = CloseableTimerTask(
+                this,
                 callback,
                 V8ObjectUtils.toV8Array(runtime, args.toList().subList(2))
             )
             timer.schedule(task, timeout.toLong(), timeout.toLong())
-            timers[timerId++] = timer
+            timers[timerId++] = task
         }, "setInterval")
         runtime.registerJavaMethod({ _, args ->
             if (args.length() != 1) {
@@ -145,6 +149,7 @@ class JSCore(context: Context) {
             }
             val id = args.getInteger(0)
             timers[id]?.cancel()
+            timers[id]?.close()
             timers.remove(id)
         }, "clearInterval")
         runtime.addGlobalObject("__ANDROID_SPEC__") {
@@ -191,8 +196,32 @@ class JSCore(context: Context) {
     }
 
 }
-
 fun Any?.discard() = Unit
+
+class CloseableTimerTask : TimerTask, Closeable {
+    val runtime: JSCore
+    val callback: V8Function
+    val args: V8Array
+    constructor(
+        runtime: JSCore,
+        callback: V8Function,
+        args: V8Array
+    ) {
+        this.runtime = runtime
+        this.callback = runtime.persist(callback)
+        this.args = runtime.persist(args)
+    }
+    override fun run() {
+        val self = this
+        runtime.withRuntime {
+            self.callback.call(null, self.args)
+        }.discard()
+    }
+    override fun close() {
+        this.args.close()
+        this.callback.close()
+    }
+}
 
 fun <E> List<E>.subList(from: Int): List<E> {
     return this.subList(from.coerceAtMost(this.size), this.size)
