@@ -27,7 +27,7 @@ import JavaScriptCore
 
 @objc protocol NativeLocalStorageExport: JSExport {
     func keys() -> [String]
-    func setItem(_ value: String, _ key: String)
+    func setItem(_ key: String, _ value: String)
     func getItem(_ key: String) -> String?
     func removeItem(_ key: String)
     func clear()
@@ -43,7 +43,7 @@ extension NativeLocalStorage {
         return UserDefaults.standard.dictionaryRepresentation().keys.map { $0 }
     }
     
-    func setItem(_ value: String, _ key: String) {
+    func setItem(_ key: String, _ value: String) {
         UserDefaults.standard.set(value, forKey: key)
     }
     
