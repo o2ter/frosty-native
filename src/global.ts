@@ -27,10 +27,19 @@
 declare global {
 
   namespace __NS_FROSTY_SPEC__ {
+
+    interface LocalStorage {
+      keys(): string[];
+      setItem(key: string, value: string): void;
+      getItem(key: string): string | undefined;
+      removeItem(key: string): void;
+      clear(): void;
+    }
   }
 
   const __FROSTY_SPEC__: {
     get SOURCE_URL(): string | undefined;
+    get localStorage(): __NS_FROSTY_SPEC__.LocalStorage;
     get NativeModules(): {
       [key: string]: any;
     };
