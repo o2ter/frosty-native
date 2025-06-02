@@ -54,14 +54,16 @@ import java.util.UUID
 @OptIn(ExperimentalCoroutinesApi::class)
 class JSCore(context: Context) {
 
+    private val timer = Timer()
+
     @OptIn(DelicateCoroutinesApi::class)
     private val scope = CoroutineScope(newSingleThreadContext("JSCoreThread"))
     private val runtime = scope.async { V8.createV8Runtime() }
 
     private val managers = ArrayList<MemoryManager>()
 
-    private var timerId = 0
-    private var timers = HashMap<Int, CloseableTimerTask>()
+    private var timerTaskId = 0
+    private var timerTasks = HashMap<Int, CloseableTimerTask>()
 
     init {
         withRuntime {
@@ -110,23 +112,22 @@ class JSCore(context: Context) {
             if (callback == null) {
                 return@registerJavaMethod
             }
-            val timer = Timer()
             val task = CloseableTimerTask(
                 this,
                 callback,
                 V8ObjectUtils.toV8Array(runtime, args.toList().subList(2))
             )
             timer.schedule(task, timeout.toLong())
-            timers[timerId++] = task
+            timerTasks[timerTaskId++] = task
         }, "setTimeout")
         runtime.registerJavaMethod({ _, args ->
             if (args.length() != 1) {
                 return@registerJavaMethod
             }
             val id = args.getInteger(0)
-            timers[id]?.cancel()
-            timers[id]?.close()
-            timers.remove(id)
+            timerTasks[id]?.cancel()
+            timerTasks[id]?.close()
+            timerTasks.remove(id)
         }, "clearTimeout")
         runtime.registerJavaMethod({ _, args ->
             val callback = args.get(0) as? V8Function
@@ -134,23 +135,22 @@ class JSCore(context: Context) {
             if (callback == null) {
                 return@registerJavaMethod
             }
-            val timer = Timer()
             val task = CloseableTimerTask(
                 this,
                 callback,
                 V8ObjectUtils.toV8Array(runtime, args.toList().subList(2))
             )
             timer.schedule(task, timeout.toLong(), timeout.toLong())
-            timers[timerId++] = task
+            timerTasks[timerTaskId++] = task
         }, "setInterval")
         runtime.registerJavaMethod({ _, args ->
             if (args.length() != 1) {
                 return@registerJavaMethod
             }
             val id = args.getInteger(0)
-            timers[id]?.cancel()
-            timers[id]?.close()
-            timers.remove(id)
+            timerTasks[id]?.cancel()
+            timerTasks[id]?.close()
+            timerTasks.remove(id)
         }, "clearInterval")
         runtime.addGlobalObject("__ANDROID_SPEC__") {
             it.addObject("crypto") {
