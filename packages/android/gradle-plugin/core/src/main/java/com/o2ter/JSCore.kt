@@ -177,24 +177,6 @@ class JSCore(context: Context) {
         return this.executeScript(source)
     }
 
-    private fun createTimerTask(
-        callback: V8Function,
-        args: V8Array
-    ) = object : TimerTask() {
-        val callback = persist(callback)
-        val args = persist(args)
-        override fun run() {
-            val self = this
-            withRuntime {
-                self.callback.call(null, self.args)
-            }.discard()
-        }
-        protected fun finalize() {
-            this.args.close()
-            this.callback.close()
-        }
-    }
-
 }
 fun Any?.discard() = Unit
 
