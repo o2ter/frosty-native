@@ -46,6 +46,9 @@ kotlin { jvmToolchain(17) }
 
 dependencies {
     implementation(libs.guava)
+    implementation(libs.androidx.core.ktx)
+    implementation(libs.androidx.collection.ktx)
+    implementation(libs.androidx.fragment.ktx)
     implementation(libs.androidx.concurrent.futures)
     implementation(libs.kotlinx.coroutines.guava)
     implementation(libs.androidx.activity.compose)

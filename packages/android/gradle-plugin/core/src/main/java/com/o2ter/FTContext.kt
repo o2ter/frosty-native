@@ -26,6 +26,7 @@
 package com.o2ter
 
 import android.content.Context
+import androidx.core.content.edit
 import com.eclipsesource.v8.JavaCallback
 import com.eclipsesource.v8.V8
 import com.eclipsesource.v8.utils.V8ObjectUtils
@@ -47,9 +48,12 @@ class FTContext(private val activity: FrostyNativeActivity, context: Context) {
         runtime.addGlobalObject("__FROSTY_SPEC__") {
             it.addObject("NativeModules") {
                 it.addObject("localStorage") {
-                    it.registerJavaMethod(JavaCallback {_, _, ->
+                    it.registerJavaMethod(JavaCallback { _, _ ->
                         V8ObjectUtils.toV8Array(runtime, preferences.all.map { it.key })
                     }, "keys")
+                    it.registerJavaMethod({ _, _ ->
+                        preferences.edit(commit = true) { clear() }
+                    }, "clear")
                 }
             }
         }
