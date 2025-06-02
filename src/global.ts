@@ -39,8 +39,8 @@ declare global {
 
   const __FROSTY_SPEC__: {
     get SOURCE_URL(): string | undefined;
-    get localStorage(): __NS_FROSTY_SPEC__.LocalStorage;
     get NativeModules(): {
+      get localStorage(): __NS_FROSTY_SPEC__.LocalStorage;
       [key: string]: any;
     };
   };
