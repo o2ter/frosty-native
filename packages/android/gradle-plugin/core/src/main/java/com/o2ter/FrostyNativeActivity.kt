@@ -48,7 +48,7 @@ open class FrostyNativeActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             engine = FTContext(this, LocalContext.current)
-            engine.executeScript(this.loadBundle())
+            engine.executeVoidScript(this.loadBundle())
             AppTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
                     Greeting(

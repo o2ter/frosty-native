@@ -67,7 +67,7 @@ class JSCore(context: Context) {
     init {
         withRuntime {
             polyfill(it)
-            executeScript(context.assets.open("polyfill.js")).await()
+            executeVoidScript(context.assets.open("polyfill.js")).await()
         }.discard()
     }
 
@@ -174,6 +174,17 @@ class JSCore(context: Context) {
     fun executeScript(stream: InputStream): Deferred<Any> {
         val source = stream.bufferedReader().readText()
         return this.executeScript(source)
+    }
+
+    fun executeVoidScript(code: String): Deferred<Unit> {
+        return this.withRuntime { runtime ->
+            runtime.executeVoidScript(code)
+        }
+    }
+
+    fun executeVoidScript(stream: InputStream): Deferred<Unit> {
+        val source = stream.bufferedReader().readText()
+        return this.executeVoidScript(source)
     }
 
 }

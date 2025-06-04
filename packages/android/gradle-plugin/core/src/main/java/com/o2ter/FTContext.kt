@@ -88,4 +88,12 @@ class FTContext(private val activity: FrostyNativeActivity, context: Context) {
     fun executeScript(stream: InputStream): Deferred<Any> {
         return core.executeScript(stream)
     }
+
+    fun executeVoidScript(code: String): Deferred<Unit> {
+        return core.executeVoidScript(code)
+    }
+
+    fun executeVoidScript(stream: InputStream): Deferred<Unit> {
+        return core.executeVoidScript(stream)
+    }
 }
