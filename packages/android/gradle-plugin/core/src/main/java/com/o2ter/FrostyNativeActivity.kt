@@ -40,6 +40,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalContext
 import com.o2ter.ui.theme.AppTheme
 import java.io.InputStream
@@ -53,7 +54,12 @@ open class FrostyNativeActivity : ComponentActivity() {
             val context = LocalContext.current
             val engine = remember(this, context) { this.createEngine(context) }
             AppTheme {
-                Scaffold(modifier = Modifier.fillMaxSize()) { safeAreaInset ->
+                Scaffold(
+                    modifier = Modifier.fillMaxSize()
+                        .onSizeChanged { size ->
+                            println(size)
+                        }
+                ) { safeAreaInset ->
                     Greeting(
                         name = "Android",
                         modifier = Modifier.padding(safeAreaInset)
