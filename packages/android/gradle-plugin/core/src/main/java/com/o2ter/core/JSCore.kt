@@ -46,7 +46,7 @@ import java.util.Timer
 import java.util.UUID
 
 @OptIn(ExperimentalCoroutinesApi::class)
-internal class JSCore(context: Context) {
+internal class JSCore(val context: Context) {
 
     private val timer = Timer()
 

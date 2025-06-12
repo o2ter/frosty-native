@@ -51,6 +51,7 @@ internal fun FTRoot(engine: FTContext) {
         Scaffold(
             modifier = Modifier.fillMaxSize()
                 .onSizeChanged { size ->
+                    println(engine.context.resources.displayMetrics)
                     println(size)
                 }
         ) { safeAreaInset ->
