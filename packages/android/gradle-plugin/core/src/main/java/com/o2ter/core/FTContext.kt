@@ -34,7 +34,7 @@ import com.o2ter.app.FrostyNativeActivity
 import kotlinx.coroutines.Deferred
 import java.io.InputStream
 
-class FTContext(private val activity: FrostyNativeActivity, context: Context) {
+internal class FTContext(private val activity: FrostyNativeActivity, context: Context) {
 
     private val core: JSCore = JSCore(context)
 
