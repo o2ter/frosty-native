@@ -53,10 +53,10 @@ open class FrostyNativeActivity : ComponentActivity() {
             val context = LocalContext.current
             val engine = remember(this, context) { this.createEngine(context) }
             AppTheme {
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
+                Scaffold(modifier = Modifier.fillMaxSize()) { safeAreaInset ->
                     Greeting(
                         name = "Android",
-                        modifier = Modifier.padding(innerPadding)
+                        modifier = Modifier.padding(safeAreaInset)
                     )
                 }
             }
