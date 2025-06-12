@@ -23,7 +23,7 @@
 //  THE SOFTWARE.
 //
 
-package com.o2ter
+package com.o2ter.core
 
 import android.content.Context
 import android.util.Log

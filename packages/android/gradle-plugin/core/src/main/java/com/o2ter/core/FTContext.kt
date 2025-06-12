@@ -23,13 +23,14 @@
 //  THE SOFTWARE.
 //
 
-package com.o2ter
+package com.o2ter.core
 
 import android.content.Context
 import androidx.core.content.edit
 import com.eclipsesource.v8.JavaCallback
 import com.eclipsesource.v8.V8
 import com.eclipsesource.v8.utils.V8ObjectUtils
+import com.o2ter.app.FrostyNativeActivity
 import kotlinx.coroutines.Deferred
 import java.io.InputStream
 

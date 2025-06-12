@@ -1,5 +1,5 @@
 //
-//  Theme.kt
+//  CanvasView.kt
 //
 //  The MIT License
 //  Copyright (c) 2021 - 2025 O2ter Limited. All rights reserved.
@@ -23,39 +23,29 @@
 //  THE SOFTWARE.
 //
 
-package com.o2ter.ui.theme
+package com.o2ter.app
 
-import android.os.Build
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Typography
-import androidx.compose.material3.darkColorScheme
-import androidx.compose.material3.dynamicDarkColorScheme
-import androidx.compose.material3.dynamicLightColorScheme
-import androidx.compose.material3.lightColorScheme
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.platform.LocalContext
+import android.content.Context
+import android.graphics.Bitmap
+import android.graphics.Canvas
+import android.view.View
+import androidx.core.graphics.createBitmap
 
-private val DarkColorScheme = darkColorScheme()
-private val LightColorScheme = lightColorScheme()
+internal class CanvasView(
+    ctx: Context
+): View(ctx) {
 
-private val typography = Typography()
+    private lateinit var bitmap: Bitmap
+    private lateinit var canvas: Canvas
 
-@Composable
-internal fun AppTheme(
-    darkTheme: Boolean,
-    content: @Composable () -> Unit
-) {
-    val colorScheme = when {
-        Build.VERSION.SDK_INT >= Build.VERSION_CODES.S -> {
-            val context = LocalContext.current
-            if (darkTheme) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
-        }
-        darkTheme -> DarkColorScheme
-        else -> LightColorScheme
+    override fun onSizeChanged(w: Int, h: Int, oldw: Int, oldh: Int) {
+        super.onSizeChanged(w, h, oldw, oldh)
+        bitmap = createBitmap(w, h)
+        canvas = Canvas(bitmap)
     }
-    MaterialTheme(
-        colorScheme = colorScheme,
-        typography = typography,
-        content = content
-    )
+
+    override fun onDraw(canvas: Canvas) {
+        super.onDraw(canvas)
+        canvas.drawBitmap(bitmap, 0f, 0f, null)
+    }
 }

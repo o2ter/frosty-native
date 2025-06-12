@@ -1,5 +1,5 @@
 //
-//  CanvasView.kt
+//  FrostyNativeActivity.kt
 //
 //  The MIT License
 //  Copyright (c) 2021 - 2025 O2ter Limited. All rights reserved.
@@ -23,28 +23,37 @@
 //  THE SOFTWARE.
 //
 
-package com.o2ter
+package com.o2ter.app
 
 import android.content.Context
-import android.graphics.Bitmap
-import android.graphics.Canvas
-import android.view.View
+import android.os.Bundle
+import androidx.activity.ComponentActivity
+import androidx.activity.compose.setContent
+import androidx.activity.enableEdgeToEdge
+import androidx.compose.runtime.remember
+import androidx.compose.ui.platform.LocalContext
+import com.o2ter.core.FTContext
+import java.io.InputStream
 
-internal class CanvasView(
-    ctx: Context
-): View(ctx) {
+open class FrostyNativeActivity : ComponentActivity() {
 
-    private lateinit var bitmap: Bitmap
-    private lateinit var canvas: Canvas
-
-    override fun onSizeChanged(w: Int, h: Int, oldw: Int, oldh: Int) {
-        super.onSizeChanged(w, h, oldw, oldh)
-        bitmap = Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_8888)
-        canvas = Canvas(bitmap)
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        enableEdgeToEdge()
+        setContent {
+            val context = LocalContext.current
+            val engine = remember(this, context) { this.createEngine(context) }
+            FTRoot(engine)
+        }
     }
 
-    override fun onDraw(canvas: Canvas) {
-        super.onDraw(canvas)
-        canvas.drawBitmap(bitmap, 0f, 0f, null)
+    private fun createEngine(context: Context): FTContext {
+        val engine = FTContext(this, context)
+        engine.executeVoidScript(this.loadBundle())
+        return engine
+    }
+
+    open fun loadBundle(): InputStream {
+        return assets.open("main.jsbundle")
     }
 }

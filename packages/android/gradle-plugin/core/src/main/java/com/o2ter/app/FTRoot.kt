@@ -1,5 +1,5 @@
 //
-//  FrostyNativeActivity.kt
+//  FTRoot.kt
 //
 //  The MIT License
 //  Copyright (c) 2021 - 2025 O2ter Limited. All rights reserved.
@@ -23,13 +23,8 @@
 //  THE SOFTWARE.
 //
 
-package com.o2ter
+package com.o2ter.app
 
-import android.content.Context
-import android.os.Bundle
-import androidx.activity.ComponentActivity
-import androidx.activity.compose.setContent
-import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -42,46 +37,27 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.onSizeChanged
-import androidx.compose.ui.platform.LocalContext
-import com.o2ter.ui.theme.AppTheme
-import java.io.InputStream
+import com.o2ter.core.FTContext
+import com.o2ter.app.ui.theme.AppTheme
 
-open class FrostyNativeActivity : ComponentActivity() {
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
-        setContent {
-            val context = LocalContext.current
-            val systemIsDarkTheme = isSystemInDarkTheme()
-            val engine = remember(this, context) { this.createEngine(context) }
-            var darkTheme by remember { mutableStateOf(systemIsDarkTheme) }
-            AppTheme(
-                darkTheme = darkTheme
-            ) {
-                Scaffold(
-                    modifier = Modifier.fillMaxSize()
-                        .onSizeChanged { size ->
-                            println(size)
-                        }
-                ) { safeAreaInset ->
-                    Greeting(
-                        name = "Android",
-                        modifier = Modifier.padding(safeAreaInset)
-                    )
+@Composable
+internal fun FTRoot(engine: FTContext) {
+    val systemIsDarkTheme = isSystemInDarkTheme()
+    var darkTheme by remember { mutableStateOf(systemIsDarkTheme) }
+    AppTheme(
+        darkTheme = darkTheme
+    ) {
+        Scaffold(
+            modifier = Modifier.fillMaxSize()
+                .onSizeChanged { size ->
+                    println(size)
                 }
-            }
+        ) { safeAreaInset ->
+            Greeting(
+                name = "Android",
+                modifier = Modifier.padding(safeAreaInset)
+            )
         }
-    }
-
-    private fun createEngine(context: Context): FTContext {
-        val engine = FTContext(this, context)
-        engine.executeVoidScript(this.loadBundle())
-        return engine
-    }
-
-    open fun loadBundle(): InputStream {
-        return assets.open("main.jsbundle")
     }
 }
 
