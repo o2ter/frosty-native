@@ -38,18 +38,21 @@ public struct FTRoot: View {
     }
     
     public var body: some View {
-        FTNode(state: self.$node)
-            .onAppear {
-                self.runner = FTRoot.run(
-                    appKey: appKey,
-                    runtime: runtime,
-                    node: node
-                )
-            }
-            .onDisappear {
-                self.runner?.invokeMethod("unmount")
-                self.runner = nil
-            }
+        GeometryReader { geometry in
+            FTNode(state: self.$node)
+                .ignoresSafeArea()
+                .onAppear {
+                    self.runner = FTRoot.run(
+                        appKey: appKey,
+                        runtime: runtime,
+                        node: node
+                    )
+                }
+                .onDisappear {
+                    self.runner?.invokeMethod("unmount")
+                    self.runner = nil
+                }
+        }
     }
 }
 
