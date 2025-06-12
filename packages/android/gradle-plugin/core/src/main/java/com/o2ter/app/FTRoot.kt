@@ -28,7 +28,6 @@ package com.o2ter.app
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -48,9 +47,7 @@ internal fun FTRoot(engine: FTContext) {
     val displayScale = engine.context.resources.displayMetrics.density
     val pixelLength = 1 / displayScale
     val locales = getLocales(LocalConfiguration.current)
-    AppTheme(
-        darkTheme = darkTheme
-    ) {
+    AppTheme(darkTheme) {
         Scaffold(
             modifier = Modifier.fillMaxSize()
                 .onSizeChanged { size ->
@@ -58,13 +55,11 @@ internal fun FTRoot(engine: FTContext) {
                     println(size)
                 }
         ) { safeAreaInset ->
-            Surface(
+            FTNode(
                 modifier = Modifier.onSizeChanged {
                     println(safeAreaInset)
                 }
-            ) {
-                FTNode()
-            }
+            )
         }
     }
 }
