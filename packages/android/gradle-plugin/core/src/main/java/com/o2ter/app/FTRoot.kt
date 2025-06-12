@@ -35,6 +35,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.onSizeChanged
+import androidx.compose.ui.platform.LocalConfiguration
+import androidx.core.os.ConfigurationCompat.getLocales
 import com.o2ter.app.ui.theme.AppTheme
 import com.o2ter.core.FTContext
 
@@ -42,6 +44,7 @@ import com.o2ter.core.FTContext
 internal fun FTRoot(engine: FTContext) {
     val systemIsDarkTheme = isSystemInDarkTheme()
     var darkTheme by remember { mutableStateOf(systemIsDarkTheme) }
+    val locales = getLocales(LocalConfiguration.current)
     AppTheme(
         darkTheme = darkTheme
     ) {
