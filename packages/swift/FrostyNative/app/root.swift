@@ -71,7 +71,7 @@ public struct FTRoot: View {
         GeometryReader { geometry in
             FTNode(state: self.$node)
                 .ignoresSafeArea()
-                .onChange(of: WindowDimensions(geometry)) {
+                .onChange(of: WindowDimensions(geometry), initial: true) {
                     print(WindowDimensions(geometry))
                 }
                 .onAppear {
