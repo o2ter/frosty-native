@@ -1,5 +1,5 @@
 //
-//  JSContext.kt
+//  JSCore.kt
 //
 //  The MIT License
 //  Copyright (c) 2021 - 2025 O2ter Limited. All rights reserved.
@@ -29,10 +29,7 @@ import android.content.Context
 import android.util.Log
 import com.eclipsesource.v8.JavaCallback
 import com.eclipsesource.v8.V8
-import com.eclipsesource.v8.V8Array
-import com.eclipsesource.v8.V8ArrayBuffer
 import com.eclipsesource.v8.V8Function
-import com.eclipsesource.v8.V8Object
 import com.eclipsesource.v8.V8TypedArray
 import com.eclipsesource.v8.V8Value
 import com.eclipsesource.v8.utils.MemoryManager
@@ -44,10 +41,8 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.async
 import kotlinx.coroutines.newSingleThreadContext
 import java.io.InputStream
-import java.nio.ByteBuffer
 import java.security.SecureRandom
 import java.util.Timer
-import java.util.TimerTask
 import java.util.UUID
 
 @OptIn(ExperimentalCoroutinesApi::class)
@@ -187,67 +182,4 @@ internal class JSCore(context: Context) {
         return this.executeVoidScript(source)
     }
 
-}
-fun Any?.discard() = Unit
-
-class V8TimerTask : TimerTask {
-    val runtime: JSCore
-    val callback: V8Function
-    val args: V8Array
-    val once: Boolean
-    constructor(
-        runtime: JSCore,
-        callback: V8Function,
-        args: V8Array,
-        once: Boolean
-    ) {
-        this.runtime = runtime
-        this.callback = runtime.persist(callback)
-        this.args = runtime.persist(args)
-        this.once = once
-    }
-    override fun run() {
-        val self = this
-        runtime.withRuntime {
-            self.callback.call(null, self.args)
-            if (self.once) self.close()
-        }.discard()
-    }
-    fun close() {
-        if (!this.args.isReleased) this.args.close()
-        if (!this.callback.isReleased) this.callback.close()
-    }
-}
-
-fun <E> List<E>.subList(from: Int): List<E> {
-    return this.subList(from.coerceAtMost(this.size), this.size)
-}
-
-fun V8Array.toList(): List<Any> {
-    val result = ArrayList<Any>()
-    for (i in 0..<this.length()) {
-        result.add(this.get(i))
-    }
-    return result
-}
-
-fun V8.addGlobalObject(key: String, callback: (V8Object) -> Unit) {
-    val obj = V8Object(this)
-    callback(obj)
-    this.add(key, obj)
-}
-
-fun V8.createFunction(callback: (V8Object, V8Array) -> Any): V8Function {
-    return V8Function(this, callback)
-}
-
-fun V8.createArrayBuffer(length: Int): V8ArrayBuffer {
-    return V8ArrayBuffer(this, ByteBuffer.allocateDirect(length))
-}
-
-fun V8Object.addObject(key: String, callback: (V8Object) -> Unit) {
-    val obj = V8Object(runtime)
-    callback(obj)
-    this.add(key, obj)
-    obj.close()
 }
