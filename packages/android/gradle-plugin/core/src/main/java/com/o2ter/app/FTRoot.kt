@@ -28,6 +28,7 @@ package com.o2ter.app
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -57,11 +58,13 @@ internal fun FTRoot(engine: FTContext) {
                     println(size)
                 }
         ) { safeAreaInset ->
-            FTNode(
+            Surface(
                 modifier = Modifier.onSizeChanged {
                     println(safeAreaInset)
                 }
-            )
+            ) {
+                FTNode()
+            }
         }
     }
 }
