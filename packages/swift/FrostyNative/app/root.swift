@@ -37,6 +37,24 @@ struct WindowDimensions: Equatable {
 
 public struct FTRoot: View {
     
+    @Environment(\.colorScheme)
+    var colorScheme
+    
+    @Environment(\.colorSchemeContrast)
+    var colorSchemeContrast
+    
+    @Environment(\.displayScale)
+    var displayScale
+    
+    @Environment(\.pixelLength)
+    var pixelLength
+    
+    @Environment(\.locale)
+    var locale
+    
+    @Environment(\.font)
+    var defaultFont
+    
     let appKey: String
     let runtime: FTContext
     
