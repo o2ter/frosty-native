@@ -53,9 +53,11 @@ open class FrostyNativeActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             val context = LocalContext.current
+            val systemIsDarkTheme = isSystemInDarkTheme()
             val engine = remember(this, context) { this.createEngine(context) }
+            var darkTheme by remember { mutableStateOf(systemIsDarkTheme) }
             AppTheme(
-                darkTheme = isSystemInDarkTheme()
+                darkTheme = darkTheme
             ) {
                 Scaffold(
                     modifier = Modifier.fillMaxSize()
