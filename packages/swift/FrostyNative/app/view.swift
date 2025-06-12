@@ -39,6 +39,13 @@ protocol FTLayoutViewProtocol: FTViewProtocol {
     @ViewBuilder @MainActor @preconcurrency var content: Self.Content { get }
 }
 
+struct Layout: Equatable {
+    
+    var global: CGRect
+    
+    var local: CGRect
+}
+
 extension FTLayoutViewProtocol {
 
     var layout: [String: any Sendable] {
@@ -60,15 +67,31 @@ extension FTLayoutViewProtocol {
     var paddingBottom: CGFloat {
         return layout["paddingBottom"] as? CGFloat ?? 0
     }
+    
+    var onLayout: ((_: Layout) -> Void)? {
+        nil
+    }
 
     var body: some View {
-        self.content.padding(
+        
+        let view = self.content.padding(
             EdgeInsets(
                 top: paddingTop,
                 leading: paddingLeft,
                 bottom: paddingBottom,
                 trailing: paddingRight
             ))
+        
+        if let onLayout = onLayout {
+            return AnyView(view.onGeometryChange(for: Layout.self) {
+                Layout(
+                    global: $0.frame(in: .global),
+                    local: $0.frame(in: .local)
+                )
+            } action: { onLayout($0) })
+        }
+        
+        return AnyView(view)
     }
 }
 
