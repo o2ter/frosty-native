@@ -44,6 +44,8 @@ import com.o2ter.core.FTContext
 internal fun FTRoot(engine: FTContext) {
     val systemIsDarkTheme = isSystemInDarkTheme()
     var darkTheme by remember { mutableStateOf(systemIsDarkTheme) }
+    val displayScale = engine.context.resources.displayMetrics.density
+    val pixelLength = 1 / displayScale
     val locales = getLocales(LocalConfiguration.current)
     AppTheme(
         darkTheme = darkTheme
