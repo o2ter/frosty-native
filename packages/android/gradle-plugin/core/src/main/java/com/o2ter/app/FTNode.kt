@@ -25,7 +25,7 @@
 
 package com.o2ter.app
 
-import androidx.compose.material3.Surface
+import androidx.compose.foundation.layout.Box
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -37,7 +37,7 @@ import androidx.compose.ui.Modifier
 @Composable
 internal fun FTNode(modifier: Modifier = Modifier) {
     var name by remember { mutableStateOf("") }
-    Surface(modifier) {
+    Box(modifier) {
         Text(
             text = "Hello $name!",
             modifier = modifier
