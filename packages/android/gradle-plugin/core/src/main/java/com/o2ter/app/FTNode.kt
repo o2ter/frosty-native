@@ -1,5 +1,5 @@
 //
-//  FTRoot.kt
+//  FTNode.kt
 //
 //  The MIT License
 //  Copyright (c) 2021 - 2025 O2ter Limited. All rights reserved.
@@ -25,38 +25,19 @@
 
 package com.o2ter.app
 
-import androidx.compose.foundation.isSystemInDarkTheme
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.layout.onSizeChanged
-import com.o2ter.app.ui.theme.AppTheme
-import com.o2ter.core.FTContext
 
 @Composable
-internal fun FTRoot(engine: FTContext) {
-    val systemIsDarkTheme = isSystemInDarkTheme()
-    var darkTheme by remember { mutableStateOf(systemIsDarkTheme) }
-    AppTheme(
-        darkTheme = darkTheme
-    ) {
-        Scaffold(
-            modifier = Modifier.fillMaxSize()
-                .onSizeChanged { size ->
-                    println(size)
-                }
-        ) { safeAreaInset ->
-            FTNode(
-                modifier = Modifier.onSizeChanged {
-                    println(safeAreaInset)
-                }
-            )
-        }
-    }
+internal fun FTNode(modifier: Modifier = Modifier) {
+    var name by remember { mutableStateOf("") }
+    Text(
+        text = "Hello $name!",
+        modifier = modifier
+    )
 }
-
