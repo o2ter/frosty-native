@@ -23,6 +23,18 @@
 //  THE SOFTWARE.
 //
 
+struct WindowDimensions: Equatable {
+    
+    var size: CGSize
+    
+    var safeAreaInsets: EdgeInsets
+    
+    init(_ geometry: GeometryProxy) {
+        self.size = geometry.size
+        self.safeAreaInsets = geometry.safeAreaInsets
+    }
+}
+
 public struct FTRoot: View {
     
     let appKey: String
@@ -41,6 +53,9 @@ public struct FTRoot: View {
         GeometryReader { geometry in
             FTNode(state: self.$node)
                 .ignoresSafeArea()
+                .onChange(of: WindowDimensions(geometry)) {
+                    print(WindowDimensions(geometry))
+                }
                 .onAppear {
                     self.runner = FTRoot.run(
                         appKey: appKey,
