@@ -29,6 +29,11 @@ import { NativeNode } from './node';
 
 export class NativeRenderer extends _Renderer<NativeNode> {
 
+  private _nodes = new Map<NativeNode, string>();
+  private _callbacks = new Map<string, {
+    [name: string]: (...args: any[]) => void;
+  }>();
+
   get _server(): boolean {
     return false;
   }
@@ -44,16 +49,27 @@ export class NativeRenderer extends _Renderer<NativeNode> {
     if (_.isString(_type) || !(_type.prototype instanceof NativeNode)) throw Error('Invalid type');
     const ElementType = _type as typeof NativeNode;
     const element = ElementType.createElement();
-    element.update(props);
+    const targetId = uniqueId();
+    this._nodes.set(element, targetId);
+    this._callbacks.set(targetId, _.pickBy(props, v => _.isFunction(v)));
+    element.update(_.mapValues(props, v => _.isFunction(v) ? targetId : v));
     return element;
   }
 
   protected _updateElement(node: VNode, element: NativeNode, stack: VNode[]) {
     const { props } = node;
-    element.update(props);
+    const targetId = this._nodes.get(element);
+    if (!targetId) return;
+    this._callbacks.set(targetId, _.pickBy(props, v => _.isFunction(v)));
+    element.update(_.mapValues(props, v => _.isFunction(v) ? targetId : v));
   }
 
   protected _destroyElement(node: VNode, element: NativeNode) {
+    const targetId = this._nodes.get(element);
+    if (targetId) {
+      this._nodes.delete(element);
+      this._callbacks.delete(targetId);
+    }
     element.destroy();
   }
 
