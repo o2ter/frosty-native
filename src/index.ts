@@ -43,13 +43,13 @@ export const AppRegistry = (() => {
     getRunnable(appKey: string) {
       const component = registry[appKey];
       if (!component) return;
+      const renderer = new NativeRenderer();
       return {
         component,
         run(options?: {
           root?: NativeNode,
           props?: Record<string, any> | null,
         }) {
-          const renderer = new NativeRenderer();
           const runner = renderer.createRoot(options?.root);
           runner.mount(createElement(component, options?.props));
           return {
