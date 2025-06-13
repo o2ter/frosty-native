@@ -30,9 +30,7 @@ import { NativeNode } from './node';
 export class NativeRenderer extends _Renderer<NativeNode> {
 
   private _nodes = new Map<NativeNode, string>();
-  private _callbacks = new Map<string, {
-    [name: string]: (...args: any[]) => void;
-  }>();
+  private _callbacks = new Map<string, { [name: string]: (...args: any[]) => void; }>();
 
   get _server(): boolean {
     return false;
