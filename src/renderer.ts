@@ -77,4 +77,8 @@ export class NativeRenderer extends _Renderer<NativeNode> {
     element.replaceChildren(children);
   }
 
+  notify(targetId: string, method: string, ...args: any[]) {
+    const props = this._callbacks.get(targetId) ?? {};
+    if (_.isFunction(props[method])) props[method](...args);
+  }
 }
