@@ -28,6 +28,9 @@ package com.o2ter.app
 import androidx.compose.foundation.layout.Box
 import androidx.compose.ui.Modifier
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import com.eclipsesource.v8.V8
 import com.eclipsesource.v8.V8Object
 import com.eclipsesource.v8.utils.V8ObjectUtils
@@ -45,8 +48,8 @@ internal class FTNodeState(
 ) {
 
     val nodeId = UUID.randomUUID().toString()
-    var props = mapOf<String, Any?>()
-    var children = listOf<FTNodeState>()
+    var props by mutableStateOf(mapOf<String, Any?>())
+    var children by mutableStateOf(listOf<FTNodeState>())
 
     fun update(props: Map<String, Any?>) {
         this.props = props
