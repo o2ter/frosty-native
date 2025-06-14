@@ -69,8 +69,8 @@ internal fun FTContext.run(
 
 open class FrostyNativeActivity(val appKey: String) : ComponentActivity() {
 
-    lateinit var engine: FTContext
-    lateinit var runner: Deferred<V8Object>
+    private lateinit var engine: FTContext
+    private lateinit var runner: Deferred<V8Object>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
