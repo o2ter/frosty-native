@@ -61,7 +61,7 @@ internal fun FTContext.run(
         val runner = registry.executeObjectFunction("getRunnable", V8ObjectUtils.toV8Array(runtime, listOf(appKey)))
         runner.executeObjectFunction("run", V8ObjectUtils.toV8Array(runtime, listOf(
             V8ObjectUtils.toV8Object(runtime, mapOf(
-                "root" to rootView
+                "root" to rootView.toV8Object(runtime)
             ))
         )))
     }

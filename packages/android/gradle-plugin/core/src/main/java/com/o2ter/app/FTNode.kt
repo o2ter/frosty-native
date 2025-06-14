@@ -35,11 +35,20 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.derivedStateOf
+import com.eclipsesource.v8.V8
+import com.eclipsesource.v8.V8Object
+import com.eclipsesource.v8.utils.V8ObjectUtils
 import com.o2ter.core.FTContext
 
 internal class FTNodeState(var component: String) {
     var props = mutableMapOf<String, Any>()
     var children = mutableListOf<FTNodeState>()
+
+    fun toV8Object(runtime: V8): V8Object {
+
+
+        return V8ObjectUtils.toV8Object(runtime, mapOf())
+    }
 }
 
 @Composable
