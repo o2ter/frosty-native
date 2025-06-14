@@ -46,18 +46,19 @@ internal class FTNodeState(
 
     val nodeId = UUID.randomUUID().toString()
     var props = mapOf<String, Any?>()
-    var children = mutableListOf<FTNodeState>()
+    var children = listOf<FTNodeState>()
 
     fun update(props: Map<String, Any?>) {
         this.props = props
     }
 
     fun replaceChildren(children: List<FTNodeState>) {
+        this.children = children
     }
 
     fun destroy() {
         this.props = mapOf()
-        this.children.clear()
+        this.children = listOf()
         activity.nodes.remove(this)
     }
 
