@@ -30,7 +30,7 @@ const _FTTextView = NativeModules['FTTextView'];
 
 export abstract class FTTextView extends NativeNode {
 
-  static createElement(): NativeNode {
+  static override createElement(): NativeNode {
     return _FTTextView();
   }
 }
