@@ -32,6 +32,8 @@ import com.eclipsesource.v8.JavaCallback
 import com.eclipsesource.v8.V8
 import com.eclipsesource.v8.V8Object
 import com.eclipsesource.v8.utils.V8ObjectUtils
+import com.o2ter.app.FTTextView
+import com.o2ter.app.FTView
 import com.o2ter.app.FrostyNativeActivity
 import com.o2ter.core.JSCore
 import com.o2ter.core.addGlobalObject
@@ -53,8 +55,11 @@ internal class FTContext(private val activity: FrostyNativeActivity, val context
     val components = mutableMapOf<String, Component>()
 
     init {
+        val self = this
         core.withRuntime {
             polyfill(it)
+            self.register("FTView") { props, content -> FTView(props, content) }
+            self.register("FTTextView") { props, content -> FTTextView(props, content) }
         }.discard()
     }
 

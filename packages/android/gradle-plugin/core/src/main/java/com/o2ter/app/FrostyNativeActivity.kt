@@ -76,7 +76,7 @@ open class FrostyNativeActivity(val appKey: String) : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            val rootView = FTNodeState("View")
+            val rootView = FTNodeState("FTView")
             engine = this.createEngine(LocalContext.current)
             runner = engine.run(appKey, rootView)
             FTRoot(engine, rootView)
