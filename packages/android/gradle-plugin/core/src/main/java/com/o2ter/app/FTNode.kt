@@ -34,7 +34,7 @@ import com.eclipsesource.v8.utils.V8ObjectUtils
 import com.o2ter.runtime.FTContext
 
 internal typealias Component = @Composable (
-    props: Map<String, Any>,
+    props: Map<String, Any?>,
     content: @Composable () -> Unit
 ) -> Unit
 
