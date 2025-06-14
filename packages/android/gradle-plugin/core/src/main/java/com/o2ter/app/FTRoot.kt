@@ -56,9 +56,10 @@ internal fun FTRoot(engine: FTContext) {
                 }
         ) { safeAreaInset ->
             FTNode(
-                modifier = Modifier.onSizeChanged {
+                Modifier.onSizeChanged {
                     println(safeAreaInset)
-                }
+                },
+                engine
             )
         }
     }
