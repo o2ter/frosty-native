@@ -25,6 +25,9 @@
 
 package com.o2ter.app
 
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 
 @Composable
@@ -32,6 +35,9 @@ fun FTView(
     props: Map<String, Any?>,
     content: @Composable () -> Unit
 ) {
+    Column {
+        content()
+    }
 }
 
 @Composable
@@ -39,4 +45,8 @@ fun FTTextView(
     props: Map<String, Any?>,
     content: @Composable () -> Unit
 ) {
+    val text = props.get("text") as? String
+    if (text != null) {
+        Text(text)
+    }
 }
