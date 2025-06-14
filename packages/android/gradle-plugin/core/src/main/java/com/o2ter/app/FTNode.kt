@@ -32,6 +32,7 @@ import com.eclipsesource.v8.V8
 import com.eclipsesource.v8.V8Object
 import com.eclipsesource.v8.utils.V8ObjectUtils
 import com.o2ter.runtime.FTContext
+import java.util.UUID
 
 internal typealias Component = @Composable (
     props: Map<String, Any?>,
@@ -55,7 +56,9 @@ internal class FTNodeState(var component: Component) {
     }
 
     fun toV8Object(runtime: V8): V8Object {
+        val nodeId = UUID.randomUUID().toString()
         val obj = V8Object(runtime)
+        obj.add("nodeId", nodeId)
         obj.registerJavaMethod({ _, args ->
             val props = V8ObjectUtils.toMap(args.getObject(0))
             if (props != null) {
@@ -65,7 +68,7 @@ internal class FTNodeState(var component: Component) {
         obj.registerJavaMethod({ _, args ->
             val children = V8ObjectUtils.toList(args.getArray(0))
             if (children != null) {
-                
+
             }
         }, "replaceChildren")
         obj.registerJavaMethod({ _, _ -> this.destroy() }, "destroy")
