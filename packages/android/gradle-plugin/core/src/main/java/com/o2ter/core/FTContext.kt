@@ -43,7 +43,7 @@ internal typealias Component = @Composable (
 internal class FTContext(private val activity: FrostyNativeActivity, val context: Context) {
 
     private val core: JSCore = JSCore(context)
-    private val components = mutableMapOf<String, Component>()
+    val components = mutableMapOf<String, Component>()
 
     init {
         core.withRuntime {

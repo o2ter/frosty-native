@@ -35,6 +35,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.derivedStateOf
 import com.o2ter.core.FTContext
 
 @Composable
@@ -43,12 +44,10 @@ internal fun FTNode(
     engine: FTContext
 ) {
     var name by remember { mutableStateOf("") }
+    val component by remember { derivedStateOf { engine.components.get(name) } }
     var props = remember { mutableStateMapOf<String, Any>() }
     var children = remember { mutableStateListOf<Any>() }
     Box(modifier) {
-        Text(
-            text = "Hello $name!",
-            modifier = modifier
-        )
+        component?.invoke(props, children)
     }
 }
