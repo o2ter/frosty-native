@@ -94,12 +94,12 @@ internal class JSCore(val context: Context) {
 
     private fun polyfill(runtime: V8) {
         runtime.addGlobalObject("console") {
-            it.registerJavaMethod({ _, args -> Log.v("JSCore", args.toString()) }, "log")
-            it.registerJavaMethod({ _, args -> Log.v("JSCore", args.toString()) }, "trace")
-            it.registerJavaMethod({ _, args -> Log.d("JSCore", args.toString()) }, "debug")
-            it.registerJavaMethod({ _, args -> Log.i("JSCore", args.toString()) }, "info")
-            it.registerJavaMethod({ _, args -> Log.w("JSCore", args.toString()) }, "warn")
-            it.registerJavaMethod({ _, args -> Log.e("JSCore", args.toString()) }, "error")
+            it.registerJavaMethod({ _, args -> Log.v("JSCore", args.toList().toString()) }, "log")
+            it.registerJavaMethod({ _, args -> Log.v("JSCore", args.toList().toString()) }, "trace")
+            it.registerJavaMethod({ _, args -> Log.d("JSCore", args.toList().toString()) }, "debug")
+            it.registerJavaMethod({ _, args -> Log.i("JSCore", args.toList().toString()) }, "info")
+            it.registerJavaMethod({ _, args -> Log.w("JSCore", args.toList().toString()) }, "warn")
+            it.registerJavaMethod({ _, args -> Log.e("JSCore", args.toList().toString()) }, "error")
         }
         runtime.registerJavaMethod({ _, args ->
             val callback = args.get(0) as? V8Function
