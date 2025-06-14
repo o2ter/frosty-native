@@ -30,13 +30,24 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material3.Scaffold
+import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.onSizeChanged
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
+import androidx.core.os.ConfigurationCompat.getLocales
 import com.eclipsesource.v8.V8Object
 import com.eclipsesource.v8.utils.V8ObjectUtils
+import com.o2ter.app.ui.theme.AppTheme
 import com.o2ter.core.FTContext
+import com.o2ter.core.discard
 import kotlinx.coroutines.Deferred
 import java.io.InputStream
 
@@ -58,21 +69,22 @@ internal fun FTContext.run(
 
 open class FrostyNativeActivity(val appKey: String) : ComponentActivity() {
 
+    lateinit var runner: Deferred<V8Object>
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            val context = LocalContext.current
-            val engine = remember(this, context) { this.createEngine(context) }
-            val rootView by remember { mutableStateOf(FTNodeState("View")) }
-            val runner = remember { engine.run(appKey, rootView) }
+            val engine = this.createEngine(LocalContext.current)
+            val rootView = FTNodeState("View")
+            runner = engine.run(appKey, rootView)
             FTRoot(engine, rootView)
         }
     }
 
     private fun createEngine(context: Context): FTContext {
         val engine = FTContext(this, context)
-        engine.executeVoidScript(this.loadBundle())
+        engine.executeVoidScript(this.loadBundle()).discard()
         return engine
     }
 
@@ -80,3 +92,30 @@ open class FrostyNativeActivity(val appKey: String) : ComponentActivity() {
         return assets.open("main.jsbundle")
     }
 }
+
+@Composable
+internal fun FTRoot(engine: FTContext, rootView: FTNodeState) {
+    val systemIsDarkTheme = isSystemInDarkTheme()
+    var darkTheme by remember { mutableStateOf(systemIsDarkTheme) }
+    val displayScale = engine.context.resources.displayMetrics.density
+    val pixelLength = 1 / displayScale
+    val locales = getLocales(LocalConfiguration.current)
+    AppTheme(darkTheme) {
+        Scaffold(
+            modifier = Modifier.fillMaxSize()
+                .onSizeChanged { size ->
+                    println(engine.context.resources.displayMetrics)
+                    println(size)
+                }
+        ) { safeAreaInset ->
+            FTNode(
+                Modifier.onSizeChanged {
+                    println(safeAreaInset)
+                },
+                engine,
+                rootView
+            )
+        }
+    }
+}
+
