@@ -41,12 +41,24 @@ internal typealias Component = @Composable (
 ) -> Unit
 
 internal class FTNodeState(var component: Component) {
-    var props = mutableMapOf<String, Any>()
+    var props = mapOf<String, Any>()
     var children = mutableListOf<FTNodeState>()
+
+    fun update(props: Map<String, Any>) {
+        this.props = props
+    }
+
+    fun replaceChildren(children: List<FTNodeState>) {
+    }
+
+    fun destroy() {
+        this.props = mapOf()
+        this.children.clear()
+    }
 
     fun toV8Object(runtime: V8): V8Object {
         val obj = V8Object(runtime)
-
+        obj.registerJavaMethod({ _, _ -> this.destroy() }, "destroy")
         return obj
     }
 }
