@@ -106,7 +106,7 @@ fun RadialGradient(
 }
 
 @Composable
-fun SweepGradient(
+fun AngularGradient(
     colorStops: Map<Float, Color>,
     center: Offset
 ) {
