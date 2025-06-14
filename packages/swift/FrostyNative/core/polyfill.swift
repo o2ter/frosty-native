@@ -30,8 +30,8 @@ extension FTContext {
             "NativeModules": [:]
         ]
         self.register(name: "localStorage", NativeLocalStorage())
-        self.register(name: "FTView", FTView.self)
-        self.register(name: "FTTextView", FTTextView.self)
+        self.register(name: "FTView", FTView.init(props:children:))
+        self.register(name: "FTTextView", FTTextView.init(props:children:))
     }
 }
 
@@ -50,13 +50,6 @@ extension FTContext {
 
     public func register(name: String, _ module: JSCore.Export.Type) {
         self.nativeModules[name] = .init(module, in: self.context)
-    }
-}
-
-extension FTContext {
-
-    func register(name: String, _ type: any FTViewProtocol.Type) {
-        self.register(name: name, type.init(props:children:))
     }
 }
 
