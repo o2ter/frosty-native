@@ -39,7 +39,10 @@ internal typealias Component = @Composable (
     content: @Composable () -> Unit
 ) -> Unit
 
-internal class FTNodeState(var component: Component) {
+internal class FTNodeState(
+    val activity: FrostyNativeActivity,
+    var component: Component
+) {
 
     val nodeId = UUID.randomUUID().toString()
     var props = mapOf<String, Any?>()
@@ -55,9 +58,11 @@ internal class FTNodeState(var component: Component) {
     fun destroy() {
         this.props = mapOf()
         this.children.clear()
+        activity.nodes.remove(this)
     }
 
     fun toV8Object(runtime: V8): V8Object {
+        activity.nodes.add(this)
         val obj = V8Object(runtime)
         obj.add("nodeId", nodeId)
         obj.registerJavaMethod({ _, args ->

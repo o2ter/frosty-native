@@ -72,11 +72,13 @@ open class FrostyNativeActivity(val appKey: String) : ComponentActivity() {
     private lateinit var engine: FTContext
     private lateinit var runner: Deferred<V8Object>
 
+    internal var nodes = mutableSetOf<FTNodeState>()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            val rootView = FTNodeState { props, content -> FTView(props, content) }
+            val rootView = FTNodeState(this) { props, content -> FTView(props, content) }
             engine = this.createEngine(LocalContext.current)
             runner = engine.run(appKey, rootView)
             FTRoot(engine, rootView)
@@ -90,6 +92,7 @@ open class FrostyNativeActivity(val appKey: String) : ComponentActivity() {
             runner.executeVoidFunction("unmount", V8ObjectUtils.toV8Array(runtime, listOf()))
             runner.close()
         }.discard()
+        nodes.clear()
     }
 
     private fun createEngine(context: Context): FTContext {
