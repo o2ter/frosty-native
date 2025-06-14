@@ -48,7 +48,6 @@ internal typealias Component = @Composable (
     content: @Composable () -> Unit
 ) -> Unit
 
-
 internal class FTContext(private val activity: FrostyNativeActivity, val context: Context) {
 
     private val core: JSCore = JSCore(context)
