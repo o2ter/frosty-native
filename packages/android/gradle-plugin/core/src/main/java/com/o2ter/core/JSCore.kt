@@ -76,7 +76,7 @@ internal class JSCore(val context: Context) {
                 val result = block(v8)
                 if (result is V8Value) persist(result) else result
             } catch (e: Exception) {
-                Log.e("JSContext", e.stackTraceToString())
+                Log.e("JSCore", e.stackTraceToString())
                 throw e
             } finally {
                 managers.remove(scope)
@@ -94,12 +94,12 @@ internal class JSCore(val context: Context) {
 
     private fun polyfill(runtime: V8) {
         runtime.addGlobalObject("console") {
-            it.registerJavaMethod({ _, args -> Log.v("JSContext", args.toString()) }, "log")
-            it.registerJavaMethod({ _, args -> Log.v("JSContext", args.toString()) }, "trace")
-            it.registerJavaMethod({ _, args -> Log.d("JSContext", args.toString()) }, "debug")
-            it.registerJavaMethod({ _, args -> Log.i("JSContext", args.toString()) }, "info")
-            it.registerJavaMethod({ _, args -> Log.w("JSContext", args.toString()) }, "warn")
-            it.registerJavaMethod({ _, args -> Log.e("JSContext", args.toString()) }, "error")
+            it.registerJavaMethod({ _, args -> Log.v("JSCore", args.toString()) }, "log")
+            it.registerJavaMethod({ _, args -> Log.v("JSCore", args.toString()) }, "trace")
+            it.registerJavaMethod({ _, args -> Log.d("JSCore", args.toString()) }, "debug")
+            it.registerJavaMethod({ _, args -> Log.i("JSCore", args.toString()) }, "info")
+            it.registerJavaMethod({ _, args -> Log.w("JSCore", args.toString()) }, "warn")
+            it.registerJavaMethod({ _, args -> Log.e("JSCore", args.toString()) }, "error")
         }
         runtime.registerJavaMethod({ _, args ->
             val callback = args.get(0) as? V8Function
