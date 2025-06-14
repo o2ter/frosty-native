@@ -45,9 +45,9 @@ internal class FTNodeState(var component: String) {
     var children = mutableListOf<FTNodeState>()
 
     fun toV8Object(runtime: V8): V8Object {
+        val obj = V8Object(runtime)
 
-
-        return V8ObjectUtils.toV8Object(runtime, mapOf())
+        return obj
     }
 }
 
