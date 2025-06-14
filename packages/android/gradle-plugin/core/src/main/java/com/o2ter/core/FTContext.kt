@@ -26,18 +26,24 @@
 package com.o2ter.core
 
 import android.content.Context
+import android.util.Log
 import androidx.compose.runtime.Composable
 import androidx.core.content.edit
 import com.eclipsesource.v8.JavaCallback
 import com.eclipsesource.v8.V8
+import com.eclipsesource.v8.V8Object
+import com.eclipsesource.v8.V8Value
+import com.eclipsesource.v8.utils.MemoryManager
 import com.eclipsesource.v8.utils.V8ObjectUtils
 import com.o2ter.app.FrostyNativeActivity
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Deferred
+import kotlinx.coroutines.async
 import java.io.InputStream
 
 internal typealias Component = @Composable (
     props: Map<String, Any>,
-    children: List<Any>
+    content: @Composable () -> Unit
 ) -> Unit
 
 internal class FTContext(private val activity: FrostyNativeActivity, val context: Context) {
@@ -89,12 +95,24 @@ internal class FTContext(private val activity: FrostyNativeActivity, val context
         }
     }
 
+    fun <T> withRuntime(block: suspend CoroutineScope.(V8) -> T): Deferred<T> {
+        return core.withRuntime(block)
+    }
+
     fun executeScript(code: String): Deferred<Any> {
         return core.executeScript(code)
     }
 
     fun executeScript(stream: InputStream): Deferred<Any> {
         return core.executeScript(stream)
+    }
+
+    fun executeObjectScript(code: String): Deferred<V8Object> {
+        return core.executeObjectScript(code)
+    }
+
+    fun executeObjectScript(stream: InputStream): Deferred<V8Object> {
+        return core.executeObjectScript(stream)
     }
 
     fun executeVoidScript(code: String): Deferred<Unit> {

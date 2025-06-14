@@ -30,6 +30,7 @@ import android.util.Log
 import com.eclipsesource.v8.JavaCallback
 import com.eclipsesource.v8.V8
 import com.eclipsesource.v8.V8Function
+import com.eclipsesource.v8.V8Object
 import com.eclipsesource.v8.V8TypedArray
 import com.eclipsesource.v8.V8Value
 import com.eclipsesource.v8.utils.MemoryManager
@@ -169,6 +170,17 @@ internal class JSCore(val context: Context) {
     fun executeScript(stream: InputStream): Deferred<Any> {
         val source = stream.bufferedReader().readText()
         return this.executeScript(source)
+    }
+
+    fun executeObjectScript(code: String): Deferred<V8Object> {
+        return this.withRuntime { runtime ->
+            runtime.executeObjectScript(code)
+        }
+    }
+
+    fun executeObjectScript(stream: InputStream): Deferred<V8Object> {
+        val source = stream.bufferedReader().readText()
+        return this.executeObjectScript(source)
     }
 
     fun executeVoidScript(code: String): Deferred<Unit> {

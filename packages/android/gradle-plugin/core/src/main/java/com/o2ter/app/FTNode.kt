@@ -37,16 +37,26 @@ import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.derivedStateOf
 import com.o2ter.core.FTContext
 
+internal class FTNodeState(var component: String) {
+    var props = mutableMapOf<String, Any>()
+    var children = mutableListOf<FTNodeState>()
+}
+
 @Composable
 internal fun FTNode(
     modifier: Modifier = Modifier,
-    engine: FTContext
+    engine: FTContext,
+    state: FTNodeState,
 ) {
-    var name by remember { mutableStateOf("") }
-    val component by remember { derivedStateOf { engine.components.get(name) } }
-    var props = remember { mutableStateMapOf<String, Any>() }
-    var children = remember { mutableStateListOf<Any>() }
+    val component by remember { derivedStateOf { engine.components.get(state.component) } }
     Box(modifier) {
-        component?.invoke(props, children)
+        component?.invoke(state.props) {
+            state.children.forEach {
+                FTNode(
+                    engine = engine,
+                    state = it
+                )
+            }
+        }
     }
 }

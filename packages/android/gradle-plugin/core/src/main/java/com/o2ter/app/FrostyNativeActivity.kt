@@ -35,7 +35,7 @@ import androidx.compose.ui.platform.LocalContext
 import com.o2ter.core.FTContext
 import java.io.InputStream
 
-open class FrostyNativeActivity : ComponentActivity() {
+open class FrostyNativeActivity(val appKey: String) : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -43,7 +43,7 @@ open class FrostyNativeActivity : ComponentActivity() {
         setContent {
             val context = LocalContext.current
             val engine = remember(this, context) { this.createEngine(context) }
-            FTRoot(engine)
+            FTRoot(engine, appKey)
         }
     }
 
