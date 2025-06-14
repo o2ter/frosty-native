@@ -101,11 +101,11 @@ internal class JSCore(val context: Context) {
             it.registerJavaMethod({ _, args -> Log.w("JSCore", args.toList().toString()) }, "warn")
             it.registerJavaMethod({ _, args -> Log.e("JSCore", args.toList().toString()) }, "error")
         }
-        runtime.registerJavaMethod({ _, args ->
+        runtime.registerJavaMethod(JavaCallback { _, args ->
             val callback = args.get(0) as? V8Function
             val timeout = if (args.length() < 2) 0 else args.getInteger(1)
             if (callback == null) {
-                return@registerJavaMethod
+                return@JavaCallback null
             }
             val task = V8TimerTask(
                 this,
@@ -114,7 +114,9 @@ internal class JSCore(val context: Context) {
                 true
             )
             timer.schedule(task, timeout.toLong())
-            timerTasks[timerTaskId++] = task
+            val id = timerTaskId++
+            timerTasks[id] = task
+            return@JavaCallback id.toDouble()
         }, "setTimeout")
         runtime.registerJavaMethod({ _, args ->
             if (args.length() != 1) {
@@ -124,11 +126,11 @@ internal class JSCore(val context: Context) {
             timerTasks[id]?.cancel()
             timerTasks.remove(id)
         }, "clearTimeout")
-        runtime.registerJavaMethod({ _, args ->
+        runtime.registerJavaMethod(JavaCallback { _, args ->
             val callback = args.get(0) as? V8Function
             val timeout = if (args.length() < 2) 0 else args.getInteger(1)
             if (callback == null) {
-                return@registerJavaMethod
+                return@JavaCallback null
             }
             val task = V8TimerTask(
                 this,
@@ -137,7 +139,9 @@ internal class JSCore(val context: Context) {
                 false
             )
             timer.schedule(task, timeout.toLong(), timeout.toLong())
-            timerTasks[timerTaskId++] = task
+            val id = timerTaskId++
+            timerTasks[id] = task
+            return@JavaCallback id.toDouble()
         }, "setInterval")
         runtime.registerJavaMethod({ _, args ->
             if (args.length() != 1) {
