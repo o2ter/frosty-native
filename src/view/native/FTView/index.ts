@@ -26,11 +26,9 @@
 import { NativeModules } from '../../../global';
 import { NativeNode } from '../../../node';
 
-const _FTView = NativeModules['FTView'];
-
 export abstract class FTView extends NativeNode {
 
-  static override createElement(): NativeNode {
-    return _FTView();
+  static createElement(): NativeNode {
+    return NativeModules['FTView']();
   }
 }

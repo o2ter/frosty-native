@@ -27,9 +27,7 @@ import { NativeElementType } from 'frosty/_native';
 
 export abstract class NativeNode extends NativeElementType {
 
-  static createElement(): NativeNode {
-    throw new Error('Method not implemented.');
-  }
+  static createElement: () => NativeNode;
 
   abstract update(props: Record<string, any>): void;
 
