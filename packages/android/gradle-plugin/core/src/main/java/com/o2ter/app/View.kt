@@ -29,13 +29,20 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+
+private fun Modifier.applyViewProps(
+    props: Map<String, Any?>
+): Modifier {
+    return this
+}
 
 @Composable
 fun FTView(
     props: Map<String, Any?>,
     content: @Composable () -> Unit
 ) {
-    Column {
+    Column(modifier = Modifier.applyViewProps(props)) {
         content()
     }
 }
@@ -47,6 +54,10 @@ fun FTTextView(
 ) {
     val text = props.get("text") as? String
     if (text != null) {
-        Text(text)
+        Text(
+            text = text,
+            modifier = Modifier.applyViewProps(props)
+        )
     }
 }
+
