@@ -75,7 +75,6 @@ internal class FTNodeState(
         obj.registerJavaMethod({ _, args ->
             val children = V8ObjectUtils.toList(args.getArray(0))
             if (children != null) {
-
             }
         }, "replaceChildren")
         obj.registerJavaMethod({ _, _ -> this.destroy() }, "destroy")
