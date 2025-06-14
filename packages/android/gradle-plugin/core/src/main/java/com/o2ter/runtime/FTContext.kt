@@ -32,6 +32,7 @@ import com.eclipsesource.v8.JavaCallback
 import com.eclipsesource.v8.V8
 import com.eclipsesource.v8.V8Object
 import com.eclipsesource.v8.utils.V8ObjectUtils
+import com.o2ter.app.FTNodeState
 import com.o2ter.app.FTTextView
 import com.o2ter.app.FTView
 import com.o2ter.app.FrostyNativeActivity
@@ -57,8 +58,8 @@ internal class FTContext(private val activity: FrostyNativeActivity, val context
         val self = this
         core.withRuntime {
             polyfill(it)
-            self.register("FTView") { props, content -> FTView(props, content) }
-            self.register("FTTextView") { props, content -> FTTextView(props, content) }
+            self.register(it,"FTView") { props, content -> FTView(props, content) }
+            self.register(it,"FTTextView") { props, content -> FTTextView(props, content) }
         }.discard()
     }
 
@@ -128,7 +129,12 @@ internal class FTContext(private val activity: FrostyNativeActivity, val context
         return core.executeVoidScript(stream)
     }
 
-    fun register(name: String, component: Component) {
+    fun register(runtime: V8, name: String, component: Component) {
         this.components.set(name, component)
+        val nativeModules = runtime.getObject("__FROSTY_SPEC__").getObject("NativeModules")
+        nativeModules.registerJavaMethod(JavaCallback { _, _ ->
+            val node = FTNodeState(name)
+            node.toV8Object(runtime)
+        }, name)
     }
 }

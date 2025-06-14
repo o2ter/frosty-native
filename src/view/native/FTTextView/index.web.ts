@@ -1,5 +1,5 @@
 //
-//  index.android.ts
+//  index.ts
 //
 //  The MIT License
 //  Copyright (c) 2021 - 2025 O2ter Limited. All rights reserved.
@@ -25,6 +25,8 @@
 
 import { NativeNode } from '../../../node';
 
-export abstract class FTTextView extends NativeNode {
-
+export declare class FTTextView extends NativeNode {
+  update(props: Record<string, any>): void;
+  replaceChildren(children: (string | NativeNode)[]): void;
+  destroy(): void;
 }

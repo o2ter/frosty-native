@@ -1,5 +1,5 @@
 //
-//  index.ts
+//  index.apple.ts
 //
 //  The MIT License
 //  Copyright (c) 2021 - 2025 O2ter Limited. All rights reserved.
@@ -23,10 +23,14 @@
 //  THE SOFTWARE.
 //
 
+import { NativeModules } from '../../../global';
 import { NativeNode } from '../../../node';
 
-export declare class FTView extends NativeNode {
-  update(props: Record<string, any>): void;
-  replaceChildren(children: (string | NativeNode)[]): void;
-  destroy(): void;
+const _FTView = NativeModules['FTView'];
+
+export abstract class FTView extends NativeNode {
+
+  static createElement(): NativeNode {
+    return _FTView();
+  }
 }
