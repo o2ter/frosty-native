@@ -28,11 +28,9 @@ package com.o2ter.app
 import androidx.compose.foundation.layout.Box
 import androidx.compose.ui.Modifier
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.derivedStateOf
 import com.eclipsesource.v8.V8
 import com.eclipsesource.v8.V8Object
+import com.eclipsesource.v8.utils.V8ObjectUtils
 import com.o2ter.runtime.FTContext
 
 internal typealias Component = @Composable (
@@ -41,10 +39,10 @@ internal typealias Component = @Composable (
 ) -> Unit
 
 internal class FTNodeState(var component: Component) {
-    var props = mapOf<String, Any>()
+    var props = mapOf<String, Any?>()
     var children = mutableListOf<FTNodeState>()
 
-    fun update(props: Map<String, Any>) {
+    fun update(props: Map<String, Any?>) {
         this.props = props
     }
 
@@ -58,6 +56,12 @@ internal class FTNodeState(var component: Component) {
 
     fun toV8Object(runtime: V8): V8Object {
         val obj = V8Object(runtime)
+        obj.registerJavaMethod({ _, args ->
+            val props = V8ObjectUtils.toMap(args.getObject(0))
+            if (props != null) {
+                this.update(props.toMap())
+            }
+        }, "update")
         obj.registerJavaMethod({ _, _ -> this.destroy() }, "destroy")
         return obj
     }
