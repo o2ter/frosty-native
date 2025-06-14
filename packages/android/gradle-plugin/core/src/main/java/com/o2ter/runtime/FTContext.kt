@@ -23,28 +23,29 @@
 //  THE SOFTWARE.
 //
 
-package com.o2ter.core
+package com.o2ter.runtime
 
 import android.content.Context
-import android.util.Log
 import androidx.compose.runtime.Composable
 import androidx.core.content.edit
 import com.eclipsesource.v8.JavaCallback
 import com.eclipsesource.v8.V8
 import com.eclipsesource.v8.V8Object
-import com.eclipsesource.v8.V8Value
-import com.eclipsesource.v8.utils.MemoryManager
 import com.eclipsesource.v8.utils.V8ObjectUtils
 import com.o2ter.app.FrostyNativeActivity
+import com.o2ter.core.JSCore
+import com.o2ter.core.addGlobalObject
+import com.o2ter.core.addObject
+import com.o2ter.core.discard
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Deferred
-import kotlinx.coroutines.async
 import java.io.InputStream
 
 internal typealias Component = @Composable (
     props: Map<String, Any>,
     content: @Composable () -> Unit
 ) -> Unit
+
 
 internal class FTContext(private val activity: FrostyNativeActivity, val context: Context) {
 
