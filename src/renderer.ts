@@ -24,12 +24,11 @@
 //
 
 import _ from 'lodash';
-import { _Renderer, uniqueId, VNode } from 'frosty/_native';
+import { _Renderer, VNode } from 'frosty/_native';
 import { NativeNode } from './node';
 
 export class NativeRenderer extends _Renderer<NativeNode> {
 
-  private _nodes = new Map<NativeNode, string>();
   private _callbacks = new Map<string, { [name: string]: (...args: any[]) => void; }>();
 
   get _server(): boolean {
@@ -47,27 +46,19 @@ export class NativeRenderer extends _Renderer<NativeNode> {
     if (_.isString(_type) || !(_type.prototype instanceof NativeNode)) throw Error('Invalid type');
     const ElementType = _type as typeof NativeNode;
     const element = ElementType.createElement();
-    const targetId = uniqueId();
-    this._nodes.set(element, targetId);
-    this._callbacks.set(targetId, _.pickBy(props, v => _.isFunction(v)));
-    element.update(_.mapValues(props, v => _.isFunction(v) ? targetId : v));
+    this._callbacks.set(node.id, _.pickBy(props, v => _.isFunction(v)));
+    element.update(_.mapValues(props, v => _.isFunction(v) ? node.id : v));
     return element;
   }
 
   protected _updateElement(node: VNode, element: NativeNode, stack: VNode[]) {
     const { props } = node;
-    const targetId = this._nodes.get(element);
-    if (!targetId) return;
-    this._callbacks.set(targetId, _.pickBy(props, v => _.isFunction(v)));
-    element.update(_.mapValues(props, v => _.isFunction(v) ? targetId : v));
+    this._callbacks.set(node.id, _.pickBy(props, v => _.isFunction(v)));
+    element.update(_.mapValues(props, v => _.isFunction(v) ? node.id : v));
   }
 
   protected _destroyElement(node: VNode, element: NativeNode) {
-    const targetId = this._nodes.get(element);
-    if (targetId) {
-      this._nodes.delete(element);
-      this._callbacks.delete(targetId);
-    }
+    this._callbacks.delete(node.id);
     element.destroy();
   }
 
@@ -75,8 +66,8 @@ export class NativeRenderer extends _Renderer<NativeNode> {
     element.replaceChildren(children);
   }
 
-  notify(targetId: string, method: string, ...args: any[]) {
-    const props = this._callbacks.get(targetId) ?? {};
+  notify(nodeId: string, method: string, ...args: any[]) {
+    const props = this._callbacks.get(nodeId) ?? {};
     if (_.isFunction(props[method])) props[method](...args);
   }
 }

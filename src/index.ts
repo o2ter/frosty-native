@@ -46,8 +46,8 @@ export const AppRegistry = (() => {
       const renderer = new NativeRenderer();
       return {
         component,
-        notify: (targetId: string, method: string, ...args: any[]) => {
-          renderer.notify(targetId, method, ...args);
+        notify: (nodeId: string, method: string, ...args: any[]) => {
+          renderer.notify(nodeId, method, ...args);
         },
         run(options?: {
           root?: NativeNode,
