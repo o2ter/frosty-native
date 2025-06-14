@@ -29,14 +29,14 @@ import androidx.compose.runtime.Composable
 
 @Composable
 fun FTView(
-    props: Map<String, Any>,
+    props: Map<String, Any?>,
     content: @Composable () -> Unit
 ) {
 }
 
 @Composable
 fun FTTextView(
-    props: Map<String, Any>,
+    props: Map<String, Any?>,
     content: @Composable () -> Unit
 ) {
 }
