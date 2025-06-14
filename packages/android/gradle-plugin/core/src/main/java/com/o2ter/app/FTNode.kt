@@ -28,6 +28,7 @@ package com.o2ter.app
 import androidx.compose.foundation.layout.Box
 import androidx.compose.ui.Modifier
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.Stable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -42,6 +43,7 @@ internal typealias Component = @Composable (
     content: @Composable () -> Unit
 ) -> Unit
 
+@Stable
 internal class FTNodeState(
     val activity: FrostyNativeActivity,
     var component: Component
