@@ -60,7 +60,9 @@ extension FTNode {
         AnyView(
             self.provider(
                 self.$node.props,
-                self.$node.children.map { AnyView(FTNode(state: $0)) }
+                .constant(self.$node.children.map {
+                    AnyView(FTNode(state: $0))
+                })
             )
         )
     }
@@ -68,7 +70,8 @@ extension FTNode {
 
 extension FTNode {
 
-    @Observable class State: NSObject, FTNodeExport {
+    @Observable
+    class State: NSObject, FTNodeExport {
 
         let provider: FTContext.ViewProvider
 

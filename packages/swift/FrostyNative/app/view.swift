@@ -29,7 +29,10 @@ protocol FTViewProtocol: View {
 
     var children: [AnyView] { get }
 
-    init(props: Binding<[String: any Sendable]>, children: [AnyView])
+    init(
+        props: Binding<[String: any Sendable]>,
+        children: Binding<[AnyView]>
+    )
 }
 
 protocol FTLayoutViewProtocol: FTViewProtocol {
@@ -97,13 +100,18 @@ extension FTLayoutViewProtocol {
 
 struct FTView: FTLayoutViewProtocol {
 
-    @Binding var props: [String: any Sendable]
-
+    @Binding
+    var props: [String: any Sendable]
+    
+    @Binding
     var children: [AnyView]
 
-    init(props: Binding<[String: any Sendable]>, children: [AnyView]) {
+    init(
+        props: Binding<[String: any Sendable]>,
+        children: Binding<[AnyView]>
+    ) {
         self._props = props
-        self.children = children
+        self._children = children
     }
 
     var lazy: Bool {
@@ -150,13 +158,18 @@ struct FTView: FTLayoutViewProtocol {
 
 struct FTTextView: FTLayoutViewProtocol {
 
-    @Binding var props: [String: any Sendable]
+    @Binding
+    var props: [String: any Sendable]
 
+    @Binding
     var children: [AnyView]
 
-    init(props: Binding<[String: any Sendable]>, children: [AnyView]) {
+    init(
+        props: Binding<[String: any Sendable]>,
+        children: Binding<[AnyView]>
+    ) {
         self._props = props
-        self.children = children
+        self._children = children
     }
 
     var text: String {

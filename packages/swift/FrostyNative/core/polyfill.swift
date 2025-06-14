@@ -57,7 +57,7 @@ extension FTContext {
 
     public typealias ViewProvider = @MainActor @Sendable (
         _ props: Binding<[String: any Sendable]>,
-        _ children: [AnyView]
+        _ children: Binding<[AnyView]>
     ) -> any View
 
     public func register(name: String, _ provider: @escaping ViewProvider) {
