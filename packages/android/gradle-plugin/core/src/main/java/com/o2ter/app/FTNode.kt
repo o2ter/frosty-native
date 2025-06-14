@@ -27,18 +27,20 @@ package com.o2ter.app
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.material3.Text
+import androidx.compose.ui.Modifier
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.mutableStateMapOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
-import androidx.compose.ui.Modifier
+import androidx.compose.runtime.mutableStateListOf
 
 @Composable
 internal fun FTNode(modifier: Modifier = Modifier) {
     var name by remember { mutableStateOf("") }
-    var props by remember { mutableStateMapOf<String, Any>() }
+    var props = remember { mutableStateMapOf<String, Any>() }
+    var children = remember { mutableStateListOf<Any>() }
     Box(modifier) {
         Text(
             text = "Hello $name!",
