@@ -26,6 +26,7 @@
 package com.o2ter.core
 
 import android.content.Context
+import androidx.compose.runtime.Composable
 import androidx.core.content.edit
 import com.eclipsesource.v8.JavaCallback
 import com.eclipsesource.v8.V8
@@ -34,9 +35,15 @@ import com.o2ter.app.FrostyNativeActivity
 import kotlinx.coroutines.Deferred
 import java.io.InputStream
 
+internal typealias Component = @Composable (
+    props: Map<String, Any>,
+    children: List<Any>
+) -> Unit
+
 internal class FTContext(private val activity: FrostyNativeActivity, val context: Context) {
 
     private val core: JSCore = JSCore(context)
+    private val components = mutableMapOf<String, Component>()
 
     init {
         core.withRuntime {
@@ -96,5 +103,9 @@ internal class FTContext(private val activity: FrostyNativeActivity, val context
 
     fun executeVoidScript(stream: InputStream): Deferred<Unit> {
         return core.executeVoidScript(stream)
+    }
+
+    fun register(name: String, component: Component) {
+        this.components.set(name, component)
     }
 }
