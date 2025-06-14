@@ -116,7 +116,7 @@ internal class JSCore(val context: Context) {
             timer.schedule(task, timeout.toLong())
             val id = timerTaskId++
             timerTasks[id] = task
-            return@JavaCallback id.toDouble()
+            return@JavaCallback id
         }, "setTimeout")
         runtime.registerJavaMethod({ _, args ->
             if (args.length() != 1) {
@@ -141,7 +141,7 @@ internal class JSCore(val context: Context) {
             timer.schedule(task, timeout.toLong(), timeout.toLong())
             val id = timerTaskId++
             timerTasks[id] = task
-            return@JavaCallback id.toDouble()
+            return@JavaCallback id
         }, "setInterval")
         runtime.registerJavaMethod({ _, args ->
             if (args.length() != 1) {
