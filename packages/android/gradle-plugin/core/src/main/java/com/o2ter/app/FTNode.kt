@@ -40,6 +40,8 @@ internal typealias Component = @Composable (
 ) -> Unit
 
 internal class FTNodeState(var component: Component) {
+
+    val nodeId = UUID.randomUUID().toString()
     var props = mapOf<String, Any?>()
     var children = mutableListOf<FTNodeState>()
 
@@ -56,7 +58,6 @@ internal class FTNodeState(var component: Component) {
     }
 
     fun toV8Object(runtime: V8): V8Object {
-        val nodeId = UUID.randomUUID().toString()
         val obj = V8Object(runtime)
         obj.add("nodeId", nodeId)
         obj.registerJavaMethod({ _, args ->
