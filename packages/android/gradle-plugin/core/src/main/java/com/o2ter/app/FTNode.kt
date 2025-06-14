@@ -62,6 +62,12 @@ internal class FTNodeState(var component: Component) {
                 this.update(props.toMap())
             }
         }, "update")
+        obj.registerJavaMethod({ _, args ->
+            val children = V8ObjectUtils.toList(args.getArray(0))
+            if (children != null) {
+                
+            }
+        }, "replaceChildren")
         obj.registerJavaMethod({ _, _ -> this.destroy() }, "destroy")
         return obj
     }
