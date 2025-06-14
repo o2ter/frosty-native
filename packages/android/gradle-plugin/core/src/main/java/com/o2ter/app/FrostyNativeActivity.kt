@@ -30,10 +30,31 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
+import com.eclipsesource.v8.V8Object
+import com.eclipsesource.v8.utils.V8ObjectUtils
 import com.o2ter.core.FTContext
+import kotlinx.coroutines.Deferred
 import java.io.InputStream
+
+internal fun FTContext.run(
+    appKey: String,
+    rootView: FTNodeState
+): Deferred<V8Object> {
+    val self = this
+    return this.withRuntime { runtime ->
+        val registry = self.executeObjectScript("__FROSTY_SPEC__.AppRegistry").await()
+        val runner = registry.executeObjectFunction("getRunnable", V8ObjectUtils.toV8Array(runtime, listOf(appKey)))
+        runner.executeObjectFunction("run", V8ObjectUtils.toV8Array(runtime, listOf(
+            V8ObjectUtils.toV8Object(runtime, mapOf(
+                "root" to rootView
+            ))
+        )))
+    }
+}
 
 open class FrostyNativeActivity(val appKey: String) : ComponentActivity() {
 
@@ -43,7 +64,9 @@ open class FrostyNativeActivity(val appKey: String) : ComponentActivity() {
         setContent {
             val context = LocalContext.current
             val engine = remember(this, context) { this.createEngine(context) }
-            FTRoot(engine, appKey)
+            val rootView by remember { mutableStateOf(FTNodeState("View")) }
+            val runner = remember { engine.run(appKey, rootView) }
+            FTRoot(engine, rootView)
         }
     }
 
