@@ -127,7 +127,7 @@ internal class FTContext(private val activity: FrostyNativeActivity, val context
     fun register(runtime: V8, name: String, component: Component) {
         val nativeModules = runtime.getObject("__FROSTY_SPEC__").getObject("NativeModules")
         nativeModules.registerJavaMethod(JavaCallback { _, _ ->
-            val node = FTNodeState(activity.storage, component)
+            val node = FTNodeState(activity, component)
             node.toV8Object(runtime)
         }, name)
     }
