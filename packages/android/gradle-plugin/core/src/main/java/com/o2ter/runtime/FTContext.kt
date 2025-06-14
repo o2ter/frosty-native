@@ -32,6 +32,7 @@ import com.eclipsesource.v8.JavaCallback
 import com.eclipsesource.v8.V8
 import com.eclipsesource.v8.V8Object
 import com.eclipsesource.v8.utils.V8ObjectUtils
+import com.o2ter.app.Component
 import com.o2ter.app.FTNodeState
 import com.o2ter.app.FTTextView
 import com.o2ter.app.FTView
@@ -44,15 +45,9 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Deferred
 import java.io.InputStream
 
-internal typealias Component = @Composable (
-    props: Map<String, Any>,
-    content: @Composable () -> Unit
-) -> Unit
-
 internal class FTContext(private val activity: FrostyNativeActivity, val context: Context) {
 
     private val core: JSCore = JSCore(context)
-    val components = mutableMapOf<String, Component>()
 
     init {
         val self = this
@@ -130,10 +125,9 @@ internal class FTContext(private val activity: FrostyNativeActivity, val context
     }
 
     fun register(runtime: V8, name: String, component: Component) {
-        this.components.set(name, component)
         val nativeModules = runtime.getObject("__FROSTY_SPEC__").getObject("NativeModules")
         nativeModules.registerJavaMethod(JavaCallback { _, _ ->
-            val node = FTNodeState(name)
+            val node = FTNodeState(component)
             node.toV8Object(runtime)
         }, name)
     }

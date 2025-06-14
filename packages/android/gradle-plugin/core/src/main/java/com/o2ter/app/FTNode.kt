@@ -35,7 +35,12 @@ import com.eclipsesource.v8.V8
 import com.eclipsesource.v8.V8Object
 import com.o2ter.runtime.FTContext
 
-internal class FTNodeState(var component: String) {
+internal typealias Component = @Composable (
+    props: Map<String, Any>,
+    content: @Composable () -> Unit
+) -> Unit
+
+internal class FTNodeState(var component: Component) {
     var props = mutableMapOf<String, Any>()
     var children = mutableListOf<FTNodeState>()
 
@@ -52,9 +57,8 @@ internal fun FTNode(
     engine: FTContext,
     state: FTNodeState,
 ) {
-    val component by remember { derivedStateOf { engine.components.get(state.component) } }
     Box(modifier) {
-        component?.invoke(state.props) {
+        state.component(state.props) {
             state.children.forEach {
                 FTNode(
                     engine = engine,
