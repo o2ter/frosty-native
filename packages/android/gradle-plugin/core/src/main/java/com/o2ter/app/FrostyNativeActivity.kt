@@ -86,7 +86,9 @@ open class FrostyNativeActivity(val appKey: String) : ComponentActivity() {
     override fun onDestroy() {
         super.onDestroy()
         engine.withRuntime { runtime ->
-            runner.await().executeVoidFunction("unmount", V8ObjectUtils.toV8Array(runtime, listOf()))
+            val runner = runner.await()
+            runner.executeVoidFunction("unmount", V8ObjectUtils.toV8Array(runtime, listOf()))
+            runner.close()
         }.discard()
     }
 
