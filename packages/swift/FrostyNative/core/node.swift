@@ -27,6 +27,8 @@ import JavaScriptCore
 
 @objc protocol FTNodeExport: JSExport {
 
+    func invoke(_ method: String, _ args: [any Sendable])
+
     func update(_ props: [String: any Sendable])
 
     func replaceChildren(_ children: [FTNode.State])
@@ -95,6 +97,10 @@ extension FTNode.State {
 }
 
 extension FTNode.State {
+
+    func invoke(_ method: String, _ args: [any Sendable]) {
+        
+    }
 
     func update(_ props: [String: any Sendable]) {
         self.props = props
