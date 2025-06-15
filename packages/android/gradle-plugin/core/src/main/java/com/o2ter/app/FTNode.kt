@@ -80,7 +80,9 @@ internal class FTNodeState(
         obj.registerJavaMethod({ _, args ->
             val method = args.getString(0)
             val params = V8ObjectUtils.toList(args.getArray(1)).toList()
-            this.handler?.invoke(method, params)
+            if (method != null) {
+                this.handler?.invoke(method, params)
+            }
         }, "invoke")
         obj.registerJavaMethod({ _, args ->
             val props = V8ObjectUtils.toMap(args.getObject(0))
