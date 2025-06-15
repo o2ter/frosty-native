@@ -26,6 +26,7 @@
 import { NativeNode } from '../../../node';
 
 export declare class FTTextView extends NativeNode {
+  invoke(method: string, args: any[]): void;
   update(props: Record<string, any>): void;
   replaceChildren(children: (string | NativeNode)[]): void;
   destroy(): void;

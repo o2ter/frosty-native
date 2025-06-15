@@ -29,6 +29,8 @@ export abstract class NativeNode extends NativeElementType {
 
   static createElement: () => NativeNode;
 
+  abstract invoke(method: string, args: any[]): void;
+
   abstract update(props: Record<string, any>): void;
 
   abstract replaceChildren(children: (string | NativeNode)[]): void;
