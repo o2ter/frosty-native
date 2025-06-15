@@ -31,8 +31,8 @@ protocol FTViewProtocol: View {
 
     init(
         props: Binding<[String: any Sendable]>,
-        children: Binding<[AnyView]>,
-        handler: (@escaping FTContext.ViewHandler) -> Void
+        handler: (@escaping FTContext.ViewHandler) -> Void,
+        children: Binding<[AnyView]>
     )
 }
 
@@ -109,8 +109,8 @@ struct FTView: FTLayoutViewProtocol {
 
     init(
         props: Binding<[String: any Sendable]>,
-        children: Binding<[AnyView]>,
-        handler: (@escaping FTContext.ViewHandler) -> Void
+        handler: (@escaping FTContext.ViewHandler) -> Void,
+        children: Binding<[AnyView]>
     ) {
         self._props = props
         self._children = children
@@ -168,8 +168,8 @@ struct FTTextView: FTLayoutViewProtocol {
 
     init(
         props: Binding<[String: any Sendable]>,
-        children: Binding<[AnyView]>,
-        handler: (@escaping FTContext.ViewHandler) -> Void
+        handler: (@escaping FTContext.ViewHandler) -> Void,
+        children: Binding<[AnyView]>
     ) {
         self._props = props
         self._children = children
