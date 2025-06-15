@@ -69,6 +69,7 @@ internal class FTNodeState(
     fun destroy() {
         this.props = mapOf()
         this.children = listOf()
+        this.handler = null
         activity.nodes.remove(this)
     }
 
