@@ -91,13 +91,6 @@ extension FTNode {
 
 extension FTNode.State {
 
-    convenience init(type: any FTViewProtocol.Type) {
-        self.init(provider: type.init(props:children:))
-    }
-}
-
-extension FTNode.State {
-
     func invoke(_ method: String, _ args: [any Sendable]) {
         
     }
