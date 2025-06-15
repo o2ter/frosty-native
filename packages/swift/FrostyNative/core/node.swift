@@ -110,5 +110,6 @@ extension FTNode.State {
     func destroy() {
         self.props = [:]
         self.children = []
+        self.handler = nil
     }
 }
