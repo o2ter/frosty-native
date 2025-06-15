@@ -45,6 +45,7 @@ private fun Modifier.applyViewProps(
 @Composable
 fun FTView(
     props: Map<String, Any?>,
+    handler: (ComponentHandler) -> Unit,
     content: @Composable () -> Unit
 ) {
     Column(modifier = Modifier.applyViewProps(props)) {
@@ -55,6 +56,7 @@ fun FTView(
 @Composable
 fun FTTextView(
     props: Map<String, Any?>,
+    handler: (ComponentHandler) -> Unit,
     content: @Composable () -> Unit
 ) {
     val text = props.get("text") as? String
