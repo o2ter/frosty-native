@@ -38,8 +38,11 @@ import com.eclipsesource.v8.utils.V8ObjectUtils
 import com.o2ter.runtime.FTContext
 import java.util.UUID
 
+internal typealias ComponentHandler = (method: String, args: List<Any?>) -> Unit
+
 internal typealias Component = @Composable (
     props: Map<String, Any?>,
+    handler: (ComponentHandler) -> Unit,
     content: @Composable () -> Unit
 ) -> Unit
 
@@ -52,6 +55,8 @@ internal class FTNodeState(
     val nodeId = UUID.randomUUID().toString()
     var props by mutableStateOf(mapOf<String, Any?>())
     var children by mutableStateOf(listOf<FTNodeState>())
+
+    var handler: ComponentHandler? = null
 
     fun update(props: Map<String, Any?>) {
         this.props = props
@@ -73,7 +78,8 @@ internal class FTNodeState(
         obj.add("nodeId", nodeId)
         obj.registerJavaMethod({ _, args ->
             val method = args.getString(0)
-            val params = args.getArray(1)
+            val params = V8ObjectUtils.toList(args.getArray(1)).toList()
+            this.handler?.invoke(method, params)
         }, "invoke")
         obj.registerJavaMethod({ _, args ->
             val props = V8ObjectUtils.toMap(args.getObject(0))
@@ -102,7 +108,10 @@ internal fun FTNode(
     state: FTNodeState,
 ) {
     Box(modifier) {
-        state.component(state.props) {
+        state.component(
+            state.props,
+            { state.handler = it }
+        ) {
             state.children.forEach {
                 FTNode(
                     engine = engine,
