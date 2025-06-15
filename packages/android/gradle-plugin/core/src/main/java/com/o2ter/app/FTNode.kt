@@ -72,6 +72,10 @@ internal class FTNodeState(
         val obj = V8Object(runtime)
         obj.add("nodeId", nodeId)
         obj.registerJavaMethod({ _, args ->
+            val method = args.getString(0)
+            val params = args.getArray(1)
+        }, "invoke")
+        obj.registerJavaMethod({ _, args ->
             val props = V8ObjectUtils.toMap(args.getObject(0))
             if (props != null) {
                 this.update(props.toMap())
