@@ -53,8 +53,8 @@ internal class FTContext(private val activity: FrostyNativeActivity, val context
         val self = this
         core.withRuntime {
             polyfill(it)
-            self.register(it,"FTView") { props, handler, content -> FTView(props, handler, content) }
-            self.register(it,"FTTextView") { props, handler, content -> FTTextView(props, handler, content) }
+            self.register(it, "FTView") { nodeId, props, handler, content -> FTView(nodeId, props, handler, content) }
+            self.register(it, "FTTextView") { nodeId, props, handler, content -> FTTextView(nodeId, props, handler, content) }
         }.discard()
     }
 

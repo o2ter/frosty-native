@@ -26,12 +26,12 @@
 package com.o2ter.app
 
 import androidx.compose.foundation.layout.Box
-import androidx.compose.ui.Modifier
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Stable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Modifier
 import com.eclipsesource.v8.V8
 import com.eclipsesource.v8.V8Object
 import com.eclipsesource.v8.utils.V8ObjectUtils
@@ -41,6 +41,7 @@ import java.util.UUID
 internal typealias ComponentHandler = (method: String, args: List<Any?>) -> Unit
 
 internal typealias Component = @Composable (
+    nodeId: String,
     props: Map<String, Any?>,
     handler: (ComponentHandler) -> Unit,
     content: @Composable () -> Unit
@@ -112,6 +113,7 @@ internal fun FTNode(
 ) {
     Box(modifier) {
         state.component(
+            state.nodeId,
             state.props,
             { state.handler = it }
         ) {

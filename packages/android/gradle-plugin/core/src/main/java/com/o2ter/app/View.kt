@@ -47,6 +47,7 @@ private fun Modifier.applyViewProps(
 
 @Composable
 fun FTView(
+    nodeId: String,
     props: Map<String, Any?>,
     handler: (ComponentHandler) -> Unit,
     content: @Composable () -> Unit
@@ -58,6 +59,7 @@ fun FTView(
 
 @Composable
 fun FTTextView(
+    nodeId: String,
     props: Map<String, Any?>,
     handler: (ComponentHandler) -> Unit,
     content: @Composable () -> Unit
@@ -73,12 +75,12 @@ fun FTTextView(
 
 @Composable
 fun FTScrollView(
+    nodeId: String,
     props: Map<String, Any?>,
     handler: (ComponentHandler) -> Unit,
     content: @Composable () -> Unit
 ) {
-    val id = remember { UUID.randomUUID().toString() }
-    DisposableEffect(id) {
+    DisposableEffect(nodeId) {
         onDispose {
         }
     }
