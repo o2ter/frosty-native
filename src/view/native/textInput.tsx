@@ -23,10 +23,11 @@
 //  THE SOFTWARE.
 //
 
-import { ComponentType, PropsWithChildren } from 'frosty';
+import { ComponentType } from 'frosty';
 import { _createNativeElement } from 'frosty/_native';
 import { NativeModules } from '../../global';
 import { NativeNode } from '../../node';
+import { TextInputProps } from '../types';
 
 abstract class FTTextInput extends NativeNode {
 
@@ -34,9 +35,6 @@ abstract class FTTextInput extends NativeNode {
     return NativeModules['FTTextInput']();
   }
 }
-
-type TextInputProps = PropsWithChildren<{
-}>;
 
 export const TextInput: ComponentType<TextInputProps> = ({ children }) => {
 

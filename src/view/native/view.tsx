@@ -23,10 +23,11 @@
 //  THE SOFTWARE.
 //
 
-import { ComponentType, PropsWithChildren } from 'frosty';
+import { ComponentType } from 'frosty';
 import { _createNativeElement } from 'frosty/_native';
 import { NativeModules } from '../../global';
 import { NativeNode } from '../../node';
+import { ViewProps } from '../types';
 
 abstract class FTView extends NativeNode {
 
@@ -34,9 +35,6 @@ abstract class FTView extends NativeNode {
     return NativeModules['FTView']();
   }
 }
-
-type ViewProps = PropsWithChildren<{
-}>;
 
 export const View: ComponentType<ViewProps> = ({ children }) => {
 

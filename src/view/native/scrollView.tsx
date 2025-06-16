@@ -23,10 +23,11 @@
 //  THE SOFTWARE.
 //
 
-import { ComponentType, PropsWithChildren } from 'frosty';
+import { ComponentType } from 'frosty';
 import { _createNativeElement } from 'frosty/_native';
 import { NativeModules } from '../../global';
 import { NativeNode } from '../../node';
+import { ScrollViewProps } from '../types';
 
 abstract class FTScrollView extends NativeNode {
 
@@ -34,9 +35,6 @@ abstract class FTScrollView extends NativeNode {
     return NativeModules['FTScrollView']();
   }
 }
-
-type ScrollViewProps = PropsWithChildren<{
-}>;
 
 export const ScrollView: ComponentType<ScrollViewProps> = ({ children }) => {
 

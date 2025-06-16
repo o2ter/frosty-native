@@ -23,10 +23,8 @@
 //  THE SOFTWARE.
 //
 
-import { ComponentType, PropsWithChildren } from 'frosty';
-
-type ViewProps = PropsWithChildren<{
-}>;
+import { ComponentType } from 'frosty';
+import { TextViewProps, ViewProps } from './types';
 
 export const View: ComponentType<ViewProps> = ({ children }) => {
 
@@ -41,9 +39,6 @@ export const View: ComponentType<ViewProps> = ({ children }) => {
     </div>
   );
 };
-
-type TextViewProps = PropsWithChildren<{
-}>;
 
 export const Text: ComponentType<TextViewProps> = ({ children }) => {
 
