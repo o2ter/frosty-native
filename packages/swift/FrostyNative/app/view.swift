@@ -30,6 +30,7 @@ protocol FTViewProtocol: View {
     var children: [AnyView] { get }
 
     init(
+        nodeId: ObjectIdentifier,
         props: Binding<[String: any Sendable]>,
         handler: (@escaping FTContext.ViewHandler) -> Void,
         children: Binding<[AnyView]>
@@ -108,6 +109,7 @@ struct FTView: FTLayoutViewProtocol {
     var children: [AnyView]
 
     init(
+        nodeId: ObjectIdentifier,
         props: Binding<[String: any Sendable]>,
         handler: (@escaping FTContext.ViewHandler) -> Void,
         children: Binding<[AnyView]>
@@ -167,6 +169,7 @@ struct FTTextView: FTLayoutViewProtocol {
     var children: [AnyView]
 
     init(
+        nodeId: ObjectIdentifier,
         props: Binding<[String: any Sendable]>,
         handler: (@escaping FTContext.ViewHandler) -> Void,
         children: Binding<[AnyView]>

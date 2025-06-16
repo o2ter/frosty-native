@@ -64,7 +64,7 @@ public struct FTRoot: View {
     public init(appKey: String, runtime: FTContext) {
         self.appKey = appKey
         self.runtime = runtime
-        self.node = FTNode.State(provider: FTView.init(props:handler:children:))
+        self.node = FTNode.State(provider: FTView.init(nodeId:props:handler:children:))
     }
     
     public var body: some View {

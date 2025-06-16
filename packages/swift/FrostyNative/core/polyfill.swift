@@ -30,8 +30,8 @@ extension FTContext {
             "NativeModules": [:]
         ]
         self.register(name: "localStorage", NativeLocalStorage())
-        self.register(name: "FTView", FTView.init(props:handler:children:))
-        self.register(name: "FTTextView", FTTextView.init(props:handler:children:))
+        self.register(name: "FTView", FTView.init(nodeId:props:handler:children:))
+        self.register(name: "FTTextView", FTTextView.init(nodeId:props:handler:children:))
     }
 }
 
@@ -61,6 +61,7 @@ extension FTContext {
     ) -> Void
 
     public typealias ViewProvider = @MainActor @Sendable (
+        _ nodeId: ObjectIdentifier,
         _ props: Binding<[String: any Sendable]>,
         _ handler: (@escaping ViewHandler) -> Void,
         _ children: Binding<[AnyView]>

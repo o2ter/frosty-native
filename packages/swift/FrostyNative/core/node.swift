@@ -61,6 +61,7 @@ extension FTNode {
     var body: some View {
         AnyView(
             self.provider(
+                self.id,
                 self.$node.props,
                 { self.node.handler = $0 },
                 .constant(self.$node.children.map { AnyView(FTNode(state: $0)) })
