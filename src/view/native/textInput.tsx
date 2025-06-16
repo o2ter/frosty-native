@@ -1,5 +1,5 @@
 //
-//  index.ts
+//  textInput.tsx
 //
 //  The MIT License
 //  Copyright (c) 2021 - 2025 O2ter Limited. All rights reserved.
@@ -23,11 +23,22 @@
 //  THE SOFTWARE.
 //
 
-import { NativeNode } from '../../../node';
+import { ComponentType, PropsWithChildren } from 'frosty';
+import { _createNativeElement } from 'frosty/_native';
+import { NativeModules } from '../../global';
+import { NativeNode } from '../../node';
 
-export declare class FTView extends NativeNode {
-  invoke(method: string, args: any[]): void;
-  update(props: Record<string, any>): void;
-  replaceChildren(children: (string | NativeNode)[]): void;
-  destroy(): void;
+abstract class FTTextInput extends NativeNode {
+
+  static createElement(): NativeNode {
+    return NativeModules['FTTextInput']();
+  }
 }
+
+type TextInputProps = PropsWithChildren<{
+}>;
+
+export const TextInput: ComponentType<TextInputProps> = ({ children }) => {
+
+  return _createNativeElement(FTTextInput, { children });
+};

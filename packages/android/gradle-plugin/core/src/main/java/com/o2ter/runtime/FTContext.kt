@@ -26,7 +26,6 @@
 package com.o2ter.runtime
 
 import android.content.Context
-import androidx.compose.runtime.Composable
 import androidx.core.content.edit
 import com.eclipsesource.v8.JavaCallback
 import com.eclipsesource.v8.V8
@@ -34,6 +33,8 @@ import com.eclipsesource.v8.V8Object
 import com.eclipsesource.v8.utils.V8ObjectUtils
 import com.o2ter.app.Component
 import com.o2ter.app.FTNodeState
+import com.o2ter.app.FTScrollView
+import com.o2ter.app.FTTextInput
 import com.o2ter.app.FTTextView
 import com.o2ter.app.FTView
 import com.o2ter.app.FrostyNativeActivity
@@ -55,6 +56,8 @@ internal class FTContext(private val activity: FrostyNativeActivity, val context
             polyfill(it)
             self.register(it, "FTView") { nodeId, props, handler, content -> FTView(nodeId, props, handler, content) }
             self.register(it, "FTTextView") { nodeId, props, handler, content -> FTTextView(nodeId, props, handler, content) }
+            self.register(it, "FTTextInput") { nodeId, props, handler, content -> FTTextInput(nodeId, props, handler, content) }
+            self.register(it, "FTScrollView") { nodeId, props, handler, content -> FTScrollView(nodeId, props, handler, content) }
         }.discard()
     }
 

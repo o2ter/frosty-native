@@ -1,5 +1,5 @@
 //
-//  index.apple.ts
+//  scrollView.tsx
 //
 //  The MIT License
 //  Copyright (c) 2021 - 2025 O2ter Limited. All rights reserved.
@@ -23,12 +23,22 @@
 //  THE SOFTWARE.
 //
 
-import { NativeModules } from '../../../global';
-import { NativeNode } from '../../../node';
+import { ComponentType, PropsWithChildren } from 'frosty';
+import { _createNativeElement } from 'frosty/_native';
+import { NativeModules } from '../../global';
+import { NativeNode } from '../../node';
 
-export abstract class FTTextView extends NativeNode {
+abstract class FTScrollView extends NativeNode {
 
   static createElement(): NativeNode {
-    return NativeModules['FTTextView']();
+    return NativeModules['FTScrollView']();
   }
 }
+
+type ScrollViewProps = PropsWithChildren<{
+}>;
+
+export const ScrollView: ComponentType<ScrollViewProps> = ({ children }) => {
+
+  return _createNativeElement(FTScrollView, { children });
+};

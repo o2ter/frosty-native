@@ -25,7 +25,15 @@
 
 import { ComponentType, PropsWithChildren } from 'frosty';
 import { _createNativeElement } from 'frosty/_native';
-import { FTView } from './FTView';
+import { NativeModules } from '../../global';
+import { NativeNode } from '../../node';
+
+abstract class FTView extends NativeNode {
+
+  static createElement(): NativeNode {
+    return NativeModules['FTView']();
+  }
+}
 
 type ViewProps = PropsWithChildren<{
 }>;

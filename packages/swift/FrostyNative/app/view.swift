@@ -161,13 +161,13 @@ struct FTView: FTLayoutViewProtocol {
 }
 
 struct FTTextView: FTLayoutViewProtocol {
-
+    
     @Binding
     var props: [String: any Sendable]
-
+    
     @Binding
     var children: [AnyView]
-
+    
     init(
         nodeId: ObjectIdentifier,
         props: Binding<[String: any Sendable]>,
@@ -177,12 +177,66 @@ struct FTTextView: FTLayoutViewProtocol {
         self._props = props
         self._children = children
     }
-
+    
     var text: String {
         return props["text"] as? String ?? ""
     }
-
+    
     var content: some View {
         Text(self.text)
+    }
+}
+
+struct FTTextInput: FTLayoutViewProtocol {
+    
+    @Binding
+    var props: [String: any Sendable]
+    
+    @Binding
+    var children: [AnyView]
+    
+    init(
+        nodeId: ObjectIdentifier,
+        props: Binding<[String: any Sendable]>,
+        handler: (@escaping FTContext.ViewHandler) -> Void,
+        children: Binding<[AnyView]>
+    ) {
+        self._props = props
+        self._children = children
+    }
+    
+    var text: String {
+        return props["text"] as? String ?? ""
+    }
+    
+    var content: some View {
+        TextField("", text: .constant(self.text))
+    }
+}
+
+struct FTScrollView: FTLayoutViewProtocol {
+    
+    @Binding
+    var props: [String: any Sendable]
+    
+    @Binding
+    var children: [AnyView]
+    
+    init(
+        nodeId: ObjectIdentifier,
+        props: Binding<[String: any Sendable]>,
+        handler: (@escaping FTContext.ViewHandler) -> Void,
+        children: Binding<[AnyView]>
+    ) {
+        self._props = props
+        self._children = children
+    }
+    
+    var content: some View {
+        ScrollView {
+            ForEach(Array(children.enumerated()), id: \.offset) {
+                $0.element
+            }
+        }
     }
 }

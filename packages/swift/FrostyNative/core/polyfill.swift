@@ -32,6 +32,8 @@ extension FTContext {
         self.register(name: "localStorage", NativeLocalStorage())
         self.register(name: "FTView", FTView.init(nodeId:props:handler:children:))
         self.register(name: "FTTextView", FTTextView.init(nodeId:props:handler:children:))
+        self.register(name: "FTTextInput", FTTextInput.init(nodeId:props:handler:children:))
+        self.register(name: "FTScrollView", FTScrollView.init(nodeId:props:handler:children:))
     }
 }
 

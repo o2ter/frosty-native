@@ -23,5 +23,7 @@
 //  THE SOFTWARE.
 //
 
-export { View } from './native/view';
+export { ScrollView } from './native/scrollView';
 export { Text } from './native/text';
+export { TextInput } from './native/textInput';
+export { View } from './native/view';

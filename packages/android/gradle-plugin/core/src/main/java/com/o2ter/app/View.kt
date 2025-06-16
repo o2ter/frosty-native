@@ -29,15 +29,14 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import java.util.UUID
 
 private fun Modifier.applyViewProps(
     props: Map<String, Any?>
@@ -64,10 +63,27 @@ fun FTTextView(
     handler: (ComponentHandler) -> Unit,
     content: @Composable () -> Unit
 ) {
-    val text = props.get("text") as? String
+    val text = props["text"] as? String
     if (text != null) {
         Text(
             text = text,
+            modifier = Modifier.applyViewProps(props)
+        )
+    }
+}
+
+@Composable
+fun FTTextInput(
+    nodeId: String,
+    props: Map<String, Any?>,
+    handler: (ComponentHandler) -> Unit,
+    content: @Composable () -> Unit
+) {
+    val text = props["text"] as? String
+    if (text != null) {
+        BasicTextField(
+            value = text,
+            onValueChange = {  },
             modifier = Modifier.applyViewProps(props)
         )
     }
