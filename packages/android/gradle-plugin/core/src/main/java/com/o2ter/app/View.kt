@@ -31,10 +31,13 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import java.util.UUID
 
 private fun Modifier.applyViewProps(
     props: Map<String, Any?>
@@ -65,6 +68,22 @@ fun FTTextView(
             text = text,
             modifier = Modifier.applyViewProps(props)
         )
+    }
+}
+
+@Composable
+fun FTScrollView(
+    props: Map<String, Any?>,
+    handler: (ComponentHandler) -> Unit,
+    content: @Composable () -> Unit
+) {
+    val id = remember { UUID.randomUUID().toString() }
+    DisposableEffect(id) {
+        onDispose {
+        }
+    }
+    Column(modifier = Modifier.applyViewProps(props)) {
+        content()
     }
 }
 
