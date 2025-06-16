@@ -160,6 +160,29 @@ struct FTView: FTLayoutViewProtocol {
     }
 }
 
+struct FTImageView: FTLayoutViewProtocol {
+    
+    @Binding
+    var props: [String: any Sendable]
+    
+    @Binding
+    var children: [AnyView]
+    
+    init(
+        nodeId: ObjectIdentifier,
+        props: Binding<[String: any Sendable]>,
+        handler: (@escaping FTContext.ViewHandler) -> Void,
+        children: Binding<[AnyView]>
+    ) {
+        self._props = props
+        self._children = children
+    }
+    
+    var content: some View {
+        Image("")
+    }
+}
+
 struct FTTextView: FTLayoutViewProtocol {
     
     @Binding

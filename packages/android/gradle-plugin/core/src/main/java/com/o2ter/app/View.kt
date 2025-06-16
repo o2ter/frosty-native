@@ -38,6 +38,7 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 
+
 private fun Modifier.applyViewProps(
     props: Map<String, Any?>
 ): Modifier {
@@ -54,6 +55,15 @@ fun FTView(
     Column(modifier = Modifier.applyViewProps(props)) {
         content()
     }
+}
+
+@Composable
+fun FTImageView(
+    nodeId: String,
+    props: Map<String, Any?>,
+    handler: (ComponentHandler) -> Unit,
+    content: @Composable () -> Unit
+) {
 }
 
 @Composable

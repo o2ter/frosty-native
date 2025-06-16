@@ -1,5 +1,5 @@
 //
-//  types.ts
+//  image.tsx
 //
 //  The MIT License
 //  Copyright (c) 2021 - 2025 O2ter Limited. All rights reserved.
@@ -23,19 +23,20 @@
 //  THE SOFTWARE.
 //
 
-import { PropsWithChildren } from 'frosty';
+import { ComponentType } from 'frosty';
+import { _createNativeElement } from 'frosty/_native';
+import { NativeModules } from '../../global';
+import { NativeNode } from '../../node';
+import { ImageProps } from '../types';
 
-export type ScrollViewProps = PropsWithChildren<{
-}>;
+abstract class FTImageView extends NativeNode {
 
-export type ImageProps = PropsWithChildren<{
-}>;
+  static createElement(): NativeNode {
+    return NativeModules['FTImageView']();
+  }
+}
 
-export type TextViewProps = PropsWithChildren<{
-}>;
+export const Image: ComponentType<ImageProps> = ({ children }) => {
 
-export type TextInputProps = PropsWithChildren<{
-}>;
-
-export type ViewProps = PropsWithChildren<{
-}>;
+  return _createNativeElement(FTImageView, { children });
+};
