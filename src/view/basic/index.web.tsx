@@ -1,5 +1,5 @@
 //
-//  image.tsx
+//  index.web.tsx
 //
 //  The MIT License
 //  Copyright (c) 2021 - 2025 O2ter Limited. All rights reserved.
@@ -24,19 +24,74 @@
 //
 
 import { ComponentType } from 'frosty';
-import { _createNativeElement } from 'frosty/_native';
-import { NativeModules } from '../../global';
-import { NativeNode } from '../../node';
-import { ImageProps } from '../types';
+import { ImageProps, ScrollViewProps, TextInputProps, TextViewProps, ViewProps } from '../types';
 
-abstract class FTImageView extends NativeNode {
+export const View: ComponentType<ViewProps> = ({ children }) => {
 
-  static createElement(): NativeNode {
-    return NativeModules['FTImageView']();
-  }
-}
+  return (
+    <div style={{
+      display: 'flex',
+      flexDirection: 'column',
+      width: '100%',
+      height: '100%',
+    }}>
+      {children}
+    </div>
+  );
+};
+
+export const Text: ComponentType<TextViewProps> = ({ children }) => {
+
+  return (
+    <div style={{
+      display: 'flex',
+      flexDirection: 'column',
+      width: '100%',
+      height: '100%',
+    }}>
+      {children}
+    </div>
+  );
+};
+
+export const TextInput: ComponentType<TextInputProps> = ({ children }) => {
+
+  return (
+    <div style={{
+      display: 'flex',
+      flexDirection: 'column',
+      width: '100%',
+      height: '100%',
+    }}>
+      {children}
+    </div>
+  );
+};
 
 export const Image: ComponentType<ImageProps> = ({ children }) => {
 
-  return _createNativeElement(FTImageView, { children });
+  return (
+    <div style={{
+      display: 'flex',
+      flexDirection: 'column',
+      width: '100%',
+      height: '100%',
+    }}>
+      {children}
+    </div>
+  );
+};
+
+export const ScrollView: ComponentType<ScrollViewProps> = ({ children }) => {
+
+  return (
+    <div style={{
+      display: 'flex',
+      flexDirection: 'column',
+      width: '100%',
+      height: '100%',
+    }}>
+      {children}
+    </div>
+  );
 };

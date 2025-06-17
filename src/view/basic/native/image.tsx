@@ -1,5 +1,5 @@
 //
-//  text.tsx
+//  image.tsx
 //
 //  The MIT License
 //  Copyright (c) 2021 - 2025 O2ter Limited. All rights reserved.
@@ -23,21 +23,20 @@
 //  THE SOFTWARE.
 //
 
-import _ from 'lodash';
 import { ComponentType } from 'frosty';
 import { _createNativeElement } from 'frosty/_native';
-import { NativeModules } from '../../global';
-import { NativeNode } from '../../node';
-import { TextViewProps } from '../types';
+import { NativeModules } from '../../../global';
+import { NativeNode } from '../../../node';
+import { ImageProps } from '../../types';
 
-abstract class FTTextView extends NativeNode {
+abstract class FTImageView extends NativeNode {
 
   static createElement(): NativeNode {
-    return NativeModules['FTTextView']();
+    return NativeModules['FTImageView']();
   }
 }
 
-export const Text: ComponentType<TextViewProps> = ({ children }) => {
-  const text = _.filter(_.castArray(children), x => _.isNumber(x) || _.isString(x)).join(' ');
-  return _createNativeElement(FTTextView, { text });
+export const Image: ComponentType<ImageProps> = ({ children }) => {
+
+  return _createNativeElement(FTImageView, { children });
 };

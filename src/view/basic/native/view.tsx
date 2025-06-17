@@ -1,5 +1,5 @@
 //
-//  scrollView.tsx
+//  view.tsx
 //
 //  The MIT License
 //  Copyright (c) 2021 - 2025 O2ter Limited. All rights reserved.
@@ -25,18 +25,18 @@
 
 import { ComponentType } from 'frosty';
 import { _createNativeElement } from 'frosty/_native';
-import { NativeModules } from '../../global';
-import { NativeNode } from '../../node';
-import { ScrollViewProps } from '../types';
+import { NativeModules } from '../../../global';
+import { NativeNode } from '../../../node';
+import { ViewProps } from '../../types';
 
-abstract class FTScrollView extends NativeNode {
+abstract class FTView extends NativeNode {
 
   static createElement(): NativeNode {
-    return NativeModules['FTScrollView']();
+    return NativeModules['FTView']();
   }
 }
 
-export const ScrollView: ComponentType<ScrollViewProps> = ({ children }) => {
+export const View: ComponentType<ViewProps> = ({ children }) => {
 
-  return _createNativeElement(FTScrollView, { children });
+  return _createNativeElement(FTView, { children });
 };

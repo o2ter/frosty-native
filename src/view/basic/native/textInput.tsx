@@ -1,5 +1,5 @@
 //
-//  view.tsx
+//  textInput.tsx
 //
 //  The MIT License
 //  Copyright (c) 2021 - 2025 O2ter Limited. All rights reserved.
@@ -25,18 +25,18 @@
 
 import { ComponentType } from 'frosty';
 import { _createNativeElement } from 'frosty/_native';
-import { NativeModules } from '../../global';
-import { NativeNode } from '../../node';
-import { ViewProps } from '../types';
+import { NativeModules } from '../../../global';
+import { NativeNode } from '../../../node';
+import { TextInputProps } from '../../types';
 
-abstract class FTView extends NativeNode {
+abstract class FTTextInput extends NativeNode {
 
   static createElement(): NativeNode {
-    return NativeModules['FTView']();
+    return NativeModules['FTTextInput']();
   }
 }
 
-export const View: ComponentType<ViewProps> = ({ children }) => {
+export const TextInput: ComponentType<TextInputProps> = ({ children }) => {
 
-  return _createNativeElement(FTView, { children });
+  return _createNativeElement(FTTextInput, { children });
 };

@@ -1,5 +1,5 @@
 //
-//  textInput.tsx
+//  scrollView.tsx
 //
 //  The MIT License
 //  Copyright (c) 2021 - 2025 O2ter Limited. All rights reserved.
@@ -25,18 +25,18 @@
 
 import { ComponentType } from 'frosty';
 import { _createNativeElement } from 'frosty/_native';
-import { NativeModules } from '../../global';
-import { NativeNode } from '../../node';
-import { TextInputProps } from '../types';
+import { NativeModules } from '../../../global';
+import { NativeNode } from '../../../node';
+import { ScrollViewProps } from '../../types';
 
-abstract class FTTextInput extends NativeNode {
+abstract class FTScrollView extends NativeNode {
 
   static createElement(): NativeNode {
-    return NativeModules['FTTextInput']();
+    return NativeModules['FTScrollView']();
   }
 }
 
-export const TextInput: ComponentType<TextInputProps> = ({ children }) => {
+export const ScrollView: ComponentType<ScrollViewProps> = ({ children }) => {
 
-  return _createNativeElement(FTTextInput, { children });
+  return _createNativeElement(FTScrollView, { children });
 };

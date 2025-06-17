@@ -1,5 +1,5 @@
 //
-//  components.web.tsx
+//  text.tsx
 //
 //  The MIT License
 //  Copyright (c) 2021 - 2025 O2ter Limited. All rights reserved.
@@ -23,75 +23,21 @@
 //  THE SOFTWARE.
 //
 
+import _ from 'lodash';
 import { ComponentType } from 'frosty';
-import { ImageProps, ScrollViewProps, TextInputProps, TextViewProps, ViewProps } from './types';
+import { _createNativeElement } from 'frosty/_native';
+import { NativeModules } from '../../../global';
+import { NativeNode } from '../../../node';
+import { TextViewProps } from '../../types';
 
-export const View: ComponentType<ViewProps> = ({ children }) => {
+abstract class FTTextView extends NativeNode {
 
-  return (
-    <div style={{
-      display: 'flex',
-      flexDirection: 'column',
-      width: '100%',
-      height: '100%',
-    }}>
-      {children}
-    </div>
-  );
-};
+  static createElement(): NativeNode {
+    return NativeModules['FTTextView']();
+  }
+}
 
 export const Text: ComponentType<TextViewProps> = ({ children }) => {
-
-  return (
-    <div style={{
-      display: 'flex',
-      flexDirection: 'column',
-      width: '100%',
-      height: '100%',
-    }}>
-      {children}
-    </div>
-  );
-};
-
-export const TextInput: ComponentType<TextInputProps> = ({ children }) => {
-
-  return (
-    <div style={{
-      display: 'flex',
-      flexDirection: 'column',
-      width: '100%',
-      height: '100%',
-    }}>
-      {children}
-    </div>
-  );
-};
-
-export const Image: ComponentType<ImageProps> = ({ children }) => {
-
-  return (
-    <div style={{
-      display: 'flex',
-      flexDirection: 'column',
-      width: '100%',
-      height: '100%',
-    }}>
-      {children}
-    </div>
-  );
-};
-
-export const ScrollView: ComponentType<ScrollViewProps> = ({ children }) => {
-
-  return (
-    <div style={{
-      display: 'flex',
-      flexDirection: 'column',
-      width: '100%',
-      height: '100%',
-    }}>
-      {children}
-    </div>
-  );
+  const text = _.filter(_.castArray(children), x => _.isNumber(x) || _.isString(x)).join(' ');
+  return _createNativeElement(FTTextView, { text });
 };
