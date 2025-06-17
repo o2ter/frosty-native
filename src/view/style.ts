@@ -206,7 +206,9 @@ export interface TextStyle extends ViewStyle {
   | 700
   | 800
   | 900;
-  letterSpacing?: number;
+  letterSpacing?:
+  | 'normal'
+  | number;
   lineHeight?:
   | 'normal'
   | number
