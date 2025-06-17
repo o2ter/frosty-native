@@ -23,7 +23,6 @@
 //  THE SOFTWARE.
 //
 
-/** @internal */
 declare global {
 
   namespace __NS_FROSTY_SPEC__ {
