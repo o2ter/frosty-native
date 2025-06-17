@@ -105,12 +105,12 @@ export interface FlexStyle {
   zIndex?: number;
 }
 
-type MaximumOneOf<T, K extends keyof T = keyof T> = K extends keyof T
-  ? { [P in K]: T[K] } & { [P in Exclude<keyof T, K>]?: never }
+type OneOf<T, K extends keyof T = keyof T> = K extends keyof T
+  ? { [P in K]: P extends Exclude<keyof T, K> ? never : T[K] }
   : never;
 
 export interface TransformsStyle {
-  transform?: MaximumOneOf<{
+  transform?: OneOf<{
     perspective: number;
     rotate: string;
     rotateX: string;
