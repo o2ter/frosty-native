@@ -52,7 +52,6 @@ abstract class BundleTask : DefaultTask() {
             it.exclude("**/android/**/*")
             it.exclude("**/ios/**/*")
             it.exclude("**/build/**/*")
-            it.exclude("**/node_modules/**/*")
         }
 
     @get:Internal abstract val root: DirectoryProperty
