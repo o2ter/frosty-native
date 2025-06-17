@@ -33,10 +33,9 @@ type FlexAlignType =
   | 'baseline';
 
 export type DimensionValue =
-  | number
   | 'auto'
-  | `${number}%`
-  | null;
+  | number
+  | `${number}%`;
 
 export interface FlexStyle {
   alignContent?:
@@ -260,7 +259,10 @@ export interface TextStyle extends ViewStyle {
   | 800
   | 900;
   letterSpacing?: number;
-  lineHeight?: number;
+  lineHeight?:
+  | 'normal'
+  | number
+  | `${number}%`;
   textAlign?: 'auto' | 'left' | 'right' | 'center' | 'justify';
   textDecorationLine?:
   | 'none'
