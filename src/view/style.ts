@@ -105,78 +105,26 @@ export interface FlexStyle {
   zIndex?: number;
 }
 
-interface PerspectiveTransform {
-  perspective: number;
-}
-
-interface RotateTransform {
-  rotate: string;
-}
-
-interface RotateXTransform {
-  rotateX: string;
-}
-
-interface RotateYTransform {
-  rotateY: string;
-}
-
-interface RotateZTransform {
-  rotateZ: string;
-}
-
-interface ScaleTransform {
-  scale: number;
-}
-
-interface ScaleXTransform {
-  scaleX: number;
-}
-
-interface ScaleYTransform {
-  scaleY: number;
-}
-
-interface TranslateXTransform {
-  translateX: number | `${number}%`;
-}
-
-interface TranslateYTransform {
-  translateY: number | `${number}%`;
-}
-
-interface SkewXTransform {
-  skewX: string;
-}
-
-interface SkewYTransform {
-  skewY: string;
-}
-
-interface MatrixTransform {
-  matrix: number[];
-}
-
 type MaximumOneOf<T, K extends keyof T = keyof T> = K extends keyof T
   ? { [P in K]: T[K] } & { [P in Exclude<keyof T, K>]?: never }
   : never;
 
 export interface TransformsStyle {
-  transform?: MaximumOneOf<
-    PerspectiveTransform &
-    RotateTransform &
-    RotateXTransform &
-    RotateYTransform &
-    RotateZTransform &
-    ScaleTransform &
-    ScaleXTransform &
-    ScaleYTransform &
-    TranslateXTransform &
-    TranslateYTransform &
-    SkewXTransform &
-    SkewYTransform &
-    MatrixTransform
-  >[];
+  transform?: MaximumOneOf<{
+    perspective: number;
+    rotate: string;
+    rotateX: string;
+    rotateY: string;
+    rotateZ: string;
+    scale: number;
+    scaleX: number;
+    scaleY: number;
+    translateX: number | `${number}%`;
+    translateY: number | `${number}%`;
+    skewX: string;
+    skewY: string;
+    matrix: number[];
+  }>[];
   transformOrigin?: Array<string | number> | string;
 }
 
