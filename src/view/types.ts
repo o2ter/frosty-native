@@ -23,19 +23,25 @@
 //  THE SOFTWARE.
 //
 
-import { PropsWithChildren } from 'frosty';
+import { PropsWithChildren, StyleProp } from 'frosty';
+import { ImageStyle, TextStyle, ViewStyle } from './style';
 
 export type ScrollViewProps = PropsWithChildren<{
+  style?: StyleProp<ViewStyle>;
 }>;
 
 export type ImageProps = PropsWithChildren<{
+  style?: StyleProp<ImageStyle>;
 }>;
 
 export type TextViewProps = PropsWithChildren<{
+  style?: StyleProp<TextStyle>;
 }>;
 
 export type TextInputProps = PropsWithChildren<{
+  style?: StyleProp<TextStyle>;
 }>;
 
 export type ViewProps = PropsWithChildren<{
+  style?: StyleProp<ViewStyle>;
 }>;
