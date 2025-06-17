@@ -24,7 +24,7 @@
 //
 
 import { ComponentType } from 'frosty';
-import { TextViewProps, ViewProps } from './types';
+import { ImageProps, ScrollViewProps, TextInputProps, TextViewProps, ViewProps } from './types';
 
 export const View: ComponentType<ViewProps> = ({ children }) => {
 
@@ -41,6 +41,48 @@ export const View: ComponentType<ViewProps> = ({ children }) => {
 };
 
 export const Text: ComponentType<TextViewProps> = ({ children }) => {
+
+  return (
+    <div style={{
+      display: 'flex',
+      flexDirection: 'column',
+      width: '100%',
+      height: '100%',
+    }}>
+      {children}
+    </div>
+  );
+};
+
+export const TextInput: ComponentType<TextInputProps> = ({ children }) => {
+
+  return (
+    <div style={{
+      display: 'flex',
+      flexDirection: 'column',
+      width: '100%',
+      height: '100%',
+    }}>
+      {children}
+    </div>
+  );
+};
+
+export const Image: ComponentType<ImageProps> = ({ children }) => {
+
+  return (
+    <div style={{
+      display: 'flex',
+      flexDirection: 'column',
+      width: '100%',
+      height: '100%',
+    }}>
+      {children}
+    </div>
+  );
+};
+
+export const ScrollView: ComponentType<ScrollViewProps> = ({ children }) => {
 
   return (
     <div style={{
