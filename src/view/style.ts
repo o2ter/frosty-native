@@ -235,17 +235,7 @@ export interface ImageStyle extends ViewStyle {
   | 'stretch'
   | 'repeat'
   | 'center';
-  backfaceVisibility?: 'visible' | 'hidden';
-  borderBottomLeftRadius?: number;
-  borderBottomRightRadius?: number;
-  backgroundColor?: ColorValue;
-  borderColor?: ColorValue;
-  borderRadius?: number;
-  borderTopLeftRadius?: number;
-  borderTopRightRadius?: number;
-  overflow?: 'visible' | 'hidden';
   overlayColor?: ColorValue;
   tintColor?: ColorValue;
-  opacity?: number;
   objectFit?: 'cover' | 'contain' | 'fill' | 'scale-down';
 }
