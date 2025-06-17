@@ -171,6 +171,11 @@ export interface ViewStyle extends FlexStyle, TransformsStyle {
   shadowRadius?: number;
 }
 
+type TextDecorationLine =
+  | 'underline'
+  | 'overline'
+  | 'line-through';
+
 export interface TextStyle extends ViewStyle {
   color?: ColorValue;
   fontFamily?: string;
@@ -217,9 +222,8 @@ export interface TextStyle extends ViewStyle {
   textAlign?: 'auto' | 'left' | 'right' | 'center' | 'justify';
   textDecorationLine?:
   | 'none'
-  | 'underline'
-  | 'line-through'
-  | 'underline line-through';
+  | TextDecorationLine
+  | TextDecorationLine[];
   textDecorationStyle?: 'solid' | 'double' | 'dotted' | 'dashed';
   textDecorationColor?: ColorValue;
   textShadowColor?: ColorValue;
