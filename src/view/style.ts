@@ -218,7 +218,7 @@ export interface ViewStyle extends FlexStyle, TransformsStyle {
   opacity?: number;
   pointerEvents?: 'box-none' | 'none' | 'box-only' | 'auto';
   shadowColor?: ColorValue;
-  shadowOffset?: Readonly<{ width: number; height: number }>;
+  shadowOffset?: { width: number; height: number };
   shadowOpacity?: number;
   shadowRadius?: number;
 }
