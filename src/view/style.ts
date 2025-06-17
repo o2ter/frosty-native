@@ -66,6 +66,7 @@ export interface FlexStyle {
   flexShrink?: number;
   flexWrap?: 'wrap' | 'nowrap' | 'wrap-reverse';
   height?: DimensionValue;
+  inset?: DimensionValue;
   justifyContent?:
   | 'flex-start'
   | 'flex-end'
