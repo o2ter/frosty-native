@@ -26,9 +26,10 @@
 import { PropsWithChildren, StyleProp } from 'frosty';
 import { ImageStyle, TextStyle, ViewStyle } from './style';
 
+type ScrollDirection = 'horizontal' | 'vertical';
+
 export type ScrollViewProps = PropsWithChildren<{
-  horizontal?: boolean;
-  vertical?: boolean;
+  direction?: ScrollDirection | ScrollDirection[];
   style?: StyleProp<ViewStyle>;
   contentContainerStyle?: StyleProp<ViewStyle>;
 }>;
