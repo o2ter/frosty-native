@@ -169,6 +169,7 @@ export interface ViewStyle extends FlexStyle, TransformsStyle {
   shadowOffset?: { width: number; height: number };
   shadowOpacity?: number;
   shadowRadius?: number;
+  cursor?: 'auto' | 'pointer';
 }
 
 type TextDecorationLine =
