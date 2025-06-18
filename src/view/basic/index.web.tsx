@@ -23,74 +23,109 @@
 //  THE SOFTWARE.
 //
 
-import { ComponentType } from 'frosty';
+import { ComponentType, useRef, useRefHandle } from 'frosty';
 import { ImageProps, ScrollViewProps, TextInputProps, TextViewProps, ViewProps } from '../types';
 
-export const View: ComponentType<ViewProps> = ({ children }) => {
+export const View: ComponentType<ViewProps> = ({ ref, children }) => {
+
+  const targetRef = useRef<HTMLDivElement>();
+  useRefHandle(ref, () => ({
+    get _target() { return targetRef.current; }
+  }), null);
 
   return (
-    <div style={{
-      display: 'flex',
-      flexDirection: 'column',
-      width: '100%',
-      height: '100%',
-    }}>
+    <div
+      ref={targetRef}
+      style={{
+        display: 'flex',
+        flexDirection: 'column',
+        width: '100%',
+        height: '100%',
+      }}>
       {children}
     </div>
   );
 };
 
-export const Text: ComponentType<TextViewProps> = ({ children }) => {
+export const Text: ComponentType<TextViewProps> = ({ ref, children }) => {
+
+  const targetRef = useRef<HTMLDivElement>();
+  useRefHandle(ref, () => ({
+    get _target() { return targetRef.current; }
+  }), null);
 
   return (
-    <div style={{
-      display: 'flex',
-      flexDirection: 'column',
-      width: '100%',
-      height: '100%',
-    }}>
+    <div
+      ref={targetRef}
+      style={{
+        display: 'flex',
+        flexDirection: 'column',
+        width: '100%',
+        height: '100%',
+      }}>
       {children}
     </div>
   );
 };
 
-export const TextInput: ComponentType<TextInputProps> = ({ children }) => {
+export const TextInput: ComponentType<TextInputProps> = ({ ref, children }) => {
+
+  const targetRef = useRef<HTMLDivElement>();
+  useRefHandle(ref, () => ({
+    get _target() { return targetRef.current; }
+  }), null);
 
   return (
-    <div style={{
-      display: 'flex',
-      flexDirection: 'column',
-      width: '100%',
-      height: '100%',
-    }}>
+    <div
+      ref={targetRef}
+      style={{
+        display: 'flex',
+        flexDirection: 'column',
+        width: '100%',
+        height: '100%',
+      }}>
       {children}
     </div>
   );
 };
 
-export const Image: ComponentType<ImageProps> = ({ children }) => {
+export const Image: ComponentType<ImageProps> = ({ ref, children }) => {
+
+  const targetRef = useRef<HTMLDivElement>();
+  useRefHandle(ref, () => ({
+    get _target() { return targetRef.current; }
+  }), null);
 
   return (
-    <div style={{
-      display: 'flex',
-      flexDirection: 'column',
-      width: '100%',
-      height: '100%',
-    }}>
+    <div
+      ref={targetRef}
+      style={{
+        display: 'flex',
+        flexDirection: 'column',
+        width: '100%',
+        height: '100%',
+      }}>
       {children}
     </div>
   );
 };
 
-export const ScrollView: ComponentType<ScrollViewProps> = ({ children }) => {
+export const ScrollView: ComponentType<ScrollViewProps> = ({ ref, children }) => {
+
+  const targetRef = useRef<HTMLDivElement>();
+  useRefHandle(ref, () => ({
+    get _target() { return targetRef.current; }
+  }), null);
 
   return (
-    <div style={{
-      display: 'flex',
-      flexDirection: 'column',
-      width: '100%',
-      height: '100%',
-    }}>
+    <div
+      ref={targetRef}
+      style={{
+        display: 'flex',
+        flexDirection: 'column',
+        width: '100%',
+        height: '100%',
+      }}>
       {children}
     </div>
   );

@@ -29,7 +29,7 @@ import { ImageStyle, TextStyle, ViewStyle } from './style';
 type ScrollDirection = 'horizontal' | 'vertical';
 
 type ScrollViewRef = {
-
+  readonly _target?: HTMLElement;
 };
 
 export type ScrollViewProps = PropsWithChildren<{
@@ -52,7 +52,7 @@ interface ImageURISource {
 type ImageSource = string | ImageURISource;
 
 type ImageRef = {
-
+  readonly _target?: HTMLElement;
 };
 
 export type ImageProps = PropsWithChildren<{
@@ -62,7 +62,7 @@ export type ImageProps = PropsWithChildren<{
 }>;
 
 type TextViewRef = {
-
+  readonly _target?: HTMLElement;
 };
 
 export type TextViewProps = PropsWithChildren<{
@@ -71,7 +71,7 @@ export type TextViewProps = PropsWithChildren<{
 }>;
 
 type TextInputRef = {
-
+  readonly _target?: HTMLElement;
 };
 
 export type TextInputProps = PropsWithChildren<{
@@ -80,7 +80,7 @@ export type TextInputProps = PropsWithChildren<{
 }>;
 
 type ViewRef = {
-
+  readonly _target?: HTMLElement;
 };
 
 export type ViewProps = PropsWithChildren<{

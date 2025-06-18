@@ -23,7 +23,7 @@
 //  THE SOFTWARE.
 //
 
-import { ComponentType } from 'frosty';
+import { ComponentType, useRefHandle } from 'frosty';
 import { _createNativeElement } from 'frosty/_native';
 import { NativeModules } from '../../../global';
 import { NativeNode } from '../../../node';
@@ -36,7 +36,10 @@ abstract class FTScrollView extends NativeNode {
   }
 }
 
-export const ScrollView: ComponentType<ScrollViewProps> = ({ children }) => {
+export const ScrollView: ComponentType<ScrollViewProps> = ({ ref, children }) => {
+
+  useRefHandle(ref, () => ({
+  }), null);
 
   return _createNativeElement(FTScrollView, { children });
 };
