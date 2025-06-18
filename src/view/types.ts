@@ -23,12 +23,17 @@
 //  THE SOFTWARE.
 //
 
-import { PropsWithChildren, StyleProp } from 'frosty';
+import { PropsWithChildren, Ref, StyleProp } from 'frosty';
 import { ImageStyle, TextStyle, ViewStyle } from './style';
 
 type ScrollDirection = 'horizontal' | 'vertical';
 
+type ScrollViewRef = {
+
+};
+
 export type ScrollViewProps = PropsWithChildren<{
+  ref?: Ref<ScrollViewRef>;
   direction?: ScrollDirection | ScrollDirection[];
   style?: StyleProp<ViewStyle>;
   contentContainerStyle?: StyleProp<ViewStyle>;
@@ -46,19 +51,39 @@ interface ImageURISource {
 
 type ImageSource = string | ImageURISource;
 
+type ImageRef = {
+
+};
+
 export type ImageProps = PropsWithChildren<{
+  ref?: Ref<ImageRef>;
   source?: ImageSource;
   style?: StyleProp<ImageStyle>;
 }>;
 
+type TextViewRef = {
+
+};
+
 export type TextViewProps = PropsWithChildren<{
+  ref?: Ref<TextViewRef>;
   style?: StyleProp<TextStyle>;
 }>;
+
+type TextInputRef = {
+
+};
 
 export type TextInputProps = PropsWithChildren<{
+  ref?: Ref<TextInputRef>;
   style?: StyleProp<TextStyle>;
 }>;
 
+type ViewRef = {
+
+};
+
 export type ViewProps = PropsWithChildren<{
+  ref?: Ref<ViewRef>;
   style?: StyleProp<ViewStyle>;
 }>;
