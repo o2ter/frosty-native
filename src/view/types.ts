@@ -34,7 +34,20 @@ export type ScrollViewProps = PropsWithChildren<{
   contentContainerStyle?: StyleProp<ViewStyle>;
 }>;
 
+interface ImageURISource {
+  uri?: string;
+  method?: string;
+  headers?: { [key: string]: string };
+  body?: string;
+  width?: number;
+  height?: number;
+  scale?: number;
+}
+
+type ImageSource = string | ImageURISource;
+
 export type ImageProps = PropsWithChildren<{
+  source?: ImageSource;
   style?: StyleProp<ImageStyle>;
 }>;
 
