@@ -35,7 +35,7 @@ export type ScrollViewProps = PropsWithChildren<{
 }>;
 
 interface ImageURISource {
-  uri?: string;
+  uri: string;
   method?: string;
   headers?: { [key: string]: string };
   body?: string;
