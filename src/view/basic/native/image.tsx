@@ -28,6 +28,7 @@ import { _createNativeElement } from 'frosty/_native';
 import { NativeModules } from '../../../global';
 import { NativeNode } from '../../../node';
 import { ImageProps } from '../../types';
+import { useFlattenStyle } from '~/view/style/utils';
 
 abstract class FTImageView extends NativeNode {
 
@@ -36,10 +37,12 @@ abstract class FTImageView extends NativeNode {
   }
 }
 
-export const Image: ComponentType<ImageProps> = ({ ref, children }) => {
+export const Image: ComponentType<ImageProps> = ({ ref, style, children }) => {
 
   useRefHandle(ref, () => ({
   }), null);
+
+  const _style = useFlattenStyle(style);
 
   return _createNativeElement(FTImageView, { children });
 };

@@ -29,6 +29,7 @@ import { _createNativeElement } from 'frosty/_native';
 import { NativeModules } from '../../../global';
 import { NativeNode } from '../../../node';
 import { TextViewProps } from '../../types';
+import { useFlattenStyle } from '~/view/style/utils';
 
 abstract class FTTextView extends NativeNode {
 
@@ -37,10 +38,12 @@ abstract class FTTextView extends NativeNode {
   }
 }
 
-export const Text: ComponentType<TextViewProps> = ({ ref, children }) => {
+export const Text: ComponentType<TextViewProps> = ({ ref, style, children }) => {
 
   useRefHandle(ref, () => ({
   }), null);
+
+  const _style = useFlattenStyle(style);
 
   const text = _.filter(_.castArray(children), x => _.isNumber(x) || _.isString(x)).join(' ');
   return _createNativeElement(FTTextView, { text });

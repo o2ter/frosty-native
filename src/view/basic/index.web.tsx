@@ -25,13 +25,16 @@
 
 import { ComponentType, useRef, useRefHandle } from 'frosty';
 import { ImageProps, ScrollViewProps, TextInputProps, TextViewProps, ViewProps } from '../types';
+import { useFlattenStyle } from '../style/utils';
 
-export const View: ComponentType<ViewProps> = ({ ref, children }) => {
+export const View: ComponentType<ViewProps> = ({ ref, style, children }) => {
 
   const targetRef = useRef<HTMLDivElement>();
   useRefHandle(ref, () => ({
     get _target() { return targetRef.current; }
   }), null);
+
+  const _style = useFlattenStyle(style);
 
   return (
     <div
@@ -47,12 +50,14 @@ export const View: ComponentType<ViewProps> = ({ ref, children }) => {
   );
 };
 
-export const Text: ComponentType<TextViewProps> = ({ ref, children }) => {
+export const Text: ComponentType<TextViewProps> = ({ ref, style, children }) => {
 
   const targetRef = useRef<HTMLDivElement>();
   useRefHandle(ref, () => ({
     get _target() { return targetRef.current; }
   }), null);
+
+  const _style = useFlattenStyle(style);
 
   return (
     <div
@@ -68,12 +73,14 @@ export const Text: ComponentType<TextViewProps> = ({ ref, children }) => {
   );
 };
 
-export const TextInput: ComponentType<TextInputProps> = ({ ref, children }) => {
+export const TextInput: ComponentType<TextInputProps> = ({ ref, style, children }) => {
 
   const targetRef = useRef<HTMLDivElement>();
   useRefHandle(ref, () => ({
     get _target() { return targetRef.current; }
   }), null);
+
+  const _style = useFlattenStyle(style);
 
   return (
     <div
@@ -89,12 +96,14 @@ export const TextInput: ComponentType<TextInputProps> = ({ ref, children }) => {
   );
 };
 
-export const Image: ComponentType<ImageProps> = ({ ref, children }) => {
+export const Image: ComponentType<ImageProps> = ({ ref, style, children }) => {
 
   const targetRef = useRef<HTMLDivElement>();
   useRefHandle(ref, () => ({
     get _target() { return targetRef.current; }
   }), null);
+
+  const _style = useFlattenStyle(style);
 
   return (
     <div
@@ -110,12 +119,15 @@ export const Image: ComponentType<ImageProps> = ({ ref, children }) => {
   );
 };
 
-export const ScrollView: ComponentType<ScrollViewProps> = ({ ref, children }) => {
+export const ScrollView: ComponentType<ScrollViewProps> = ({ ref, style, contentContainerStyle, children }) => {
 
   const targetRef = useRef<HTMLDivElement>();
   useRefHandle(ref, () => ({
     get _target() { return targetRef.current; }
   }), null);
+
+  const _style = useFlattenStyle(style);
+  const _contentContainerStyle = useFlattenStyle(contentContainerStyle);
 
   return (
     <div

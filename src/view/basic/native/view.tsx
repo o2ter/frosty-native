@@ -28,6 +28,7 @@ import { _createNativeElement } from 'frosty/_native';
 import { NativeModules } from '../../../global';
 import { NativeNode } from '../../../node';
 import { ViewProps } from '../../types';
+import { useFlattenStyle } from '~/view/style/utils';
 
 abstract class FTView extends NativeNode {
 
@@ -36,10 +37,12 @@ abstract class FTView extends NativeNode {
   }
 }
 
-export const View: ComponentType<ViewProps> = ({ ref, children }) => {
+export const View: ComponentType<ViewProps> = ({ ref, style, children }) => {
 
   useRefHandle(ref, () => ({
   }), null);
+
+  const _style = useFlattenStyle(style);
 
   return _createNativeElement(FTView, { children });
 };
