@@ -26,6 +26,7 @@
 import { ComponentType, useRef, useRefHandle } from 'frosty';
 import { ImageProps, ScrollViewProps, TextInputProps, TextViewProps, ViewProps } from '../types';
 import { useFlattenStyle } from '../style/utils';
+import { useTextStyle } from '../components';
 
 export const View: ComponentType<ViewProps> = ({ ref, style, children }) => {
 
@@ -57,7 +58,7 @@ export const Text: ComponentType<TextViewProps> = ({ ref, style, children }) => 
     get _target() { return targetRef.current; }
   }), null);
 
-  const _style = useFlattenStyle(style);
+  const _style = useFlattenStyle([useTextStyle(), style]);
 
   return (
     <div
@@ -80,7 +81,7 @@ export const TextInput: ComponentType<TextInputProps> = ({ ref, style, children 
     get _target() { return targetRef.current; }
   }), null);
 
-  const _style = useFlattenStyle(style);
+  const _style = useFlattenStyle([useTextStyle(), style]);
 
   return (
     <div

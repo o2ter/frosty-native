@@ -43,7 +43,7 @@ export const TextStyleProvider = ({
 }: TextStyleProps) => {
   const values = {
     ...useContext(Context),
-    ...useFlattenStyle(style as TextStyle),
+    ...useFlattenStyle(style),
   };
   return (
     <Context value={values}>
