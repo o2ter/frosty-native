@@ -28,18 +28,19 @@ import { TextStyle } from '../style/types';
 
 const Context = createContext<TextStyle>({});
 
-type TextStyleProps = PropsWithChildren<TextStyle>;
+type TextStyleProps = PropsWithChildren<{
+  style?: TextStyle;
+}>;
 
 export const useTextStyle = () => useContext(Context);
 
 export const TextStyleProvider = ({
+  style,
   children,
-  ...props
 }: TextStyleProps) => {
-  const parent = useContext(Context);
   const values = {
-    ...parent,
-    ...props,
+    ...useContext(Context),
+    ...style,
   };
   return (
     <Context value={values}>

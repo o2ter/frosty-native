@@ -41,9 +41,8 @@ export const Environment = ({
   children,
   ...props
 }: EnvironmentProps) => {
-  const parent = useContext(Context);
   const values = {
-    ...parent,
+    ...useContext(Context),
     ...props,
   };
   return (
