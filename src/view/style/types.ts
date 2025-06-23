@@ -235,6 +235,25 @@ export type TextStyle = ViewStyle & {
   userSelect?: 'auto' | 'none' | 'text' | 'contain' | 'all';
 }
 
+export const textStyleKeys = [
+  'color',
+  'fontFamily',
+  'fontSize',
+  'fontStyle',
+  'fontWeight',
+  'letterSpacing',
+  'lineHeight',
+  'textAlign',
+  'textDecorationLine',
+  'textDecorationStyle',
+  'textDecorationColor',
+  'textShadowColor',
+  'textShadowOffset',
+  'textShadowRadius',
+  'textTransform',
+  'userSelect',
+] as const;
+
 export type ImageStyle = ViewStyle & {
   resizeMode?:
   | 'cover'

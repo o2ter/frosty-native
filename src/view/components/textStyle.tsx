@@ -23,8 +23,9 @@
 //  THE SOFTWARE.
 //
 
+import _ from 'lodash';
 import { createContext, PropsWithChildren, StyleProp, useContext } from 'frosty';
-import { TextStyle, ViewStyle } from '../style/types';
+import { TextStyle, textStyleKeys, ViewStyle } from '../style/types';
 import { useFlattenStyle } from '../style/utils';
 
 type _TextStyle = Omit<TextStyle, keyof ViewStyle>;
@@ -41,10 +42,10 @@ export const TextStyleProvider = ({
   style,
   children,
 }: TextStyleProps) => {
-  const values = {
+  const values = _.pick({
     ...useContext(Context),
     ...useFlattenStyle(style),
-  };
+  }, textStyleKeys);
   return (
     <Context value={values}>
       {children}
