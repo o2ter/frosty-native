@@ -55,6 +55,9 @@ public struct FTRoot: View {
     @Environment(\.font)
     var defaultFont
     
+    @Environment(\.layoutDirection)
+    var layoutDirection
+    
     let appKey: String
     let runtime: FTContext
     
