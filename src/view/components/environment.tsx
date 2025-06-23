@@ -25,7 +25,7 @@
 
 import { createContext, PropsWithChildren, useContext } from 'frosty';
 
-type EnvironmentValues = {
+export type EnvironmentValues = {
   layoutDirection: 'ltr' | 'rtl';
 };
 
