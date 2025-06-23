@@ -37,7 +37,7 @@ export type DimensionValue =
   | number
   | `${number}%`;
 
-export interface FlexStyle {
+export interface LayoutStyle {
   alignContent?:
   | 'flex-start'
   | 'flex-end'
@@ -129,7 +129,7 @@ export interface TransformsStyle {
   transformOrigin?: Array<string | number> | string;
 }
 
-export interface ViewStyle extends FlexStyle, TransformsStyle {
+export interface ViewStyle extends LayoutStyle, TransformsStyle {
   backfaceVisibility?: 'visible' | 'hidden';
   backgroundColor?: ColorValue;
   borderBlockColor?: ColorValue;
