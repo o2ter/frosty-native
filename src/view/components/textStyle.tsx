@@ -27,10 +27,12 @@ import { createContext, PropsWithChildren, StyleProp, useContext } from 'frosty'
 import { TextStyle, ViewStyle } from '../style/types';
 import { useFlattenStyle } from '../style/utils';
 
-const Context = createContext<TextStyle>({});
+type _TextStyle = Omit<TextStyle, keyof ViewStyle>;
+
+const Context = createContext<_TextStyle>({});
 
 type TextStyleProps = PropsWithChildren<{
-  style?: StyleProp<Omit<TextStyle, keyof ViewStyle>>;
+  style?: StyleProp<_TextStyle>;
 }>;
 
 export const useTextStyle = () => useContext(Context);
