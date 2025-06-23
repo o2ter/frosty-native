@@ -24,7 +24,7 @@
 //
 
 import { PropsWithChildren, Ref, StyleProp } from 'frosty';
-import { ImageStyle, TextStyle, ViewStyle } from './style';
+import { ImageStyle, TextStyle, ViewStyle } from './style/types';
 
 type ScrollDirection = 'horizontal' | 'vertical';
 
