@@ -31,7 +31,7 @@ import { useEnvironment } from '../components/environment';
 const normalize = <S extends ViewStyle>(
   style: S,
   dir: 'ltr' | 'rtl'
-): Partial<S> => {
+) => {
   const {
     gap,
     rowGap = gap,
@@ -114,13 +114,13 @@ const normalize = <S extends ViewStyle>(
     ..._.isNil(borderBottomLeftRadius) ? {} : { borderBottomLeftRadius },
     ..._.isNil(borderTopRightRadius) ? {} : { borderTopRightRadius },
     ..._.isNil(borderBottomRightRadius) ? {} : { borderBottomRightRadius },
-  } as Partial<S>;
+  };
 }
 
 const flattenStyle = <S extends ViewStyle>(
   style: StyleProp<S>,
   dir: 'ltr' | 'rtl'
-): Partial<S> => {
+): ReturnType<typeof normalize<S>> | {} => {
   if (!style) return {};
   if (!_.isArray(style)) return normalize(style, dir);
   return _.reduce(style, (acc, item) => ({
@@ -131,7 +131,7 @@ const flattenStyle = <S extends ViewStyle>(
 
 export const useFlattenStyle = <S extends ViewStyle | TextStyle>(
   style: StyleProp<S>
-): Partial<S> => {
+) => {
   const { layoutDirection: dir } = useEnvironment();
   return flattenStyle(style, dir);
 }
