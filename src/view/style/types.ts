@@ -143,6 +143,7 @@ export interface ViewStyle extends LayoutStyle, TransformsStyle {
   borderBottomWidth?: number;
   borderColor?: ColorValue;
   borderCurve?: 'circular' | 'continuous';
+  borderEndColor?: ColorValue;
   borderEndEndRadius?: number;
   borderEndStartRadius?: number;
   borderEndWidth?: number;
