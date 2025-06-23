@@ -49,11 +49,14 @@ export const AppRegistry = (() => {
           props?: Record<string, any> | null,
         }) {
           const runner = renderer.createRoot(options?.root);
-          runner.mount(
-            <Environment>
-              {createElement(component, options?.props)}
-            </Environment>
-          );
+          const Runner = ({ ...props }) => {
+            return (
+              <Environment>
+                {createElement(component, props)}
+              </Environment>
+            );
+          };
+          runner.mount(createElement(Runner, options?.props));
           return {
             get root() {
               return runner.root;
