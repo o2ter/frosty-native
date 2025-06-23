@@ -1,5 +1,5 @@
 //
-//  Environment.ts
+//  textStyle.ts
 //
 //  The MIT License
 //  Copyright (c) 2021 - 2025 O2ter Limited. All rights reserved.
@@ -24,23 +24,18 @@
 //
 
 import { createContext, PropsWithChildren, useContext } from 'frosty';
+import { TextStyle } from '../style/types';
 
-type EnvironmentValues = {
-  layoutDirection: 'ltr' | 'rtl';
-};
+const Context = createContext<TextStyle>({});
 
-const Context = createContext<EnvironmentValues>({
-  layoutDirection: 'ltr',
-});
+type TextStyleProps = PropsWithChildren<TextStyle>;
 
-type EnvironmentProps = PropsWithChildren<EnvironmentValues>;
+export const useTextStyle = () => useContext(Context);
 
-export const useEnvironment = () => useContext(Context);
-
-export const Environment = ({
+export const TextStyleProvider = ({
   children,
   ...props
-}: EnvironmentProps) => {
+}: TextStyleProps) => {
   const parent = useContext(Context);
   const values = {
     ...parent,

@@ -37,7 +37,7 @@ export type DimensionValue =
   | number
   | `${number}%`;
 
-export interface LayoutStyle {
+export type LayoutStyle = {
   alignContent?:
   | 'flex-start'
   | 'flex-end'
@@ -110,7 +110,7 @@ type OneOf<T, K extends keyof T = keyof T> = K extends keyof T
   ? { [P in K]: P extends Exclude<keyof T, K> ? never : T[K] }
   : never;
 
-export interface TransformsStyle {
+export type TransformsStyle = {
   transform?: OneOf<{
     perspective: number;
     rotate: string;
@@ -129,7 +129,7 @@ export interface TransformsStyle {
   transformOrigin?: Array<string | number> | string;
 }
 
-export interface ViewStyle extends LayoutStyle, TransformsStyle {
+export type ViewStyle = LayoutStyle & TransformsStyle & {
   backfaceVisibility?: 'visible' | 'hidden';
   backgroundColor?: ColorValue;
   borderBlockColor?: ColorValue;
@@ -178,7 +178,7 @@ type TextDecorationLine =
   | 'overline'
   | 'line-through';
 
-export interface TextStyle extends ViewStyle {
+export type TextStyle = ViewStyle & {
   color?: ColorValue;
   fontFamily?: string;
   fontSize?: number;
@@ -235,7 +235,7 @@ export interface TextStyle extends ViewStyle {
   userSelect?: 'auto' | 'none' | 'text' | 'contain' | 'all';
 }
 
-export interface ImageStyle extends ViewStyle {
+export type ImageStyle = ViewStyle & {
   resizeMode?:
   | 'cover'
   | 'contain'
