@@ -29,6 +29,11 @@ import { ViewStyle } from './types';
 
 const normalize = <S extends ViewStyle>(style: S): S => {
   const {
+    inset,
+    top = inset,
+    left = inset,
+    right = inset,
+    bottom = inset,
     margin,
     marginHorizontal = margin,
     marginVertical = margin,
@@ -62,6 +67,10 @@ const normalize = <S extends ViewStyle>(style: S): S => {
   } = style;
   return {
     ..._style,
+    ..._.isNil(top) ? {} : { top },
+    ..._.isNil(bottom) ? {} : { bottom },
+    ..._.isNil(left) ? {} : { left },
+    ..._.isNil(right) ? {} : { right },
     ..._.isNil(marginTop) ? {} : { marginTop },
     ..._.isNil(marginBottom) ? {} : { marginBottom },
     ..._.isNil(marginLeft) ? {} : { marginLeft },
