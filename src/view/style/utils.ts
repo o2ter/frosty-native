@@ -29,11 +29,60 @@ import { ViewStyle } from './types';
 
 const normalize = <S extends ViewStyle>(style: S): S => {
   const {
+    margin,
+    marginHorizontal = margin,
+    marginVertical = margin,
+    marginTop = marginVertical,
+    marginBottom = marginVertical,
+    marginLeft = marginHorizontal,
+    marginRight = marginHorizontal,
+    padding,
+    paddingHorizontal = padding,
+    paddingVertical = padding,
+    paddingTop = paddingVertical,
+    paddingBottom = paddingVertical,
+    paddingLeft = paddingHorizontal,
+    paddingRight = paddingHorizontal,
+    borderColor,
+    borderTopColor = borderColor,
+    borderBottomColor = borderColor,
+    borderLeftColor = borderColor,
+    borderRightColor = borderColor,
+    borderWidth,
+    borderTopWidth = borderWidth,
+    borderBottomWidth = borderWidth,
+    borderLeftWidth = borderWidth,
+    borderRightWidth = borderWidth,
+    borderRadius,
+    borderTopLeftRadius = borderRadius,
+    borderBottomLeftRadius = borderRadius,
+    borderTopRightRadius = borderRadius,
+    borderBottomRightRadius = borderRadius,
     ..._style
   } = style;
   return {
     ..._style,
-  };
+    ..._.isNil(marginTop) ? {} : { marginTop },
+    ..._.isNil(marginBottom) ? {} : { marginBottom },
+    ..._.isNil(marginLeft) ? {} : { marginLeft },
+    ..._.isNil(marginRight) ? {} : { marginRight },
+    ..._.isNil(paddingTop) ? {} : { paddingTop },
+    ..._.isNil(paddingBottom) ? {} : { paddingBottom },
+    ..._.isNil(paddingLeft) ? {} : { paddingLeft },
+    ..._.isNil(paddingRight) ? {} : { paddingRight },
+    ..._.isNil(borderTopColor) ? {} : { borderTopColor },
+    ..._.isNil(borderBottomColor) ? {} : { borderBottomColor },
+    ..._.isNil(borderLeftColor) ? {} : { borderLeftColor },
+    ..._.isNil(borderRightColor) ? {} : { borderRightColor },
+    ..._.isNil(borderTopWidth) ? {} : { borderTopWidth },
+    ..._.isNil(borderBottomWidth) ? {} : { borderBottomWidth },
+    ..._.isNil(borderLeftWidth) ? {} : { borderLeftWidth },
+    ..._.isNil(borderRightWidth) ? {} : { borderRightWidth },
+    ..._.isNil(borderTopLeftRadius) ? {} : { borderTopLeftRadius },
+    ..._.isNil(borderBottomLeftRadius) ? {} : { borderBottomLeftRadius },
+    ..._.isNil(borderTopRightRadius) ? {} : { borderTopRightRadius },
+    ..._.isNil(borderBottomRightRadius) ? {} : { borderBottomRightRadius },
+  } as S;
 }
 
 export const flattenStyle = <S extends ViewStyle>(
