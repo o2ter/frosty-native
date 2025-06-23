@@ -23,13 +23,14 @@
 //  THE SOFTWARE.
 //
 
-import { createContext, PropsWithChildren, useContext } from 'frosty';
+import { createContext, PropsWithChildren, StyleProp, useContext } from 'frosty';
 import { TextStyle } from '../style/types';
+import { useFlattenStyle } from '../style/utils';
 
 const Context = createContext<TextStyle>({});
 
 type TextStyleProps = PropsWithChildren<{
-  style?: TextStyle;
+  style?: StyleProp<TextStyle>;
 }>;
 
 export const useTextStyle = () => useContext(Context);
@@ -40,7 +41,7 @@ export const TextStyleProvider = ({
 }: TextStyleProps) => {
   const values = {
     ...useContext(Context),
-    ...style,
+    ...useFlattenStyle(style),
   };
   return (
     <Context value={values}>
