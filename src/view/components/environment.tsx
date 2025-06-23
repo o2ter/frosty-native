@@ -33,7 +33,7 @@ const Context = createContext<EnvironmentValues>({
   layoutDirection: 'ltr',
 });
 
-type EnvironmentProps = PropsWithChildren<EnvironmentValues>;
+type EnvironmentProps = PropsWithChildren<Partial<EnvironmentValues>>;
 
 export const useEnvironment = () => useContext(Context);
 
