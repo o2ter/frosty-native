@@ -23,5 +23,4 @@
 //  THE SOFTWARE.
 //
 
-export * from './basic';
-export * from './components';
+export * from './environment';

@@ -1,5 +1,5 @@
 //
-//  index.ts
+//  Environment.ts
 //
 //  The MIT License
 //  Copyright (c) 2021 - 2025 O2ter Limited. All rights reserved.
@@ -23,5 +23,32 @@
 //  THE SOFTWARE.
 //
 
-export * from './basic';
-export * from './components';
+import { createContext, PropsWithChildren, useContext, useMemo } from "frosty";
+
+type EnvironmentValues = {
+  dir: 'ltr' | 'rtl';
+};
+
+const Context = createContext<EnvironmentValues>({
+  dir: 'ltr',
+});
+
+type EnvironmentProps = PropsWithChildren<EnvironmentValues>;
+
+export const useEnvironment = () => useContext(Context);
+
+export const Environment = ({
+  children,
+  ...props
+}: EnvironmentProps) => {
+  const parent = useContext(Context);
+  const values = {
+    ...parent,
+    ...props,
+  };
+  return (
+    <Context value={values}>
+      {children}
+    </Context>
+  );
+};
