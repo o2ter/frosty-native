@@ -120,7 +120,7 @@ const normalize = <S extends ViewStyle>(
 const flattenStyle = <S extends ViewStyle>(
   style: StyleProp<S>,
   dir: 'ltr' | 'rtl'
-): ReturnType<typeof normalize<S>> | {} => {
+): Partial<ReturnType<typeof normalize<S>>> => {
   if (!style) return {};
   if (!_.isArray(style)) return normalize(style, dir);
   return _.reduce(style, (acc, item) => ({
