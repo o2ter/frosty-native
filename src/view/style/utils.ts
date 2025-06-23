@@ -26,7 +26,7 @@
 import _ from 'lodash';
 import { StyleProp } from 'frosty';
 import { ViewStyle } from './types';
-import { useEnvironment } from '../components';
+import { useEnvironment } from '../components/environment';
 
 const normalize = <S extends ViewStyle>(
   style: S,
