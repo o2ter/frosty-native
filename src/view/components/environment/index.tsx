@@ -1,5 +1,5 @@
 //
-//  Environment.ts
+//  index.tsx
 //
 //  The MIT License
 //  Copyright (c) 2021 - 2025 O2ter Limited. All rights reserved.
@@ -24,10 +24,7 @@
 //
 
 import { createContext, PropsWithChildren, useContext } from 'frosty';
-
-export type EnvironmentValues = {
-  layoutDirection: 'ltr' | 'rtl';
-};
+import { EnvironmentValues } from './types';
 
 const Context = createContext<EnvironmentValues>({
   layoutDirection: 'ltr',
