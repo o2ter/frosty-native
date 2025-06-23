@@ -27,7 +27,8 @@ import _ from 'lodash';
 import { ComponentType, createElement, createStore, useState, useStore } from 'frosty';
 import { NativeRenderer } from './renderer';
 import { NativeNode } from './node';
-import { Environment, EnvironmentValues } from './view';
+import { Environment } from './view';
+import { EnvironmentValues } from './view/components/environment/types';
 
 export const AppRegistry = (() => {
   const registry: Record<string, ComponentType<any>> = {};
