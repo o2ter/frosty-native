@@ -29,6 +29,9 @@ import { ViewStyle } from './types';
 
 const normalize = <S extends ViewStyle>(style: S): S => {
   const {
+    gap,
+    rowGap = gap,
+    columnGap = gap,
     inset,
     top = inset,
     left = inset,
@@ -67,6 +70,8 @@ const normalize = <S extends ViewStyle>(style: S): S => {
   } = style;
   return {
     ..._style,
+    ..._.isNil(rowGap) ? {} : { rowGap },
+    ..._.isNil(columnGap) ? {} : { columnGap },
     ..._.isNil(top) ? {} : { top },
     ..._.isNil(bottom) ? {} : { bottom },
     ..._.isNil(left) ? {} : { left },
