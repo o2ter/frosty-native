@@ -24,7 +24,7 @@
 //
 
 import _ from 'lodash';
-import { ComponentType, createElement, createStore, useState, useStore } from 'frosty';
+import { ComponentType, createElement, createStore, useStore } from 'frosty';
 import { NativeRenderer } from './renderer';
 import { NativeNode } from './node';
 import { Environment } from './view';
