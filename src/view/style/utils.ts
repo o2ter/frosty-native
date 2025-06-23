@@ -32,7 +32,6 @@ const normalize = <S extends ViewStyle>(
   style: S,
   dir: 'ltr' | 'rtl'
 ) => {
-  if (!style) return {};
   const {
     gap,
     rowGap = gap,
@@ -121,7 +120,7 @@ const normalize = <S extends ViewStyle>(
 const flattenStyle = <S extends ViewStyle>(
   style: StyleProp<S>,
   dir: 'ltr' | 'rtl'
-): ReturnType<typeof normalize<S>> => {
+): ReturnType<typeof normalize<S>> | {} => {
   if (!style) return {};
   if (!_.isArray(style)) return normalize(style, dir);
   return _.reduce(style, (acc, item) => ({
