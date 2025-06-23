@@ -42,6 +42,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.core.os.ConfigurationCompat.getLocales
 import com.eclipsesource.v8.V8Object
 import com.eclipsesource.v8.utils.V8ObjectUtils
@@ -113,6 +114,7 @@ internal fun FTRoot(engine: FTContext, rootView: FTNodeState) {
     val displayScale = engine.context.resources.displayMetrics.density
     val pixelLength = 1 / displayScale
     val locales = getLocales(LocalConfiguration.current)
+    val layoutDirection = LocalLayoutDirection.current
     AppTheme(darkTheme) {
         Scaffold(
             modifier = Modifier.fillMaxSize()
