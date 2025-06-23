@@ -38,17 +38,14 @@ export const AppRegistry = (() => {
     getRunnable(appKey: string) {
       const component = registry[appKey];
       if (!component) return;
-      const renderer = new NativeRenderer();
       return {
         component,
-        notify: (nodeId: string, method: string, ...args: any[]) => {
-          renderer.notify(nodeId, method, ...args);
-        },
         run(options?: {
           root?: NativeNode,
           props?: Record<string, any> | null,
           environment?: Partial<EnvironmentValues>,
         }) {
+          const renderer = new NativeRenderer();
           const runner = renderer.createRoot(options?.root);
           const env = createStore(options?.environment ?? {});
           const Runner = ({ ...props }) => {
@@ -65,6 +62,9 @@ export const AppRegistry = (() => {
             },
             unmount() {
               runner.unmount();
+            },
+            notify: (nodeId: string, method: string, ...args: any[]) => {
+              renderer.notify(nodeId, method, ...args);
             },
           };
         },
