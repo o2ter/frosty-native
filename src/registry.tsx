@@ -48,13 +48,11 @@ export const AppRegistry = (() => {
           const renderer = new NativeRenderer();
           const runner = renderer.createRoot(options?.root);
           const env = createStore(options?.environment ?? {});
-          const Runner = ({ ...props }) => {
-            return (
-              <Environment {...useStore(env)}>
-                {createElement(component, props)}
-              </Environment>
-            );
-          };
+          const Runner = ({ ...props }) => (
+            <Environment {...useStore(env)}>
+              {createElement(component, props)}
+            </Environment>
+          );
           runner.mount(createElement(Runner, options?.props));
           return {
             get root() {
