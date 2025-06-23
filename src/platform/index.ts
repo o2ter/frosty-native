@@ -29,7 +29,7 @@ type PlatformSpec = typeof _Platform.spec;
 
 export class Platform {
 
-  static get spec() {
+  static get OS() {
     return _Platform.spec;
   }
 
@@ -38,7 +38,7 @@ export class Platform {
   } & {
     default: T;
   }): T {
-    return config[this.spec] ?? config.default;
+    return config[this.OS] ?? config.default;
   }
 
   static isMacCatalystApp() {
