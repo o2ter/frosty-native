@@ -50,7 +50,7 @@ export interface LayoutStyle {
   alignSelf?: 'auto' | FlexAlignType;
   aspectRatio?: number | string;
   bottom?: DimensionValue;
-  display?: 'none' | 'flex';
+  display?: 'none' | 'flex' | string & {};
   end?: DimensionValue;
   flex?: number;
   flexBasis?: DimensionValue;
@@ -98,7 +98,7 @@ export interface LayoutStyle {
   paddingStart?: DimensionValue;
   paddingTop?: DimensionValue;
   paddingVertical?: DimensionValue;
-  position?: 'absolute' | 'relative' | 'static';
+  position?: 'absolute' | 'relative' | 'static' | string & {};
   right?: DimensionValue;
   start?: DimensionValue;
   top?: DimensionValue;
@@ -170,7 +170,7 @@ export interface ViewStyle extends LayoutStyle, TransformsStyle {
   shadowOffset?: { width: number; height: number };
   shadowOpacity?: number;
   shadowRadius?: number;
-  cursor?: 'auto' | 'pointer';
+  cursor?: 'auto' | 'pointer' | string & {};
 }
 
 type TextDecorationLine =
