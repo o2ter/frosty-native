@@ -26,11 +26,11 @@
 import { createContext, PropsWithChildren, useContext } from "frosty";
 
 type EnvironmentValues = {
-  dir: 'ltr' | 'rtl';
+  layoutDirection: 'ltr' | 'rtl';
 };
 
 const Context = createContext<EnvironmentValues>({
-  dir: 'ltr',
+  layoutDirection: 'ltr',
 });
 
 type EnvironmentProps = PropsWithChildren<EnvironmentValues>;

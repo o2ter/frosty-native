@@ -26,8 +26,12 @@
 import _ from 'lodash';
 import { StyleProp } from 'frosty';
 import { ViewStyle } from './types';
+import { useEnvironment } from '../components';
 
-const normalize = <S extends ViewStyle>(style: S): S => {
+const normalize = <S extends ViewStyle>(
+  style: S,
+  dir: 'ltr' | 'rtl'
+): S => {
   const {
     gap,
     rowGap = gap,
@@ -99,13 +103,21 @@ const normalize = <S extends ViewStyle>(style: S): S => {
   } as S;
 }
 
-export const flattenStyle = <S extends ViewStyle>(
-  style: StyleProp<S>
+const flattenStyle = <S extends ViewStyle>(
+  style: StyleProp<S>,
+  dir: 'ltr' | 'rtl'
 ): S => {
   if (!style) return {} as S;
-  if (!_.isArray(style)) return normalize(style);
+  if (!_.isArray(style)) return normalize(style, dir);
   return _.reduce(style, (acc, item) => ({
     ...acc,
-    ...flattenStyle(item),
+    ...flattenStyle(item, dir),
   }), {} as S);
+}
+
+export const useFlattenStyle = <S extends ViewStyle>(
+  style: StyleProp<S>
+): S => {
+  const { layoutDirection: dir } = useEnvironment();
+  return flattenStyle(style, dir);
 }
