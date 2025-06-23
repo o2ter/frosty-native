@@ -24,10 +24,10 @@
 //
 
 import _ from 'lodash';
-import { ComponentType, createElement } from 'frosty';
+import { ComponentType, createElement, createStore, useState, useStore } from 'frosty';
 import { NativeRenderer } from './renderer';
 import { NativeNode } from './node';
-import { Environment } from './view';
+import { Environment, EnvironmentValues } from './view';
 
 export const AppRegistry = (() => {
   const registry: Record<string, ComponentType<any>> = {};
@@ -47,11 +47,13 @@ export const AppRegistry = (() => {
         run(options?: {
           root?: NativeNode,
           props?: Record<string, any> | null,
+          environment?: Partial<EnvironmentValues>,
         }) {
           const runner = renderer.createRoot(options?.root);
+          const env = createStore(options?.environment ?? {});
           const Runner = ({ ...props }) => {
             return (
-              <Environment>
+              <Environment {...useStore(env)}>
                 {createElement(component, props)}
               </Environment>
             );
