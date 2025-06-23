@@ -23,7 +23,7 @@
 //  THE SOFTWARE.
 //
 
-import { createContext, PropsWithChildren, useContext, useMemo } from "frosty";
+import { createContext, PropsWithChildren, useContext } from "frosty";
 
 type EnvironmentValues = {
   dir: 'ltr' | 'rtl';
