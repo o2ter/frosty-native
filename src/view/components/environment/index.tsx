@@ -46,7 +46,7 @@ const useDefault = Platform.select({
     if (typeof window === 'undefined') return {
       ...defaults,
       layoutDirection: document?.dir === 'rtl' ? 'rtl' : 'ltr',
-    };
+    } as const;
     const displayScale = window.devicePixelRatio || 1;
     return {
       ...defaults,
@@ -56,7 +56,7 @@ const useDefault = Platform.select({
       colorScheme: window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light',
       userLocale: navigator.language,
       timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
-    };
+    } as const;
   },
   default: () => defaults,
 });
