@@ -71,8 +71,8 @@ internal fun FTContext.run(
 
 open class FrostyNativeActivity(val appKey: String) : ComponentActivity() {
 
-    private lateinit var engine: FTContext
-    private lateinit var runner: Deferred<V8Object>
+    internal lateinit var engine: FTContext
+    internal lateinit var runner: Deferred<V8Object>
 
     internal var nodes = mutableSetOf<FTNodeState>()
 
@@ -83,7 +83,7 @@ open class FrostyNativeActivity(val appKey: String) : ComponentActivity() {
             val rootView = FTNodeState(this) { nodeId, props, handler, content -> FTView(nodeId, props, handler, content) }
             engine = this.createEngine(LocalContext.current)
             runner = engine.run(appKey, rootView)
-            FTRoot(engine, runner, rootView)
+            FTRoot(this, rootView)
         }
     }
 
@@ -109,10 +109,10 @@ open class FrostyNativeActivity(val appKey: String) : ComponentActivity() {
 }
 
 @Composable
-internal fun FTRoot(engine: FTContext, runner: Deferred<V8Object>, rootView: FTNodeState) {
+internal fun FTRoot(activity: FrostyNativeActivity, rootView: FTNodeState) {
     val systemIsDarkTheme = isSystemInDarkTheme()
     var darkTheme by remember { mutableStateOf(systemIsDarkTheme) }
-    val displayScale = engine.context.resources.displayMetrics.density
+    val displayScale = activity.engine.context.resources.displayMetrics.density
     val pixelLength = 1 / displayScale
     val locales = getLocales(LocalConfiguration.current)
     val layoutDirection = LocalLayoutDirection.current
@@ -121,7 +121,7 @@ internal fun FTRoot(engine: FTContext, runner: Deferred<V8Object>, rootView: FTN
         Scaffold(
             modifier = Modifier.fillMaxSize()
                 .onSizeChanged { size ->
-                    println(engine.context.resources.displayMetrics)
+                    println(activity.engine.context.resources.displayMetrics)
                     println(size)
                 }
         ) { safeAreaInset ->
@@ -129,7 +129,7 @@ internal fun FTRoot(engine: FTContext, runner: Deferred<V8Object>, rootView: FTN
                 Modifier.onSizeChanged {
                     println(safeAreaInset)
                 },
-                engine,
+                activity,
                 rootView
             )
         }

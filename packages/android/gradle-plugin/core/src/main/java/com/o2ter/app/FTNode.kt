@@ -36,6 +36,7 @@ import com.eclipsesource.v8.V8
 import com.eclipsesource.v8.V8Object
 import com.eclipsesource.v8.utils.V8ObjectUtils
 import com.o2ter.runtime.FTContext
+import kotlinx.coroutines.Deferred
 import java.util.UUID
 
 internal typealias ComponentHandler = (method: String, args: List<Any?>) -> Unit
@@ -108,7 +109,7 @@ internal class FTNodeState(
 @Composable
 internal fun FTNode(
     modifier: Modifier = Modifier,
-    engine: FTContext,
+    activity: FrostyNativeActivity,
     state: FTNodeState,
 ) {
     Box(modifier) {
@@ -119,7 +120,7 @@ internal fun FTNode(
         ) {
             state.children.forEach {
                 FTNode(
-                    engine = engine,
+                    activity = activity,
                     state = it
                 )
             }
