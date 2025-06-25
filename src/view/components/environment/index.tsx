@@ -24,15 +24,28 @@
 //
 
 import { createContext, PropsWithChildren, useContext } from 'frosty';
+import { useDocument } from 'frosty/web';
 import { EnvironmentValues } from './types';
+import { Platform } from '~/platform';
 
-const Context = createContext<EnvironmentValues>({
-  layoutDirection: 'ltr',
+const Context = createContext<Partial<EnvironmentValues>>({});
+
+const useDefault = Platform.select({
+  web: () => {
+    const document = useDocument();
+    return {
+      layoutDirection: document?.dir === 'rtl' ? 'rtl' : 'ltr',
+    };
+  },
+  default: () => ({}),
+});
+
+export const useEnvironment = () => ({
+  ...useDefault(),
+  ...useContext(Context),
 });
 
 type EnvironmentProps = PropsWithChildren<Partial<EnvironmentValues>>;
-
-export const useEnvironment = () => useContext(Context);
 
 export const Environment = ({
   children,
