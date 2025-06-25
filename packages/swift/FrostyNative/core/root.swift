@@ -169,9 +169,6 @@ extension FTRoot {
         let runner = registry.invokeMethod("getRunnable", withArguments: [.init(appKey)])
         return runner.invokeMethod("run", withArguments: [[
             "root": JSCore.Value(node, in: runtime.context),
-            "environment": [
-                "languages": JSCore.Value(Locale.preferredLanguages.map { JSCore.Value($0) }),
-            ],
         ]])
     }
 }
