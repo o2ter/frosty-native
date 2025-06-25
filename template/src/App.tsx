@@ -24,7 +24,7 @@
 //
 
 import { useEffect, useState } from 'frosty';
-import { Text, View } from 'frosty-native';
+import { Text, useEnvironment, View } from 'frosty-native';
 
 export default function App() {
   const [counter, setCounter] = useState(0);
@@ -32,6 +32,7 @@ export default function App() {
     const handle = setInterval(() => { setCounter(v => v + 1); }, 1000);
     return () => clearTimeout(handle);
   }, []);
+  console.log(JSON.stringify(useEnvironment()));
   return (
     <View>
       <Text>Hello World!</Text>
