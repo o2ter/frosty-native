@@ -133,14 +133,13 @@ internal fun FTRoot(activity: FrostyNativeActivity, rootView: FTNodeState) {
     val systemIsDarkTheme = isSystemInDarkTheme()
     var darkTheme by remember { mutableStateOf(systemIsDarkTheme) }
     val displayScale = activity.engine.context.resources.displayMetrics.density
-    val pixelLength = 1 / displayScale
     val locales = getLocales(LocalConfiguration.current)
     val layoutDirection = LocalLayoutDirection.current
     val timeZone = TimeZone.getDefault()
     activity.setEnvironment(mapOf(
         "layoutDirection" to layoutDirection.name,
         "displayScale" to displayScale,
-        "pixelLength" to pixelLength,
+        "pixelLength" to 1 / displayScale,
         "colorScheme" to if (darkTheme) "dark" else "light",
         "userLocale" to locales[0].toString(),
         "languages" to locales.toList().map { it.toString() },
@@ -150,8 +149,10 @@ internal fun FTRoot(activity: FrostyNativeActivity, rootView: FTNodeState) {
         Scaffold(
             modifier = Modifier.fillMaxSize()
                 .onSizeChanged { size ->
-                    println(activity.engine.context.resources.displayMetrics)
-                    println(size)
+                    activity.setEnvironment(mapOf(
+                        "windowWidth" to size.width,
+                        "windowHeight" to size.height,
+                    ))
                 }
         ) { safeAreaInset ->
             FTNode(
