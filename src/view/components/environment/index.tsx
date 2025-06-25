@@ -24,7 +24,7 @@
 //
 
 import { createContext, PropsWithChildren, useContext } from 'frosty';
-import { useDocument } from 'frosty/web';
+import { useDocument, useWindowMetrics } from 'frosty/web';
 import { EnvironmentValues } from './types';
 import { Platform } from '../../../platform';
 
@@ -43,20 +43,18 @@ const defaults = {
 const useDefault = Platform.select({
   web: () => {
     const document = useDocument();
-    if (typeof window === 'undefined') return {
-      ...defaults,
-      layoutDirection: document?.dir === 'rtl' ? 'rtl' : 'ltr',
-    } as const;
-    const displayScale = window.devicePixelRatio || 1;
+    const { devicePixelRatio } = useWindowMetrics();
     return {
       ...defaults,
       layoutDirection: document?.dir === 'rtl' ? 'rtl' : 'ltr',
-      displayScale: displayScale,
-      pixelLength: 1 / displayScale,
-      colorScheme: window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light',
-      userLocale: navigator.language,
-      languages: navigator.languages || [navigator.language],
-      timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+      displayScale: devicePixelRatio,
+      pixelLength: 1 / devicePixelRatio,
+      ...typeof window === 'undefined' ? {} : {
+        colorScheme: window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light',
+        userLocale: navigator.language,
+        languages: navigator.languages || [navigator.language],
+        timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+      },
     } as const;
   },
   default: () => defaults,
