@@ -99,28 +99,10 @@ open class FrostyNativeActivity(val appKey: String) : ComponentActivity() {
         nodes.clear()
     }
 
-    fun setEnvironment(
-        layoutDirection: String,
-        displayScale: Float,
-        pixelLength: Float,
-        colorScheme: String,
-        userLocale: String,
-        languages: List<String>,
-        timeZone: String,
-    ) {
+    fun setEnvironment(values: Map<String, Any>) {
         engine.withRuntime { runtime ->
             val runner = runner.await()
-            runner.executeVoidFunction("setEnvironment", V8ObjectUtils.toV8Array(runtime, listOf(
-                mapOf(
-                    "layoutDirection" to layoutDirection,
-                    "displayScale" to displayScale,
-                    "pixelLength" to pixelLength,
-                    "colorScheme" to colorScheme,
-                    "userLocale" to userLocale,
-                    "languages" to languages,
-                    "timeZone" to timeZone,
-                )
-            )))
+            runner.executeVoidFunction("setEnvironment", V8ObjectUtils.toV8Array(runtime, listOf(values)))
         }.discard()
     }
 
@@ -155,15 +137,15 @@ internal fun FTRoot(activity: FrostyNativeActivity, rootView: FTNodeState) {
     val locales = getLocales(LocalConfiguration.current)
     val layoutDirection = LocalLayoutDirection.current
     val timeZone = TimeZone.getDefault()
-    activity.setEnvironment(
-        layoutDirection = layoutDirection.name,
-        displayScale = displayScale,
-        pixelLength = pixelLength,
-        colorScheme = if (darkTheme) "dark" else "light",
-        userLocale = locales[0].toString(),
-        languages = locales.toList().map { it.toString() },
-        timeZone = timeZone.id,
-    )
+    activity.setEnvironment(mapOf(
+        "layoutDirection" to layoutDirection.name,
+        "displayScale" to displayScale,
+        "pixelLength" to pixelLength,
+        "colorScheme" to if (darkTheme) "dark" else "light",
+        "userLocale" to locales[0].toString(),
+        "languages" to locales.toList().map { it.toString() },
+        "timeZone" to timeZone.id,
+    ))
     AppTheme(darkTheme) {
         Scaffold(
             modifier = Modifier.fillMaxSize()
