@@ -100,7 +100,16 @@ public struct FTRoot: View {
             FTNode(state: self.$node)
                 .ignoresSafeArea()
                 .onChange(of: WindowDimensions(geometry), initial: true) {
-                    print(WindowDimensions(geometry))
+                    runner?.invokeMethod("setEnvironment", withArguments: [[
+                        "windowWidth": JSCore.Value(geometry.size.width),
+                        "windowHeight": JSCore.Value(geometry.size.height),
+                        "safeAreaInsets": [
+                            "top": JSCore.Value(geometry.safeAreaInsets.top),
+                            "left": JSCore.Value(geometry.safeAreaInsets.leading),
+                            "right": JSCore.Value(geometry.safeAreaInsets.trailing),
+                            "bottom": JSCore.Value(geometry.safeAreaInsets.bottom),
+                        ],
+                    ]])
                 }
                 .onChange(of: layoutDirection) { _, newValue in
                     runner?.invokeMethod("setEnvironment", withArguments: [[
