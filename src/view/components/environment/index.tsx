@@ -26,7 +26,7 @@
 import { createContext, PropsWithChildren, useContext } from 'frosty';
 import { useDocument } from 'frosty/web';
 import { EnvironmentValues } from './types';
-import { Platform } from '~/platform';
+import { Platform } from '../../../platform';
 
 const Context = createContext<Partial<EnvironmentValues>>({});
 
