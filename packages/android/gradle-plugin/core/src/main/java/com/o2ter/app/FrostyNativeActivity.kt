@@ -44,6 +44,7 @@ import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.core.os.ConfigurationCompat.getLocales
+import androidx.core.os.LocaleListCompat
 import com.eclipsesource.v8.V8Object
 import com.eclipsesource.v8.utils.V8ObjectUtils
 import com.o2ter.app.ui.theme.AppTheme
@@ -51,6 +52,7 @@ import com.o2ter.core.discard
 import com.o2ter.runtime.FTContext
 import kotlinx.coroutines.Deferred
 import java.io.InputStream
+import java.util.Locale
 import java.util.TimeZone
 
 internal fun FTContext.run(
@@ -97,6 +99,31 @@ open class FrostyNativeActivity(val appKey: String) : ComponentActivity() {
         nodes.clear()
     }
 
+    fun setEnvironment(
+        layoutDirection: String,
+        displayScale: Float,
+        pixelLength: Float,
+        colorScheme: String,
+        userLocale: String,
+        languages: List<String>,
+        timeZone: String,
+    ) {
+        engine.withRuntime { runtime ->
+            val runner = runner.await()
+            runner.executeVoidFunction("setEnvironment", V8ObjectUtils.toV8Array(runtime, listOf(
+                mapOf(
+                    "layoutDirection" to layoutDirection,
+                    "displayScale" to displayScale,
+                    "pixelLength" to pixelLength,
+                    "colorScheme" to colorScheme,
+                    "userLocale" to userLocale,
+                    "languages" to languages,
+                    "timeZone" to timeZone,
+                )
+            )))
+        }.discard()
+    }
+
     private fun createEngine(context: Context): FTContext {
         val engine = FTContext(this, context)
         engine.executeVoidScript(this.loadBundle()).discard()
@@ -108,6 +135,17 @@ open class FrostyNativeActivity(val appKey: String) : ComponentActivity() {
     }
 }
 
+
+fun LocaleListCompat.toList(): List<Locale> {
+    val localeList = mutableListOf<Locale>()
+    for (i in 0 until this.size()) {
+        this.get(i)?.let { locale ->
+            localeList.add(locale)
+        }
+    }
+    return localeList
+}
+
 @Composable
 internal fun FTRoot(activity: FrostyNativeActivity, rootView: FTNodeState) {
     val systemIsDarkTheme = isSystemInDarkTheme()
@@ -117,6 +155,15 @@ internal fun FTRoot(activity: FrostyNativeActivity, rootView: FTNodeState) {
     val locales = getLocales(LocalConfiguration.current)
     val layoutDirection = LocalLayoutDirection.current
     val timeZone = TimeZone.getDefault()
+    activity.setEnvironment(
+        layoutDirection = layoutDirection.name,
+        displayScale = displayScale,
+        pixelLength = pixelLength,
+        colorScheme = if (darkTheme) "dark" else "light",
+        userLocale = locales[0].toString(),
+        languages = locales.toList().map { it.toString() },
+        timeZone = timeZone.id,
+    )
     AppTheme(darkTheme) {
         Scaffold(
             modifier = Modifier.fillMaxSize()
