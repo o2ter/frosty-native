@@ -43,9 +43,19 @@ const defaults = {
 const useDefault = Platform.select({
   web: () => {
     const document = useDocument();
+    if (typeof window === 'undefined') return {
+      ...defaults,
+      layoutDirection: document?.dir === 'rtl' ? 'rtl' : 'ltr',
+    };
+    const displayScale = window.devicePixelRatio || 1;
     return {
       ...defaults,
       layoutDirection: document?.dir === 'rtl' ? 'rtl' : 'ltr',
+      userLocale: navigator.language,
+      timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+      colorScheme: window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light',
+      displayScale: displayScale,
+      pixelLength: 1 / displayScale,
     };
   },
   default: () => defaults,
