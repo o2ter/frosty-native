@@ -30,14 +30,25 @@ import { Platform } from '~/platform';
 
 const Context = createContext<Partial<EnvironmentValues>>({});
 
+const defaults = {
+  layoutDirection: 'ltr',
+  displayScale: 1,
+  pixelLength: 1,
+  colorScheme: 'light',
+  userLocale: 'en-US',
+  calendar: 'gregorian',
+  timeZone: 'UTC',
+} as const;
+
 const useDefault = Platform.select({
   web: () => {
     const document = useDocument();
     return {
+      ...defaults,
       layoutDirection: document?.dir === 'rtl' ? 'rtl' : 'ltr',
     };
   },
-  default: () => ({}),
+  default: () => defaults,
 });
 
 export const useEnvironment = () => ({

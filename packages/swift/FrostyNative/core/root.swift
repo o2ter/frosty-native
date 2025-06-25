@@ -52,6 +52,12 @@ public struct FTRoot: View {
     @Environment(\.locale)
     var locale
     
+    @Environment(\.calendar)
+    var calendar
+    
+    @Environment(\.timeZone)
+    var timeZone
+    
     @Environment(\.font)
     var defaultFont
     
