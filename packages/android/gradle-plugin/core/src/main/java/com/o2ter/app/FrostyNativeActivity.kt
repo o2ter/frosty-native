@@ -83,7 +83,7 @@ open class FrostyNativeActivity(val appKey: String) : ComponentActivity() {
             val rootView = FTNodeState(this) { nodeId, props, handler, content -> FTView(nodeId, props, handler, content) }
             engine = this.createEngine(LocalContext.current)
             runner = engine.run(appKey, rootView)
-            FTRoot(engine, rootView)
+            FTRoot(engine, runner, rootView)
         }
     }
 
@@ -109,7 +109,7 @@ open class FrostyNativeActivity(val appKey: String) : ComponentActivity() {
 }
 
 @Composable
-internal fun FTRoot(engine: FTContext, rootView: FTNodeState) {
+internal fun FTRoot(engine: FTContext, runner: Deferred<V8Object>, rootView: FTNodeState) {
     val systemIsDarkTheme = isSystemInDarkTheme()
     var darkTheme by remember { mutableStateOf(systemIsDarkTheme) }
     val displayScale = engine.context.resources.displayMetrics.density
