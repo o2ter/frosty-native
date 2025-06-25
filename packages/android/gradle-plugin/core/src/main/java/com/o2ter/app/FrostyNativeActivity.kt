@@ -32,6 +32,7 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -157,7 +158,14 @@ internal fun FTRoot(activity: FrostyNativeActivity, rootView: FTNodeState) {
         ) { safeAreaInset ->
             FTNode(
                 Modifier.onSizeChanged {
-                    println(safeAreaInset)
+                    activity.setEnvironment(mapOf(
+                        "safeAreaInsets" to mapOf(
+                            "top" to safeAreaInset.calculateTopPadding().value,
+                            "left" to safeAreaInset.calculateLeftPadding(layoutDirection).value,
+                            "right" to safeAreaInset.calculateRightPadding(layoutDirection).value,
+                            "bottom" to safeAreaInset.calculateBottomPadding().value,
+                        ),
+                    ))
                 },
                 activity,
                 rootView
