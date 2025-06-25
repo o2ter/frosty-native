@@ -51,11 +51,11 @@ const useDefault = Platform.select({
     return {
       ...defaults,
       layoutDirection: document?.dir === 'rtl' ? 'rtl' : 'ltr',
-      userLocale: navigator.language,
-      timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
-      colorScheme: window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light',
       displayScale: displayScale,
       pixelLength: 1 / displayScale,
+      colorScheme: window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light',
+      userLocale: navigator.language,
+      timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
     };
   },
   default: () => defaults,
