@@ -29,6 +29,5 @@ export type EnvironmentValues = {
   pixelLength: number;
   colorScheme: 'light' | 'dark' | (string & {});
   userLocale: string;
-  calendar: string;
   timeZone: string;
 };

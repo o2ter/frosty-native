@@ -52,8 +52,7 @@ public struct FTRoot: View {
     @Environment(\.locale)
     var locale
     
-    @Environment(\.calendar)
-    var calendar
+    var preferredLanguages: [String] { Locale.preferredLanguages }
     
     @Environment(\.timeZone)
     var timeZone

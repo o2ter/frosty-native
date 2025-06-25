@@ -51,6 +51,7 @@ import com.o2ter.core.discard
 import com.o2ter.runtime.FTContext
 import kotlinx.coroutines.Deferred
 import java.io.InputStream
+import java.util.TimeZone
 
 internal fun FTContext.run(
     appKey: String,
@@ -115,6 +116,7 @@ internal fun FTRoot(engine: FTContext, rootView: FTNodeState) {
     val pixelLength = 1 / displayScale
     val locales = getLocales(LocalConfiguration.current)
     val layoutDirection = LocalLayoutDirection.current
+    val timeZone = TimeZone.getDefault()
     AppTheme(darkTheme) {
         Scaffold(
             modifier = Modifier.fillMaxSize()

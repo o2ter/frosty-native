@@ -36,7 +36,7 @@ const defaults = {
   pixelLength: 1,
   colorScheme: 'light',
   userLocale: 'en-US',
-  calendar: 'gregorian',
+  languages: ['en-US'],
   timeZone: 'UTC',
 } as const;
 
@@ -55,6 +55,7 @@ const useDefault = Platform.select({
       pixelLength: 1 / displayScale,
       colorScheme: window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light',
       userLocale: navigator.language,
+      languages: navigator.languages || [navigator.language],
       timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
     } as const;
   },
