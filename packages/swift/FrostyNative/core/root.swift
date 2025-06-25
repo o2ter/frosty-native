@@ -35,6 +35,28 @@ struct WindowDimensions: Equatable {
     }
 }
 
+extension LayoutDirection {
+    
+    fileprivate func toString() -> String {
+        switch self {
+        case .leftToRight: "ltr"
+        case .rightToLeft: "rtl"
+        @unknown default: "ltr"
+        }
+    }
+}
+
+extension ColorScheme {
+    
+    fileprivate func toString() -> String {
+        switch self {
+        case .light: "light"
+        case .dark: "dark"
+        @unknown default: "light"
+        }
+    }
+}
+
 public struct FTRoot: View {
     
     @Environment(\.colorScheme)
@@ -51,8 +73,6 @@ public struct FTRoot: View {
     
     @Environment(\.locale)
     var locale
-    
-    var preferredLanguages: [String] { Locale.preferredLanguages }
     
     @Environment(\.timeZone)
     var timeZone
@@ -82,12 +102,53 @@ public struct FTRoot: View {
                 .onChange(of: WindowDimensions(geometry), initial: true) {
                     print(WindowDimensions(geometry))
                 }
+                .onChange(of: layoutDirection) { _, newValue in
+                    runner?.invokeMethod("setEnvironment", withArguments: [[
+                        "layoutDirection": JSCore.Value(newValue.toString()),
+                    ]])
+                }
+                .onChange(of: displayScale) { _, newValue in
+                    runner?.invokeMethod("setEnvironment", withArguments: [[
+                        "displayScale": JSCore.Value(newValue),
+                    ]])
+                }
+                .onChange(of: pixelLength) { _, newValue in
+                    runner?.invokeMethod("setEnvironment", withArguments: [[
+                        "pixelLength": JSCore.Value(newValue),
+                    ]])
+                }
+                .onChange(of: colorScheme) { _, newValue in
+                    runner?.invokeMethod("setEnvironment", withArguments: [[
+                        "colorScheme": JSCore.Value(newValue.toString()),
+                    ]])
+                }
+                .onChange(of: locale) { _, newValue in
+                    runner?.invokeMethod("setEnvironment", withArguments: [[
+                        "userLocale": JSCore.Value(newValue.identifier),
+                        "languages": JSCore.Value(Locale.preferredLanguages.map { JSCore.Value($0) }),
+                    ]])
+                }
+                .onChange(of: timeZone) { _, newValue in
+                    runner?.invokeMethod("setEnvironment", withArguments: [[
+                        "timeZone": JSCore.Value(timeZone.identifier),
+                    ]])
+                }
                 .onAppear {
-                    self.runner = FTRoot.run(
+                    let runner = FTRoot.run(
                         appKey: appKey,
                         runtime: runtime,
                         node: node
                     )
+                    runner.invokeMethod("setEnvironment", withArguments: [[
+                        "layoutDirection": JSCore.Value(layoutDirection.toString()),
+                        "displayScale": JSCore.Value(displayScale),
+                        "pixelLength": JSCore.Value(pixelLength),
+                        "colorScheme": JSCore.Value(colorScheme.toString()),
+                        "userLocale": JSCore.Value(locale.identifier),
+                        "languages": JSCore.Value(Locale.preferredLanguages.map { JSCore.Value($0) }),
+                        "timeZone":JSCore.Value(timeZone.identifier),
+                    ]])
+                    self.runner = runner
                 }
                 .onDisappear {
                     self.runner?.invokeMethod("unmount")
@@ -108,6 +169,9 @@ extension FTRoot {
         let runner = registry.invokeMethod("getRunnable", withArguments: [.init(appKey)])
         return runner.invokeMethod("run", withArguments: [[
             "root": JSCore.Value(node, in: runtime.context),
+            "environment": [
+                "languages": JSCore.Value(Locale.preferredLanguages.map { JSCore.Value($0) }),
+            ],
         ]])
     }
 }
