@@ -38,6 +38,14 @@ const defaults = {
   userLocale: 'en-US',
   languages: ['en-US'],
   timeZone: 'UTC',
+  windowWidth: 0,
+  windowHeight: 0,
+  safeAreaInsets: {
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+  }
 } as const;
 
 const useDefault = Platform.select({

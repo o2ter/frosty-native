@@ -29,5 +29,14 @@ export type EnvironmentValues = {
   pixelLength: number;
   colorScheme: 'light' | 'dark' | (string & {});
   userLocale: string;
+  languages: string[];
   timeZone: string;
+  windowWidth: number;
+  windowHeight: number;
+  safeAreaInsets: {
+    top: number;
+    left: number;
+    right: number;
+    bottom: number;
+  };
 };
