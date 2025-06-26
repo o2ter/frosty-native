@@ -58,7 +58,7 @@ const useDefault = Platform.select({
       displayScale: devicePixelRatio,
       pixelLength: 1 / devicePixelRatio,
       ...typeof window === 'undefined' ? {} : {
-        colorScheme: window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light',
+        colorScheme: window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light',
         userLocale: navigator.language,
         languages: navigator.languages || [navigator.language],
         timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
