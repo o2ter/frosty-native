@@ -71,7 +71,7 @@ const useDefault = Platform.select({
 export const useEnvironment = () => ({
   ...useDefault(),
   ...useContext(Context),
-});
+}) as EnvironmentValues;
 
 type EnvironmentProps = PropsWithChildren<Partial<EnvironmentValues>>;
 
