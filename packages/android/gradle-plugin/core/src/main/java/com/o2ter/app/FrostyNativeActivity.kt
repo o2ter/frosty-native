@@ -138,7 +138,7 @@ internal fun FTRoot(activity: FrostyNativeActivity, rootView: FTNodeState) {
     val layoutDirection = LocalLayoutDirection.current
     val timeZone = TimeZone.getDefault()
     activity.setEnvironment(mapOf(
-        "layoutDirection" to layoutDirection.name,
+        "layoutDirection" to layoutDirection.name.lowercase(),
         "displayScale" to displayScale,
         "pixelLength" to 1 / displayScale,
         "colorScheme" to if (darkTheme) "dark" else "light",
