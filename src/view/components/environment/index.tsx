@@ -24,7 +24,7 @@
 //
 
 import { createContext, PropsWithChildren, useContext } from 'frosty';
-import { useDocument, useWindowMetrics } from 'frosty/web';
+import { useColorScheme, useDocument, useWindowMetrics } from 'frosty/web';
 import { EnvironmentValues } from './types';
 import { Platform } from '../../../platform';
 
@@ -51,13 +51,13 @@ const defaults = {
 const useDefault = Platform.select({
   web: () => {
     const document = useDocument();
-    const { colorScheme, devicePixelRatio } = useWindowMetrics();
+    const { devicePixelRatio } = useWindowMetrics();
     return {
       ...defaults,
       layoutDirection: document?.dir === 'rtl' ? 'rtl' : 'ltr',
       displayScale: devicePixelRatio,
       pixelLength: 1 / devicePixelRatio,
-      colorScheme: colorScheme,
+      colorScheme: useColorScheme(),
       ...typeof navigator === 'undefined' ? {} : {
         userLocale: navigator.language,
         languages: navigator.languages || [navigator.language],
