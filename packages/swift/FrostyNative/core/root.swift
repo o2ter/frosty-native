@@ -33,6 +33,41 @@ struct WindowDimensions: Equatable {
         self.size = geometry.size
         self.safeAreaInsets = geometry.safeAreaInsets
     }
+    
+    func toJSValue() -> JSCore.Value {
+        return [
+            "windowWidth": JSCore.Value(size.width),
+            "windowHeight": JSCore.Value(size.height),
+            "safeAreaInsets": [
+                "top": JSCore.Value(safeAreaInsets.top),
+                "left": JSCore.Value(safeAreaInsets.leading),
+                "right": JSCore.Value(safeAreaInsets.trailing),
+                "bottom": JSCore.Value(safeAreaInsets.bottom),
+            ],
+        ]
+    }
+}
+
+struct EnvironmentData: Equatable {
+    
+    var layoutDirection: LayoutDirection
+    var displayScale: CGFloat
+    var pixelLength: CGFloat
+    var colorScheme: ColorScheme
+    var locale: Locale
+    var timeZone: TimeZone
+    
+    func toJSValue() -> JSCore.Value {
+        return [
+            "layoutDirection": JSCore.Value(layoutDirection.toString()),
+            "displayScale": JSCore.Value(displayScale),
+            "pixelLength": JSCore.Value(pixelLength),
+            "colorScheme": JSCore.Value(colorScheme.toString()),
+            "userLocale": JSCore.Value(locale.identifier),
+            "languages": JSCore.Value(Locale.preferredLanguages.map { JSCore.Value($0) }),
+            "timeZone":JSCore.Value(timeZone.identifier),
+        ]
+    }
 }
 
 extension LayoutDirection {
@@ -95,52 +130,30 @@ public struct FTRoot: View {
         self.node = FTNode.State(provider: FTView.init(nodeId:props:handler:children:))
     }
     
+    var environment: EnvironmentData {
+        EnvironmentData(
+            layoutDirection: layoutDirection,
+            displayScale: displayScale,
+            pixelLength: pixelLength,
+            colorScheme: colorScheme,
+            locale: locale,
+            timeZone: timeZone
+        )
+    }
+    
     public var body: some View {
         GeometryReader { geometry in
             FTNode(state: self.$node)
                 .ignoresSafeArea()
-                .onChange(of: WindowDimensions(geometry), initial: true) {
-                    runner?.invokeMethod("setEnvironment", withArguments: [[
-                        "windowWidth": JSCore.Value(geometry.size.width),
-                        "windowHeight": JSCore.Value(geometry.size.height),
-                        "safeAreaInsets": [
-                            "top": JSCore.Value(geometry.safeAreaInsets.top),
-                            "left": JSCore.Value(geometry.safeAreaInsets.leading),
-                            "right": JSCore.Value(geometry.safeAreaInsets.trailing),
-                            "bottom": JSCore.Value(geometry.safeAreaInsets.bottom),
-                        ],
-                    ]])
+                .onChange(of: WindowDimensions(geometry), initial: true) { _, newValue in
+                    runner?.invokeMethod("setEnvironment", withArguments: [
+                        newValue.toJSValue()
+                    ])
                 }
-                .onChange(of: layoutDirection) { _, newValue in
-                    runner?.invokeMethod("setEnvironment", withArguments: [[
-                        "layoutDirection": JSCore.Value(newValue.toString()),
-                    ]])
-                }
-                .onChange(of: displayScale) { _, newValue in
-                    runner?.invokeMethod("setEnvironment", withArguments: [[
-                        "displayScale": JSCore.Value(newValue),
-                    ]])
-                }
-                .onChange(of: pixelLength) { _, newValue in
-                    runner?.invokeMethod("setEnvironment", withArguments: [[
-                        "pixelLength": JSCore.Value(newValue),
-                    ]])
-                }
-                .onChange(of: colorScheme) { _, newValue in
-                    runner?.invokeMethod("setEnvironment", withArguments: [[
-                        "colorScheme": JSCore.Value(newValue.toString()),
-                    ]])
-                }
-                .onChange(of: locale) { _, newValue in
-                    runner?.invokeMethod("setEnvironment", withArguments: [[
-                        "userLocale": JSCore.Value(newValue.identifier),
-                        "languages": JSCore.Value(Locale.preferredLanguages.map { JSCore.Value($0) }),
-                    ]])
-                }
-                .onChange(of: timeZone) { _, newValue in
-                    runner?.invokeMethod("setEnvironment", withArguments: [[
-                        "timeZone": JSCore.Value(timeZone.identifier),
-                    ]])
+                .onChange(of: environment, initial: true) { _, newValue in
+                    runner?.invokeMethod("setEnvironment", withArguments: [
+                        newValue.toJSValue()
+                    ])
                 }
                 .onAppear {
                     let runner = FTRoot.run(
@@ -148,15 +161,6 @@ public struct FTRoot: View {
                         runtime: runtime,
                         node: node
                     )
-                    runner.invokeMethod("setEnvironment", withArguments: [[
-                        "layoutDirection": JSCore.Value(layoutDirection.toString()),
-                        "displayScale": JSCore.Value(displayScale),
-                        "pixelLength": JSCore.Value(pixelLength),
-                        "colorScheme": JSCore.Value(colorScheme.toString()),
-                        "userLocale": JSCore.Value(locale.identifier),
-                        "languages": JSCore.Value(Locale.preferredLanguages.map { JSCore.Value($0) }),
-                        "timeZone":JSCore.Value(timeZone.identifier),
-                    ]])
                     self.runner = runner
                 }
                 .onDisappear {
