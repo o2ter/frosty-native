@@ -51,13 +51,20 @@ const defaults = {
 const useDefault = Platform.select({
   web: () => {
     const document = useDocument();
-    const { devicePixelRatio, safeAreaInsets } = useWindowMetrics();
+    const {
+      devicePixelRatio,
+      innerWidth,
+      innerHeight,
+      safeAreaInsets,
+    } = useWindowMetrics();
     return {
       ...defaults,
       layoutDirection: document?.dir === 'rtl' ? 'rtl' : 'ltr',
       displayScale: devicePixelRatio,
       pixelLength: 1 / devicePixelRatio,
       colorScheme: useColorScheme(),
+      windowWidth: innerWidth,
+      windowHeight: innerHeight,
       safeAreaInsets,
       ...typeof navigator === 'undefined' ? {} : {
         userLocale: navigator.language,
