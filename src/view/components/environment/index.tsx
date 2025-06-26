@@ -51,14 +51,14 @@ const defaults = {
 const useDefault = Platform.select({
   web: () => {
     const document = useDocument();
-    const { devicePixelRatio } = useWindowMetrics();
+    const { colorScheme, devicePixelRatio } = useWindowMetrics();
     return {
       ...defaults,
       layoutDirection: document?.dir === 'rtl' ? 'rtl' : 'ltr',
       displayScale: devicePixelRatio,
       pixelLength: 1 / devicePixelRatio,
-      ...typeof window === 'undefined' ? {} : {
-        colorScheme: window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light',
+      colorScheme: colorScheme,
+      ...typeof navigator === 'undefined' ? {} : {
         userLocale: navigator.language,
         languages: navigator.languages || [navigator.language],
         timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
