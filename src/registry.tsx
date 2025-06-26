@@ -65,8 +65,8 @@ export const AppRegistry = (() => {
             notify(nodeId: string, method: string, ...args: any[]) {
               renderer.notify(nodeId, method, ...args);
             },
-            setEnvironment(environment: Partial<EnvironmentValues>) {
-              env.setValue(v => ({ ...v, ...environment }));
+            setEnvironment(...values: Partial<EnvironmentValues>[]) {
+              env.setValue(v => _.reduce(values, (acc, v) => ({ ...acc, ...v }), v));
             },
           };
         },

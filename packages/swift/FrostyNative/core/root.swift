@@ -161,6 +161,10 @@ public struct FTRoot: View {
                         runtime: runtime,
                         node: node
                     )
+                    runner.invokeMethod("setEnvironment", withArguments: [
+                        WindowDimensions(geometry).toJSValue(),
+                        environment.toJSValue()
+                    ])
                     self.runner = runner
                 }
                 .onDisappear {
