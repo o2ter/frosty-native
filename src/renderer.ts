@@ -52,7 +52,7 @@ export class NativeRenderer extends _Renderer<NativeNode> {
   }
 
   protected _updateElement(node: VNode, element: NativeNode, stack: VNode[]) {
-    const { props } = node;
+    const { props: { ref, ...props } } = node;
     this._callbacks.set(node.id, _.pickBy(props, v => _.isFunction(v)));
     element.update(_.mapValues(props, v => _.isFunction(v) ? node.id : v));
   }
