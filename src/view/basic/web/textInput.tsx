@@ -69,7 +69,7 @@ export class DOMTextInputView extends DOMNativeNode {
 
 export const TextInput: ComponentType<TextInputProps> = ({ ref, style, children }) => {
 
-  const targetRef = useRef<HTMLInputElement>();
+  const targetRef = useRef<HTMLElement>();
   useRefHandle(ref, () => ({
     get _target() { return targetRef.current; }
   }), null);
