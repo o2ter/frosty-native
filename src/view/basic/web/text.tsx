@@ -51,16 +51,15 @@ class DOMTextView extends DOMNativeNode {
     className?: string;
     style?: string;
     innerHTML?: string;
-  }): void {
-    throw new Error('Method not implemented.');
+  }) {
+    
   }
 
-  replaceChildren(children: (string | Element | DOMNativeNode)[]): void {
-    throw new Error('Method not implemented.');
+  replaceChildren(children: (string | Element | DOMNativeNode)[]) {
+    
   }
 
-  destroy(): void {
-    throw new Error('Method not implemented.');
+  destroy() {
   }
 }
 
