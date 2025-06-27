@@ -47,12 +47,7 @@ class DOMTextView extends DOMNativeNode {
     return this.#target;
   }
 
-  update(props: Record<string, any> & {
-    ref?: (x: any) => void;
-    className?: string;
-    style?: string;
-    innerHTML?: string;
-  }) {
+  update(props: Record<string, any>) {
     
   }
 
