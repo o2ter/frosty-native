@@ -29,6 +29,34 @@ import { TextViewProps } from '../../types';
 import { useFlattenStyle } from '../../style/utils';
 import { useTextStyle } from '../../components';
 
+class DOMTextView extends DOMNativeNode {
+
+  static createElement(): DOMNativeNode {
+    return new DOMTextView();
+  }
+
+  get target(): Element {
+    throw new Error('Method not implemented.');
+  }
+
+  update(props: Record<string, any> & {
+    ref?: (x: any) => void;
+    className?: string;
+    style?: string;
+    innerHTML?: string;
+  }): void {
+    throw new Error('Method not implemented.');
+  }
+
+  replaceChildren(children: (string | Element | DOMNativeNode)[]): void {
+    throw new Error('Method not implemented.');
+  }
+
+  destroy(): void {
+    throw new Error('Method not implemented.');
+  }
+}
+
 export const Text: ComponentType<TextViewProps> = ({ ref, style, children }) => {
 
   const targetRef = useRef<HTMLDivElement>();
