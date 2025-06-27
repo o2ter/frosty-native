@@ -23,6 +23,7 @@
 //  THE SOFTWARE.
 //
 
+import _ from 'lodash';
 import { ComponentType, useRef, useRefHandle } from 'frosty';
 import { _createNativeElement } from 'frosty/_native';
 import { DOMNativeNode, type _DOMRenderer } from 'frosty/web';
@@ -54,7 +55,8 @@ class DOMTextView extends DOMNativeNode {
   }
 
   replaceChildren(children: (string | Element | DOMNativeNode)[]) {
-    this.#renderer.__replaceChildren(this.#target, children);
+    const filtered = _.filter(children, x => _.isString(x) || x instanceof DOMTextView);
+    this.#renderer.__replaceChildren(this.#target, filtered);
   }
 
   destroy() {
