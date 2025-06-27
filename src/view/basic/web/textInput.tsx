@@ -32,7 +32,7 @@ import { useFlattenStyle } from '../../style/utils';
 import { useTextStyle } from '../../components';
 import { DOMTextView } from './text';
 
-export class DOMTextInputView extends DOMNativeNode {
+class DOMTextInputView extends DOMNativeNode {
 
   #renderer: _DOMRenderer;
   #target: HTMLInputElement;
