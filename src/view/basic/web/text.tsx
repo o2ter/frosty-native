@@ -31,7 +31,7 @@ import { TextViewProps } from '../../types';
 import { useFlattenStyle } from '../../style/utils';
 import { useTextStyle } from '../../components';
 
-class DOMTextView extends DOMNativeNode {
+export class DOMTextView extends DOMNativeNode {
 
   #renderer: _DOMRenderer;
   #target: HTMLDivElement;

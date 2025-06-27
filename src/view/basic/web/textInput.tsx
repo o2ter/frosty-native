@@ -23,10 +23,46 @@
 //  THE SOFTWARE.
 //
 
+import _ from 'lodash';
 import { ComponentType, useRef, useRefHandle } from 'frosty';
+import { _createNativeElement } from 'frosty/_native';
+import { DOMNativeNode, type _DOMRenderer } from 'frosty/web';
 import { TextInputProps } from '../../types';
 import { useFlattenStyle } from '../../style/utils';
 import { useTextStyle } from '../../components';
+import { DOMTextView } from './text';
+
+export class DOMTextInputView extends DOMNativeNode {
+
+  #renderer: _DOMRenderer;
+  #target: HTMLDivElement;
+
+  constructor(doc: Document, renderer: _DOMRenderer) {
+    super();
+    this.#renderer = renderer;
+    this.#target = doc.createElement('div');
+  }
+
+  static createElement(doc: Document, renderer: _DOMRenderer): DOMNativeNode {
+    return new DOMTextInputView(doc, renderer);
+  }
+
+  get target(): Element {
+    return this.#target;
+  }
+
+  update(props: Record<string, any>) {
+
+  }
+
+  replaceChildren(children: (string | Element | DOMNativeNode)[]) {
+    const filtered = _.filter(children, x => _.isString(x) || x instanceof DOMTextView);
+    this.#renderer.__replaceChildren(this.#target, filtered);
+  }
+
+  destroy() {
+  }
+}
 
 export const TextInput: ComponentType<TextInputProps> = ({ ref, style, children }) => {
 
@@ -37,16 +73,5 @@ export const TextInput: ComponentType<TextInputProps> = ({ ref, style, children 
 
   const _style = useFlattenStyle([useTextStyle(), style]);
 
-  return (
-    <div
-      ref={targetRef}
-      style={{
-        display: 'flex',
-        flexDirection: 'column',
-        width: '100%',
-        height: '100%',
-      }}>
-      {children}
-    </div>
-  );
+  return _createNativeElement(DOMTextInputView, { children });
 };
