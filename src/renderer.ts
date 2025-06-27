@@ -42,16 +42,16 @@ export class NativeRenderer extends _Renderer<NativeNode> {
   }
 
   protected _createElement(node: VNode, stack: VNode[]): NativeNode {
-    const { type: _type, props: { ref, ...props } } = node;
-    if (_.isString(_type) || !(_type.prototype instanceof NativeNode)) throw Error('Invalid type');
-    const ElementType = _type as typeof NativeNode;
+    const { type } = node;
+    if (_.isString(type) || !(type.prototype instanceof NativeNode)) throw Error('Invalid type');
+    const ElementType = type as typeof NativeNode;
     const element = ElementType.createElement();
     this._updateElement(node, element, stack);
     return element;
   }
 
   protected _updateElement(node: VNode, element: NativeNode, stack: VNode[]) {
-    const { props: { ref, ...props } } = node;
+    const { props } = node;
     this._callbacks.set(node.id, _.pickBy(props, v => _.isFunction(v)));
     element.update(_.mapValues(props, v => _.isFunction(v) ? node.id : v));
   }
