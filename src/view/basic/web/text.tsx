@@ -25,22 +25,24 @@
 
 import { ComponentType, useRef, useRefHandle } from 'frosty';
 import { _createNativeElement } from 'frosty/_native';
-import { DOMNativeNode } from 'frosty/web';
+import { DOMNativeNode, type _DOMRenderer } from 'frosty/web';
 import { TextViewProps } from '../../types';
 import { useFlattenStyle } from '../../style/utils';
 import { useTextStyle } from '../../components';
 
 class DOMTextView extends DOMNativeNode {
 
+  #renderer: _DOMRenderer;
   #target: HTMLDivElement;
 
-  constructor(doc: Document) {
+  constructor(doc: Document, renderer: _DOMRenderer) {
     super();
+    this.#renderer = renderer;
     this.#target = doc.createElement('div');
   }
 
-  static createElement(doc: Document): DOMNativeNode {
-    return new DOMTextView(doc);
+  static createElement(doc: Document, renderer: _DOMRenderer): DOMNativeNode {
+    return new DOMTextView(doc, renderer);
   }
 
   get target(): Element {
@@ -52,7 +54,7 @@ class DOMTextView extends DOMNativeNode {
   }
 
   replaceChildren(children: (string | Element | DOMNativeNode)[]) {
-    
+    this.#renderer.__replaceChildren(this.#target, children);
   }
 
   destroy() {
