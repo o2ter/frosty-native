@@ -42,7 +42,7 @@ export class NativeRenderer extends _Renderer<NativeNode> {
   }
 
   protected _createElement(node: VNode, stack: VNode[]): NativeNode {
-    const { type: _type, props } = node;
+    const { type: _type, props: { ref, ...props } } = node;
     if (_.isString(_type) || !(_type.prototype instanceof NativeNode)) throw Error('Invalid type');
     const ElementType = _type as typeof NativeNode;
     const element = ElementType.createElement();
