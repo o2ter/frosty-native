@@ -69,7 +69,7 @@ class DOMTextInputView extends _DOMTextInputView {
   }
 }
 
-class DOMMultilineTextInputView extends DOMTextInputView {
+class DOMMultilineTextInputView extends _DOMTextInputView {
 
   static createElement(doc: Document, renderer: _DOMRenderer): DOMNativeNode {
     return new DOMMultilineTextInputView(doc.createElement('textarea'), renderer);
