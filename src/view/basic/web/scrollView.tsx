@@ -1,5 +1,5 @@
 //
-//  index.tsx
+//  scrollView.tsx
 //
 //  The MIT License
 //  Copyright (c) 2021 - 2025 O2ter Limited. All rights reserved.
@@ -23,8 +23,30 @@
 //  THE SOFTWARE.
 //
 
-export { ScrollView } from './native/scrollView';
-export { Text } from './native/text';
-export { TextInput } from './native/textInput';
-export { View } from './native/view';
-export { Image } from './native/image';
+import { ComponentType, useRef, useRefHandle } from 'frosty';
+import { ScrollViewProps } from '../../types';
+import { useFlattenStyle } from '../../style/utils';
+
+export const ScrollView: ComponentType<ScrollViewProps> = ({ ref, style, contentContainerStyle, children }) => {
+
+  const targetRef = useRef<HTMLDivElement>();
+  useRefHandle(ref, () => ({
+    get _target() { return targetRef.current; }
+  }), null);
+
+  const _style = useFlattenStyle(style);
+  const _contentContainerStyle = useFlattenStyle(contentContainerStyle);
+
+  return (
+    <div
+      ref={targetRef}
+      style={{
+        display: 'flex',
+        flexDirection: 'column',
+        width: '100%',
+        height: '100%',
+      }}>
+      {children}
+    </div>
+  );
+};
