@@ -35,12 +35,12 @@ import { DOMTextView } from './text';
 export class DOMTextInputView extends DOMNativeNode {
 
   #renderer: _DOMRenderer;
-  #target: HTMLDivElement;
+  #target: HTMLInputElement;
 
   constructor(doc: Document, renderer: _DOMRenderer) {
     super();
     this.#renderer = renderer;
-    this.#target = doc.createElement('div');
+    this.#target = doc.createElement('input');
   }
 
   static createElement(doc: Document, renderer: _DOMRenderer): DOMNativeNode {
@@ -69,7 +69,7 @@ export class DOMTextInputView extends DOMNativeNode {
 
 export const TextInput: ComponentType<TextInputProps> = ({ ref, style, children }) => {
 
-  const targetRef = useRef<HTMLDivElement>();
+  const targetRef = useRef<HTMLInputElement>();
   useRefHandle(ref, () => ({
     get _target() { return targetRef.current; }
   }), null);
