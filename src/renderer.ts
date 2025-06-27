@@ -46,8 +46,7 @@ export class NativeRenderer extends _Renderer<NativeNode> {
     if (_.isString(_type) || !(_type.prototype instanceof NativeNode)) throw Error('Invalid type');
     const ElementType = _type as typeof NativeNode;
     const element = ElementType.createElement();
-    this._callbacks.set(node.id, _.pickBy(props, v => _.isFunction(v)));
-    element.update(_.mapValues(props, v => _.isFunction(v) ? node.id : v));
+    this._updateElement(node, element, stack);
     return element;
   }
 
