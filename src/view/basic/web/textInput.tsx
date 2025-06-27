@@ -32,19 +32,15 @@ import { useFlattenStyle } from '../../style/utils';
 import { useTextStyle } from '../../components';
 import { DOMTextView } from './text';
 
-class DOMTextInputView extends DOMNativeNode {
+class _DOMTextInputView extends DOMNativeNode {
 
   #renderer: _DOMRenderer;
-  #target: HTMLInputElement;
+  #target: HTMLElement;
 
-  constructor(doc: Document, renderer: _DOMRenderer) {
+  constructor(target: HTMLElement, renderer: _DOMRenderer) {
     super();
     this.#renderer = renderer;
-    this.#target = doc.createElement('input');
-  }
-
-  static createElement(doc: Document, renderer: _DOMRenderer): DOMNativeNode {
-    return new DOMTextInputView(doc, renderer);
+    this.#target = target;
   }
 
   get target(): Element {
@@ -66,8 +62,21 @@ class DOMTextInputView extends DOMNativeNode {
   destroy() {
   }
 }
+class DOMTextInputView extends _DOMTextInputView {
 
-export const TextInput: ComponentType<TextInputProps> = ({ ref, style, children }) => {
+  static createElement(doc: Document, renderer: _DOMRenderer): DOMNativeNode {
+    return new DOMTextInputView(doc.createElement('input'), renderer);
+  }
+}
+
+class DOMMultilineTextInputView extends DOMTextInputView {
+
+  static createElement(doc: Document, renderer: _DOMRenderer): DOMNativeNode {
+    return new DOMMultilineTextInputView(doc.createElement('textarea'), renderer);
+  }
+}
+
+export const TextInput: ComponentType<TextInputProps> = ({ ref, style, multiline, children }) => {
 
   const targetRef = useRef<HTMLElement>();
   useRefHandle(ref, () => ({
@@ -76,5 +85,11 @@ export const TextInput: ComponentType<TextInputProps> = ({ ref, style, children 
 
   const _style = useFlattenStyle([useTextStyle(), style]);
 
-  return _createNativeElement(DOMTextInputView, { ref: targetRef, children });
+  return _createNativeElement(
+    multiline ? DOMMultilineTextInputView : DOMTextInputView,
+    {
+      ref: targetRef,
+      children,
+    }
+  );
 };

@@ -77,6 +77,7 @@ type TextInputRef = {
 export type TextInputProps = PropsWithChildren<{
   ref?: Ref<TextInputRef>;
   style?: StyleProp<TextStyle>;
+  multiline?: boolean;
 }>;
 
 type ViewRef = {
