@@ -31,11 +31,11 @@ import { useTextStyle } from '../../components';
 
 class DOMTextView extends DOMNativeNode {
 
-  #doc: Document;
+  #target: HTMLDivElement;
 
   constructor(doc: Document) {
     super();
-    this.#doc = doc;
+    this.#target = doc.createElement('div');
   }
 
   static createElement(doc: Document): DOMNativeNode {
@@ -43,7 +43,7 @@ class DOMTextView extends DOMNativeNode {
   }
 
   get target(): Element {
-    throw new Error('Method not implemented.');
+    return this.#target;
   }
 
   update(props: Record<string, any> & {
