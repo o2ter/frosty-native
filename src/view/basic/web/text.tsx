@@ -24,6 +24,7 @@
 //
 
 import { ComponentType, useRef, useRefHandle } from 'frosty';
+import { _createNativeElement } from 'frosty/_native';
 import { DOMNativeNode } from 'frosty/web';
 import { TextViewProps } from '../../types';
 import { useFlattenStyle } from '../../style/utils';
@@ -72,16 +73,5 @@ export const Text: ComponentType<TextViewProps> = ({ ref, style, children }) => 
 
   const _style = useFlattenStyle([useTextStyle(), style]);
 
-  return (
-    <div
-      ref={targetRef}
-      style={{
-        display: 'flex',
-        flexDirection: 'column',
-        width: '100%',
-        height: '100%',
-      }}>
-      {children}
-    </div>
-  );
+  return _createNativeElement(DOMTextView, { children });
 };
