@@ -31,8 +31,15 @@ import { useTextStyle } from '../../components';
 
 class DOMTextView extends DOMNativeNode {
 
-  static createElement(): DOMNativeNode {
-    return new DOMTextView();
+  #doc: Document;
+
+  constructor(doc: Document) {
+    super();
+    this.#doc = doc;
+  }
+
+  static createElement(doc: Document): DOMNativeNode {
+    return new DOMTextView(doc);
   }
 
   get target(): Element {
