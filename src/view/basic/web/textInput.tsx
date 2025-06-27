@@ -32,7 +32,7 @@ import { useFlattenStyle } from '../../style/utils';
 import { useTextStyle } from '../../components';
 import { DOMTextView } from './text';
 
-class _DOMTextInputView extends DOMNativeNode {
+class _DOMTextInput extends DOMNativeNode {
 
   #renderer: _DOMRenderer;
   #target: HTMLElement;
@@ -62,17 +62,18 @@ class _DOMTextInputView extends DOMNativeNode {
   destroy() {
   }
 }
-class DOMTextInputView extends _DOMTextInputView {
+
+class DOMTextInput extends _DOMTextInput {
 
   static createElement(doc: Document, renderer: _DOMRenderer): DOMNativeNode {
-    return new DOMTextInputView(doc.createElement('input'), renderer);
+    return new DOMTextInput(doc.createElement('input'), renderer);
   }
 }
 
-class DOMMultilineTextInputView extends _DOMTextInputView {
+class DOMMultilineTextInput extends _DOMTextInput {
 
   static createElement(doc: Document, renderer: _DOMRenderer): DOMNativeNode {
-    return new DOMMultilineTextInputView(doc.createElement('textarea'), renderer);
+    return new DOMMultilineTextInput(doc.createElement('textarea'), renderer);
   }
 }
 
@@ -86,7 +87,7 @@ export const TextInput: ComponentType<TextInputProps> = ({ ref, style, multiline
   const _style = useFlattenStyle([useTextStyle(), style]);
 
   return _createNativeElement(
-    multiline ? DOMMultilineTextInputView : DOMTextInputView,
+    multiline ? DOMMultilineTextInput : DOMTextInput,
     {
       ref: targetRef,
       children,
