@@ -24,7 +24,7 @@
 //
 
 import _ from 'lodash';
-import { ComponentType, useRef, useRefHandle } from 'frosty';
+import { ComponentType, mergeRefs, useRef, useRefHandle } from 'frosty';
 import { _createNativeElement } from 'frosty/_native';
 import { DOMNativeNode, type _DOMRenderer } from 'frosty/web';
 import { TextInputProps } from '../../types';
@@ -53,6 +53,9 @@ export class DOMTextInputView extends DOMNativeNode {
 
   update(props: Record<string, any>) {
 
+    const { ref } = props;
+    mergeRefs(ref)(this.#target);
+
   }
 
   replaceChildren(children: (string | Element | DOMNativeNode)[]) {
@@ -73,5 +76,5 @@ export const TextInput: ComponentType<TextInputProps> = ({ ref, style, children 
 
   const _style = useFlattenStyle([useTextStyle(), style]);
 
-  return _createNativeElement(DOMTextInputView, { children });
+  return _createNativeElement(DOMTextInputView, { ref: targetRef, children });
 };

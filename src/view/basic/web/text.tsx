@@ -24,7 +24,7 @@
 //
 
 import _ from 'lodash';
-import { ComponentType, useRef, useRefHandle } from 'frosty';
+import { ComponentType, mergeRefs, useRef, useRefHandle } from 'frosty';
 import { _createNativeElement } from 'frosty/_native';
 import { DOMNativeNode, type _DOMRenderer } from 'frosty/web';
 import { TextViewProps } from '../../types';
@@ -51,7 +51,10 @@ export class DOMTextView extends DOMNativeNode {
   }
 
   update(props: Record<string, any>) {
-    
+
+    const { ref } = props;
+    mergeRefs(ref)(this.#target);
+
   }
 
   replaceChildren(children: (string | Element | DOMNativeNode)[]) {
@@ -72,5 +75,5 @@ export const Text: ComponentType<TextViewProps> = ({ ref, style, children }) => 
 
   const _style = useFlattenStyle([useTextStyle(), style]);
 
-  return _createNativeElement(DOMTextView, { children });
+  return _createNativeElement(DOMTextView, { ref: targetRef, children });
 };
