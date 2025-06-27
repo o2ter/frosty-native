@@ -24,6 +24,7 @@
 //
 
 import { ComponentType, useRef, useRefHandle } from 'frosty';
+import { DOMNativeNode } from 'frosty/web';
 import { ImageProps, ScrollViewProps, TextInputProps, TextViewProps, ViewProps } from '../types';
 import { useFlattenStyle } from '../style/utils';
 import { useTextStyle } from '../components';
