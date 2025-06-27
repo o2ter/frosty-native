@@ -88,7 +88,7 @@ export type LayoutStyle = {
   maxWidth?: DimensionValue;
   minHeight?: DimensionValue;
   minWidth?: DimensionValue;
-  overflow?: 'visible' | 'hidden' | 'scroll';
+  overflow?: 'visible' | 'hidden';
   padding?: DimensionValue;
   paddingBottom?: DimensionValue;
   paddingEnd?: DimensionValue;
