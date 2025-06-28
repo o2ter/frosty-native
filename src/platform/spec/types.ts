@@ -23,6 +23,8 @@
 //  THE SOFTWARE.
 //
 
+import { Awaitable } from '@o2ter/utils-js';
+
 /** @internal */
 declare global {
 
@@ -68,7 +70,7 @@ declare global {
     }
 
     interface DeviceInfo {
-      identifierForVendor(): string | Promise<string>;
+      identifierForVendor(): Awaitable<string>;
     }
 
     interface Bundle {
