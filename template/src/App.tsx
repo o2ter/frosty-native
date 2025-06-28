@@ -32,12 +32,12 @@ export default function App() {
     const handle = setInterval(() => { setCounter(v => v + 1); }, 1000);
     return () => clearTimeout(handle);
   }, []);
-  useEffect(() => {
+  useEffect(async () => {
     console.log(JSON.stringify({
       appVersion: Platform.appVersion,
       buildVersion: Platform.buildVersion,
       bundleIdentifier: Platform.bundleIdentifier,
-      identifierForVendor: Platform.identifierForVendor,
+      identifierForVendor: await Platform.identifierForVendor,
     }, null, 4));
   }, []);
   console.log(JSON.stringify(useEnvironment(), null, 4));
