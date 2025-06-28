@@ -69,7 +69,7 @@ export class Platform {
     return _Platform.bundleIdentifier;
   }
 
-  static identifierForVendor() {
+  static async identifierForVendor() {
     return _Platform.identifierForVendor();
   }
 }
