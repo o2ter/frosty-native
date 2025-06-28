@@ -28,6 +28,9 @@ import { _PlatformSpec } from './types';
 
 export const _Platform: _PlatformSpec = {
   spec: 'apple',
+  get isRealDevice() {
+    return __APPLE_SPEC__.processInfo.isRealDevice;
+  },
   get isMacCatalystApp() {
     return __APPLE_SPEC__.processInfo.isMacCatalystApp;
   },

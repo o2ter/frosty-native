@@ -26,95 +26,104 @@
 import JavaScriptCore
 
 @objc protocol JSProcessInfoExport: JSExport {
-  var environment: [String: String] { get }
-  var arguments: [String] { get }
-  var processName: String { get }
-  var processIdentifier: Int32 { get }
-  var globallyUniqueString: String { get }
-  var hostName: String { get }
-  var isLowPowerModeEnabled: Bool { get }
-  var isMacCatalystApp: Bool { get }
-  var isiOSAppOnMac: Bool { get }
-  var operatingSystemVersionString: String { get }
-  var operatingSystemVersion: [String: Int] { get }
-  var physicalMemory: UInt64 { get }
-  var processorCount: Int { get }
-  var activeProcessorCount: Int { get }
-  var systemUptime: TimeInterval { get }
-  var thermalState: ProcessInfo.ThermalState { get }
+    var environment: [String: String] { get }
+    var arguments: [String] { get }
+    var processName: String { get }
+    var processIdentifier: Int32 { get }
+    var globallyUniqueString: String { get }
+    var hostName: String { get }
+    var isLowPowerModeEnabled: Bool { get }
+    var isRealDevice: Bool { get }
+    var isMacCatalystApp: Bool { get }
+    var isiOSAppOnMac: Bool { get }
+    var operatingSystemVersionString: String { get }
+    var operatingSystemVersion: [String: Int] { get }
+    var physicalMemory: UInt64 { get }
+    var processorCount: Int { get }
+    var activeProcessorCount: Int { get }
+    var systemUptime: TimeInterval { get }
+    var thermalState: ProcessInfo.ThermalState { get }
 }
 
 @objc final class JSProcessInfo: NSObject, JSProcessInfoExport {
 }
 
 extension JSProcessInfo {
+    
+    var environment: [String: String] {
+        return ProcessInfo.processInfo.environment
+    }
 
-  var environment: [String: String] {
-    return ProcessInfo.processInfo.environment
-  }
+    var arguments: [String] {
+        return ProcessInfo.processInfo.arguments
+    }
 
-  var arguments: [String] {
-    return ProcessInfo.processInfo.arguments
-  }
+    var processName: String {
+        return ProcessInfo.processInfo.processName
+    }
 
-  var processName: String {
-    return ProcessInfo.processInfo.processName
-  }
+    var processIdentifier: Int32 {
+        return ProcessInfo.processInfo.processIdentifier
+    }
 
-  var processIdentifier: Int32 {
-    return ProcessInfo.processInfo.processIdentifier
-  }
+    var globallyUniqueString: String {
+        return ProcessInfo.processInfo.globallyUniqueString
+    }
 
-  var globallyUniqueString: String {
-    return ProcessInfo.processInfo.globallyUniqueString
-  }
+    var hostName: String {
+        return ProcessInfo.processInfo.hostName
+    }
 
-  var hostName: String {
-    return ProcessInfo.processInfo.hostName
-  }
+    var isLowPowerModeEnabled: Bool {
+        return ProcessInfo.processInfo.isLowPowerModeEnabled
+    }
 
-  var isLowPowerModeEnabled: Bool {
-    return ProcessInfo.processInfo.isLowPowerModeEnabled
-  }
+    var isRealDevice: Bool {
+        #if targetEnvironment(simulator)
+            return false
+        #else
+            return true
+        #endif
+    }
 
-  var isMacCatalystApp: Bool {
-    return ProcessInfo.processInfo.isMacCatalystApp
-  }
+    var isMacCatalystApp: Bool {
+        return ProcessInfo.processInfo.isMacCatalystApp
+    }
 
-  var isiOSAppOnMac: Bool {
-    return ProcessInfo.processInfo.isiOSAppOnMac
-  }
+    var isiOSAppOnMac: Bool {
+        return ProcessInfo.processInfo.isiOSAppOnMac
+    }
 
-  var operatingSystemVersionString: String {
-    return ProcessInfo.processInfo.operatingSystemVersionString
-  }
+    var operatingSystemVersionString: String {
+        return ProcessInfo.processInfo.operatingSystemVersionString
+    }
 
-  var operatingSystemVersion: [String: Int] {
-    let operatingSystemVersion = ProcessInfo.processInfo.operatingSystemVersion
-    return [
-      "majorVersion": operatingSystemVersion.majorVersion,
-      "minorVersion": operatingSystemVersion.minorVersion,
-      "patchVersion": operatingSystemVersion.patchVersion,
-    ]
-  }
+    var operatingSystemVersion: [String: Int] {
+        let operatingSystemVersion = ProcessInfo.processInfo.operatingSystemVersion
+        return [
+            "majorVersion": operatingSystemVersion.majorVersion,
+            "minorVersion": operatingSystemVersion.minorVersion,
+            "patchVersion": operatingSystemVersion.patchVersion,
+        ]
+    }
 
-  var physicalMemory: UInt64 {
-    return ProcessInfo.processInfo.physicalMemory
-  }
+    var physicalMemory: UInt64 {
+        return ProcessInfo.processInfo.physicalMemory
+    }
 
-  var processorCount: Int {
-    return ProcessInfo.processInfo.processorCount
-  }
+    var processorCount: Int {
+        return ProcessInfo.processInfo.processorCount
+    }
 
-  var activeProcessorCount: Int {
-    return ProcessInfo.processInfo.activeProcessorCount
-  }
+    var activeProcessorCount: Int {
+        return ProcessInfo.processInfo.activeProcessorCount
+    }
 
-  var systemUptime: TimeInterval {
-    return ProcessInfo.processInfo.systemUptime
-  }
+    var systemUptime: TimeInterval {
+        return ProcessInfo.processInfo.systemUptime
+    }
 
-  var thermalState: ProcessInfo.ThermalState {
-    return ProcessInfo.processInfo.thermalState
-  }
+    var thermalState: ProcessInfo.ThermalState {
+        return ProcessInfo.processInfo.thermalState
+    }
 }

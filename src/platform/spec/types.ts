@@ -54,6 +54,7 @@ declare global {
       globallyUniqueString: string;
       hostName: string;
       isLowPowerModeEnabled: boolean;
+      isRealDevice: boolean;
       isMacCatalystApp: boolean;
       isiOSAppOnMac: boolean;
       operatingSystemVersionString: string;
@@ -106,6 +107,7 @@ declare global {
     }
 
     interface ProcessInfo {
+      isRealDevice: boolean;
     }
 
     interface DeviceInfo {
@@ -129,6 +131,7 @@ declare global {
 
 export type _PlatformSpec = Readonly<{
   spec: 'android' | 'apple' | 'web';
+  isRealDevice: boolean;
   isMacCatalystApp: boolean;
   isiOSAppOnMac: boolean;
   appVersion: string | undefined;

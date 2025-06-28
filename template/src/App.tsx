@@ -40,6 +40,7 @@ export default function App() {
       bundleIdentifier: Platform.bundleIdentifier,
       infoDictionary: Platform.infoDictionary,
       localizedInfoDictionary: Platform.localizedInfoDictionary,
+      isRealDevice: Platform.isRealDevice,
       isiOSAppOnMac: Platform.isiOSAppOnMac,
       isMacCatalystApp: Platform.isMacCatalystApp,
       identifierForVendor: await Platform.identifierForVendor(),

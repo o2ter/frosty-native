@@ -41,6 +41,10 @@ export class Platform {
     return config[this.type] ?? config.default;
   }
 
+  static get isRealDevice() {
+    return _Platform.isRealDevice;
+  }
+
   static get isMacCatalystApp() {
     return _Platform.isMacCatalystApp;
   }

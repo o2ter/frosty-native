@@ -28,6 +28,9 @@ import { _PlatformSpec } from './types';
 
 export const _Platform: _PlatformSpec = {
   spec: 'web',
+  get isRealDevice() {
+    return false;
+  },
   get isMacCatalystApp() {
     return false;
   },
