@@ -123,18 +123,17 @@ func copy_mac_address() -> String? {
     else { return nil }
     defer { IOObjectRelease(service) }
     
-    if let cftype = IORegistryEntrySearchCFProperty(
+    guard let cftype = IORegistryEntrySearchCFProperty(
         service,
         kIOServicePlane,
         "IOMACAddress" as CFString,
         kCFAllocatorDefault,
-        IOOptionBits(kIORegistryIterateRecursively | kIORegistryIterateParents)) {
-        var hasher = Insecure.MD5()
-        hasher.update(data: (cftype as! CFData) as Data)
-        return hasher.finalize().map { String(format: "%02hhx", $0) }.joined()
-    }
+        IOOptionBits(kIORegistryIterateRecursively | kIORegistryIterateParents))
+    else { return nil }
     
-    return nil
+    var hasher = Insecure.MD5()
+    hasher.update(data: (cftype as! CFData) as Data)
+    return hasher.finalize().map { String(format: "%02hhx", $0) }.joined()
 }
 
 #endif
