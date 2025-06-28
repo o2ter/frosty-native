@@ -74,6 +74,8 @@ declare global {
     }
 
     interface Bundle {
+      get appVersion(): string | undefined;
+      get buildVersion(): string | undefined;
       get bundleIdentifier(): string | undefined;
       get infoDictionary(): { [key: string]: string; }
       get localizedInfoDictionary(): { [key: string]: string; }
@@ -113,6 +115,8 @@ declare global {
     }
 
     interface Bundle {
+      get appVersion(): string | undefined;
+      get buildVersion(): string | undefined;
       get bundleIdentifier(): string | undefined;
     }
   }

@@ -25,37 +25,58 @@
 
 import JavaScriptCore
 
+extension Bundle {
+    
+    var appVersion: String? {
+        return infoDictionary?["CFBundleShortVersionString"] as? String
+    }
+    
+    var buildVersion: String? {
+        return infoDictionary?["CFBundleVersion"] as? String
+    }
+}
+
 @objc protocol JSBundleExport: JSExport {
-  static var main: Self { get }
-  var bundleIdentifier: String? { get }
-  var infoDictionary: [String: Any] { get }
-  var localizedInfoDictionary: [String: Any] { get }
+    static var main: Self { get }
+    var appVersion: String? { get }
+    var buildVersion: String? { get }
+    var bundleIdentifier: String? { get }
+    var infoDictionary: [String: Any] { get }
+    var localizedInfoDictionary: [String: Any] { get }
 }
 
 @objc final class JSBundle: NSObject, JSBundleExport {
-
-  let bundle: Bundle
-
-  init(_ bundle: Bundle) {
-    self.bundle = bundle
-  }
+    
+    let bundle: Bundle
+    
+    init(_ bundle: Bundle) {
+        self.bundle = bundle
+    }
 }
 
 extension JSBundle {
-
-  static var main: JSBundle {
-    return JSBundle(Bundle.main)
-  }
-
-  var bundleIdentifier: String? {
-    return self.bundle.bundleIdentifier
-  }
-
-  var infoDictionary: [String: Any] {
-    return self.bundle.infoDictionary ?? [:]
-  }
-
-  var localizedInfoDictionary: [String: Any] {
-    return self.bundle.localizedInfoDictionary ?? [:]
-  }
+    
+    static var main: JSBundle {
+        return JSBundle(Bundle.main)
+    }
+    
+    var appVersion: String? {
+        return self.bundle.appVersion
+    }
+    
+    var buildVersion: String? {
+        return self.bundle.buildVersion
+    }
+    
+    var bundleIdentifier: String? {
+        return self.bundle.bundleIdentifier
+    }
+    
+    var infoDictionary: [String: Any] {
+        return self.bundle.infoDictionary ?? [:]
+    }
+    
+    var localizedInfoDictionary: [String: Any] {
+        return self.bundle.localizedInfoDictionary ?? [:]
+    }
 }
