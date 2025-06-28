@@ -28,6 +28,7 @@ import JavaScriptCore
 #if canImport(AppKit) && !targetEnvironment(macCatalyst)
 
 import IOKit
+import Crypto
 
 #elseif canImport(UIKit)
 
@@ -128,7 +129,9 @@ func copy_mac_address() -> String? {
         "IOMACAddress" as CFString,
         kCFAllocatorDefault,
         IOOptionBits(kIORegistryIterateRecursively | kIORegistryIterateParents)) {
-        return ((cftype as! CFData) as Data).map { String(format:"%02x", $0) }.joined(separator: ":")
+        var hasher = Insecure.SHA1()
+        hasher.update(data: (cftype as! CFData) as Data)
+        return hasher.finalize().map { String(format: "%02hhx", $0) }.joined()
     }
     
     return nil
