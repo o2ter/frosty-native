@@ -52,8 +52,15 @@ extension JSDeviceInfo {
         
 #if canImport(AppKit) && !targetEnvironment(macCatalyst)
         
-        let address = copy_mac_address()
-        return JSValue(object: address, in: context)
+        guard let address = copy_mac_address() else {
+            return JSValue(undefinedIn: context)
+        }
+        var hasher = Insecure.MD5()
+        hasher.update(data: address)
+        return JSValue(
+            object: hasher.finalize().map { String(format: "%02hhx", $0) }.joined(),
+            in: context
+        )
         
 #elseif canImport(UIKit)
         
@@ -113,7 +120,7 @@ func io_service(named name: String, wantBuiltIn: Bool) -> io_service_t? {
     return nil
 }
 
-func copy_mac_address() -> String? {
+func copy_mac_address() -> Data? {
     // Prefer built-in network interfaces.
     // For example, an external Ethernet adaptor can displace
     // the built-in Wi-Fi as en0.
@@ -131,9 +138,7 @@ func copy_mac_address() -> String? {
         IOOptionBits(kIORegistryIterateRecursively | kIORegistryIterateParents))
     else { return nil }
     
-    var hasher = Insecure.MD5()
-    hasher.update(data: (cftype as! CFData) as Data)
-    return hasher.finalize().map { String(format: "%02hhx", $0) }.joined()
+    return (cftype as! CFData) as Data
 }
 
 #endif
