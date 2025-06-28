@@ -129,7 +129,7 @@ func copy_mac_address() -> String? {
         "IOMACAddress" as CFString,
         kCFAllocatorDefault,
         IOOptionBits(kIORegistryIterateRecursively | kIORegistryIterateParents)) {
-        var hasher = Insecure.SHA1()
+        var hasher = Insecure.MD5()
         hasher.update(data: (cftype as! CFData) as Data)
         return hasher.finalize().map { String(format: "%02hhx", $0) }.joined()
     }
