@@ -54,7 +54,7 @@ module.exports = (env, argv) => {
       loader: 'file-loader',
       options: {
         name: '[name].[contenthash].[ext]',
-        publicPath: './images',
+        publicPath: 'assets:///images',
         outputPath: 'images',
       }
     }
@@ -66,7 +66,7 @@ module.exports = (env, argv) => {
       loader: 'file-loader',
       options: {
         name: '[name].[contenthash].[ext]',
-        publicPath: './fonts',
+        publicPath: 'assets:///fonts',
         outputPath: 'fonts',
       }
     }
