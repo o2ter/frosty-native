@@ -167,13 +167,11 @@ internal class JSCore(val context: Context) {
             }
             spec.addObject("processInfo") {
             }
-            spec.addObject("Bundle") { bundle ->
-                bundle.addObject("main") {
-                    val info = context.packageManager.getPackageInfo(context.packageName, 0)
-                    it.add("appVersion", info.versionName)
-                    it.add("buildVersion", info.longVersionCode.toString())
-                    it.add("bundleIdentifier", context.packageName)
-                }
+            spec.addObject("bundleInfo") {
+                val info = context.packageManager.getPackageInfo(context.packageName, 0)
+                it.add("appVersion", info.versionName)
+                it.add("buildVersion", info.longVersionCode.toString())
+                it.add("bundleIdentifier", context.packageName)
             }
             spec.addObject("deviceInfo") {
                 it.registerJavaMethod(JavaCallback { _, _ -> context.identifierForVendor() }, "identifierForVendor")

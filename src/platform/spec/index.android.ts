@@ -35,13 +35,13 @@ export const _Platform: _PlatformSpec = {
     return false;
   },
   get appVersion() {
-    return __ANDROID_SPEC__.Bundle.main.appVersion;
+    return __ANDROID_SPEC__.bundleInfo.appVersion;
   },
   get buildVersion() {
-    return __ANDROID_SPEC__.Bundle.main.buildVersion;
+    return __ANDROID_SPEC__.bundleInfo.buildVersion;
   },
   get bundleIdentifier() {
-    return __ANDROID_SPEC__.Bundle.main.bundleIdentifier;
+    return __ANDROID_SPEC__.bundleInfo.bundleIdentifier;
   },
   get infoDictionary() {
     return {};

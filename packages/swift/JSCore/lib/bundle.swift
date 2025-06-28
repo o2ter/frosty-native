@@ -36,7 +36,7 @@ extension Bundle {
     }
 }
 
-@objc protocol JSBundleExport: JSExport {
+@objc protocol JSBundleInfoExport: JSExport {
     static var main: Self { get }
     var appVersion: String? { get }
     var buildVersion: String? { get }
@@ -45,7 +45,7 @@ extension Bundle {
     var localizedInfoDictionary: [String: Any] { get }
 }
 
-@objc final class JSBundle: NSObject, JSBundleExport {
+@objc final class JSBundleInfo: NSObject, JSBundleInfoExport {
     
     let bundle: Bundle
     
@@ -54,10 +54,10 @@ extension Bundle {
     }
 }
 
-extension JSBundle {
+extension JSBundleInfo {
     
-    static var main: JSBundle {
-        return JSBundle(Bundle.main)
+    static var main: JSBundleInfo {
+        return JSBundleInfo(Bundle.main)
     }
     
     var appVersion: String? {

@@ -73,7 +73,7 @@ declare global {
       identifierForVendor(): Awaitable<string | undefined>;
     }
 
-    interface Bundle {
+    interface BundleInfo {
       get appVersion(): string | undefined;
       get buildVersion(): string | undefined;
       get bundleIdentifier(): string | undefined;
@@ -94,9 +94,7 @@ declare global {
     get crypto(): __NS_APPLE_SPEC__.Crypto;
     get processInfo(): __NS_APPLE_SPEC__.ProcessInfo;
     get deviceInfo(): __NS_APPLE_SPEC__.DeviceInfo;
-    get Bundle(): {
-      main: __NS_APPLE_SPEC__.Bundle;
-    };
+    get bundleInfo(): __NS_APPLE_SPEC__.BundleInfo;
     get FileSystem(): __NS_APPLE_SPEC__.FileSystem;
   };
 
@@ -114,7 +112,7 @@ declare global {
       identifierForVendor(): string;
     }
 
-    interface Bundle {
+    interface BundleInfo {
       get appVersion(): string | undefined;
       get buildVersion(): string | undefined;
       get bundleIdentifier(): string | undefined;
@@ -125,9 +123,7 @@ declare global {
     get crypto(): __NS_ANDROID_SPEC__.Crypto;
     get processInfo(): __NS_ANDROID_SPEC__.ProcessInfo;
     get deviceInfo(): __NS_ANDROID_SPEC__.DeviceInfo;
-    get Bundle(): {
-      main: __NS_ANDROID_SPEC__.Bundle;
-    };
+    get bundleInfo(): __NS_ANDROID_SPEC__.BundleInfo;
   };
 }
 

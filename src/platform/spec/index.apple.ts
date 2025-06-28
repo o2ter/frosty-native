@@ -35,19 +35,19 @@ export const _Platform: _PlatformSpec = {
     return __APPLE_SPEC__.processInfo.isiOSAppOnMac;
   },
   get appVersion() {
-    return __APPLE_SPEC__.Bundle.main.appVersion;
+    return __APPLE_SPEC__.bundleInfo.appVersion;
   },
   get buildVersion() {
-    return __APPLE_SPEC__.Bundle.main.buildVersion;
+    return __APPLE_SPEC__.bundleInfo.buildVersion;
   },
   get bundleIdentifier() {
-    return __APPLE_SPEC__.Bundle.main.bundleIdentifier;
+    return __APPLE_SPEC__.bundleInfo.bundleIdentifier;
   },
   get infoDictionary() {
-    return __APPLE_SPEC__.Bundle.main.infoDictionary;
+    return __APPLE_SPEC__.bundleInfo.infoDictionary;
   },
   get localizedInfoDictionary() {
-    return __APPLE_SPEC__.Bundle.main.localizedInfoDictionary;
+    return __APPLE_SPEC__.bundleInfo.localizedInfoDictionary;
   },
   identifierForVendor() {
     return __APPLE_SPEC__.deviceInfo.identifierForVendor();

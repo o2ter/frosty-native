@@ -139,7 +139,7 @@ extension JSCore {
             "crypto": .init(JSCrypto(), in: self),
             "processInfo": .init(JSProcessInfo(), in: self),
             "deviceInfo": .init(JSDeviceInfo(), in: self),
-            "Bundle": .init(JSBundle.self, in: self),
+            "bundleInfo": .init(JSBundle.main, in: self),
             "FileSystem": .init(JSFileSystem.self, in: self),
             "URLSession": .init(JSURLSession.self, in: self),
             "URLSessionConfiguration": .init(JSURLSessionConfiguration.self, in: self),

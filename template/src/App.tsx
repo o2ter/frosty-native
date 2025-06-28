@@ -34,9 +34,14 @@ export default function App() {
   }, []);
   useEffect(async () => {
     console.log(JSON.stringify({
+      type: Platform.type,
       appVersion: Platform.appVersion,
       buildVersion: Platform.buildVersion,
       bundleIdentifier: Platform.bundleIdentifier,
+      infoDictionary: Platform.infoDictionary,
+      localizedInfoDictionary: Platform.localizedInfoDictionary,
+      isiOSAppOnMac: Platform.isiOSAppOnMac,
+      isMacCatalystApp: Platform.isMacCatalystApp,
       identifierForVendor: await Platform.identifierForVendor(),
     }, null, 4));
   }, []);
