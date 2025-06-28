@@ -37,7 +37,7 @@ export default function App() {
       appVersion: Platform.appVersion,
       buildVersion: Platform.buildVersion,
       bundleIdentifier: Platform.bundleIdentifier,
-      identifierForVendor: await Platform.identifierForVendor,
+      identifierForVendor: await Platform.identifierForVendor(),
     }, null, 4));
   }, []);
   console.log(JSON.stringify(useEnvironment(), null, 4));
