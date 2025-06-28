@@ -162,6 +162,11 @@ internal class JSCore(val context: Context) {
                     V8TypedArray(runtime, buffer, V8Value.BYTE, 0, length)
                 }, "randomBytes")
             }
+            spec.addObject("processInfo") {
+            }
+            spec.addObject("deviceInfo") {
+                it.registerJavaMethod(JavaCallback { _, _ -> context.identifierForVendor() }, "identifierForVendor")
+            }
         }
     }
 

@@ -67,6 +67,10 @@ declare global {
       thermalState: number;
     }
 
+    interface DeviceInfo {
+      identifierForVendor(): string | Promise<string>;
+    }
+
     interface Bundle {
       get bundleIdentifier(): string | undefined;
       get infoDictionary(): { [key: string]: string; }
@@ -85,6 +89,7 @@ declare global {
   const __APPLE_SPEC__: {
     get crypto(): __NS_APPLE_SPEC__.Crypto;
     get processInfo(): __NS_APPLE_SPEC__.ProcessInfo;
+    get deviceInfo(): __NS_APPLE_SPEC__.DeviceInfo;
     get Bundle(): {
       main: __NS_APPLE_SPEC__.Bundle;
     };
@@ -97,10 +102,19 @@ declare global {
       randomUUID(): string;
       randomBytes(length: number): Uint8Array;
     }
+
+    interface ProcessInfo {
+    }
+
+    interface DeviceInfo {
+      identifierForVendor(): string;
+    }
   }
 
   const __ANDROID_SPEC__: {
     get crypto(): __NS_ANDROID_SPEC__.Crypto;
+    get processInfo(): __NS_ANDROID_SPEC__.ProcessInfo;
+    get deviceInfo(): __NS_ANDROID_SPEC__.DeviceInfo;
   };
 }
 

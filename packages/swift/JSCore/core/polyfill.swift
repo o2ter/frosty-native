@@ -138,6 +138,7 @@ extension JSCore {
         self.globalObject["__APPLE_SPEC__"] = [
             "crypto": .init(JSCrypto(), in: self),
             "processInfo": .init(JSProcessInfo(), in: self),
+            "deviceInfo": .init(JSDeviceInfo(), in: self),
             "Bundle": .init(JSBundle.self, in: self),
             "FileSystem": .init(JSFileSystem.self, in: self),
             "URLSession": .init(JSURLSession.self, in: self),
