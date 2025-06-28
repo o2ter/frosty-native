@@ -41,35 +41,35 @@ export class Platform {
     return config[this.type] ?? config.default;
   }
 
-  static isMacCatalystApp() {
+  static get isMacCatalystApp() {
     return _Platform.isMacCatalystApp;
   }
 
-  static isiOSAppOnMac() {
+  static get isiOSAppOnMac() {
     return _Platform.isiOSAppOnMac;
   }
 
-  static infoDictionary() {
+  static get infoDictionary() {
     return _Platform.infoDictionary;
   }
 
-  static localizedInfoDictionary() {
+  static get localizedInfoDictionary() {
     return _Platform.localizedInfoDictionary;
   }
 
-  static appVersion() {
+  static get appVersion() {
     return _Platform.appVersion;
   }
 
-  static buildVersion() {
+  static get buildVersion() {
     return _Platform.buildVersion;
   }
 
-  static bundleIdentifier() {
+  static get bundleIdentifier() {
     return _Platform.bundleIdentifier;
   }
 
-  static identifierForVendor() {
+  static get identifierForVendor() {
     return _Platform.identifierForVendor();
   }
 }
