@@ -123,7 +123,7 @@ extension JSValue {
     }
     
     public convenience init(
-        newPromiseIn context: JSContext,
+        in context: JSContext,
         _ callback: @escaping (_ arguments: [JSValue], _ this: JSValue) throws -> Void
     ) {
         self.init(in: context) { arguments, this in
@@ -136,7 +136,7 @@ extension JSValue {
 extension JSValue {
     
     public convenience init(
-        newPromiseIn context: JSContext,
+        in context: JSContext,
         _ callback: @Sendable @escaping (_ arguments: [JSValue], _ this: JSValue) async throws -> JSValue
     ) {
         self.init(in: context) { arguments, this in
@@ -158,10 +158,10 @@ extension JSValue {
     }
     
     public convenience init(
-        newPromiseIn context: JSContext,
+        in context: JSContext,
         _ callback: @Sendable @escaping (_ arguments: [JSValue], _ this: JSValue) async throws -> Void
     ) {
-        self.init(newPromiseIn: context) { arguments, this in
+        self.init(in: context) { arguments, this in
             try await callback(arguments, this)
             return JSValue(undefinedIn: context)
         }
@@ -199,7 +199,7 @@ extension JSCore.Value {
         _ callback: @Sendable @escaping (_ arguments: [JSCore.Value], _ this: JSCore.Value) async throws -> JSCore.Value
     ) {
         self.init(
-            JSValue(newPromiseIn: context.base) { arguments, this in
+            JSValue(in: context.base) { arguments, this in
                 let result = try await callback(arguments.map { .init($0) }, JSCore.Value(this))
                 return result.toJSValue(inContext: context.base)
             })
