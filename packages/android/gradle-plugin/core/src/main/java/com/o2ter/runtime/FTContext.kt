@@ -26,6 +26,8 @@
 package com.o2ter.runtime
 
 import android.content.Context
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.core.content.edit
 import com.eclipsesource.v8.JavaCallback
 import com.eclipsesource.v8.V8
@@ -47,6 +49,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Deferred
 import java.io.InputStream
 
+@RequiresApi(Build.VERSION_CODES.P)
 internal class FTContext(private val activity: FrostyNativeActivity, val context: Context) {
 
     private val core: JSCore = JSCore(context)

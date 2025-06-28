@@ -26,7 +26,9 @@
 package com.o2ter.core
 
 import android.content.Context
+import android.os.Build
 import android.util.Log
+import androidx.annotation.RequiresApi
 import com.eclipsesource.v8.JavaCallback
 import com.eclipsesource.v8.V8
 import com.eclipsesource.v8.V8Function
@@ -46,6 +48,7 @@ import java.security.SecureRandom
 import java.util.Timer
 import java.util.UUID
 
+@RequiresApi(Build.VERSION_CODES.P)
 @OptIn(ExperimentalCoroutinesApi::class)
 internal class JSCore(val context: Context) {
 
@@ -166,7 +169,10 @@ internal class JSCore(val context: Context) {
             }
             spec.addObject("Bundle") { bundle ->
                 bundle.addObject("main") {
-                    it.add("bundleIdentifier", context.applicationContext.packageName)
+                    val info = context.packageManager.getPackageInfo(context.packageName, 0)
+                    it.add("appVersion", info.versionName)
+                    it.add("buildVersion", info.longVersionCode.toString())
+                    it.add("bundleIdentifier", context.packageName)
                 }
             }
             spec.addObject("deviceInfo") {

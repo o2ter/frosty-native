@@ -26,10 +26,12 @@
 package com.o2ter.app
 
 import android.content.Context
+import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -56,6 +58,7 @@ import java.io.InputStream
 import java.util.Locale
 import java.util.TimeZone
 
+@RequiresApi(Build.VERSION_CODES.P)
 internal fun FTContext.run(
     appKey: String,
     rootView: FTNodeState
