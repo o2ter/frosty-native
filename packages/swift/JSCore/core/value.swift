@@ -136,6 +136,29 @@ extension JSValue {
 extension JSValue {
     
     public convenience init(
+        newPromiseIn context: JSContext,
+        _ callback: @Sendable @escaping () async throws -> JSValue
+    ) {
+        self.init(newPromiseIn: context) { resolve, reject in
+            Task {
+                do {
+                    let result = try await callback()
+                    resolve?.call(withArguments: [result])
+                } catch let error {
+                    if let error = error as? JSValue {
+                        reject?.call(withArguments: [error])
+                    } else {
+                        reject?.call(withArguments: [JSValue(newErrorFromMessage: "\(error)", in: context)!])
+                    }
+                }
+            }
+        }
+    }
+}
+
+extension JSValue {
+    
+    public convenience init(
         in context: JSContext,
         _ callback: @Sendable @escaping (_ arguments: [JSValue], _ this: JSValue) async throws -> JSValue
     ) {
@@ -189,6 +212,20 @@ extension JSCore.Value {
             try callback(arguments, this)
             return .undefined
         }
+    }
+}
+
+extension JSCore.Value {
+    
+    public init(
+        newPromiseIn context: JSCore,
+        _ callback: @Sendable @escaping () async throws -> JSCore.Value
+    ) {
+        self.init(
+            JSValue(newPromiseIn: context.base) {
+                let result = try await callback()
+                return result.toJSValue(inContext: context.base)
+            })
     }
 }
 

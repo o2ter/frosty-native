@@ -64,7 +64,7 @@ extension JSDeviceInfo {
         
 #elseif canImport(UIKit)
         
-        return JSValue(in: context) { _, _ -> JSValue in
+        return JSValue(newPromiseIn: context) {
             while (true) {
                 if let identifier = await UIDevice.current.identifierForVendor {
                     return JSValue(object: identifier.uuidString, in: context)
