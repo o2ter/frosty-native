@@ -128,7 +128,7 @@ func copy_mac_address() -> String? {
         "IOMACAddress" as CFString,
         kCFAllocatorDefault,
         IOOptionBits(kIORegistryIterateRecursively | kIORegistryIterateParents)) {
-        return String(data: (cftype as! CFData) as Data, encoding: .utf8)
+        return ((cftype as! CFData) as Data).map { String(format:"%02x", $0) }.joined(separator: ":")
     }
     
     return nil
