@@ -56,4 +56,20 @@ export class Platform {
   static localizedInfoDictionary() {
     return _Platform.localizedInfoDictionary;
   }
+
+  static appVersion() {
+    return _Platform.appVersion;
+  }
+
+  static buildVersion() {
+    return _Platform.buildVersion;
+  }
+
+  static bundleIdentifier() {
+    return _Platform.bundleIdentifier;
+  }
+
+  static identifierForVendor() {
+    return _Platform.identifierForVendor();
+  }
 }
