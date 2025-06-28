@@ -39,7 +39,7 @@ console.log(__APPLE_SPEC__.processInfo.arguments);
 console.log(__APPLE_SPEC__.processInfo.globallyUniqueString);
 console.log(__APPLE_SPEC__.processInfo.hostName);
 
-console.log(await __APPLE_SPEC__.deviceInfo.identifierForVendor());
+console.log(__APPLE_SPEC__.deviceInfo.identifierForVendor());
 
 const hash = __APPLE_SPEC__.crypto.createHash('md5');
 hash.update(new Uint8Array([1, 2, 3, 4, 5]));
