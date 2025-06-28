@@ -111,12 +111,19 @@ declare global {
     interface DeviceInfo {
       identifierForVendor(): string;
     }
+
+    interface Bundle {
+      get bundleIdentifier(): string | undefined;
+    }
   }
 
   const __ANDROID_SPEC__: {
     get crypto(): __NS_ANDROID_SPEC__.Crypto;
     get processInfo(): __NS_ANDROID_SPEC__.ProcessInfo;
     get deviceInfo(): __NS_ANDROID_SPEC__.DeviceInfo;
+    get Bundle(): {
+      main: __NS_ANDROID_SPEC__.Bundle;
+    };
   };
 }
 
