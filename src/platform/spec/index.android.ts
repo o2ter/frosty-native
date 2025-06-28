@@ -35,18 +35,21 @@ export const _Platform: _PlatformSpec = {
     return false;
   },
   get appVersion() {
-    return __APPLE_SPEC__.Bundle.main.appVersion;
+    return __ANDROID_SPEC__.Bundle.main.appVersion;
   },
   get buildVersion() {
-    return __APPLE_SPEC__.Bundle.main.buildVersion;
+    return __ANDROID_SPEC__.Bundle.main.buildVersion;
   },
   get bundleIdentifier() {
-    return undefined;
+    return __ANDROID_SPEC__.Bundle.main.bundleIdentifier;
   },
   get infoDictionary() {
     return {};
   },
   get localizedInfoDictionary() {
     return {};
+  },
+  identifierForVendor() {
+    return __ANDROID_SPEC__.deviceInfo.identifierForVendor();
   },
 };

@@ -49,4 +49,7 @@ export const _Platform: _PlatformSpec = {
   get localizedInfoDictionary() {
     return __APPLE_SPEC__.Bundle.main.localizedInfoDictionary;
   },
+  identifierForVendor() {
+    return __APPLE_SPEC__.deviceInfo.identifierForVendor();
+  },
 };

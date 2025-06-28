@@ -49,4 +49,7 @@ export const _Platform: _PlatformSpec = {
   get localizedInfoDictionary() {
     return {};
   },
+  identifierForVendor() {
+    return undefined;
+  }
 };

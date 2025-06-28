@@ -70,7 +70,7 @@ declare global {
     }
 
     interface DeviceInfo {
-      identifierForVendor(): Awaitable<string>;
+      identifierForVendor(): Awaitable<string | undefined>;
     }
 
     interface Bundle {
@@ -144,4 +144,5 @@ export type _PlatformSpec = Readonly<{
   localizedInfoDictionary: {
     [key: string]: string;
   };
+  identifierForVendor(): Awaitable<string | undefined>;
 }>;
