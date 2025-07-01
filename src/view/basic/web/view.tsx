@@ -39,12 +39,27 @@ export const View: ComponentType<ViewProps> = ({ ref, style, children }) => {
   return (
     <div
       ref={targetRef}
-      style={{
-        display: 'flex',
-        flexDirection: 'column',
-        width: '100%',
-        height: '100%',
-      }}>
+      style={[
+        {
+          alignContent: 'flex-start',
+          alignItems: 'stretch',
+          backgroundColor: 'transparent',
+          border: '0 solid black',
+          boxSizing: 'border-box',
+          display: 'flex',
+          flexBasis: 'auto',
+          flexDirection: 'column',
+          flexShrink: 0,
+          listStyle: 'none',
+          margin: 0,
+          minHeight: 0,
+          minWidth: 0,
+          padding: 0,
+          position: 'relative',
+          textDecoration: 'none',
+          zIndex: 0
+        },
+      ]}>
       {children}
     </div>
   );
