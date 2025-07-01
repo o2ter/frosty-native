@@ -101,7 +101,7 @@ extension JSCore.Value {
 extension JSValue {
     
     public convenience init(
-        in context: JSContext,
+        newFunctionIn context: JSContext,
         _ callback: @escaping (_ arguments: [JSValue], _ this: JSValue) throws -> JSValue
     ) {
         let closure: @convention(block) () -> JSValue = {
@@ -123,10 +123,10 @@ extension JSValue {
     }
     
     public convenience init(
-        in context: JSContext,
+        newFunctionIn context: JSContext,
         _ callback: @escaping (_ arguments: [JSValue], _ this: JSValue) throws -> Void
     ) {
-        self.init(in: context) { arguments, this in
+        self.init(newFunctionIn: context) { arguments, this in
             try callback(arguments, this)
             return JSValue(undefinedIn: context)
         }
@@ -159,10 +159,10 @@ extension JSValue {
 extension JSValue {
     
     public convenience init(
-        in context: JSContext,
+        newFunctionIn context: JSContext,
         _ callback: @Sendable @escaping (_ arguments: [JSValue], _ this: JSValue) async throws -> JSValue
     ) {
-        self.init(in: context) { arguments, this in
+        self.init(newFunctionIn: context) { arguments, this in
             return JSValue(newPromiseIn: context) { resolve, reject in
                 Task {
                     do {
@@ -181,10 +181,10 @@ extension JSValue {
     }
     
     public convenience init(
-        in context: JSContext,
+        newFunctionIn context: JSContext,
         _ callback: @Sendable @escaping (_ arguments: [JSValue], _ this: JSValue) async throws -> Void
     ) {
-        self.init(in: context) { arguments, this in
+        self.init(newFunctionIn: context) { arguments, this in
             try await callback(arguments, this)
             return JSValue(undefinedIn: context)
         }
@@ -198,7 +198,7 @@ extension JSCore.Value {
         _ callback: @escaping (_ arguments: [JSCore.Value], _ this: JSCore.Value) throws -> JSCore.Value
     ) {
         self.init(
-            JSValue(in: context.base) { arguments, this in
+            JSValue(newFunctionIn: context.base) { arguments, this in
                 let result = try callback(arguments.map { .init($0) }, JSCore.Value(this))
                 return result.toJSValue(inContext: context.base)
             })
@@ -232,21 +232,21 @@ extension JSCore.Value {
 extension JSCore.Value {
     
     public init(
-        in context: JSCore,
+        newFunctionIn context: JSCore,
         _ callback: @Sendable @escaping (_ arguments: [JSCore.Value], _ this: JSCore.Value) async throws -> JSCore.Value
     ) {
         self.init(
-            JSValue(in: context.base) { arguments, this in
+            JSValue(newFunctionIn: context.base) { arguments, this in
                 let result = try await callback(arguments.map { .init($0) }, JSCore.Value(this))
                 return result.toJSValue(inContext: context.base)
             })
     }
     
     public init(
-        in context: JSCore,
+        newFunctionIn context: JSCore,
         _ callback: @Sendable @escaping (_ arguments: [JSCore.Value], _ this: JSCore.Value) async throws -> Void
     ) {
-        self.init(in: context) { arguments, this in
+        self.init(newFunctionIn: context) { arguments, this in
             try await callback(arguments, this)
             return .undefined
         }
