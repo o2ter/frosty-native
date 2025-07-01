@@ -44,7 +44,9 @@ export const View: ComponentType<ViewProps> = ({ ref, style, children }) => {
           alignContent: 'flex-start',
           alignItems: 'stretch',
           backgroundColor: 'transparent',
-          border: '0 solid black',
+          borderWidth: 0,
+          borderStyle: 'solid',
+          borderColor: 'black',
           boxSizing: 'border-box',
           display: 'flex',
           flexBasis: 'auto',
@@ -57,7 +59,7 @@ export const View: ComponentType<ViewProps> = ({ ref, style, children }) => {
           padding: 0,
           position: 'relative',
           textDecoration: 'none',
-          zIndex: 0
+          zIndex: 0,
         },
       ]}>
       {children}

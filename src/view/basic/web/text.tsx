@@ -78,5 +78,29 @@ export const Text: ComponentType<TextViewProps> = ({ ref, style, children }) => 
 
   const _style = useFlattenStyle([useTextStyle(), style]);
 
-  return _createNativeElement(DOMTextView, { ref: targetRef, children });
+  return _createNativeElement(DOMTextView, {
+    ref: targetRef,
+    style: [
+      {
+        backgroundColor: 'transparent',
+        borderWidth: 0,
+        borderStyle: 'solid',
+        borderColor: 'black',
+        boxSizing: 'border-box',
+        color: 'black',
+        display: 'inline',
+        fontFamily: 'System',
+        fontSize: 14,
+        listStyle: 'none',
+        margin: 0,
+        padding: 0,
+        position: 'relative',
+        textAlign: 'start',
+        textDecoration: 'none',
+        whiteSpace: 'pre-wrap',
+        wordWrap: 'break-word',
+      }
+    ],
+    children
+  });
 };

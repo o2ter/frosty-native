@@ -93,6 +93,21 @@ export const TextInput: ComponentType<TextInputProps> = ({ ref, style, multiline
     multiline ? DOMMultilineTextInput : DOMTextInput,
     {
       ref: targetRef,
+      style: [
+        {
+          backgroundColor: 'transparent',
+          borderWidth: 0,
+          borderStyle: 'solid',
+          borderColor: 'black',
+          borderRadius: 0,
+          boxSizing: 'border-box',
+          fontFamily: 'System',
+          fontSize: 14,
+          margin: 0,
+          padding: 0,
+          resize: 'none',
+        }
+      ],
       children,
     }
   );
