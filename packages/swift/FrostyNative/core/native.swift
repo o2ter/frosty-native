@@ -25,26 +25,26 @@
 
 public final class FTContext: Sendable {
 
-    public let context: JSCore
+    public let context: SwiftJS
 
     init(
-        _ vm: JSCore.VirtualMachine = FTContext.createVirtualMachine()
+        _ vm: SwiftJS.VirtualMachine = FTContext.createVirtualMachine()
     ) {
-        self.context = JSCore(vm)
+        self.context = SwiftJS(vm)
         self.polyfill()
     }
 }
 
 extension FTContext {
     
-    static func createVirtualMachine() -> JSCore.VirtualMachine {
+    static func createVirtualMachine() -> SwiftJS.VirtualMachine {
         class Ref: @unchecked Sendable {
-            var vm: JSCore.VirtualMachine!
+            var vm: SwiftJS.VirtualMachine!
         }
         let signal = DispatchSemaphore(value: 0)
         let ref = Ref()
         let thread = Thread {
-            ref.vm = JSCore.VirtualMachine()
+            ref.vm = SwiftJS.VirtualMachine()
             signal.signal()
             RunLoop.current.run()
         }
@@ -57,7 +57,7 @@ extension FTContext {
 
 extension FTContext {
     
-    public var virtualMachine: JSCore.VirtualMachine {
+    public var virtualMachine: SwiftJS.VirtualMachine {
         return self.context.virtualMachine
     }
     
@@ -69,21 +69,21 @@ extension FTContext {
 
 extension FTContext {
 
-    public var globalObject: JSCore.Value {
+    public var globalObject: SwiftJS.Value {
         return self.context.globalObject
     }
     
-    public var exception: JSCore.Value {
+    public var exception: SwiftJS.Value {
         return self.context.exception
     }
     
     @discardableResult
-    public func evaluateScript(_ script: String) -> JSCore.Value {
+    public func evaluateScript(_ script: String) -> SwiftJS.Value {
         return self.context.evaluateScript(script)
     }
     
     @discardableResult
-    public func evaluateScript(_ script: String, withSourceURL sourceURL: URL) -> JSCore.Value {
+    public func evaluateScript(_ script: String, withSourceURL sourceURL: URL) -> SwiftJS.Value {
         return self.context.evaluateScript(script, withSourceURL: sourceURL)
     }
 }

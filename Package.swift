@@ -34,37 +34,16 @@ let package = Package(
         .iOS(.v17),
     ],
     products: [
-        .executable(name: "test", targets: ["test"]),
         .library(name: "FrostyNative", targets: ["FrostyNative"])
     ],
     dependencies: [
-        .package(url: "https://github.com/apple/swift-crypto.git", from: "3.12.2"),
+        .package(url: "https://github.com/o2ter/SwiftJS.git", from: "0.0.1"),
     ],
     targets: [
         .target(
-            name: "JSCore",
-            dependencies: [
-                .product(name: "Crypto", package: "swift-crypto")
-            ],
-            path: "packages/swift/JSCore",
-            resources: [
-                .copy("resources/polyfill.js")
-            ]
-        ),
-        .target(
             name: "FrostyNative",
-            dependencies: ["JSCore"],
+            dependencies: ["SwiftJS"],
             path: "packages/swift/FrostyNative",
-        ),
-        .executableTarget(
-            name: "test",
-            dependencies: ["JSCore"],
-            path: "packages/swift/test",
-            resources: [
-                .copy("resources/corejs.js"),
-                .copy("resources/script_1.js"),
-                .copy("resources/script_2.js")
-            ]
         ),
     ]
 )

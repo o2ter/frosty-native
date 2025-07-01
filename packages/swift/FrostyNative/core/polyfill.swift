@@ -40,18 +40,18 @@ extension FTContext {
 
 extension FTContext {
 
-    public var nativeModules: JSCore.Value {
+    public var nativeModules: SwiftJS.Value {
         return self.context.globalObject["__FROSTY_SPEC__"]["NativeModules"]
     }
 }
 
 extension FTContext {
 
-    public func register(name: String, _ module: JSCore.Export) {
+    public func register(name: String, _ module: SwiftJS.Export) {
         self.nativeModules[name] = .init(module, in: self.context)
     }
 
-    public func register(name: String, _ module: JSCore.Export.Type) {
+    public func register(name: String, _ module: SwiftJS.Export.Type) {
         self.nativeModules[name] = .init(module, in: self.context)
     }
 }

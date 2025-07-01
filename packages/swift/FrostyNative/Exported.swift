@@ -24,5 +24,5 @@
 //
 
 @_exported import Foundation
-@_exported import JSCore
+@_exported import SwiftJS
 @_exported import SwiftUI

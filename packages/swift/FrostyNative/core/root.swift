@@ -34,15 +34,15 @@ struct WindowDimensions: Equatable {
         self.safeAreaInsets = geometry.safeAreaInsets
     }
     
-    func toJSValue() -> JSCore.Value {
+    func toJSValue() -> SwiftJS.Value {
         return [
-            "windowWidth": JSCore.Value(size.width),
-            "windowHeight": JSCore.Value(size.height),
+            "windowWidth": SwiftJS.Value(size.width),
+            "windowHeight": SwiftJS.Value(size.height),
             "safeAreaInsets": [
-                "top": JSCore.Value(safeAreaInsets.top),
-                "left": JSCore.Value(safeAreaInsets.leading),
-                "right": JSCore.Value(safeAreaInsets.trailing),
-                "bottom": JSCore.Value(safeAreaInsets.bottom),
+                "top": SwiftJS.Value(safeAreaInsets.top),
+                "left": SwiftJS.Value(safeAreaInsets.leading),
+                "right": SwiftJS.Value(safeAreaInsets.trailing),
+                "bottom": SwiftJS.Value(safeAreaInsets.bottom),
             ],
         ]
     }
@@ -57,15 +57,15 @@ struct EnvironmentData: Equatable {
     var locale: Locale
     var timeZone: TimeZone
     
-    func toJSValue() -> JSCore.Value {
+    func toJSValue() -> SwiftJS.Value {
         return [
-            "layoutDirection": JSCore.Value(layoutDirection.toString()),
-            "displayScale": JSCore.Value(displayScale),
-            "pixelLength": JSCore.Value(pixelLength),
-            "colorScheme": JSCore.Value(colorScheme.toString()),
-            "userLocale": JSCore.Value(locale.identifier),
-            "languages": JSCore.Value(Locale.preferredLanguages.map { JSCore.Value($0) }),
-            "timeZone":JSCore.Value(timeZone.identifier),
+            "layoutDirection": SwiftJS.Value(layoutDirection.toString()),
+            "displayScale": SwiftJS.Value(displayScale),
+            "pixelLength": SwiftJS.Value(pixelLength),
+            "colorScheme": SwiftJS.Value(colorScheme.toString()),
+            "userLocale": SwiftJS.Value(locale.identifier),
+            "languages": SwiftJS.Value(Locale.preferredLanguages.map { SwiftJS.Value($0) }),
+            "timeZone":SwiftJS.Value(timeZone.identifier),
         ]
     }
 }
@@ -121,7 +121,7 @@ public struct FTRoot: View {
     let appKey: String
     let runtime: FTContext
     
-    @State var runner: JSCore.Value?
+    @State var runner: SwiftJS.Value?
     @State var node: FTNode.State
     
     public init(appKey: String, runtime: FTContext) {
@@ -181,11 +181,11 @@ extension FTRoot {
         appKey: String,
         runtime: FTContext,
         node: FTNode.State
-    ) -> JSCore.Value {
+    ) -> SwiftJS.Value {
         let registry = runtime.evaluateScript("__FROSTY_SPEC__.AppRegistry")
         let runner = registry.invokeMethod("getRunnable", withArguments: [.init(appKey)])
         return runner.invokeMethod("run", withArguments: [[
-            "root": JSCore.Value(node, in: runtime.context),
+            "root": SwiftJS.Value(node, in: runtime.context),
         ]])
     }
 }
