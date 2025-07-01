@@ -47,7 +47,10 @@ class _DOMTextInput extends DOMNativeNode {
     return this.#target;
   }
 
-  update(props: Record<string, any>) {
+  update(props: Record<string, any> & {
+    className?: string;
+    style?: string;
+  }) {
 
     const { ref } = props;
     mergeRefs(ref)(this.#target);
