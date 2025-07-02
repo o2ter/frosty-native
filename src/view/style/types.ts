@@ -50,6 +50,7 @@ export type LayoutStyle = {
   alignSelf?: 'auto' | FlexAlignType;
   aspectRatio?: number | string;
   bottom?: DimensionValue;
+  boxSizing?: 'border-box' | 'content-box';
   display?: 'none' | 'flex' | (string & {});
   end?: DimensionValue;
   flex?: number;
@@ -129,6 +130,53 @@ export type TransformsStyle = {
   transformOrigin?: Array<string | number> | string;
 }
 
+export type FilterFunction = OneOf<{
+  brightness: number | string,
+  blur: number | string,
+  contrast: number | string,
+  grayscale: number | string,
+  hueRotate: number | string,
+  invert: number | string,
+  opacity: number | string,
+  saturate: number | string,
+  sepia: number | string,
+  dropShadow: DropShadowValue | string
+}>;
+
+export type DropShadowValue = {
+  offsetX: number | string;
+  offsetY: number | string;
+  standardDeviation?: number | string | undefined;
+  color?: ColorValue | number | undefined;
+};
+
+export type BoxShadowValue = {
+  offsetX: number | string;
+  offsetY: number | string;
+  color?: string;
+  blurRadius?: ColorValue | number;
+  spreadDistance?: number | string;
+  inset?: boolean;
+};
+
+export type BlendMode =
+  | 'normal'
+  | 'multiply'
+  | 'screen'
+  | 'overlay'
+  | 'darken'
+  | 'lighten'
+  | 'color-dodge'
+  | 'color-burn'
+  | 'hard-light'
+  | 'soft-light'
+  | 'difference'
+  | 'exclusion'
+  | 'hue'
+  | 'saturation'
+  | 'color'
+  | 'luminosity';
+
 export type ViewStyle = LayoutStyle & TransformsStyle & {
   backfaceVisibility?: 'visible' | 'hidden';
   backgroundColor?: ColorValue;
@@ -164,12 +212,15 @@ export type ViewStyle = LayoutStyle & TransformsStyle & {
   borderTopStartRadius?: number;
   borderTopWidth?: number;
   borderWidth?: number;
+  outlineColor?: ColorValue;
+  outlineOffset?: number;
+  outlineStyle?: 'solid' | 'dotted' | 'dashed';
+  outlineWidth?: number;
   opacity?: number;
   pointerEvents?: 'box-none' | 'none' | 'box-only' | 'auto';
-  shadowColor?: ColorValue;
-  shadowOffset?: { width: number; height: number };
-  shadowOpacity?: number;
-  shadowRadius?: number;
+  boxShadow?: BoxShadowValue | BoxShadowValue[];
+  filter?: FilterFunction | FilterFunction[];
+  mixBlendMode?: BlendMode;
   cursor?: 'auto' | 'pointer' | (string & {});
 }
 
