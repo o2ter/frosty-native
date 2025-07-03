@@ -24,7 +24,7 @@
 //
 
 import { createContext, PropsWithChildren, useContext } from 'frosty';
-import { useColorScheme, useDocument, useWindow, useWindowMetrics } from 'frosty/web';
+import { useColorScheme, useWindow, useWindowMetrics } from 'frosty/web';
 import { EnvironmentValues } from './types';
 import { Platform } from '../../../platform';
 
