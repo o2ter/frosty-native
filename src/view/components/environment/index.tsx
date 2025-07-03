@@ -55,7 +55,8 @@ const useDefault = Platform.select({
       devicePixelRatio,
       safeAreaInsets,
     } = useWindowMetrics();
-    return {
+
+    if (typeof window === 'undefined') return {
       ...defaults,
       layoutDirection: document?.dir === 'rtl' ? 'rtl' : 'ltr',
       displayScale: devicePixelRatio,
@@ -64,11 +65,32 @@ const useDefault = Platform.select({
       windowWidth: document.documentElement.clientWidth,
       windowHeight: document.documentElement.clientHeight,
       safeAreaInsets,
-      ...typeof navigator === 'undefined' ? {} : {
-        userLocale: navigator.language,
-        languages: navigator.languages || [navigator.language],
-        timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
-      },
+    } as const;
+
+    let height;
+    let width;
+    if (window.visualViewport) {
+      const visualViewport = window.visualViewport;
+      height = Math.round(visualViewport.height * visualViewport.scale);
+      width = Math.round(visualViewport.width * visualViewport.scale);
+    } else {
+      const docEl = window.document.documentElement;
+      height = docEl.clientHeight;
+      width = docEl.clientWidth;
+    }
+
+    return {
+      ...defaults,
+      layoutDirection: document?.dir === 'rtl' ? 'rtl' : 'ltr',
+      displayScale: devicePixelRatio,
+      pixelLength: 1 / devicePixelRatio,
+      colorScheme: useColorScheme(),
+      windowWidth: width,
+      windowHeight: height,
+      safeAreaInsets,
+      userLocale: navigator.language,
+      languages: navigator.languages || [navigator.language],
+      timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
     } as const;
   },
   default: () => defaults,
