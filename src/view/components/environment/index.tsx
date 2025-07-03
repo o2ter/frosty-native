@@ -32,7 +32,7 @@ const Context = createContext<Partial<EnvironmentValues>>({});
 
 const defaults = {
   layoutDirection: 'ltr',
-  displayScale: 1,
+  pixelDensity: 1,
   pixelLength: 1,
   colorScheme: 'light',
   userLocale: 'en-US',
@@ -72,7 +72,7 @@ const useDefault = Platform.select({
     return {
       ...defaults,
       layoutDirection: document?.dir === 'rtl' ? 'rtl' : 'ltr',
-      displayScale: devicePixelRatio,
+      pixelDensity: devicePixelRatio,
       pixelLength: 1 / devicePixelRatio,
       colorScheme: useColorScheme(),
       displayWidth: width,

@@ -136,14 +136,14 @@ fun LocaleListCompat.toList(): List<Locale> {
 internal fun FTRoot(activity: FrostyNativeActivity, rootView: FTNodeState) {
     val systemIsDarkTheme = isSystemInDarkTheme()
     var darkTheme by remember { mutableStateOf(systemIsDarkTheme) }
-    val displayScale = activity.engine.context.resources.displayMetrics.density
+    val pixelDensity = activity.engine.context.resources.displayMetrics.density
     val locales = getLocales(LocalConfiguration.current)
     val layoutDirection = LocalLayoutDirection.current
     val timeZone = TimeZone.getDefault()
     activity.setEnvironment(mapOf(
         "layoutDirection" to layoutDirection.name.lowercase(),
-        "displayScale" to displayScale,
-        "pixelLength" to 1 / displayScale,
+        "pixelDensity" to pixelDensity,
+        "pixelLength" to 1 / pixelDensity,
         "colorScheme" to if (darkTheme) "dark" else "light",
         "userLocale" to locales[0].toString(),
         "languages" to locales.toList().map { it.toString() },

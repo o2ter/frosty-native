@@ -51,7 +51,7 @@ struct WindowDimensions: Equatable {
 struct EnvironmentData: Equatable {
     
     var layoutDirection: LayoutDirection
-    var displayScale: CGFloat
+    var pixelDensity: CGFloat
     var pixelLength: CGFloat
     var colorScheme: ColorScheme
     var locale: Locale
@@ -60,7 +60,7 @@ struct EnvironmentData: Equatable {
     func toJSValue() -> SwiftJS.Value {
         return [
             "layoutDirection": SwiftJS.Value(layoutDirection.toString()),
-            "displayScale": SwiftJS.Value(displayScale),
+            "pixelDensity": SwiftJS.Value(pixelDensity),
             "pixelLength": SwiftJS.Value(pixelLength),
             "colorScheme": SwiftJS.Value(colorScheme.toString()),
             "userLocale": SwiftJS.Value(locale.identifier),
@@ -101,7 +101,7 @@ public struct FTRoot: View {
     var colorSchemeContrast
     
     @Environment(\.displayScale)
-    var displayScale
+    var pixelDensity
     
     @Environment(\.pixelLength)
     var pixelLength
@@ -133,7 +133,7 @@ public struct FTRoot: View {
     var environment: EnvironmentData {
         EnvironmentData(
             layoutDirection: layoutDirection,
-            displayScale: displayScale,
+            pixelDensity: pixelDensity,
             pixelLength: pixelLength,
             colorScheme: colorScheme,
             locale: locale,

@@ -25,7 +25,7 @@
 
 export type EnvironmentValues = {
   layoutDirection: 'ltr' | 'rtl';
-  displayScale: number;
+  pixelDensity: number;
   pixelLength: number;
   colorScheme: 'light' | 'dark' | (string & {});
   userLocale: string;
