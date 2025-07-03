@@ -53,8 +53,6 @@ const useDefault = Platform.select({
     const document = useDocument();
     const {
       devicePixelRatio,
-      innerWidth,
-      innerHeight,
       safeAreaInsets,
     } = useWindowMetrics();
     return {
@@ -63,8 +61,8 @@ const useDefault = Platform.select({
       displayScale: devicePixelRatio,
       pixelLength: 1 / devicePixelRatio,
       colorScheme: useColorScheme(),
-      windowWidth: innerWidth,
-      windowHeight: innerHeight,
+      windowWidth: document.documentElement.clientWidth,
+      windowHeight: document.documentElement.clientHeight,
       safeAreaInsets,
       ...typeof navigator === 'undefined' ? {} : {
         userLocale: navigator.language,
