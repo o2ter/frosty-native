@@ -24,7 +24,7 @@
 //
 
 import { createContext, PropsWithChildren, useContext } from 'frosty';
-import { useColorScheme, useDocument, useWindowMetrics } from 'frosty/web';
+import { useColorScheme, useDocument, useWindow, useWindowMetrics } from 'frosty/web';
 import { EnvironmentValues } from './types';
 import { Platform } from '../../../platform';
 
@@ -50,22 +50,12 @@ const defaults = {
 
 const useDefault = Platform.select({
   web: () => {
+    const window = useWindow();
     const document = useDocument();
     const {
       devicePixelRatio,
       safeAreaInsets,
     } = useWindowMetrics();
-
-    if (typeof window === 'undefined') return {
-      ...defaults,
-      layoutDirection: document?.dir === 'rtl' ? 'rtl' : 'ltr',
-      displayScale: devicePixelRatio,
-      pixelLength: 1 / devicePixelRatio,
-      colorScheme: useColorScheme(),
-      windowWidth: document.documentElement.clientWidth,
-      windowHeight: document.documentElement.clientHeight,
-      safeAreaInsets,
-    } as const;
 
     let height;
     let width;
@@ -88,9 +78,11 @@ const useDefault = Platform.select({
       windowWidth: width,
       windowHeight: height,
       safeAreaInsets,
-      userLocale: navigator.language,
-      languages: navigator.languages || [navigator.language],
-      timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+      ...typeof navigator === 'undefined' ? {} : {
+        userLocale: navigator.language,
+        languages: navigator.languages || [navigator.language],
+        timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+      },
     } as const;
   },
   default: () => defaults,
