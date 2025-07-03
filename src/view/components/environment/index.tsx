@@ -51,7 +51,6 @@ const defaults = {
 const useDefault = Platform.select({
   web: () => {
     const window = useWindow();
-    const document = useDocument();
     const {
       devicePixelRatio,
       safeAreaInsets,
@@ -71,7 +70,7 @@ const useDefault = Platform.select({
 
     return {
       ...defaults,
-      layoutDirection: document?.dir === 'rtl' ? 'rtl' : 'ltr',
+      layoutDirection: window.document?.dir === 'rtl' ? 'rtl' : 'ltr',
       pixelDensity: devicePixelRatio,
       pixelLength: 1 / devicePixelRatio,
       colorScheme: useColorScheme(),
