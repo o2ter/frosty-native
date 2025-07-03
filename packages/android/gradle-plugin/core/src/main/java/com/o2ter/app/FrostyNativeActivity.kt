@@ -154,8 +154,8 @@ internal fun FTRoot(activity: FrostyNativeActivity, rootView: FTNodeState) {
             modifier = Modifier.fillMaxSize()
                 .onSizeChanged { size ->
                     activity.setEnvironment(mapOf(
-                        "windowWidth" to size.width,
-                        "windowHeight" to size.height,
+                        "displayWidth" to size.width,
+                        "displayHeight" to size.height,
                     ))
                 }
         ) { safeAreaInset ->

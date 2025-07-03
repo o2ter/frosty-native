@@ -36,8 +36,8 @@ struct WindowDimensions: Equatable {
     
     func toJSValue() -> SwiftJS.Value {
         return [
-            "windowWidth": SwiftJS.Value(size.width),
-            "windowHeight": SwiftJS.Value(size.height),
+            "displayWidth": SwiftJS.Value(size.width),
+            "displayHeight": SwiftJS.Value(size.height),
             "safeAreaInsets": [
                 "top": SwiftJS.Value(safeAreaInsets.top),
                 "left": SwiftJS.Value(safeAreaInsets.leading),

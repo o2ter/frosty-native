@@ -31,8 +31,8 @@ export type EnvironmentValues = {
   userLocale: string;
   languages: string[];
   timeZone: string;
-  windowWidth: number;
-  windowHeight: number;
+  displayWidth: number;
+  displayHeight: number;
   safeAreaInsets: {
     top: number;
     left: number;

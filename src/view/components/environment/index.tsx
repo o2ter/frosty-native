@@ -38,8 +38,8 @@ const defaults = {
   userLocale: 'en-US',
   languages: ['en-US'],
   timeZone: 'UTC',
-  windowWidth: 0,
-  windowHeight: 0,
+  displayWidth: 0,
+  displayHeight: 0,
   safeAreaInsets: {
     top: 0,
     left: 0,
@@ -75,8 +75,8 @@ const useDefault = Platform.select({
       displayScale: devicePixelRatio,
       pixelLength: 1 / devicePixelRatio,
       colorScheme: useColorScheme(),
-      windowWidth: width,
-      windowHeight: height,
+      displayWidth: width,
+      displayHeight: height,
       safeAreaInsets,
       ...typeof navigator === 'undefined' ? {} : {
         userLocale: navigator.language,
