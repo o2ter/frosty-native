@@ -24,68 +24,10 @@
 //
 
 import { createContext, PropsWithChildren, useContext } from 'frosty';
-import { useColorScheme, useWindow, useWindowMetrics } from 'frosty/web';
 import { EnvironmentValues } from './types';
-import { Platform } from '../../../platform';
+import { useDefault } from './defaults';
 
 const Context = createContext<Partial<EnvironmentValues>>({});
-
-const defaults = {
-  layoutDirection: 'ltr',
-  pixelDensity: 1,
-  pixelLength: 1,
-  colorScheme: 'light',
-  userLocale: 'en-US',
-  languages: ['en-US'],
-  timeZone: 'UTC',
-  displayWidth: 0,
-  displayHeight: 0,
-  safeAreaInsets: {
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
-  }
-} as const;
-
-const useDefault = Platform.select({
-  web: () => {
-    const window = useWindow();
-    const { document, visualViewport } = window;
-    const {
-      devicePixelRatio,
-      safeAreaInsets,
-    } = useWindowMetrics();
-
-    let height;
-    let width;
-    if (visualViewport) {
-      height = Math.round(visualViewport.height * visualViewport.scale);
-      width = Math.round(visualViewport.width * visualViewport.scale);
-    } else {
-      const docEl = document.documentElement;
-      height = docEl.clientHeight;
-      width = docEl.clientWidth;
-    }
-
-    return {
-      ...defaults,
-      layoutDirection: document.dir === 'rtl' ? 'rtl' : 'ltr',
-      pixelDensity: devicePixelRatio,
-      pixelLength: 1 / devicePixelRatio,
-      colorScheme: useColorScheme(),
-      displayWidth: width,
-      displayHeight: height,
-      safeAreaInsets,
-      ...typeof navigator === 'undefined' ? {} : {
-        userLocale: navigator.language,
-        languages: navigator.languages || [navigator.language],
-        timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
-      },
-    } as const;
-  },
-  default: () => defaults,
-});
 
 export const useEnvironment = () => ({
   ...useDefault(),

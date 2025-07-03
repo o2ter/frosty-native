@@ -1,5 +1,5 @@
 //
-//  types.ts
+//  defaults.tsx
 //
 //  The MIT License
 //  Copyright (c) 2021 - 2025 O2ter Limited. All rights reserved.
@@ -23,38 +23,6 @@
 //  THE SOFTWARE.
 //
 
-export const defaultEnvironmentValues = {
-  layoutDirection: 'ltr',
-  pixelDensity: 1,
-  pixelLength: 1,
-  colorScheme: 'light',
-  userLocale: 'en-US',
-  languages: ['en-US'],
-  timeZone: 'UTC',
-  displayWidth: 0,
-  displayHeight: 0,
-  safeAreaInsets: {
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
-  }
-} as const;
+import { defaultEnvironmentValues } from './types';
 
-export type EnvironmentValues = {
-  layoutDirection: 'ltr' | 'rtl';
-  pixelDensity: number;
-  pixelLength: number;
-  colorScheme: 'light' | 'dark' | (string & {});
-  userLocale: string;
-  languages: string[];
-  timeZone: string;
-  displayWidth: number;
-  displayHeight: number;
-  safeAreaInsets: {
-    top: number;
-    left: number;
-    right: number;
-    bottom: number;
-  };
-};
+export const useDefault = () => defaultEnvironmentValues;
