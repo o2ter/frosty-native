@@ -51,6 +51,7 @@ const defaults = {
 const useDefault = Platform.select({
   web: () => {
     const window = useWindow();
+    const { document, visualViewport } = window;
     const {
       devicePixelRatio,
       safeAreaInsets,
@@ -58,19 +59,18 @@ const useDefault = Platform.select({
 
     let height;
     let width;
-    if (window.visualViewport) {
-      const visualViewport = window.visualViewport;
+    if (visualViewport) {
       height = Math.round(visualViewport.height * visualViewport.scale);
       width = Math.round(visualViewport.width * visualViewport.scale);
     } else {
-      const docEl = window.document.documentElement;
+      const docEl = document.documentElement;
       height = docEl.clientHeight;
       width = docEl.clientWidth;
     }
 
     return {
       ...defaults,
-      layoutDirection: window.document?.dir === 'rtl' ? 'rtl' : 'ltr',
+      layoutDirection: document.dir === 'rtl' ? 'rtl' : 'ltr',
       pixelDensity: devicePixelRatio,
       pixelLength: 1 / devicePixelRatio,
       colorScheme: useColorScheme(),
