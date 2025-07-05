@@ -30,9 +30,61 @@ import { useFlattenStyle } from '../../style/utils';
 export const useCssStyle = <S extends ViewStyle | TextStyle | ImageStyle>(
   style: StyleProp<S>
 ): ExtendedCSSProperties => {
-  const { } = useFlattenStyle(style);
+  const {
+    rowGap,
+    columnGap,
+    top,
+    bottom,
+    left,
+    right,
+    marginTop,
+    marginBottom,
+    marginLeft,
+    marginRight,
+    paddingTop,
+    paddingBottom,
+    paddingLeft,
+    paddingRight,
+    borderTopColor,
+    borderBottomColor,
+    borderLeftColor,
+    borderRightColor,
+    borderTopWidth,
+    borderBottomWidth,
+    borderLeftWidth,
+    borderRightWidth,
+    borderTopLeftRadius,
+    borderBottomLeftRadius,
+    borderTopRightRadius,
+    borderBottomRightRadius,
+  } = useFlattenStyle(style);
 
   return {
-
+    rowGap,
+    columnGap,
+    top,
+    bottom,
+    left,
+    right,
+    marginTop,
+    marginBottom,
+    marginLeft,
+    marginRight,
+    paddingTop,
+    paddingBottom,
+    paddingLeft,
+    paddingRight,
+    borderTopColor,
+    borderBottomColor,
+    borderLeftColor,
+    borderRightColor,
+    borderTopWidth,
+    borderBottomWidth,
+    borderLeftWidth,
+    borderRightWidth,
+    borderTopLeftRadius,
+    borderBottomLeftRadius,
+    borderTopRightRadius,
+    borderBottomRightRadius,
   };
 }
