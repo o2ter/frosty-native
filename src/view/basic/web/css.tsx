@@ -1,5 +1,5 @@
 //
-//  image.tsx
+//  css.tsx
 //
 //  The MIT License
 //  Copyright (c) 2021 - 2025 O2ter Limited. All rights reserved.
@@ -23,32 +23,16 @@
 //  THE SOFTWARE.
 //
 
-import { ComponentType, useRef, useRefHandle } from 'frosty';
-import { ImageProps } from '../../types';
-import { useCssStyle } from './css';
+import { StyleProp, ExtendedCSSProperties } from 'frosty';
+import { ImageStyle, TextStyle, ViewStyle } from '../../style/types';
+import { useFlattenStyle } from '../../style/utils';
 
-export const Image: ComponentType<ImageProps> = ({ ref, style, children }) => {
+export const useCssStyle = <S extends ViewStyle | TextStyle | ImageStyle>(
+  style: StyleProp<S>
+): ExtendedCSSProperties => {
+  const { } = useFlattenStyle(style);
 
-  const targetRef = useRef<HTMLDivElement>();
-  useRefHandle(ref, () => ({
-    get _target() { return targetRef.current; }
-  }), null);
+  return {
 
-  const cssStyle = useCssStyle([
-    {
-      display: 'flex',
-      flexDirection: 'column',
-      width: '100%',
-      height: '100%',
-    },
-    style,
-  ]);
-
-  return (
-    <div
-      ref={targetRef}
-      style={cssStyle}>
-      {children}
-    </div>
-  );
-};
+  };
+}

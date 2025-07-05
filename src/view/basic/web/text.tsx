@@ -28,8 +28,8 @@ import { ComponentType, mergeRefs, useRef, useRefHandle } from 'frosty';
 import { _createNativeElement } from 'frosty/_native';
 import { DOMNativeNode, type _DOMRenderer } from 'frosty/web';
 import { TextViewProps } from '../../types';
-import { useFlattenStyle } from '../../style/utils';
 import { useTextStyle } from '../../components';
+import { useCssStyle } from './css';
 
 export class DOMTextView extends DOMNativeNode {
 
@@ -76,22 +76,22 @@ export const Text: ComponentType<TextViewProps> = ({ ref, style, children }) => 
     get _target() { return targetRef.current; }
   }), null);
 
-  const _style = useFlattenStyle([
+  const cssStyle = useCssStyle([
     {
-        backgroundColor: 'transparent',
-        borderWidth: 0,
-        borderStyle: 'solid',
-        borderColor: 'black',
-        boxSizing: 'border-box',
-        color: 'black',
-        display: 'inline',
-        fontFamily: 'System',
-        fontSize: 14,
-        margin: 0,
-        padding: 0,
-        position: 'relative',
-        textAlign: 'start',
-        textDecorationLine: 'none',
+      backgroundColor: 'transparent',
+      borderWidth: 0,
+      borderStyle: 'solid',
+      borderColor: 'black',
+      boxSizing: 'border-box',
+      color: 'black',
+      display: 'inline',
+      fontFamily: 'System',
+      fontSize: 14,
+      margin: 0,
+      padding: 0,
+      position: 'relative',
+      textAlign: 'start',
+      textDecorationLine: 'none',
     },
     useTextStyle(),
     style,
@@ -99,11 +99,14 @@ export const Text: ComponentType<TextViewProps> = ({ ref, style, children }) => 
 
   return _createNativeElement(DOMTextView, {
     ref: targetRef,
-    style: [{
-      listStyle: 'none',
-      whiteSpace: 'pre-wrap',
-      wordWrap: 'break-word',
-    }],
+    style: [
+      {
+        listStyle: 'none',
+        whiteSpace: 'pre-wrap',
+        wordWrap: 'break-word',
+      },
+      cssStyle,
+    ],
     children
   });
 };
