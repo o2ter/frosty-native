@@ -180,9 +180,6 @@ export type BlendMode =
 export type ViewStyle = LayoutStyle & TransformsStyle & {
   backfaceVisibility?: 'visible' | 'hidden';
   backgroundColor?: ColorValue;
-  borderBlockColor?: ColorValue;
-  borderBlockEndColor?: ColorValue;
-  borderBlockStartColor?: ColorValue;
   borderBottomColor?: ColorValue;
   borderBottomEndRadius?: number;
   borderBottomLeftRadius?: number;
