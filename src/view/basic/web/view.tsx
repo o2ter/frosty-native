@@ -34,34 +34,36 @@ export const View: ComponentType<ViewProps> = ({ ref, style, children }) => {
     get _target() { return targetRef.current; }
   }), null);
 
-  const _style = useFlattenStyle(style);
+  const _style = useFlattenStyle([
+    {
+      alignContent: 'flex-start',
+      alignItems: 'stretch',
+      backgroundColor: 'transparent',
+      borderWidth: 0,
+      borderStyle: 'solid',
+      borderColor: 'black',
+      boxSizing: 'border-box',
+      display: 'flex',
+      flexBasis: 'auto',
+      flexDirection: 'column',
+      flexShrink: 0,
+      margin: 0,
+      minHeight: 0,
+      minWidth: 0,
+      padding: 0,
+      position: 'relative',
+      textDecorationLine: 'none',
+      zIndex: 0,
+    },
+    style,
+  ]);
 
   return (
     <div
       ref={targetRef}
-      style={[
-        {
-          alignContent: 'flex-start',
-          alignItems: 'stretch',
-          backgroundColor: 'transparent',
-          borderWidth: 0,
-          borderStyle: 'solid',
-          borderColor: 'black',
-          boxSizing: 'border-box',
-          display: 'flex',
-          flexBasis: 'auto',
-          flexDirection: 'column',
-          flexShrink: 0,
-          listStyle: 'none',
-          margin: 0,
-          minHeight: 0,
-          minWidth: 0,
-          padding: 0,
-          position: 'relative',
-          textDecoration: 'none',
-          zIndex: 0,
-        },
-      ]}>
+      style={[{
+        listStyle: 'none',
+      }]}>
       {children}
     </div>
   );

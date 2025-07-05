@@ -34,17 +34,20 @@ export const Image: ComponentType<ImageProps> = ({ ref, style, children }) => {
     get _target() { return targetRef.current; }
   }), null);
 
-  const _style = useFlattenStyle(style);
+  const _style = useFlattenStyle([
+    {
+      display: 'flex',
+      flexDirection: 'column',
+      width: '100%',
+      height: '100%',
+    },
+    style,
+  ]);
 
   return (
     <div
       ref={targetRef}
-      style={{
-        display: 'flex',
-        flexDirection: 'column',
-        width: '100%',
-        height: '100%',
-      }}>
+      style={[]}>
       {children}
     </div>
   );

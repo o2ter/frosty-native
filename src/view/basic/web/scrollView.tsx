@@ -34,18 +34,21 @@ export const ScrollView: ComponentType<ScrollViewProps> = ({ ref, style, content
     get _target() { return targetRef.current; }
   }), null);
 
-  const _style = useFlattenStyle(style);
+  const _style = useFlattenStyle([
+    {
+      display: 'flex',
+      flexDirection: 'column',
+      width: '100%',
+      height: '100%',
+    },
+    style,
+  ]);
   const _contentContainerStyle = useFlattenStyle(contentContainerStyle);
 
   return (
     <div
       ref={targetRef}
-      style={{
-        display: 'flex',
-        flexDirection: 'column',
-        width: '100%',
-        height: '100%',
-      }}>
+      style={[]}>
       {children}
     </div>
   );

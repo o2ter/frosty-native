@@ -76,12 +76,8 @@ export const Text: ComponentType<TextViewProps> = ({ ref, style, children }) => 
     get _target() { return targetRef.current; }
   }), null);
 
-  const _style = useFlattenStyle([useTextStyle(), style]);
-
-  return _createNativeElement(DOMTextView, {
-    ref: targetRef,
-    style: [
-      {
+  const _style = useFlattenStyle([
+    {
         backgroundColor: 'transparent',
         borderWidth: 0,
         borderStyle: 'solid',
@@ -91,16 +87,23 @@ export const Text: ComponentType<TextViewProps> = ({ ref, style, children }) => 
         display: 'inline',
         fontFamily: 'System',
         fontSize: 14,
-        listStyle: 'none',
         margin: 0,
         padding: 0,
         position: 'relative',
         textAlign: 'start',
-        textDecoration: 'none',
-        whiteSpace: 'pre-wrap',
-        wordWrap: 'break-word',
-      }
-    ],
+        textDecorationLine: 'none',
+    },
+    useTextStyle(),
+    style,
+  ]);
+
+  return _createNativeElement(DOMTextView, {
+    ref: targetRef,
+    style: [{
+      listStyle: 'none',
+      whiteSpace: 'pre-wrap',
+      wordWrap: 'break-word',
+    }],
     children
   });
 };

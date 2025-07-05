@@ -87,27 +87,29 @@ export const TextInput: ComponentType<TextInputProps> = ({ ref, style, multiline
     get _target() { return targetRef.current; }
   }), null);
 
-  const _style = useFlattenStyle([useTextStyle(), style]);
+  const _style = useFlattenStyle([
+    {
+      backgroundColor: 'transparent',
+      borderWidth: 0,
+      borderStyle: 'solid',
+      borderColor: 'black',
+      borderRadius: 0,
+      boxSizing: 'border-box',
+      fontFamily: 'System',
+      fontSize: 14,
+      margin: 0,
+      padding: 0,
+      resize: 'none',
+    },
+    useTextStyle(),
+    style,
+  ]);
 
   return _createNativeElement(
     multiline ? DOMMultilineTextInput : DOMTextInput,
     {
       ref: targetRef,
-      style: [
-        {
-          backgroundColor: 'transparent',
-          borderWidth: 0,
-          borderStyle: 'solid',
-          borderColor: 'black',
-          borderRadius: 0,
-          boxSizing: 'border-box',
-          fontFamily: 'System',
-          fontSize: 14,
-          margin: 0,
-          padding: 0,
-          resize: 'none',
-        }
-      ],
+      style: [],
       children,
     }
   );
