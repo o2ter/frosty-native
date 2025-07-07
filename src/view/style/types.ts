@@ -39,7 +39,7 @@ export type DimensionValue =
   | number
   | `${number}%`;
 
-const directions = [
+const _directions = [
   'Bottom',
   'End',
   'Left',
@@ -48,17 +48,17 @@ const directions = [
   'Top',
 ] as const;
 
-const extendedDirections = [
-  ...directions,
+const _extendedDirections = [
+  ..._directions,
   'Horizontal',
   'Vertical',
 ] as const;
-  
-export const paddingKeys = ['padding', ..._.map(extendedDirections, d => `padding${d}` as const)] as const;
-export const marginKeys = ['margin', ..._.map(extendedDirections, d => `margin${d}` as const)] as const;
-export const borderColorKeys = ['borderColor', ..._.map(directions, d => `border${d}Color` as const)] as const;
-export const borderWidthKeys = ['borderWidth', ..._.map(directions, d => `border${d}Width` as const)] as const;
-export const borderRadiusKeys = [
+
+const _paddingKeys = ['padding', ..._.map(_extendedDirections, d => `padding${d}` as const)] as const;
+const _marginKeys = ['margin', ..._.map(_extendedDirections, d => `margin${d}` as const)] as const;
+const _borderColorKeys = ['borderColor', ..._.map(_directions, d => `border${d}Color` as const)] as const;
+const _borderWidthKeys = ['borderWidth', ..._.map(_directions, d => `border${d}Width` as const)] as const;
+const _borderRadiusKeys = [
   'borderRadius',
   ..._.flatMap([
     'Bottom',
@@ -122,9 +122,9 @@ export type LayoutStyle = {
   width?: DimensionValue;
   zIndex?: number;
 } & {
-  [x in typeof paddingKeys[number]]?: DimensionValue;
+  [x in typeof _paddingKeys[number]]?: DimensionValue;
 } & {
-  [x in typeof marginKeys[number]]?: DimensionValue;
+  [x in typeof _marginKeys[number]]?: DimensionValue;
 }
 
 type OneOf<T, K extends keyof T = keyof T> = K extends keyof T
@@ -213,11 +213,11 @@ export type ViewStyle = LayoutStyle & TransformsStyle & {
   mixBlendMode?: BlendMode;
   cursor?: 'auto' | 'pointer' | (string & {});
 } & {
-  [x in typeof borderColorKeys[number]]?: ColorValue;
+  [x in typeof _borderColorKeys[number]]?: ColorValue;
 } & {
-  [x in typeof borderWidthKeys[number]]?: number;
+  [x in typeof _borderWidthKeys[number]]?: number;
 } & {
-  [x in typeof borderRadiusKeys[number]]?: number;
+  [x in typeof _borderRadiusKeys[number]]?: number;
 }
 
 type TextDecorationLine =
