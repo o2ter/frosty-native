@@ -23,6 +23,8 @@
 //  THE SOFTWARE.
 //
 
+import _ from 'lodash';
+
 export type ColorValue = string;
 
 type FlexAlignType =
@@ -36,6 +38,38 @@ export type DimensionValue =
   | 'auto'
   | number
   | `${number}%`;
+
+const directions = [
+  'Bottom',
+  'End',
+  'Left',
+  'Right',
+  'Start',
+  'Top',
+] as const;
+
+const extendedDirections = [
+  ...directions,
+  'Horizontal',
+  'Vertical',
+] as const;
+  
+export const paddingKeys = ['padding', ..._.map(extendedDirections, d => `padding${d}` as const)] as const;
+export const marginKeys = ['margin', ..._.map(extendedDirections, d => `margin${d}` as const)] as const;
+export const borderColorKeys = ['borderColor', ..._.map(directions, d => `border${d}Color` as const)] as const;
+export const borderWidthKeys = ['borderWidth', ..._.map(directions, d => `border${d}Width` as const)] as const;
+export const borderRadiusKeys = [
+  'borderRadius',
+  ..._.flatMap([
+    'Bottom',
+    'Top',
+  ] as const, v => _.map([
+    'End',
+    'Left',
+    'Right',
+    'Start',
+  ] as const, d => `border${v}${d}Radius` as const))
+] as const;
 
 export type LayoutStyle = {
   alignContent?:
@@ -76,35 +110,21 @@ export type LayoutStyle = {
   | 'space-around'
   | 'space-evenly';
   left?: DimensionValue;
-  margin?: DimensionValue;
-  marginBottom?: DimensionValue;
-  marginEnd?: DimensionValue;
-  marginHorizontal?: DimensionValue;
-  marginLeft?: DimensionValue;
-  marginRight?: DimensionValue;
-  marginStart?: DimensionValue;
-  marginTop?: DimensionValue;
-  marginVertical?: DimensionValue;
   maxHeight?: DimensionValue;
   maxWidth?: DimensionValue;
   minHeight?: DimensionValue;
   minWidth?: DimensionValue;
   overflow?: 'visible' | 'hidden';
-  padding?: DimensionValue;
-  paddingBottom?: DimensionValue;
-  paddingEnd?: DimensionValue;
-  paddingHorizontal?: DimensionValue;
-  paddingLeft?: DimensionValue;
-  paddingRight?: DimensionValue;
-  paddingStart?: DimensionValue;
-  paddingTop?: DimensionValue;
-  paddingVertical?: DimensionValue;
   position?: 'absolute' | 'relative' | 'static' | (string & {});
   right?: DimensionValue;
   start?: DimensionValue;
   top?: DimensionValue;
   width?: DimensionValue;
   zIndex?: number;
+} & {
+  [x in typeof paddingKeys[number]]?: DimensionValue;
+} & {
+  [x in typeof marginKeys[number]]?: DimensionValue;
 }
 
 type OneOf<T, K extends keyof T = keyof T> = K extends keyof T
@@ -180,35 +200,8 @@ export type BlendMode =
 export type ViewStyle = LayoutStyle & TransformsStyle & {
   backfaceVisibility?: 'visible' | 'hidden';
   backgroundColor?: ColorValue;
-  borderBottomColor?: ColorValue;
-  borderBottomEndRadius?: number;
-  borderBottomLeftRadius?: number;
-  borderBottomRightRadius?: number;
-  borderBottomStartRadius?: number;
-  borderBottomWidth?: number;
-  borderColor?: ColorValue;
   borderCurve?: 'circular' | 'continuous';
-  borderEndColor?: ColorValue;
-  borderEndEndRadius?: number;
-  borderEndStartRadius?: number;
-  borderEndWidth?: number;
-  borderLeftColor?: ColorValue;
-  borderLeftWidth?: number;
-  borderRadius?: number;
-  borderRightColor?: ColorValue;
-  borderRightWidth?: number;
-  borderStartColor?: ColorValue;
-  borderStartEndRadius?: number;
-  borderStartStartRadius?: number;
   borderStyle?: 'solid' | 'dotted' | 'dashed';
-  borderStartWidth?: number;
-  borderTopColor?: ColorValue;
-  borderTopEndRadius?: number;
-  borderTopLeftRadius?: number;
-  borderTopRightRadius?: number;
-  borderTopStartRadius?: number;
-  borderTopWidth?: number;
-  borderWidth?: number;
   outlineColor?: ColorValue;
   outlineOffset?: number;
   outlineStyle?: 'solid' | 'dotted' | 'dashed';
@@ -219,6 +212,12 @@ export type ViewStyle = LayoutStyle & TransformsStyle & {
   filter?: FilterFunction | FilterFunction[];
   mixBlendMode?: BlendMode;
   cursor?: 'auto' | 'pointer' | (string & {});
+} & {
+  [x in typeof borderColorKeys[number]]?: ColorValue;
+} & {
+  [x in typeof borderWidthKeys[number]]?: number;
+} & {
+  [x in typeof borderRadiusKeys[number]]?: number;
 }
 
 type TextDecorationLine =
