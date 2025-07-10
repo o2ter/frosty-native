@@ -51,6 +51,28 @@ app.express().get('*', (req, res) => {
     <html>
       <head>
         <script src="/main_bundle.js" defer />
+        <style>{`
+html {
+  display: flex;
+  width: 100%;
+}
+
+body, #root {
+  width: 100%;
+}
+
+body {
+  -webkit-font-smoothing: auto;
+  -moz-osx-font-smoothing: auto;
+  font-smooth: auto;
+}
+
+#root {
+  display: flex;
+  min-height: 100vh;
+  min-height: 100dvh;
+}
+`}</style>
       </head>
       <body>
         <div id="root"><App /></div>
