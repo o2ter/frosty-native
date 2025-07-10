@@ -7,8 +7,8 @@ export const App = () => {
   console.log(env);
   return (
     <View style={{
-      minWidth: '100%',
-      minHeight: '100%',
+      width: '100%',
+      height: '100%',
       flexDirection: 'row',
     }}>
       <View style={{

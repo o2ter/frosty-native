@@ -59,6 +59,8 @@ html {
 
 body, #root {
   width: 100%;
+  margin: 0;
+  padding: 0;
 }
 
 body {
@@ -69,6 +71,8 @@ body {
 
 #root {
   display: flex;
+  height: 100vh;
+  height: 100dvh;
   min-height: 100vh;
   min-height: 100dvh;
 }
