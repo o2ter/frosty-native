@@ -7,19 +7,17 @@ export const App = () => {
   console.log(env);
   return (
     <View style={{
-      width: '100%',
-      height: '100%',
+      minWidth: '100%',
+      minHeight: '100%',
       flexDirection: 'row',
     }}>
       <View style={{
         flex: 1,
-        height: '100%',
         backgroundColor: 'red',
       }}>
       </View>
       <View style={{
         flex: 1,
-        height: '100%',
         backgroundColor: 'blue',
       }}>
       </View>
