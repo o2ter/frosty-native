@@ -173,8 +173,8 @@ export type DropShadowValue = {
 export type BoxShadowValue = {
   offsetX: number | string;
   offsetY: number | string;
-  color?: string;
-  blurRadius?: ColorValue | number;
+  color?: ColorValue;
+  blurRadius?: number | string;
   spreadDistance?: number | string;
   inset?: boolean;
 };
