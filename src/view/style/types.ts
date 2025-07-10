@@ -131,36 +131,38 @@ type OneOf<T, K extends keyof T = keyof T> = K extends keyof T
   ? { [P in K]: P extends Exclude<keyof T, K> ? never : T[K] }
   : never;
 
+export type TransformFunction = OneOf<{
+  perspective: number;
+  rotate: string;
+  rotateX: string;
+  rotateY: string;
+  rotateZ: string;
+  scale: number;
+  scaleX: number;
+  scaleY: number;
+  translateX: number | `${number}%`;
+  translateY: number | `${number}%`;
+  skewX: string;
+  skewY: string;
+  matrix: number[];
+}>;
+
 export type TransformsStyle = {
-  transform?: OneOf<{
-    perspective: number;
-    rotate: string;
-    rotateX: string;
-    rotateY: string;
-    rotateZ: string;
-    scale: number;
-    scaleX: number;
-    scaleY: number;
-    translateX: number | `${number}%`;
-    translateY: number | `${number}%`;
-    skewX: string;
-    skewY: string;
-    matrix: number[];
-  }>[];
-  transformOrigin?: Array<string | number> | string;
+  transform?: TransformFunction | TransformFunction[];
+  transformOrigin?: Array<string | number> | string | number;
 }
 
 export type FilterFunction = OneOf<{
-  brightness: number | string,
-  blur: number | string,
-  contrast: number | string,
-  grayscale: number | string,
-  hueRotate: number | string,
-  invert: number | string,
-  opacity: number | string,
-  saturate: number | string,
-  sepia: number | string,
-  dropShadow: DropShadowValue | string
+  brightness: number | string;
+  blur: number | string;
+  contrast: number | string;
+  grayscale: number | string;
+  hueRotate: number | string;
+  invert: number | string;
+  opacity: number | string;
+  saturate: number | string;
+  sepia: number | string;
+  dropShadow: DropShadowValue | string;
 }>;
 
 export type DropShadowValue = {

@@ -23,9 +23,45 @@
 //  THE SOFTWARE.
 //
 
+import _ from 'lodash';
 import { StyleProp, ExtendedCSSProperties } from 'frosty';
-import { ImageStyle, TextStyle, ViewStyle } from '../../style/types';
+import { BoxShadowValue, FilterFunction, ImageStyle, TextStyle, TransformFunction, ViewStyle } from '../../style/types';
 import { useFlattenStyle } from '../../style/utils';
+
+const encodeTransform = (value: TransformFunction | TransformFunction[]): string | undefined => {
+  if (_.isArray(value)) return _.compact(_.map(value, x => encodeTransform(x))).join(' ');
+  return;
+}
+
+const encodeTransformOrigin = (value: Array<string | number> | string | number): string => {
+  if (_.isArray(value)) return _.map(value, x => encodeTransformOrigin(x)).join(' ');
+  return value && _.isNumber(value) ? `${value}px` : `${value}`;
+}
+
+const encodeFilter = (value: FilterFunction | FilterFunction[]): string | undefined => {
+  if (_.isArray(value)) return _.compact(_.map(value, x => encodeFilter(x))).join(' ');
+  return;
+}
+
+const encodeBoxShadow = (value: BoxShadowValue | BoxShadowValue[]): string => {
+  if (_.isArray(value)) return _.map(value, x => encodeBoxShadow(x)).join(',');
+  const {
+    offsetX,
+    offsetY,
+    color = 'black',
+    blurRadius = 0,
+    spreadDistance = 0,
+    inset = false,
+  } = value;
+  return _.compact([
+    inset && 'inset',
+    offsetX && _.isNumber(offsetX) ? `${offsetX}px` : offsetX,
+    offsetY && _.isNumber(offsetY) ? `${offsetY}px` : offsetY,
+    blurRadius && _.isNumber(blurRadius) ? `${blurRadius}px` : blurRadius,
+    spreadDistance && _.isNumber(spreadDistance) ? `${spreadDistance}px` : spreadDistance,
+    color,
+  ]).join(' ');
+}
 
 export const useCssStyle = <S extends ViewStyle | TextStyle | ImageStyle>(
   style: StyleProp<S>
@@ -60,6 +96,8 @@ export const useCssStyle = <S extends ViewStyle | TextStyle | ImageStyle>(
     pointerEvents,
     boxShadow,
     filter,
+    transform,
+    transformOrigin,
     mixBlendMode,
     cursor,
     rowGap,
@@ -119,6 +157,10 @@ export const useCssStyle = <S extends ViewStyle | TextStyle | ImageStyle>(
     outlineWidth,
     opacity,
     pointerEvents: pointerEvents as any,
+    boxShadow: boxShadow && encodeBoxShadow(boxShadow),
+    filter: filter && encodeFilter(filter),
+    transform: transform && encodeTransform(transform),
+    transformOrigin: transformOrigin && encodeTransformOrigin(transformOrigin),
     mixBlendMode,
     cursor,
     rowGap,
