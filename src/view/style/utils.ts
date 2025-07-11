@@ -25,7 +25,7 @@
 
 import _ from 'lodash';
 import { StyleProp } from 'frosty';
-import { TextStyle, ViewStyle } from './types';
+import { ImageStyle, TextStyle, ViewStyle } from './types';
 import { useEnvironment } from '../components/environment';
 
 const normalize = <S extends ViewStyle>(
@@ -129,7 +129,7 @@ const flattenStyle = <S extends ViewStyle>(
   }), {});
 }
 
-export const useFlattenStyle = <S extends ViewStyle | TextStyle>(
+export const useFlattenStyle = <S extends ViewStyle | TextStyle | ImageStyle>(
   style: StyleProp<S>
 ) => {
   const { layoutDirection: dir } = useEnvironment();

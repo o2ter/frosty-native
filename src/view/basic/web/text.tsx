@@ -29,7 +29,9 @@ import { _createNativeElement } from 'frosty/_native';
 import { DOMNativeNode, type _DOMRenderer } from 'frosty/web';
 import { TextViewProps } from '../../types';
 import { useTextStyle } from '../../components';
-import { useCssStyle } from './css';
+import { encodeTextStyle } from './css';
+import { useFlattenStyle } from '~/view/style/utils';
+import { TextStyle } from '~/view/style/types';
 
 export class DOMTextView extends DOMNativeNode {
 
@@ -76,7 +78,7 @@ export const Text: ComponentType<TextViewProps> = ({ ref, style, children }) => 
     get _target() { return targetRef.current; }
   }), null);
 
-  const cssStyle = useCssStyle([
+  const cssStyle = encodeTextStyle(useFlattenStyle([
     {
       backgroundColor: 'transparent',
       borderWidth: 0,
@@ -93,9 +95,9 @@ export const Text: ComponentType<TextViewProps> = ({ ref, style, children }) => 
       textAlign: 'start',
       textDecorationLine: 'none',
     },
-    useTextStyle(),
+    useTextStyle() as TextStyle,
     style,
-  ]);
+  ]));
 
   return _createNativeElement(DOMTextView, {
     ref: targetRef,

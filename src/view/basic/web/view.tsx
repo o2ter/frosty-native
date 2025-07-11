@@ -25,7 +25,8 @@
 
 import { ComponentType, useRef, useRefHandle } from 'frosty';
 import { ViewProps } from '../../types';
-import { useCssStyle } from './css';
+import { encodeViewStyle } from './css';
+import { useFlattenStyle } from '~/view/style/utils';
 
 export const View: ComponentType<ViewProps> = ({ ref, style, children }) => {
 
@@ -34,7 +35,7 @@ export const View: ComponentType<ViewProps> = ({ ref, style, children }) => {
     get _target() { return targetRef.current; }
   }), null);
 
-  const cssStyle = useCssStyle([
+  const cssStyle = encodeViewStyle(useFlattenStyle([
     {
       alignContent: 'flex-start',
       alignItems: 'stretch',
@@ -56,7 +57,7 @@ export const View: ComponentType<ViewProps> = ({ ref, style, children }) => {
       zIndex: 0,
     },
     style,
-  ]);
+  ]));
 
   return (
     <div

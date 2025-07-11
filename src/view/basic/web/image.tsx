@@ -25,7 +25,8 @@
 
 import { ComponentType, useRef, useRefHandle } from 'frosty';
 import { ImageProps } from '../../types';
-import { useCssStyle } from './css';
+import { encodeImageStyle } from './css';
+import { useFlattenStyle } from '~/view/style/utils';
 
 export const Image: ComponentType<ImageProps> = ({ ref, style, children }) => {
 
@@ -34,7 +35,7 @@ export const Image: ComponentType<ImageProps> = ({ ref, style, children }) => {
     get _target() { return targetRef.current; }
   }), null);
 
-  const cssStyle = useCssStyle([
+  const cssStyle = encodeImageStyle(useFlattenStyle([
     {
       display: 'flex',
       flexDirection: 'column',
@@ -42,7 +43,7 @@ export const Image: ComponentType<ImageProps> = ({ ref, style, children }) => {
       height: '100%',
     },
     style,
-  ]);
+  ]));
 
   return (
     <div

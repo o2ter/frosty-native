@@ -25,7 +25,8 @@
 
 import { ComponentType, useRef, useRefHandle } from 'frosty';
 import { ScrollViewProps } from '../../types';
-import { useCssStyle } from './css';
+import { encodeViewStyle } from './css';
+import { useFlattenStyle } from '~/view/style/utils';
 
 export const ScrollView: ComponentType<ScrollViewProps> = ({ ref, style, contentContainerStyle, children }) => {
 
@@ -34,7 +35,7 @@ export const ScrollView: ComponentType<ScrollViewProps> = ({ ref, style, content
     get _target() { return targetRef.current; }
   }), null);
 
-  const cssStyle = useCssStyle([
+  const cssStyle = encodeViewStyle(useFlattenStyle([
     {
       display: 'flex',
       flexDirection: 'column',
@@ -42,8 +43,8 @@ export const ScrollView: ComponentType<ScrollViewProps> = ({ ref, style, content
       height: '100%',
     },
     style,
-  ]);
-  const contentContainerCssStyle = useCssStyle(contentContainerStyle);
+  ]));
+  const contentContainerCssStyle = encodeViewStyle(useFlattenStyle(contentContainerStyle));
 
   return (
     <div

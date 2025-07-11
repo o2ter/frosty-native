@@ -63,8 +63,8 @@ const encodeBoxShadow = (value: BoxShadowValue | BoxShadowValue[]): string => {
   ]).join(' ');
 }
 
-export const useCssStyle = <S extends ViewStyle | TextStyle | ImageStyle>(
-  style: StyleProp<S>
+export const encodeViewStyle = <S extends ViewStyle>(
+  style: ReturnType<typeof useFlattenStyle<S>>
 ): ExtendedCSSProperties => {
   const {
     alignContent,
@@ -129,7 +129,7 @@ export const useCssStyle = <S extends ViewStyle | TextStyle | ImageStyle>(
     borderTopRightRadius,
     borderBottomRightRadius,
     zIndex,
-  } = useFlattenStyle(style);
+  } = style;
 
   return {
     alignContent,
@@ -194,5 +194,27 @@ export const useCssStyle = <S extends ViewStyle | TextStyle | ImageStyle>(
     borderTopRightRadius,
     borderBottomRightRadius,
     zIndex,
+  };
+}
+
+export const encodeImageStyle = <S extends ImageStyle>(
+  style: ReturnType<typeof useFlattenStyle<S>>
+): ExtendedCSSProperties => {
+
+  const { } = style;
+
+  return {
+    ...encodeViewStyle(style),
+  };
+}
+
+export const encodeTextStyle = <S extends TextStyle>(
+  style: ReturnType<typeof useFlattenStyle<S>>
+): ExtendedCSSProperties => {
+
+  const { } = style;
+
+  return {
+    ...encodeViewStyle(style),
   };
 }

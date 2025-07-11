@@ -30,7 +30,9 @@ import { DOMNativeNode, type _DOMRenderer } from 'frosty/web';
 import { TextInputProps } from '../../types';
 import { useTextStyle } from '../../components';
 import { DOMTextView } from './text';
-import { useCssStyle } from './css';
+import { encodeTextStyle } from './css';
+import { useFlattenStyle } from '~/view/style/utils';
+import { TextStyle } from '~/view/style/types';
 
 class _DOMTextInput extends DOMNativeNode {
 
@@ -87,7 +89,7 @@ export const TextInput: ComponentType<TextInputProps> = ({ ref, style, multiline
     get _target() { return targetRef.current; }
   }), null);
 
-  const cssStyle = useCssStyle([
+  const cssStyle = encodeTextStyle(useFlattenStyle([
     {
       backgroundColor: 'transparent',
       borderWidth: 0,
@@ -99,17 +101,24 @@ export const TextInput: ComponentType<TextInputProps> = ({ ref, style, multiline
       fontSize: 14,
       margin: 0,
       padding: 0,
-      resize: 'none',
     },
-    useTextStyle(),
+    useTextStyle() as TextStyle,
     style,
-  ]);
+  ]));
 
   return _createNativeElement(
     multiline ? DOMMultilineTextInput : DOMTextInput,
     {
       ref: targetRef,
-      style: cssStyle,
+      style: [
+        {
+          listStyle: 'none',
+          whiteSpace: 'pre-wrap',
+          wordWrap: 'break-word',
+          resize: 'none',
+        },
+        cssStyle,
+      ],
       children,
     }
   );
