@@ -201,7 +201,12 @@ export const encodeImageStyle = <S extends ImageStyle>(
   style: ReturnType<typeof useFlattenStyle<S>>
 ): ExtendedCSSProperties => {
 
-  const { } = style;
+  const {
+    resizeMode,
+    overlayColor,
+    tintColor,
+    objectFit,
+  } = style;
 
   return {
     ...encodeViewStyle(style),
@@ -212,9 +217,26 @@ export const encodeTextStyle = <S extends TextStyle>(
   style: ReturnType<typeof useFlattenStyle<S>>
 ): ExtendedCSSProperties => {
 
-  const { } = style;
+  const {
+    color,
+    fontFamily,
+    fontSize,
+    fontStyle,
+    fontWeight,
+    letterSpacing,
+    lineHeight,
+    textAlign,
+    textDecorationLine,
+    textDecorationStyle,
+    textDecorationColor,
+    textShadowColor,
+    textShadowOffset,
+    textShadowRadius,
+    textTransform,
+    userSelect,
+} = style;
 
-  return {
-    ...encodeViewStyle(style),
-  };
+return {
+  ...encodeViewStyle(style),
+};
 }
