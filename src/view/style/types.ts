@@ -278,7 +278,8 @@ export type TextStyle = ViewStyle & {
   textDecorationStyle?: 'solid' | 'double' | 'dotted' | 'dashed';
   textDecorationColor?: ColorValue;
   textShadowColor?: ColorValue;
-  textShadowOffset?: { width: number; height: number };
+  textShadowOffsetX?: number | string;
+  textShadowOffsetY?: number | string;
   textShadowRadius?: number;
   textTransform?: 'none' | 'capitalize' | 'uppercase' | 'lowercase';
   userSelect?: 'auto' | 'none' | 'text' | 'contain' | 'all';
