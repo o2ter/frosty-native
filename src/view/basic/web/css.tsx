@@ -210,6 +210,7 @@ export const encodeImageStyle = <S extends ImageStyle>(
 
   return _.pickBy({
     ...encodeViewStyle(style),
+    objectFit,
   }, v => !!v) as ExtendedCSSProperties;
 }
 
