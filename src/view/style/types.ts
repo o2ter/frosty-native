@@ -270,7 +270,7 @@ export type TextStyle = ViewStyle & {
   | 'normal'
   | number
   | `${number}%`;
-  textAlign?: 'auto' | 'start' | 'end' | 'left' | 'right' | 'center' | 'justify';
+  textAlign?: 'start' | 'end' | 'left' | 'right' | 'center' | 'justify';
   textDecorationLine?:
   | 'none'
   | TextDecorationLine

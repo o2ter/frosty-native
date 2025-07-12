@@ -24,7 +24,7 @@
 //
 
 import _ from 'lodash';
-import { StyleProp, ExtendedCSSProperties } from 'frosty';
+import { ExtendedCSSProperties } from 'frosty';
 import { BoxShadowValue, FilterFunction, ImageStyle, TextStyle, TransformFunction, ViewStyle } from '../../style/types';
 import { useFlattenStyle } from '../../style/utils';
 
@@ -131,7 +131,7 @@ export const encodeViewStyle = <S extends ViewStyle>(
     zIndex,
   } = style;
 
-  return {
+  return _.pickBy({
     alignContent,
     alignItems,
     aspectRatio,
@@ -194,7 +194,7 @@ export const encodeViewStyle = <S extends ViewStyle>(
     borderTopRightRadius,
     borderBottomRightRadius,
     zIndex,
-  };
+  }, v => !!v) as ExtendedCSSProperties;
 }
 
 export const encodeImageStyle = <S extends ImageStyle>(
@@ -208,9 +208,9 @@ export const encodeImageStyle = <S extends ImageStyle>(
     objectFit,
   } = style;
 
-  return {
+  return _.pickBy({
     ...encodeViewStyle(style),
-  };
+  }, v => !!v) as ExtendedCSSProperties;
 }
 
 export const encodeTextStyle = <S extends TextStyle>(
@@ -234,9 +234,22 @@ export const encodeTextStyle = <S extends TextStyle>(
     textShadowRadius,
     textTransform,
     userSelect,
-} = style;
+  } = style;
 
-return {
-  ...encodeViewStyle(style),
-};
+  return _.pickBy({
+    ...encodeViewStyle(style),
+    color,
+    fontFamily,
+    fontSize,
+    fontStyle,
+    fontWeight,
+    letterSpacing,
+    lineHeight,
+    textAlign,
+    textDecorationLine: _.flattenDeep(textDecorationLine).join(' '),
+    textDecorationStyle,
+    textDecorationColor,
+    textTransform,
+    userSelect,
+  }, v => !!v) as ExtendedCSSProperties;
 }
