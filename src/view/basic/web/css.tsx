@@ -250,6 +250,12 @@ export const encodeTextStyle = <S extends TextStyle>(
     textDecorationLine: _.flattenDeep(textDecorationLine).join(' '),
     textDecorationStyle,
     textDecorationColor,
+    textShadow: encodeBoxShadow({
+      offsetX: textShadowOffsetX || 0,
+      offsetY: textShadowOffsetY || 0,
+      blurRadius: textShadowRadius,
+      color: textShadowColor,
+    }),
     textTransform,
     userSelect,
   }, v => !!v) as ExtendedCSSProperties;
