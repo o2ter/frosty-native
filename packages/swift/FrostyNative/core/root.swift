@@ -23,6 +23,8 @@
 //  THE SOFTWARE.
 //
 
+import Network
+
 struct WindowDimensions: Equatable {
     
     var size: CGSize
@@ -57,6 +59,7 @@ struct EnvironmentData: Equatable {
     var colorScheme: ColorScheme
     var locale: Locale
     var timeZone: TimeZone
+    var network: Network
     
     func toJSValue() -> SwiftJS.Value {
         return [
@@ -67,7 +70,11 @@ struct EnvironmentData: Equatable {
             "colorScheme": SwiftJS.Value(colorScheme.toString()),
             "userLocale": SwiftJS.Value(locale.identifier),
             "languages": SwiftJS.Value(Locale.preferredLanguages.map { SwiftJS.Value($0) }),
-            "timeZone":SwiftJS.Value(timeZone.identifier),
+            "timeZone": SwiftJS.Value(timeZone.identifier),
+            "network": [
+                "online": SwiftJS.Value(network.online),
+                "type": network.type.map { SwiftJS.Value($0) } ?? .undefined,
+            ]
         ]
     }
 }
@@ -106,7 +113,53 @@ extension ColorScheme {
     }
 }
 
+struct Network: Equatable {
+    
+    var online: Bool
+    var type: String?
+}
+
+@Observable
+@MainActor
+final class NetworkMonitor {
+    
+    private(set) var online = false
+    private(set) var type: String?
+    
+    private let monitor = NWPathMonitor()
+    
+    init() {
+        monitor.pathUpdateHandler = { [weak self] path in
+            guard let self = self else { return }
+            Task { @MainActor in
+                self.online = path.status == .satisfied
+                if path.usesInterfaceType(.wiredEthernet) {
+                    self.type = "ethernet"
+                } else if path.usesInterfaceType(.wifi) {
+                    self.type = "wifi"
+                } else if path.usesInterfaceType(.cellular) {
+                    self.type = "cellular"
+                } else {
+                    self.type = nil
+                }
+            }
+        }
+        monitor.start(queue: DispatchQueue.global())
+    }
+    
+    deinit {
+        monitor.cancel()
+    }
+    
+    func toNetwork() -> Network {
+        .init(online: online, type: type)
+    }
+}
+
 public struct FTRoot: View {
+    
+    @State
+    var network = NetworkMonitor()
     
     @Environment(\.scenePhase)
     var scenePhase
@@ -155,7 +208,8 @@ public struct FTRoot: View {
             pixelLength: pixelLength,
             colorScheme: colorScheme,
             locale: locale,
-            timeZone: timeZone
+            timeZone: timeZone,
+            network: network.toNetwork()
         )
     }
     

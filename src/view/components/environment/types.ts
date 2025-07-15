@@ -39,7 +39,10 @@ export const defaultEnvironmentValues = {
     left: 0,
     right: 0,
     bottom: 0,
-  }
+  },
+  network: {
+    online: false,
+  },
 } as const;
 
 export type EnvironmentValues = {
@@ -59,4 +62,8 @@ export type EnvironmentValues = {
     right: number;
     bottom: number;
   };
+  network: {
+    online: boolean;
+    type?: 'wifi' | 'cellular' | 'ethernet';
+  },
 };

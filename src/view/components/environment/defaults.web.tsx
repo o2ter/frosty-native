@@ -23,7 +23,7 @@
 //  THE SOFTWARE.
 //
 
-import { useColorScheme, useVisibility, useWindow, useWindowMetrics } from 'frosty/web';
+import { useColorScheme, useOnline, useVisibility, useWindow, useWindowMetrics } from 'frosty/web';
 import { defaultEnvironmentValues } from './types';
 
 export const useDefault = () => {
@@ -35,6 +35,7 @@ export const useDefault = () => {
   } = useWindowMetrics();
 
   const scenePhase = useVisibility();
+  const online = useOnline();
 
   let height;
   let width;
@@ -57,6 +58,7 @@ export const useDefault = () => {
     displayWidth: width,
     displayHeight: height,
     safeAreaInsets,
+    network: { online },
     ...typeof navigator === 'undefined' ? {} : {
       userLocale: navigator.language,
       languages: navigator.languages || [navigator.language],
