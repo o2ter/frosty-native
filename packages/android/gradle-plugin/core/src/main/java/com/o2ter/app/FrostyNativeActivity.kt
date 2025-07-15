@@ -34,7 +34,6 @@ import androidx.activity.enableEdgeToEdge
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -75,6 +74,7 @@ internal fun FTContext.run(
     }
 }
 
+@RequiresApi(Build.VERSION_CODES.P)
 open class FrostyNativeActivity(val appKey: String) : ComponentActivity() {
 
     internal lateinit var engine: FTContext
@@ -91,6 +91,20 @@ open class FrostyNativeActivity(val appKey: String) : ComponentActivity() {
             runner = engine.run(appKey, rootView)
             FTRoot(this, rootView)
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        this.setEnvironment(mapOf(
+            "scenePhase" to "active",
+        ))
+    }
+
+    override fun onPause() {
+        super.onPause()
+        this.setEnvironment(mapOf(
+            "scenePhase" to "background",
+        ))
     }
 
     override fun onDestroy() {
@@ -132,6 +146,7 @@ fun LocaleListCompat.toList(): List<Locale> {
     return localeList
 }
 
+@RequiresApi(Build.VERSION_CODES.P)
 @Composable
 internal fun FTRoot(activity: FrostyNativeActivity, rootView: FTNodeState) {
     val systemIsDarkTheme = isSystemInDarkTheme()
@@ -145,7 +160,7 @@ internal fun FTRoot(activity: FrostyNativeActivity, rootView: FTNodeState) {
         "pixelDensity" to pixelDensity,
         "pixelLength" to 1 / pixelDensity,
         "colorScheme" to if (darkTheme) "dark" else "light",
-        "userLocale" to locales[0].toString(),
+        "userLocale" to locales[0]!!.toString(),
         "languages" to locales.toList().map { it.toString() },
         "timeZone" to timeZone.id,
     ))

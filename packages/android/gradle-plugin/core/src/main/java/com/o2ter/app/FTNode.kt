@@ -25,6 +25,8 @@
 
 package com.o2ter.app
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Box
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Stable
@@ -48,6 +50,7 @@ internal typealias Component = @Composable (
     content: @Composable () -> Unit
 ) -> Unit
 
+@RequiresApi(Build.VERSION_CODES.P)
 @Stable
 internal class FTNodeState(
     val activity: FrostyNativeActivity,

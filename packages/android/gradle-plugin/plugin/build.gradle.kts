@@ -23,6 +23,8 @@
 //  THE SOFTWARE.
 //
 
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+import org.jetbrains.kotlin.gradle.dsl.KotlinVersion
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
@@ -46,9 +48,9 @@ java { targetCompatibility = JavaVersion.VERSION_11 }
 kotlin { jvmToolchain(17) }
 
 tasks.withType<KotlinCompile>().configureEach {
-    kotlinOptions {
-        apiVersion = "1.6"
-        jvmTarget = "11"
+    compilerOptions {
+        apiVersion.set(KotlinVersion.KOTLIN_1_6)
+        jvmTarget.set(JvmTarget.JVM_11)
     }
 }
 
