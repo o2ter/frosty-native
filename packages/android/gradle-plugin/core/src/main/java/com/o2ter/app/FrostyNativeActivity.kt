@@ -25,17 +25,23 @@
 
 package com.o2ter.app
 
+import android.Manifest
 import android.content.Context
+import android.net.ConnectivityManager
+import android.net.Network
+import android.net.NetworkCapabilities
 import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.annotation.RequiresApi
+import androidx.annotation.RequiresPermission
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -76,6 +82,31 @@ internal fun FTContext.run(
     }
 }
 
+@RequiresPermission(Manifest.permission.ACCESS_NETWORK_STATE)
+@RequiresApi(Build.VERSION_CODES.N)
+internal fun currentNetworkType(context: Context): State<String?> {
+    val result = mutableStateOf<String?>(null)
+    val connectivityManager = context.getSystemService(ConnectivityManager::class.java)
+    connectivityManager.registerDefaultNetworkCallback(object : ConnectivityManager.NetworkCallback() {
+        override fun onCapabilitiesChanged(
+            network: Network,
+            networkCapabilities: NetworkCapabilities
+        ) {
+            val value = when {
+                networkCapabilities.hasTransport(NetworkCapabilities.TRANSPORT_WIFI) -> "wifi"
+                networkCapabilities.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR) -> "cellular"
+                networkCapabilities.hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET) -> "ethernet"
+                else -> null
+            }
+            result.value = value
+        }
+        override fun onLost(network: Network) {
+            result.value = null
+        }
+    })
+    return result
+}
+
 @RequiresApi(Build.VERSION_CODES.P)
 open class FrostyNativeActivity(val appKey: String) : ComponentActivity() {
 
@@ -84,6 +115,7 @@ open class FrostyNativeActivity(val appKey: String) : ComponentActivity() {
 
     internal var nodes = mutableSetOf<FTNodeState>()
 
+    @RequiresPermission(Manifest.permission.ACCESS_NETWORK_STATE)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -159,6 +191,7 @@ fun LocaleListCompat.toList(): List<Locale> {
     return localeList
 }
 
+@RequiresPermission(Manifest.permission.ACCESS_NETWORK_STATE)
 @RequiresApi(Build.VERSION_CODES.P)
 @Composable
 internal fun FTRoot(activity: FrostyNativeActivity, rootView: FTNodeState) {
@@ -168,6 +201,7 @@ internal fun FTRoot(activity: FrostyNativeActivity, rootView: FTNodeState) {
     val locales = getLocales(LocalConfiguration.current)
     val layoutDirection = LocalLayoutDirection.current
     val timeZone = TimeZone.getDefault()
+    val networkType by currentNetworkType(activity.engine.context)
     activity.setEnvironment(mapOf(
         "layoutDirection" to layoutDirection.name.lowercase(),
         "pixelDensity" to pixelDensity,
@@ -176,6 +210,10 @@ internal fun FTRoot(activity: FrostyNativeActivity, rootView: FTNodeState) {
         "userLocale" to locales[0]!!.toString(),
         "languages" to locales.toList().map { it.toString() },
         "timeZone" to timeZone.id,
+        "network" to mapOf(
+            "online" to (networkType != null),
+            "type" to networkType,
+        )
     ))
     AppTheme(darkTheme) {
         Scaffold(
