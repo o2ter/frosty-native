@@ -26,17 +26,16 @@
 import { PropsWithChildren, Ref, StyleProp } from 'frosty';
 import { ImageStyle, TextStyle, ViewStyle } from './style/types';
 
-type ScrollDirection = 'horizontal' | 'vertical';
-
 type ScrollViewRef = {
   readonly _target?: HTMLElement;
 };
 
 export type ScrollViewProps = PropsWithChildren<{
   ref?: Ref<ScrollViewRef>;
-  direction?: ScrollDirection | ScrollDirection[];
   style?: StyleProp<ViewStyle>;
   contentContainerStyle?: StyleProp<ViewStyle>;
+  horizontal?: boolean;
+  vertical?: boolean;
 }>;
 
 interface ImageURISource {

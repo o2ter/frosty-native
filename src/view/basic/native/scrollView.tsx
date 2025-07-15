@@ -37,7 +37,14 @@ abstract class FTScrollView extends NativeNode {
   }
 }
 
-export const ScrollView: ComponentType<ScrollViewProps> = ({ ref, style, contentContainerStyle, children }) => {
+export const ScrollView: ComponentType<ScrollViewProps> = ({
+  ref,
+  style,
+  contentContainerStyle,
+  horizontal = false,
+  vertical = !horizontal,
+  children
+}) => {
 
   useRefHandle(ref, () => ({
   }), null);

@@ -28,7 +28,14 @@ import { ScrollViewProps } from '../../types';
 import { encodeViewStyle } from './css';
 import { useFlattenStyle } from '~/view/style/utils';
 
-export const ScrollView: ComponentType<ScrollViewProps> = ({ ref, style, contentContainerStyle, children }) => {
+export const ScrollView: ComponentType<ScrollViewProps> = ({
+  ref,
+  style,
+  contentContainerStyle,
+  horizontal = false,
+  vertical = !horizontal,
+  children
+}) => {
 
   const targetRef = useRef<HTMLDivElement>();
   useRefHandle(ref, () => ({
