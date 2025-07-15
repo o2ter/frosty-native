@@ -88,6 +88,18 @@ internal fun currentNetworkType(context: Context): State<String?> {
     val result = mutableStateOf<String?>(null)
     val connectivityManager = context.getSystemService(ConnectivityManager::class.java)
     connectivityManager.registerDefaultNetworkCallback(object : ConnectivityManager.NetworkCallback() {
+        @RequiresPermission(Manifest.permission.ACCESS_NETWORK_STATE)
+        override fun onAvailable(network: Network) {
+            val networkCapabilities = connectivityManager.activeNetwork ?: return
+            val actNw = connectivityManager.getNetworkCapabilities(networkCapabilities) ?: return
+            val value = when {
+                actNw.hasTransport(NetworkCapabilities.TRANSPORT_WIFI) -> "wifi"
+                actNw.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR) -> "cellular"
+                actNw.hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET) -> "ethernet"
+                else -> null
+            }
+            result.value = value
+        }
         override fun onCapabilitiesChanged(
             network: Network,
             networkCapabilities: NetworkCapabilities
