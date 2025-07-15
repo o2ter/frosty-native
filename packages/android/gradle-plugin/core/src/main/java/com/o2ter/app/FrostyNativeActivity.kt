@@ -47,6 +47,8 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.core.os.ConfigurationCompat.getLocales
 import androidx.core.os.LocaleListCompat
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.compose.currentStateAsState
 import com.eclipsesource.v8.V8Object
 import com.eclipsesource.v8.utils.V8ObjectUtils
 import com.o2ter.app.ui.theme.AppTheme
@@ -87,41 +89,52 @@ open class FrostyNativeActivity(val appKey: String) : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             val rootView = FTNodeState(this) { nodeId, props, handler, content -> FTView(nodeId, props, handler, content) }
+            val currentLifecycleState by lifecycle.currentStateAsState()
             engine = this.createEngine(LocalContext.current)
             runner = engine.run(appKey, rootView)
             FTRoot(this, rootView)
+            this.setEnvironment(mapOf(
+                "scenePhase" to
+                        if (currentLifecycleState.isAtLeast(Lifecycle.State.RESUMED))
+                            "active"
+                        else
+                            "background"
+            ))
         }
     }
 
     override fun onResume() {
         super.onResume()
-        this.setEnvironment(mapOf(
-            "scenePhase" to "active",
-        ))
+        this.setEnvironment(mapOf("scenePhase" to "active"))
     }
 
     override fun onPause() {
         super.onPause()
-        this.setEnvironment(mapOf(
-            "scenePhase" to "background",
-        ))
+        this.setEnvironment(mapOf("scenePhase" to "background"))
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        engine.withRuntime { runtime ->
-            val runner = runner.await()
-            runner.executeVoidFunction("unmount", V8ObjectUtils.toV8Array(runtime, listOf()))
-            runner.close()
-        }.discard()
+        if (this::engine.isInitialized) {
+            engine.withRuntime { runtime ->
+                val runner = runner.await()
+                runner.executeVoidFunction("unmount", V8ObjectUtils.toV8Array(runtime, listOf()))
+                runner.close()
+            }.discard()
+        }
         nodes.clear()
     }
 
     fun setEnvironment(values: Map<String, Any>) {
-        engine.withRuntime { runtime ->
-            val runner = runner.await()
-            runner.executeVoidFunction("setEnvironment", V8ObjectUtils.toV8Array(runtime, listOf(values)))
-        }.discard()
+        if (this::engine.isInitialized) {
+            engine.withRuntime { runtime ->
+                val runner = runner.await()
+                runner.executeVoidFunction(
+                    "setEnvironment",
+                    V8ObjectUtils.toV8Array(runtime, listOf(values))
+                )
+            }.discard()
+        }
     }
 
     private fun createEngine(context: Context): FTContext {
