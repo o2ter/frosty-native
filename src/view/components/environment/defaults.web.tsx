@@ -23,7 +23,7 @@
 //  THE SOFTWARE.
 //
 
-import { useColorScheme, useWindow, useWindowMetrics } from 'frosty/web';
+import { useColorScheme, useVisibility, useWindow, useWindowMetrics } from 'frosty/web';
 import { defaultEnvironmentValues } from './types';
 
 export const useDefault = () => {
@@ -33,6 +33,8 @@ export const useDefault = () => {
     devicePixelRatio,
     safeAreaInsets,
   } = useWindowMetrics();
+
+  const scenePhase = useVisibility();
 
   let height;
   let width;
@@ -47,6 +49,7 @@ export const useDefault = () => {
 
   return {
     ...defaultEnvironmentValues,
+    scenePhase,
     layoutDirection: document.dir === 'rtl' ? 'rtl' : 'ltr',
     pixelDensity: devicePixelRatio,
     pixelLength: 1 / devicePixelRatio,

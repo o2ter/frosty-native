@@ -50,6 +50,7 @@ struct WindowDimensions: Equatable {
 
 struct EnvironmentData: Equatable {
     
+    var scenePhase: ScenePhase
     var layoutDirection: LayoutDirection
     var pixelDensity: CGFloat
     var pixelLength: CGFloat
@@ -59,6 +60,7 @@ struct EnvironmentData: Equatable {
     
     func toJSValue() -> SwiftJS.Value {
         return [
+            "scenePhase": SwiftJS.Value(scenePhase.toString()),
             "layoutDirection": SwiftJS.Value(layoutDirection.toString()),
             "pixelDensity": SwiftJS.Value(pixelDensity),
             "pixelLength": SwiftJS.Value(pixelLength),
@@ -67,6 +69,18 @@ struct EnvironmentData: Equatable {
             "languages": SwiftJS.Value(Locale.preferredLanguages.map { SwiftJS.Value($0) }),
             "timeZone":SwiftJS.Value(timeZone.identifier),
         ]
+    }
+}
+
+extension ScenePhase {
+    
+    fileprivate func toString() -> String {
+        switch self {
+        case .background: "background"
+        case .inactive: "inactive"
+        case .active: "active"
+        @unknown default: "unknown"
+        }
     }
 }
 
@@ -93,6 +107,9 @@ extension ColorScheme {
 }
 
 public struct FTRoot: View {
+    
+    @Environment(\.scenePhase)
+    var scenePhase
     
     @Environment(\.colorScheme)
     var colorScheme
@@ -132,6 +149,7 @@ public struct FTRoot: View {
     
     var environment: EnvironmentData {
         EnvironmentData(
+            scenePhase: scenePhase,
             layoutDirection: layoutDirection,
             pixelDensity: pixelDensity,
             pixelLength: pixelLength,

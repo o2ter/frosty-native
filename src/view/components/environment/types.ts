@@ -24,6 +24,7 @@
 //
 
 export const defaultEnvironmentValues = {
+  scenePhase: 'unknown',
   layoutDirection: 'ltr',
   pixelDensity: 1,
   pixelLength: 1,
@@ -42,6 +43,7 @@ export const defaultEnvironmentValues = {
 } as const;
 
 export type EnvironmentValues = {
+  scenePhase: 'background' | 'inactive' | 'active' | 'unknown';
   layoutDirection: 'ltr' | 'rtl';
   pixelDensity: number;
   pixelLength: number;
