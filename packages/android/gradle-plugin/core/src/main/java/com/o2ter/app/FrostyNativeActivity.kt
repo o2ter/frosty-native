@@ -189,7 +189,6 @@ fun LocaleListCompat.toList(): List<Locale> {
     return localeList
 }
 
-@RequiresPermission(Manifest.permission.ACCESS_NETWORK_STATE)
 @RequiresApi(Build.VERSION_CODES.P)
 @Composable
 internal fun FTRoot(activity: FrostyNativeActivity, rootView: FTNodeState) {
