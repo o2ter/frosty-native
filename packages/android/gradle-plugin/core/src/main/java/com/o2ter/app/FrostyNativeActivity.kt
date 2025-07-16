@@ -82,35 +82,21 @@ internal fun FTContext.run(
     }
 }
 
-@RequiresPermission(Manifest.permission.ACCESS_NETWORK_STATE)
 @RequiresApi(Build.VERSION_CODES.N)
 internal fun currentNetworkType(context: Context): State<String?> {
     val result = mutableStateOf<String?>(null)
     val connectivityManager = context.getSystemService(ConnectivityManager::class.java)
     connectivityManager.registerDefaultNetworkCallback(object : ConnectivityManager.NetworkCallback() {
-        @RequiresPermission(Manifest.permission.ACCESS_NETWORK_STATE)
-        override fun onAvailable(network: Network) {
-            val networkCapabilities = connectivityManager.activeNetwork ?: return
-            val actNw = connectivityManager.getNetworkCapabilities(networkCapabilities) ?: return
-            val value = when {
-                actNw.hasTransport(NetworkCapabilities.TRANSPORT_WIFI) -> "wifi"
-                actNw.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR) -> "cellular"
-                actNw.hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET) -> "ethernet"
-                else -> null
-            }
-            result.value = value
-        }
         override fun onCapabilitiesChanged(
             network: Network,
             networkCapabilities: NetworkCapabilities
         ) {
-            val value = when {
+            result.value = when {
                 networkCapabilities.hasTransport(NetworkCapabilities.TRANSPORT_WIFI) -> "wifi"
                 networkCapabilities.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR) -> "cellular"
                 networkCapabilities.hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET) -> "ethernet"
-                else -> null
+                else -> "unknown"
             }
-            result.value = value
         }
         override fun onLost(network: Network) {
             result.value = null
@@ -213,7 +199,7 @@ internal fun FTRoot(activity: FrostyNativeActivity, rootView: FTNodeState) {
     val locales = getLocales(LocalConfiguration.current)
     val layoutDirection = LocalLayoutDirection.current
     val timeZone = TimeZone.getDefault()
-    val networkType by currentNetworkType(activity.engine.context)
+    val networkType by remember { currentNetworkType(activity.engine.context) }
     activity.setEnvironment(mapOf(
         "layoutDirection" to layoutDirection.name.lowercase(),
         "pixelDensity" to pixelDensity,
@@ -224,17 +210,20 @@ internal fun FTRoot(activity: FrostyNativeActivity, rootView: FTNodeState) {
         "timeZone" to timeZone.id,
         "network" to mapOf(
             "online" to (networkType != null),
-            "type" to networkType,
+            "type" to if (networkType != "unknown") networkType else null,
         )
     ))
     AppTheme(darkTheme) {
         Scaffold(
-            modifier = Modifier.fillMaxSize()
+            modifier = Modifier
+                .fillMaxSize()
                 .onSizeChanged { size ->
-                    activity.setEnvironment(mapOf(
-                        "displayWidth" to size.width,
-                        "displayHeight" to size.height,
-                    ))
+                    activity.setEnvironment(
+                        mapOf(
+                            "displayWidth" to size.width,
+                            "displayHeight" to size.height,
+                        )
+                    )
                 }
         ) { safeAreaInset ->
             FTNode(
