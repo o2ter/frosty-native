@@ -25,7 +25,6 @@
 
 package com.o2ter.app
 
-import android.Manifest
 import android.content.Context
 import android.net.ConnectivityManager
 import android.net.Network
@@ -36,7 +35,6 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.annotation.RequiresApi
-import androidx.annotation.RequiresPermission
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Scaffold
@@ -113,7 +111,6 @@ open class FrostyNativeActivity(val appKey: String) : ComponentActivity() {
 
     internal var nodes = mutableSetOf<FTNodeState>()
 
-    @RequiresPermission(Manifest.permission.ACCESS_NETWORK_STATE)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
