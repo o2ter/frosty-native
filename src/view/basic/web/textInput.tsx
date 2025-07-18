@@ -24,63 +24,14 @@
 //
 
 import _ from 'lodash';
-import { ComponentType, mergeRefs, useRef, useRefHandle } from 'frosty';
+import { ComponentType, useRef, useRefHandle } from 'frosty';
 import { _createNativeElement } from 'frosty/_native';
-import { DOMNativeNode, type _DOMRenderer } from 'frosty/web';
+import { type _DOMRenderer } from 'frosty/web';
 import { TextInputProps } from '../../types';
 import { useTextStyle } from '../../components';
-import { DOMTextView } from './text';
 import { encodeTextStyle } from './css';
 import { useFlattenStyle } from '~/view/style/utils';
 import { TextStyle } from '~/view/style/types';
-
-class _DOMTextInput extends DOMNativeNode {
-
-  #renderer: _DOMRenderer;
-  #target: HTMLElement;
-
-  constructor(target: HTMLElement, renderer: _DOMRenderer) {
-    super();
-    this.#renderer = renderer;
-    this.#target = target;
-  }
-
-  get target(): Element {
-    return this.#target;
-  }
-
-  update(props: Record<string, any> & {
-    className?: string;
-    style?: string;
-  }) {
-
-    const { ref } = props;
-    mergeRefs(ref)(this.#target);
-
-  }
-
-  replaceChildren(children: (string | Element | DOMNativeNode)[]) {
-    const filtered = _.filter(children, x => _.isString(x) || x instanceof DOMTextView);
-    this.#renderer.__replaceChildren(this.#target, filtered);
-  }
-
-  destroy() {
-  }
-}
-
-class DOMTextInput extends _DOMTextInput {
-
-  static createElement(doc: Document, renderer: _DOMRenderer): DOMNativeNode {
-    return new DOMTextInput(doc.createElement('input'), renderer);
-  }
-}
-
-class DOMMultilineTextInput extends _DOMTextInput {
-
-  static createElement(doc: Document, renderer: _DOMRenderer): DOMNativeNode {
-    return new DOMMultilineTextInput(doc.createElement('textarea'), renderer);
-  }
-}
 
 export const TextInput: ComponentType<TextInputProps> = ({ ref, style, multiline, children }) => {
 
@@ -106,11 +57,9 @@ export const TextInput: ComponentType<TextInputProps> = ({ ref, style, multiline
     style,
   ]));
 
-  return _createNativeElement(
-    multiline ? DOMMultilineTextInput : DOMTextInput,
-    {
-      ref: targetRef,
-      style: [
+  return (
+    <div
+      style={[
         {
           listStyle: 'none',
           whiteSpace: 'pre-wrap',
@@ -118,8 +67,8 @@ export const TextInput: ComponentType<TextInputProps> = ({ ref, style, multiline
           resize: 'none',
         },
         cssStyle,
-      ],
-      children,
-    }
+      ]}>
+      {children}
+    </div>
   );
 };
