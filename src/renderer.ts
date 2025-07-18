@@ -61,7 +61,7 @@ export class NativeRenderer extends _Renderer<NativeNode> {
     element.destroy();
   }
 
-  protected _replaceChildren(node: VNode, element: NativeNode, children: (string | NativeNode)[], force?: boolean) {
+  protected _replaceChildren(node: VNode, element: NativeNode, children: (string | NativeNode)[], stack: VNode[], force?: boolean) {
     element.replaceChildren(children);
   }
 
