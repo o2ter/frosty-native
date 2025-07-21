@@ -26,7 +26,7 @@
 import { ComponentType, useRef, useRefHandle } from 'frosty';
 import { ImageProps } from '../../types';
 import { encodeImageStyle } from './css';
-import { useFlattenStyle } from '~/view/style/utils';
+import { useFlattenStyle } from '../../../view/style/utils';
 
 export const Image: ComponentType<ImageProps> = ({ ref, style, children }) => {
 

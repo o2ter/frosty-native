@@ -30,8 +30,8 @@ import { type _DOMRenderer } from 'frosty/web';
 import { TextInputProps } from '../../types';
 import { useTextStyle } from '../../components';
 import { encodeTextStyle } from './css';
-import { useFlattenStyle } from '~/view/style/utils';
-import { TextStyle } from '~/view/style/types';
+import { useFlattenStyle } from '../../../view/style/utils';
+import { TextStyle } from '../../../view/style/types';
 
 export const TextInput: ComponentType<TextInputProps> = ({ ref, style, multiline, children }) => {
 

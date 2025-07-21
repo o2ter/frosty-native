@@ -26,7 +26,7 @@
 import { ComponentType, useRef, useRefHandle } from 'frosty';
 import { ViewProps } from '../../types';
 import { encodeViewStyle } from './css';
-import { useFlattenStyle } from '~/view/style/utils';
+import { useFlattenStyle } from '../../../view/style/utils';
 
 export const View: ComponentType<ViewProps> = ({ ref, style, children }) => {
 

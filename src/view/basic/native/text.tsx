@@ -29,7 +29,7 @@ import { _createNativeElement } from 'frosty/_native';
 import { NativeModules } from '../../../global';
 import { NativeNode } from '../../../node';
 import { TextViewProps } from '../../types';
-import { useFlattenStyle } from '~/view/style/utils';
+import { useFlattenStyle } from '../../../view/style/utils';
 
 abstract class FTTextView extends NativeNode {
 

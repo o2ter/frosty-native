@@ -28,8 +28,8 @@ import { ComponentType, useRef, useRefHandle, useStack } from 'frosty';
 import { TextViewProps } from '../../types';
 import { useTextStyle } from '../../components';
 import { encodeTextStyle } from './css';
-import { useFlattenStyle } from '~/view/style/utils';
-import { TextStyle } from '~/view/style/types';
+import { useFlattenStyle } from '../../../view/style/utils';
+import { TextStyle } from '../../../view/style/types';
 
 export const Text: ComponentType<TextViewProps> = ({ ref, style, children }) => {
 

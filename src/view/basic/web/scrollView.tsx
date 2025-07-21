@@ -26,7 +26,7 @@
 import { ComponentType, useRef, useRefHandle } from 'frosty';
 import { ScrollViewProps } from '../../types';
 import { encodeViewStyle } from './css';
-import { useFlattenStyle } from '~/view/style/utils';
+import { useFlattenStyle } from '../../../view/style/utils';
 
 export const ScrollView: ComponentType<ScrollViewProps> = ({
   ref,
