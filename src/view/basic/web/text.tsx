@@ -24,7 +24,7 @@
 //
 
 import _ from 'lodash';
-import { ComponentType, useRef, useRefHandle, useStack } from 'frosty';
+import { ComponentType, mergeRefs, useRef, useRefHandle, useStack } from 'frosty';
 import { TextViewProps } from '../../types';
 import { useTextStyle } from '../../components';
 import { encodeTextStyle } from './css';
@@ -33,9 +33,9 @@ import { TextStyle } from '../../../view/style/types';
 
 export const Text: ComponentType<TextViewProps> = ({ ref, style, children }) => {
 
-  const targetRef = useRef<HTMLDivElement>();
+  const targetRef = useRef<HTMLElement | null>();
   useRefHandle(ref, () => ({
-    get _target() { return targetRef.current; }
+    get _target() { return targetRef.current || undefined; }
   }), null);
 
   const cssStyle = encodeTextStyle(useFlattenStyle([
@@ -64,6 +64,7 @@ export const Text: ComponentType<TextViewProps> = ({ ref, style, children }) => 
   if (isInnerText) {
     return (
       <span
+        ref={targetRef}
         style={[
           {
             listStyle: 'none',
@@ -79,6 +80,7 @@ export const Text: ComponentType<TextViewProps> = ({ ref, style, children }) => 
 
   return (
     <div
+      ref={mergeRefs(targetRef)}
       style={[
         {
           listStyle: 'none',

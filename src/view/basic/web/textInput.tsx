@@ -24,7 +24,7 @@
 //
 
 import _ from 'lodash';
-import { ComponentType, useRef, useRefHandle } from 'frosty';
+import { ComponentType, mergeRefs, useRef, useRefHandle } from 'frosty';
 import { _createNativeElement } from 'frosty/_native';
 import { type _DOMRenderer } from 'frosty/web';
 import { TextInputProps } from '../../types';
@@ -35,9 +35,9 @@ import { TextStyle } from '../../../view/style/types';
 
 export const TextInput: ComponentType<TextInputProps> = ({ ref, style, multiline, children }) => {
 
-  const targetRef = useRef<HTMLElement>();
+  const targetRef = useRef<HTMLElement | null>();
   useRefHandle(ref, () => ({
-    get _target() { return targetRef.current; }
+    get _target() { return targetRef.current || undefined; }
   }), null);
 
   const cssStyle = encodeTextStyle(useFlattenStyle([
@@ -57,8 +57,27 @@ export const TextInput: ComponentType<TextInputProps> = ({ ref, style, multiline
     style,
   ]));
 
+  if (multiline) {
+    return (
+      <textarea
+        ref={mergeRefs(targetRef)}
+        style={[
+          {
+            listStyle: 'none',
+            whiteSpace: 'pre-wrap',
+            wordWrap: 'break-word',
+            resize: 'none',
+          },
+          cssStyle,
+        ]}>
+        {children}
+      </textarea>
+    );
+  }
+
   return (
-    <div
+    <input
+      ref={mergeRefs(targetRef)}
       style={[
         {
           listStyle: 'none',
@@ -69,6 +88,6 @@ export const TextInput: ComponentType<TextInputProps> = ({ ref, style, multiline
         cssStyle,
       ]}>
       {children}
-    </div>
+    </input>
   );
 };
