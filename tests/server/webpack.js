@@ -36,9 +36,6 @@ module.exports = (env, argv) => {
     },
     resolve: {
       fullySpecified: false,
-      alias: {
-        '~': path.resolve(__dirname, '../../src'),
-      },
     },
   });
 

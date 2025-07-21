@@ -16,12 +16,7 @@
     "moduleResolution": "bundler",
     "allowSyntheticDefaultImports": true,
     "downlevelIteration": true,
-    "stripInternal": true,
-    "paths": {
-      "~/*": [
-        "./src/*"
-      ]
-    }
+    "stripInternal": true
   },
   "exclude": [
     "**/dist/*",

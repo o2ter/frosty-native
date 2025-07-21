@@ -1,6 +1,6 @@
 import _ from 'lodash';
 import { useState, useEffect } from 'frosty';
-import { useEnvironment, View } from '~/view';
+import { useEnvironment, View } from '../../../src/view';
 
 export const App = () => {
   const env = useEnvironment();
