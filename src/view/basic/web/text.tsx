@@ -24,52 +24,12 @@
 //
 
 import _ from 'lodash';
-import { ComponentType, mergeRefs, useRef, useRefHandle } from 'frosty';
-import { _createNativeElement } from 'frosty/_native';
-import { DOMNativeNode, type _DOMRenderer } from 'frosty/web';
+import { ComponentType, useRef, useRefHandle, useStack } from 'frosty';
 import { TextViewProps } from '../../types';
 import { useTextStyle } from '../../components';
 import { encodeTextStyle } from './css';
 import { useFlattenStyle } from '~/view/style/utils';
 import { TextStyle } from '~/view/style/types';
-
-export class DOMTextView extends DOMNativeNode {
-
-  #renderer: _DOMRenderer;
-  #target: HTMLDivElement;
-
-  constructor(doc: Document, renderer: _DOMRenderer) {
-    super();
-    this.#renderer = renderer;
-    this.#target = doc.createElement('div');
-  }
-
-  static createElement(doc: Document, renderer: _DOMRenderer): DOMNativeNode {
-    return new DOMTextView(doc, renderer);
-  }
-
-  get target(): Element {
-    return this.#target;
-  }
-
-  update(props: Record<string, any> & {
-    className?: string;
-    style?: string;
-  }) {
-
-    const { ref } = props;
-    mergeRefs(ref)(this.#target);
-
-  }
-
-  replaceChildren(children: (string | Element | DOMNativeNode)[]) {
-    const filtered = _.filter(children, x => _.isString(x) || x instanceof DOMTextView);
-    this.#renderer.__replaceChildren(this.#target, filtered);
-  }
-
-  destroy() {
-  }
-}
 
 export const Text: ComponentType<TextViewProps> = ({ ref, style, children }) => {
 
@@ -99,16 +59,35 @@ export const Text: ComponentType<TextViewProps> = ({ ref, style, children }) => 
     style,
   ]));
 
-  return _createNativeElement(DOMTextView, {
-    ref: targetRef,
-    style: [
-      {
-        listStyle: 'none',
-        whiteSpace: 'pre-wrap',
-        wordWrap: 'break-word',
-      },
-      cssStyle,
-    ],
-    children
-  });
+  const isInnerText = _.some(useStack(), (item) => item.type === Text);
+
+  if (isInnerText) {
+    return (
+      <span
+        style={[
+          {
+            listStyle: 'none',
+            whiteSpace: 'pre-wrap',
+            wordWrap: 'break-word',
+          },
+          cssStyle,
+        ]}>
+        {children}
+      </span>
+    );
+  }
+
+  return (
+    <div
+      style={[
+        {
+          listStyle: 'none',
+          whiteSpace: 'pre-wrap',
+          wordWrap: 'break-word',
+        },
+        cssStyle,
+      ]}>
+      {children}
+    </div>
+  );
 };
