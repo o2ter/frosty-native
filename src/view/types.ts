@@ -38,11 +38,8 @@ export type ScrollViewProps = PropsWithChildren<{
   vertical?: boolean;
 }>;
 
-interface ImageURISource {
+interface ImageURISource extends RequestInit {
   uri: string;
-  method?: string;
-  headers?: { [key: string]: string };
-  body?: any;
 }
 
 type ImageSource = string | ImageURISource;
