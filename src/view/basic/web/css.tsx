@@ -63,7 +63,7 @@ const encodeBoxShadow = (value: BoxShadowValue | BoxShadowValue[]): string => {
   ]).join(' ');
 }
 
-const encodeTextShadow = (value: BoxShadowValue | BoxShadowValue[]): string => {
+const encodeTextShadow = (value: BoxShadowValue | BoxShadowValue[]): string | undefined => {
   if (_.isArray(value)) return _.map(value, x => encodeBoxShadow(x)).join(',');
   const {
     offsetX,
@@ -71,6 +71,7 @@ const encodeTextShadow = (value: BoxShadowValue | BoxShadowValue[]): string => {
     color = 'black',
     blurRadius = 0,
   } = value;
+  if (!offsetX && !offsetY && !blurRadius) return;
   return _.compact([
     _.isNumber(offsetX) ? `${offsetX}px` : offsetX,
     _.isNumber(offsetY) ? `${offsetY}px` : offsetY,
