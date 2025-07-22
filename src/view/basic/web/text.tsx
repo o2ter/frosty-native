@@ -53,9 +53,19 @@ class DOMTextBaseView extends DOMNativeNode {
     style?: string;
   }) {
 
-    const { ref } = props;
+    const { ref, className, style } = props;
     mergeRefs(ref)(this.#target);
 
+    if (className) {
+      this.#target.className = className;
+    } else {
+      this.#target.removeAttribute('class');
+    }
+    if (style) {
+      this.#target.setAttribute('style', style);
+    } else {
+      this.#target.removeAttribute('style');
+    }
   }
 
   replaceChildren(children: (string | Element | DOMNativeNode)[]) {
