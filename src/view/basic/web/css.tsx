@@ -194,7 +194,7 @@ export const encodeViewStyle = <S extends ViewStyle>(
     borderTopRightRadius,
     borderBottomRightRadius,
     zIndex,
-  }, v => !!v) as ExtendedCSSProperties;
+  }, v => !_.isNil(v)) as ExtendedCSSProperties;
 }
 
 export const encodeImageStyle = <S extends ImageStyle>(

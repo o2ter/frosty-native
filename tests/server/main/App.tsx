@@ -1,6 +1,6 @@
 import _ from 'lodash';
 import { useState, useEffect } from 'frosty';
-import { useEnvironment, View } from '../../../src/view';
+import { Text, useEnvironment, View } from '../../../src/view';
 
 export const App = () => {
   const env = useEnvironment();
@@ -20,6 +20,7 @@ export const App = () => {
         flex: 1,
         backgroundColor: 'blue',
       }}>
+        <Text>Hello, <Text>World</Text></Text>
       </View>
     </View>
   );
