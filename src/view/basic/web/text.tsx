@@ -69,23 +69,15 @@ class DOMTextBaseView extends DOMNativeNode {
 
 class DOMTextView extends DOMTextBaseView {
 
-  constructor(doc: Document, renderer: _DOMRenderer) {
-    super(doc.createElement('div'), renderer);
-  }
-
   static createElement(doc: Document, renderer: _DOMRenderer): DOMNativeNode {
-    return new DOMTextView(doc, renderer);
+    return new DOMTextView(doc.createElement('div'), renderer);
   }
 }
 
 class DOMInnerTextView extends DOMTextBaseView {
 
-  constructor(doc: Document, renderer: _DOMRenderer) {
-    super(doc.createElement('span'), renderer);
-  }
-
   static createElement(doc: Document, renderer: _DOMRenderer): DOMNativeNode {
-    return new DOMTextView(doc, renderer);
+    return new DOMInnerTextView(doc.createElement('span'), renderer);
   }
 }
 
