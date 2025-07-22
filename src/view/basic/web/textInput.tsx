@@ -33,7 +33,7 @@ import { encodeTextStyle } from './css';
 import { useFlattenStyle } from '../../../view/style/utils';
 import { TextStyle } from '../../../view/style/types';
 
-export const TextInput: ComponentType<TextInputProps> = ({ ref, style, multiline, children }) => {
+export const TextInput: ComponentType<TextInputProps> = ({ ref, style, multiline }) => {
 
   const targetRef = useRef<HTMLElement | null>();
   useRefHandle(ref, () => ({
@@ -69,9 +69,8 @@ export const TextInput: ComponentType<TextInputProps> = ({ ref, style, multiline
             resize: 'none',
           },
           cssStyle,
-        ]}>
-        {children}
-      </textarea>
+        ]}
+      />
     );
   }
 

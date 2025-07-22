@@ -1,6 +1,6 @@
 import _ from 'lodash';
 import { useState, useEffect } from 'frosty';
-import { Text, TextInput, useEnvironment, View } from '../../../src/view';
+import { Text, TextInput, useEnvironment, View, Image } from '../../../src/view';
 
 export const App = () => {
   const env = useEnvironment();
@@ -24,6 +24,7 @@ export const App = () => {
       }}>
         <Text>Hello, <Text>World</Text></Text>
         <Text>Hello, <Text>World</Text></Text>
+        <Image source="https://upload.wikimedia.org/wikipedia/commons/b/b6/SIPI_Jelly_Beans_4.1.07.tiff" />
       </View>
     </View>
   );

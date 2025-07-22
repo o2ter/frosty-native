@@ -37,13 +37,12 @@ abstract class FTImageView extends NativeNode {
   }
 }
 
-export const Image: ComponentType<ImageProps> = ({ ref, style, source, children }) => {
+export const Image: ComponentType<ImageProps> = ({ ref, style, source }) => {
 
   useRefHandle(ref, () => ({
   }), null);
 
   return _createNativeElement(FTImageView, {
     style: useFlattenStyle(style),
-    children,
   });
 };

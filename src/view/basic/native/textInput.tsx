@@ -37,7 +37,7 @@ abstract class FTTextInput extends NativeNode {
   }
 }
 
-export const TextInput: ComponentType<TextInputProps> = ({ ref, style, children }) => {
+export const TextInput: ComponentType<TextInputProps> = ({ ref, style }) => {
 
   useRefHandle(ref, () => ({
   }), null);
@@ -46,6 +46,5 @@ export const TextInput: ComponentType<TextInputProps> = ({ ref, style, children 
 
   return _createNativeElement(FTTextInput, {
     style: useFlattenStyle(style),
-    children,
   });
 };

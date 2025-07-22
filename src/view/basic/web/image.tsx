@@ -23,12 +23,13 @@
 //  THE SOFTWARE.
 //
 
-import { ComponentType, useRef, useRefHandle } from 'frosty';
+import _ from 'lodash';
+import { ComponentType, useEffect, useRef, useRefHandle, useResource, useState } from 'frosty';
 import { ImageProps } from '../../types';
 import { encodeImageStyle } from './css';
 import { useFlattenStyle } from '../../../view/style/utils';
 
-export const Image: ComponentType<ImageProps> = ({ ref, style, source, children }) => {
+const ImageBase: ComponentType<ImageProps & { source?: string; }> = ({ ref, style, source }) => {
 
   const targetRef = useRef<HTMLImageElement>();
   useRefHandle(ref, () => ({
@@ -49,6 +50,62 @@ export const Image: ComponentType<ImageProps> = ({ ref, style, source, children 
     <img
       ref={targetRef}
       style={cssStyle}
+      src={source}
+    />
+  );
+};
+
+const FetchImageBase: ComponentType<ImageProps & { source: object; }> = ({ ref, style, source }) => {
+
+  const [uri, setUri] = useState<string>();
+
+  const { resource: blob } = useResource(async () => {
+    const { uri, ...options } = source ?? {};
+    const res = await fetch(uri, options);
+    return res.blob();
+  }, [source]);
+
+  useEffect(() => {
+    const uri = blob && URL.createObjectURL(blob);
+    setUri(uri);
+    return () => {
+      if (uri) URL.revokeObjectURL(uri);
+    }
+  }, [blob]);
+
+  return (
+    <ImageBase
+      ref={ref}
+      style={style}
+      source={uri}
+    />
+  );
+}
+
+export const Image: ComponentType<ImageProps> = ({ ref, style, source }) => {
+
+  if (!source || _.isString(source)) return (
+    <ImageBase
+      ref={ref}
+      style={style}
+      source={source}
+    />
+  );
+
+  const { method = 'GET', uri, ...options } = source ?? {};
+  if (_.toUpper(method) === 'GET' && _.isEmpty(options)) return (
+    <ImageBase
+      ref={ref}
+      style={style}
+      source={uri}
+    />
+  );
+
+  return (
+    <FetchImageBase
+      ref={ref}
+      style={style}
+      source={source}
     />
   );
 };
