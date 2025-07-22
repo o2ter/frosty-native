@@ -30,6 +30,64 @@ import { useTextStyle } from '../../components';
 import { encodeTextStyle } from './css';
 import { useFlattenStyle } from '../../../view/style/utils';
 import { TextStyle } from '../../../view/style/types';
+import { _DOMRenderer, DOMNativeNode } from 'frosty/web';
+import { _createNativeElement } from 'frosty/_native';
+
+class DOMTextBaseView extends DOMNativeNode {
+
+  #renderer: _DOMRenderer;
+  #target: HTMLElement;
+
+  constructor(target: HTMLElement, renderer: _DOMRenderer) {
+    super();
+    this.#renderer = renderer;
+    this.#target = target;
+  }
+
+  get target(): Element {
+    return this.#target;
+  }
+
+  update(props: Record<string, any> & {
+    className?: string;
+    style?: string;
+  }) {
+
+    const { ref } = props;
+    mergeRefs(ref)(this.#target);
+
+  }
+
+  replaceChildren(children: (string | Element | DOMNativeNode)[]) {
+    const filtered = _.filter(children, x => _.isString(x) || x instanceof DOMInnerTextView);
+    this.#renderer.__replaceChildren(this.#target, filtered);
+  }
+
+  destroy() {
+  }
+}
+
+class DOMTextView extends DOMTextBaseView {
+
+  constructor(doc: Document, renderer: _DOMRenderer) {
+    super(doc.createElement('div'), renderer);
+  }
+
+  static createElement(doc: Document, renderer: _DOMRenderer): DOMNativeNode {
+    return new DOMTextView(doc, renderer);
+  }
+}
+
+class DOMInnerTextView extends DOMTextBaseView {
+
+  constructor(doc: Document, renderer: _DOMRenderer) {
+    super(doc.createElement('span'), renderer);
+  }
+
+  static createElement(doc: Document, renderer: _DOMRenderer): DOMNativeNode {
+    return new DOMTextView(doc, renderer);
+  }
+}
 
 export const Text: ComponentType<TextViewProps> = ({ ref, style, children }) => {
 
@@ -61,35 +119,16 @@ export const Text: ComponentType<TextViewProps> = ({ ref, style, children }) => 
 
   const isInnerText = _.some(useStack(), (item) => item.type === Text);
 
-  if (isInnerText) {
-    return (
-      <span
-        ref={targetRef}
-        style={[
-          {
-            listStyle: 'none',
-            whiteSpace: 'pre-wrap',
-            wordWrap: 'break-word',
-          },
-          cssStyle,
-        ]}>
-        {children}
-      </span>
-    );
-  }
-
-  return (
-    <div
-      ref={mergeRefs(targetRef)}
-      style={[
-        {
-          listStyle: 'none',
-          whiteSpace: 'pre-wrap',
-          wordWrap: 'break-word',
-        },
-        cssStyle,
-      ]}>
-      {children}
-    </div>
-  );
+  return _createNativeElement(isInnerText ? DOMInnerTextView : DOMTextView, {
+    ref: targetRef,
+    style: [
+      {
+        listStyle: 'none',
+        whiteSpace: 'pre-wrap',
+        wordWrap: 'break-word',
+      },
+      cssStyle,
+    ],
+    children
+  });
 };
