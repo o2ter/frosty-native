@@ -124,7 +124,7 @@ export const Text: ComponentType<TextViewProps> = ({ ref, style, children }) => 
   return _createNativeElement(isInnerText ? DOMInnerTextView : DOMTextView, {
     ref: targetRef,
     style: [
-      {
+      !isInnerText && {
         listStyle: 'none',
         whiteSpace: 'pre-wrap',
         wordWrap: 'break-word',
