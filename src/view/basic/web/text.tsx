@@ -98,8 +98,10 @@ export const Text: ComponentType<TextViewProps> = ({ ref, style, children }) => 
     get _target() { return targetRef.current || undefined; }
   }), null);
 
+  const isInnerText = _.some(useStack(), (item) => item.type === Text);
+
   const cssStyle = encodeTextStyle(useFlattenStyle([
-    {
+    !isInnerText && {
       backgroundColor: 'transparent',
       borderWidth: 0,
       borderStyle: 'solid',
@@ -115,11 +117,9 @@ export const Text: ComponentType<TextViewProps> = ({ ref, style, children }) => 
       textAlign: 'start',
       textDecorationLine: 'none',
     },
-    useTextStyle() as TextStyle,
+    !isInnerText && useTextStyle() as TextStyle,
     style,
   ]));
-
-  const isInnerText = _.some(useStack(), (item) => item.type === Text);
 
   return _createNativeElement(isInnerText ? DOMInnerTextView : DOMTextView, {
     ref: targetRef,
