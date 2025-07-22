@@ -1,6 +1,6 @@
 import _ from 'lodash';
 import { useState, useEffect } from 'frosty';
-import { Text, useEnvironment, View } from '../../../src/view';
+import { Text, TextInput, useEnvironment, View } from '../../../src/view';
 
 export const App = () => {
   const env = useEnvironment();
@@ -15,6 +15,8 @@ export const App = () => {
         flex: 1,
         backgroundColor: 'red',
       }}>
+        <TextInput />
+        <TextInput multiline />
       </View>
       <View style={{
         flex: 1,
