@@ -43,8 +43,9 @@ export const Text: ComponentType<TextViewProps> = ({ ref, style, children }) => 
   useRefHandle(ref, () => ({
   }), null);
 
-  const _style = useFlattenStyle(style);
-
   const text = _.filter(_.castArray(children), x => _.isNumber(x) || _.isString(x)).join(' ');
-  return _createNativeElement(FTTextView, { text });
+  return _createNativeElement(FTTextView, {
+    style: useFlattenStyle(style),
+    text,
+  });
 };

@@ -49,8 +49,10 @@ export const ScrollView: ComponentType<ScrollViewProps> = ({
   useRefHandle(ref, () => ({
   }), null);
 
-  const _style = useFlattenStyle(style);
   const _contentContainerStyle = useFlattenStyle(contentContainerStyle);
 
-  return _createNativeElement(FTScrollView, { children });
+  return _createNativeElement(FTScrollView, {
+    style: useFlattenStyle(style),
+    children,
+  });
 };

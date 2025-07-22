@@ -44,5 +44,8 @@ export const TextInput: ComponentType<TextInputProps> = ({ ref, style, children 
 
   const _style = useFlattenStyle(style);
 
-  return _createNativeElement(FTTextInput, { children });
+  return _createNativeElement(FTTextInput, {
+    style: useFlattenStyle(style),
+    children,
+  });
 };

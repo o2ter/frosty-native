@@ -42,7 +42,8 @@ export const Image: ComponentType<ImageProps> = ({ ref, style, children }) => {
   useRefHandle(ref, () => ({
   }), null);
 
-  const _style = useFlattenStyle(style);
-
-  return _createNativeElement(FTImageView, { children });
+  return _createNativeElement(FTImageView, {
+    style: useFlattenStyle(style),
+    children,
+  });
 };

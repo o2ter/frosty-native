@@ -42,7 +42,8 @@ export const View: ComponentType<ViewProps> = ({ ref, style, children }) => {
   useRefHandle(ref, () => ({
   }), null);
 
-  const _style = useFlattenStyle(style);
-
-  return _createNativeElement(FTView, { children });
+  return _createNativeElement(FTView, {
+    style: useFlattenStyle(style),
+    children,
+  });
 };
