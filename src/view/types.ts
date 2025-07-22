@@ -42,10 +42,7 @@ interface ImageURISource {
   uri: string;
   method?: string;
   headers?: { [key: string]: string };
-  body?: string;
-  width?: number;
-  height?: number;
-  scale?: number;
+  body?: any;
 }
 
 type ImageSource = string | ImageURISource;
