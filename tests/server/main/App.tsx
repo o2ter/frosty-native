@@ -21,6 +21,7 @@ export const App = () => {
         backgroundColor: 'blue',
       }}>
         <Text>Hello, <Text>World</Text></Text>
+        <Text>Hello, <Text>World</Text></Text>
       </View>
     </View>
   );
