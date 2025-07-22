@@ -25,8 +25,6 @@
 
 import _ from 'lodash';
 import { ComponentType, mergeRefs, useRef, useRefHandle } from 'frosty';
-import { _createNativeElement } from 'frosty/_native';
-import { type _DOMRenderer } from 'frosty/web';
 import { TextInputProps } from '../../types';
 import { useTextStyle } from '../../components';
 import { encodeTextStyle } from './css';
