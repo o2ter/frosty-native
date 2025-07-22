@@ -248,7 +248,7 @@ export const encodeTextStyle = <S extends TextStyle>(
     letterSpacing,
     lineHeight,
     textAlign,
-    textDecorationLine: _.flattenDeep(textDecorationLine).join(' '),
+    textDecorationLine: _.isArray(textDecorationLine) ? _.flattenDeep(textDecorationLine).join(' ') : textDecorationLine,
     textDecorationStyle,
     textDecorationColor,
     textShadow: encodeBoxShadow({
