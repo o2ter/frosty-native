@@ -211,7 +211,7 @@ export const encodeImageStyle = <S extends ImageStyle>(
   return _.pickBy({
     ...encodeViewStyle(style),
     objectFit,
-  }, v => !!v) as ExtendedCSSProperties;
+  }, v => !_.isNil(v)) as ExtendedCSSProperties;
 }
 
 export const encodeTextStyle = <S extends TextStyle>(
@@ -259,5 +259,5 @@ export const encodeTextStyle = <S extends TextStyle>(
     }),
     textTransform,
     userSelect,
-  }, v => !!v) as ExtendedCSSProperties;
+  }, v => !_.isNil(v)) as ExtendedCSSProperties;
 }
