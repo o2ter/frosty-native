@@ -86,8 +86,7 @@ export const TextInput: ComponentType<TextInputProps> = ({ ref, style, multiline
           resize: 'none',
         },
         cssStyle,
-      ]}>
-      {children}
-    </input>
+      ]}
+    />
   );
 };

@@ -28,9 +28,9 @@ import { ImageProps } from '../../types';
 import { encodeImageStyle } from './css';
 import { useFlattenStyle } from '../../../view/style/utils';
 
-export const Image: ComponentType<ImageProps> = ({ ref, style, children }) => {
+export const Image: ComponentType<ImageProps> = ({ ref, style, source, children }) => {
 
-  const targetRef = useRef<HTMLDivElement>();
+  const targetRef = useRef<HTMLImageElement>();
   useRefHandle(ref, () => ({
     get _target() { return targetRef.current; }
   }), null);
@@ -46,10 +46,9 @@ export const Image: ComponentType<ImageProps> = ({ ref, style, children }) => {
   ]));
 
   return (
-    <div
+    <img
       ref={targetRef}
-      style={cssStyle}>
-      {children}
-    </div>
+      style={cssStyle}
+    />
   );
 };
