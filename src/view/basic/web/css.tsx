@@ -63,6 +63,22 @@ const encodeBoxShadow = (value: BoxShadowValue | BoxShadowValue[]): string => {
   ]).join(' ');
 }
 
+const encodeTextShadow = (value: BoxShadowValue | BoxShadowValue[]): string => {
+  if (_.isArray(value)) return _.map(value, x => encodeBoxShadow(x)).join(',');
+  const {
+    offsetX,
+    offsetY,
+    color = 'black',
+    blurRadius = 0,
+  } = value;
+  return _.compact([
+    _.isNumber(offsetX) ? `${offsetX}px` : offsetX,
+    _.isNumber(offsetY) ? `${offsetY}px` : offsetY,
+    _.isNumber(blurRadius) ? `${blurRadius}px` : blurRadius,
+    color,
+  ]).join(' ');
+}
+
 export const encodeViewStyle = <S extends ViewStyle>(
   style: ReturnType<typeof useFlattenStyle<S>>
 ): ExtendedCSSProperties => {
@@ -251,7 +267,7 @@ export const encodeTextStyle = <S extends TextStyle>(
     textDecorationLine: _.isArray(textDecorationLine) ? _.flattenDeep(textDecorationLine).join(' ') : textDecorationLine,
     textDecorationStyle,
     textDecorationColor,
-    textShadow: encodeBoxShadow({
+    textShadow: encodeTextShadow({
       offsetX: textShadowOffsetX || 0,
       offsetY: textShadowOffsetY || 0,
       blurRadius: textShadowRadius,
