@@ -55,10 +55,10 @@ const encodeBoxShadow = (value: BoxShadowValue | BoxShadowValue[]): string => {
   } = value;
   return _.compact([
     inset && 'inset',
-    offsetX && _.isNumber(offsetX) ? `${offsetX}px` : offsetX,
-    offsetY && _.isNumber(offsetY) ? `${offsetY}px` : offsetY,
-    blurRadius && _.isNumber(blurRadius) ? `${blurRadius}px` : blurRadius,
-    spreadDistance && _.isNumber(spreadDistance) ? `${spreadDistance}px` : spreadDistance,
+    _.isNumber(offsetX) ? `${offsetX}px` : offsetX,
+    _.isNumber(offsetY) ? `${offsetY}px` : offsetY,
+    _.isNumber(blurRadius) ? `${blurRadius}px` : blurRadius,
+    _.isNumber(spreadDistance) ? `${spreadDistance}px` : spreadDistance,
     color,
   ]).join(' ');
 }
