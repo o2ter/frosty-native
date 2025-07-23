@@ -43,7 +43,7 @@ const ImageBase: ComponentType<ImageProps & { source?: string; }> = ({ ref, styl
       display: 'flex',
       flexDirection: 'column',
     },
-    naturalSize && {
+    naturalSize?.width && naturalSize?.height && {
       aspectRatio: `${naturalSize.width / naturalSize.height}`,
     },
     style,
