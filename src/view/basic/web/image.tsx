@@ -69,11 +69,8 @@ const FetchImageBase: ComponentType<ImageProps & { source: object; }> = ({ ref, 
   const [uri, setUri] = useState<string>();
 
   const { resource: blob } = useResource<Blob>(async ({ abortSignal }) => {
-    const { uri, ...options } = source ?? {};
-    const res = await fetch(uri, {
-      signal: abortSignal,
-      ...options,
-    });
+    const { uri, signal = abortSignal, ...options } = source ?? {};
+    const res = await fetch(uri, { signal, ...options });
     return res.blob();
   }, [source]);
 
