@@ -31,6 +31,8 @@ import { useFlattenStyle } from '../../../view/style/utils';
 
 const ImageBase: ComponentType<ImageProps & { source?: string; }> = ({ ref, style, source }) => {
 
+  const [naturalSize, setNaturalSize] = useState<{ width: number; height: number; }>();
+
   const targetRef = useRef<HTMLImageElement>();
   useRefHandle(ref, () => ({
     get _target() { return targetRef.current; }
@@ -40,8 +42,9 @@ const ImageBase: ComponentType<ImageProps & { source?: string; }> = ({ ref, styl
     {
       display: 'flex',
       flexDirection: 'column',
-      width: '100%',
-      height: '100%',
+    },
+    naturalSize && {
+      aspectRatio: `${naturalSize.width / naturalSize.height}`,
     },
     style,
   ]));
@@ -51,6 +54,15 @@ const ImageBase: ComponentType<ImageProps & { source?: string; }> = ({ ref, styl
       ref={targetRef}
       style={cssStyle}
       src={source}
+      onLoad={(e) => {
+        if (naturalSize?.width !== e.currentTarget.naturalWidth ||
+          naturalSize?.height !== e.currentTarget.naturalHeight) {
+          setNaturalSize({
+            width: e.currentTarget.naturalWidth,
+            height: e.currentTarget.naturalHeight,
+          });
+        }
+      }}
     />
   );
 };

@@ -25,6 +25,7 @@ export const App = () => {
         <Text>Hello, <Text>World</Text></Text>
         <Text>Hello, <Text>World</Text></Text>
         <Image source="https://upload.wikimedia.org/wikipedia/commons/b/b6/SIPI_Jelly_Beans_4.1.07.tiff" />
+        <Image source="https://upload.wikimedia.org/wikipedia/commons/b/b6/SIPI_Jelly_Beans_4.1.07.tiff" />
       </View>
     </View>
   );
