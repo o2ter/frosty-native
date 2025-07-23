@@ -55,13 +55,10 @@ const ImageBase: ComponentType<ImageProps & { source?: string; }> = ({ ref, styl
       style={cssStyle}
       src={source}
       onLoad={(e) => {
-        if (naturalSize?.width !== e.currentTarget.naturalWidth ||
-          naturalSize?.height !== e.currentTarget.naturalHeight) {
-          setNaturalSize({
-            width: e.currentTarget.naturalWidth,
-            height: e.currentTarget.naturalHeight,
-          });
-        }
+        setNaturalSize({
+          width: e.currentTarget.naturalWidth,
+          height: e.currentTarget.naturalHeight,
+        });
       }}
     />
   );
