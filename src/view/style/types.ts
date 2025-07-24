@@ -27,7 +27,17 @@ import _ from 'lodash';
 
 export type ColorValue = string;
 
-type FlexAlignType =
+type FlexLayoutContentType =
+  | 'flex-start'
+  | 'flex-end'
+  | 'center'
+  | 'stretch'
+  | 'space-between'
+  | 'space-around'
+  | 'space-evenly';
+
+type FlexLayoutItemsType =
+  | 'auto'
   | 'flex-start'
   | 'flex-end'
   | 'center'
@@ -72,16 +82,9 @@ const _borderRadiusKeys = [
 ] as const;
 
 export type LayoutStyle = {
-  alignContent?:
-  | 'flex-start'
-  | 'flex-end'
-  | 'center'
-  | 'stretch'
-  | 'space-between'
-  | 'space-around'
-  | 'space-evenly';
-  alignItems?: FlexAlignType;
-  alignSelf?: 'auto' | FlexAlignType;
+  alignContent?: FlexLayoutContentType;
+  alignItems?: FlexLayoutItemsType;
+  alignSelf?: FlexLayoutItemsType;
   aspectRatio?: number | string;
   bottom?: DimensionValue;
   boxSizing?: 'border-box' | 'content-box';
@@ -102,13 +105,9 @@ export type LayoutStyle = {
   flexWrap?: 'wrap' | 'nowrap' | 'wrap-reverse';
   height?: DimensionValue;
   inset?: DimensionValue;
-  justifyContent?:
-  | 'flex-start'
-  | 'flex-end'
-  | 'center'
-  | 'space-between'
-  | 'space-around'
-  | 'space-evenly';
+  justifyContent?: FlexLayoutContentType;
+  justifyItems?: FlexLayoutItemsType;
+  justifySelf?: FlexLayoutItemsType;
   left?: DimensionValue;
   maxHeight?: DimensionValue;
   maxWidth?: DimensionValue;

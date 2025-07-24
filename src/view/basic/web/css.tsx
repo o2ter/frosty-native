@@ -86,6 +86,7 @@ export const encodeViewStyle = <S extends ViewStyle>(
   const {
     alignContent,
     alignItems,
+    alignSelf,
     aspectRatio,
     boxSizing,
     display,
@@ -96,6 +97,8 @@ export const encodeViewStyle = <S extends ViewStyle>(
     flexShrink,
     flexWrap,
     justifyContent,
+    justifyItems,
+    justifySelf,
     width,
     height,
     maxHeight,
@@ -151,6 +154,7 @@ export const encodeViewStyle = <S extends ViewStyle>(
   return _.pickBy({
     alignContent,
     alignItems,
+    alignSelf,
     aspectRatio,
     boxSizing,
     display,
@@ -161,6 +165,8 @@ export const encodeViewStyle = <S extends ViewStyle>(
     flexShrink,
     flexWrap,
     justifyContent,
+    justifyItems,
+    justifySelf,
     width,
     height,
     maxHeight,
