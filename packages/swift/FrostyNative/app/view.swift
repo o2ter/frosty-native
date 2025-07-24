@@ -24,11 +24,11 @@
 //
 
 protocol FTViewProtocol: View {
-
+    
     var props: [String: any Sendable] { get }
-
+    
     var children: [AnyView] { get }
-
+    
     init(
         nodeId: ObjectIdentifier,
         props: Binding<[String: any Sendable]>,
@@ -38,9 +38,9 @@ protocol FTViewProtocol: View {
 }
 
 protocol FTLayoutViewProtocol: FTViewProtocol {
-
+    
     associatedtype Content: View
-
+    
     @ViewBuilder @MainActor @preconcurrency var content: Self.Content { get }
 }
 
@@ -52,31 +52,49 @@ struct Layout: Equatable {
 }
 
 extension FTLayoutViewProtocol {
-
-    var layout: [String: any Sendable] {
-        return props["layout"] as? [String: any Sendable] ?? [:]
+    
+    var style: [String: any Sendable] {
+        return props["style"] as? [String: any Sendable] ?? [:]
     }
-
+    
+    var flexDirection: String {
+        return style["flexDirection"] as? String ?? "column"
+    }
+    
+    var columnGap: CGFloat {
+        return style["columnGap"] as? CGFloat ?? 0
+    }
+    
+    var rowGap: CGFloat {
+        return style["rowGap"] as? CGFloat ?? 0
+    }
+    
     var paddingTop: CGFloat {
-        return layout["paddingTop"] as? CGFloat ?? 0
+        return style["paddingTop"] as? CGFloat ?? 0
     }
-
+    
     var paddingLeft: CGFloat {
-        return layout["paddingLeft"] as? CGFloat ?? 0
+        return style["paddingLeft"] as? CGFloat ?? 0
     }
-
+    
     var paddingRight: CGFloat {
-        return layout["paddingRight"] as? CGFloat ?? 0
+        return style["paddingRight"] as? CGFloat ?? 0
     }
-
+    
     var paddingBottom: CGFloat {
-        return layout["paddingBottom"] as? CGFloat ?? 0
+        return style["paddingBottom"] as? CGFloat ?? 0
     }
+}
+
+extension FTLayoutViewProtocol {
     
     var onLayout: ((_: Layout) -> Void)? {
         nil
     }
+}
 
+extension FTLayoutViewProtocol {
+    
     var body: some View {
         
         let view = self.content.padding(
@@ -101,13 +119,13 @@ extension FTLayoutViewProtocol {
 }
 
 struct FTView: FTLayoutViewProtocol {
-
+    
     @Binding
     var props: [String: any Sendable]
     
     @Binding
     var children: [AnyView]
-
+    
     init(
         nodeId: ObjectIdentifier,
         props: Binding<[String: any Sendable]>,
@@ -117,45 +135,35 @@ struct FTView: FTLayoutViewProtocol {
         self._props = props
         self._children = children
     }
-
-    var lazy: Bool {
-        return props["lazy"] as? Bool ?? false
-    }
-
-    var spacing: CGFloat {
-        return props["spacing"] as? CGFloat ?? 0
-    }
-
-    var row: Bool {
-        return props["row"] as? Bool ?? false
-    }
-
+    
     var content: some View {
-        switch (lazy, row) {
-        case (true, true):
-            LazyHStack(spacing: spacing) {
-                ForEach(Array(children.enumerated()), id: \.offset) {
+        switch flexDirection {
+        case "row":
+            HStackLayout(spacing: rowGap) {
+                ForEach(children.indexed(), id: \.index) {
                     $0.element
                 }
             }
-        case (true, false):
-            LazyVStack(spacing: spacing) {
-                ForEach(Array(children.enumerated()), id: \.offset) {
+        case "row-reverse":
+            HStackLayout(spacing: rowGap) {
+                ForEach(children.reversed().indexed(), id: \.index) {
                     $0.element
                 }
             }
-        case (false, true):
-            HStackLayout(spacing: spacing) {
-                ForEach(Array(children.enumerated()), id: \.offset) {
+        case "column":
+            VStackLayout(spacing: columnGap) {
+                ForEach(children.indexed(), id: \.index) {
                     $0.element
                 }
             }
-        case (false, false):
-            VStackLayout(spacing: spacing) {
-                ForEach(Array(children.enumerated()), id: \.offset) {
+        case "column-reverse":
+            VStackLayout(spacing: columnGap) {
+                ForEach(children.reversed().indexed(), id: \.index) {
                     $0.element
                 }
             }
+        default:
+            EmptyView()
         }
     }
 }

@@ -38,11 +38,19 @@ let package = Package(
     ],
     dependencies: [
         .package(url: "https://github.com/o2ter/SwiftJS.git", from: "0.0.1"),
+        .package(url: "https://github.com/apple/swift-algorithms", from: "1.2.1"),
+        .package(url: "https://github.com/apple/swift-collections", from: "1.2.1"),
+        .package(url: "https://github.com/apple/swift-async-algorithms", from: "1.0.0"),
     ],
     targets: [
         .target(
             name: "FrostyNative",
-            dependencies: ["SwiftJS"],
+            dependencies: [
+                "SwiftJS",
+                .product(name: "Algorithms", package: "swift-algorithms"),
+                .product(name: "Collections", package: "swift-collections"),
+                .product(name: "AsyncAlgorithms", package: "swift-async-algorithms"),
+            ],
             path: "packages/swift/FrostyNative",
         ),
     ]
