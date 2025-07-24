@@ -23,7 +23,7 @@
 //  THE SOFTWARE.
 //
 
-import { PropsWithChildren, Ref, StyleProp } from 'frosty';
+import { Ref, StyleProp } from 'frosty';
 import { ImageStyle } from '../../style/types';
 
 interface ImageURISource extends RequestInit {

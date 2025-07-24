@@ -23,7 +23,7 @@
 //  THE SOFTWARE.
 //
 
-import { PropsWithChildren, Ref, StyleProp } from 'frosty';
+import { Ref, StyleProp } from 'frosty';
 import { TextStyle } from '../../style/types';
 
 type TextInputRef = {
