@@ -48,7 +48,7 @@ export default function App() {
   }, []);
   console.log(JSON.stringify(useEnvironment(), null, 4));
   return (
-    <View>
+    <View style={{ padding: 64 }}>
       <Text>Hello World!</Text>
       <Text>{counter}</Text>
     </View>
