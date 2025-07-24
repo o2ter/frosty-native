@@ -163,6 +163,14 @@ extension FTLayoutViewProtocol {
             } action: { onLayout($0) }
         }
         
+        view = view.padding(
+            EdgeInsets(
+                top: marginTop,
+                leading: marginLeft,
+                bottom: marginBottom,
+                trailing: marginRight
+            ))
+        
         return AnyView(view)
     }
 }
