@@ -146,13 +146,17 @@ extension FTLayoutViewProtocol {
     
     var body: some View {
         
-        var view: any View = self.content.padding(
-            EdgeInsets(
-                top: paddingTop,
-                leading: paddingLeft,
-                bottom: paddingBottom,
-                trailing: paddingRight
-            ))
+        var view: any View = self.content
+        
+        if paddingTop != 0 || paddingLeft != 0 || paddingBottom != 0 || paddingRight != 0 {
+            view = view.padding(
+                EdgeInsets(
+                    top: paddingTop,
+                    leading: paddingLeft,
+                    bottom: paddingBottom,
+                    trailing: paddingRight
+                ))
+        }
         
         if let onLayout = onLayout {
             view = view.onGeometryChange(for: Layout.self) {
@@ -163,13 +167,15 @@ extension FTLayoutViewProtocol {
             } action: { onLayout($0) }
         }
         
-        view = view.padding(
-            EdgeInsets(
-                top: marginTop,
-                leading: marginLeft,
-                bottom: marginBottom,
-                trailing: marginRight
-            ))
+        if marginTop != 0 || marginLeft != 0 || marginBottom != 0 || marginRight != 0 {
+            view = view.padding(
+                EdgeInsets(
+                    top: marginTop,
+                    leading: marginLeft,
+                    bottom: marginBottom,
+                    trailing: marginRight
+                ))
+        }
         
         return AnyView(view)
     }
