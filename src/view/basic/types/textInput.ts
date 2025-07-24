@@ -30,8 +30,8 @@ type TextInputRef = {
   readonly _target?: HTMLElement;
 };
 
-export type TextInputProps = PropsWithChildren<{
+export type TextInputProps = {
   ref?: Ref<TextInputRef | null | undefined>;
   style?: StyleProp<TextStyle>;
   multiline?: boolean;
-}>;
+};

@@ -35,8 +35,8 @@ type ImageRef = {
   readonly _target?: HTMLElement;
 };
 
-export type ImageProps = PropsWithChildren<{
+export type ImageProps = {
   ref?: Ref<ImageRef | null | undefined>;
   source?: ImageSource;
   style?: StyleProp<ImageStyle>;
-}>;
+};
