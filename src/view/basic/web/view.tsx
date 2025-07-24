@@ -24,7 +24,7 @@
 //
 
 import { ComponentRef, ComponentType, mergeRefs, useRef, useRefHandle } from 'frosty';
-import { ViewProps } from '../../types';
+import { ViewProps } from '../types';
 import { encodeViewStyle } from './css';
 import { useFlattenStyle } from '../../../view/style/utils';
 

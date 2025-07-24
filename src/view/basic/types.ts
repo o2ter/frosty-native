@@ -24,7 +24,7 @@
 //
 
 import { PropsWithChildren, Ref, StyleProp } from 'frosty';
-import { ImageStyle, TextStyle, ViewStyle } from './style/types';
+import { ImageStyle, TextStyle, ViewStyle } from '../style/types';
 
 type ScrollViewRef = {
   readonly _target?: HTMLElement;

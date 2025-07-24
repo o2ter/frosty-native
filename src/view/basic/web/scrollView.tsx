@@ -24,7 +24,7 @@
 //
 
 import { ComponentRef, ComponentType, mergeRefs, useRef, useRefHandle } from 'frosty';
-import { ScrollViewProps } from '../../types';
+import { ScrollViewProps } from '../types';
 import { encodeViewStyle } from './css';
 import { useFlattenStyle } from '../../../view/style/utils';
 

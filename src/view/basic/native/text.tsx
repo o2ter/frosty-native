@@ -28,7 +28,7 @@ import { ComponentRef, ComponentType, mergeRefs, useRef, useRefHandle } from 'fr
 import { _createNativeElement } from 'frosty/_native';
 import { NativeModules } from '../../../global';
 import { NativeNode } from '../../../node';
-import { TextViewProps } from '../../types';
+import { TextViewProps } from '../types';
 import { useFlattenStyle } from '../../../view/style/utils';
 
 abstract class FTTextView extends NativeNode {
