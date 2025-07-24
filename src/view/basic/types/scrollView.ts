@@ -1,5 +1,5 @@
 //
-//  textInput.tsx
+//  types.ts
 //
 //  The MIT License
 //  Copyright (c) 2021 - 2025 O2ter Limited. All rights reserved.
@@ -23,29 +23,17 @@
 //  THE SOFTWARE.
 //
 
-import { ComponentRef, ComponentType, mergeRefs, useRef, useRefHandle } from 'frosty';
-import { _createNativeElement } from 'frosty/_native';
-import { NativeModules } from '../../../global';
-import { NativeNode } from '../../../node';
-import { TextInputProps } from '../types/textInput';
-import { useFlattenStyle } from '../../../view/style/utils';
+import { PropsWithChildren, Ref, StyleProp } from 'frosty';
+import { ViewStyle } from '../../style/types';
 
-abstract class FTTextInput extends NativeNode {
-
-  static createElement(): NativeNode {
-    return NativeModules['FTTextInput']();
-  }
-}
-
-export const TextInput: ComponentType<TextInputProps> = ({ ref, style }) => {
-
-  const nativeRef = useRef<ComponentRef<typeof TextInput>>();
-  useRefHandle(mergeRefs(nativeRef, ref), () => ({
-  }), null);
-
-  const _style = useFlattenStyle(style);
-
-  return _createNativeElement(FTTextInput, {
-    style: useFlattenStyle(style),
-  });
+type ScrollViewRef = {
+  readonly _target?: HTMLElement;
 };
+
+export type ScrollViewProps = PropsWithChildren<{
+  ref?: Ref<ScrollViewRef | null | undefined>;
+  style?: StyleProp<ViewStyle>;
+  contentContainerStyle?: StyleProp<ViewStyle>;
+  horizontal?: boolean;
+  vertical?: boolean;
+}>;

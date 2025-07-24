@@ -27,7 +27,7 @@ import { ComponentRef, ComponentType, mergeRefs, useRef, useRefHandle } from 'fr
 import { _createNativeElement } from 'frosty/_native';
 import { NativeModules } from '../../../global';
 import { NativeNode } from '../../../node';
-import { ImageProps } from '../types';
+import { ImageProps } from '../types/image';
 import { useFlattenStyle } from '../../../view/style/utils';
 
 abstract class FTImageView extends NativeNode {

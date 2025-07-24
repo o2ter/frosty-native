@@ -24,24 +24,11 @@
 //
 
 import { PropsWithChildren, Ref, StyleProp } from 'frosty';
-import { ImageStyle, TextStyle, ViewStyle } from '../style/types';
-
-type ScrollViewRef = {
-  readonly _target?: HTMLElement;
-};
-
-export type ScrollViewProps = PropsWithChildren<{
-  ref?: Ref<ScrollViewRef | null | undefined>;
-  style?: StyleProp<ViewStyle>;
-  contentContainerStyle?: StyleProp<ViewStyle>;
-  horizontal?: boolean;
-  vertical?: boolean;
-}>;
+import { ImageStyle } from '../../style/types';
 
 interface ImageURISource extends RequestInit {
   uri: string;
 }
-
 type ImageSource = string | ImageURISource;
 
 type ImageRef = {
@@ -52,32 +39,4 @@ export type ImageProps = PropsWithChildren<{
   ref?: Ref<ImageRef | null | undefined>;
   source?: ImageSource;
   style?: StyleProp<ImageStyle>;
-}>;
-
-type TextViewRef = {
-  readonly _target?: HTMLElement;
-};
-
-export type TextViewProps = PropsWithChildren<{
-  ref?: Ref<TextViewRef | null | undefined>;
-  style?: StyleProp<TextStyle>;
-}>;
-
-type TextInputRef = {
-  readonly _target?: HTMLElement;
-};
-
-export type TextInputProps = PropsWithChildren<{
-  ref?: Ref<TextInputRef | null | undefined>;
-  style?: StyleProp<TextStyle>;
-  multiline?: boolean;
-}>;
-
-type ViewRef = {
-  readonly _target?: HTMLElement;
-};
-
-export type ViewProps = PropsWithChildren<{
-  ref?: Ref<ViewRef | null | undefined>;
-  style?: StyleProp<ViewStyle>;
 }>;
