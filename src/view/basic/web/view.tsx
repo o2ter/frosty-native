@@ -40,6 +40,7 @@ export const View: ComponentType<ViewProps> = ({ ref, style, children }) => {
     {
       alignContent: 'flex-start',
       alignItems: 'stretch',
+      alignSelf: 'auto',
       backgroundColor: 'transparent',
       borderWidth: 0,
       borderStyle: 'solid',
@@ -49,6 +50,9 @@ export const View: ComponentType<ViewProps> = ({ ref, style, children }) => {
       flexBasis: 'auto',
       flexDirection: 'column',
       flexShrink: 0,
+      justifyContent: 'stretch',
+      justifyItems: 'stretch',
+      justifySelf: 'auto',
       margin: 0,
       minHeight: 0,
       minWidth: 0,
