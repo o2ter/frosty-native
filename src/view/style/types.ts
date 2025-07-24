@@ -114,7 +114,7 @@ export type LayoutStyle = {
   minHeight?: DimensionValue;
   minWidth?: DimensionValue;
   overflow?: 'visible' | 'hidden';
-  position?: 'absolute' | 'relative' | 'static' | (string & {});
+  position?: 'absolute' | 'relative' | 'static' | 'fixed' | 'sticky' | (string & {});
   right?: DimensionValue;
   start?: DimensionValue;
   top?: DimensionValue;
