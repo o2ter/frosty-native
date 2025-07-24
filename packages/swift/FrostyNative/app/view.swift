@@ -56,6 +56,9 @@ extension FTLayoutViewProtocol {
     var style: [String: any Sendable] {
         return props["style"] as? [String: any Sendable] ?? [:]
     }
+}
+
+extension FTLayoutViewProtocol {
     
     var flexDirection: String {
         return style["flexDirection"] as? String ?? "column"
@@ -68,6 +71,9 @@ extension FTLayoutViewProtocol {
     var rowGap: CGFloat {
         return style["rowGap"] as? CGFloat ?? 0
     }
+}
+
+extension FTLayoutViewProtocol {
     
     var paddingTop: CGFloat {
         return style["paddingTop"] as? CGFloat ?? 0
@@ -83,6 +89,25 @@ extension FTLayoutViewProtocol {
     
     var paddingBottom: CGFloat {
         return style["paddingBottom"] as? CGFloat ?? 0
+    }
+}
+
+extension FTLayoutViewProtocol {
+    
+    var marginTop: CGFloat {
+        return style["marginTop"] as? CGFloat ?? 0
+    }
+    
+    var marginLeft: CGFloat {
+        return style["marginLeft"] as? CGFloat ?? 0
+    }
+    
+    var marginRight: CGFloat {
+        return style["marginRight"] as? CGFloat ?? 0
+    }
+    
+    var marginBottom: CGFloat {
+        return style["marginBottom"] as? CGFloat ?? 0
     }
 }
 
