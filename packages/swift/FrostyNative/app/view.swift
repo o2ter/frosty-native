@@ -146,7 +146,7 @@ extension FTLayoutViewProtocol {
     
     var body: some View {
         
-        let view = self.content.padding(
+        var view: any View = self.content.padding(
             EdgeInsets(
                 top: paddingTop,
                 leading: paddingLeft,
@@ -155,12 +155,12 @@ extension FTLayoutViewProtocol {
             ))
         
         if let onLayout = onLayout {
-            return AnyView(view.onGeometryChange(for: Layout.self) {
+            view = view.onGeometryChange(for: Layout.self) {
                 Layout(
                     global: $0.frame(in: .global),
                     local: $0.frame(in: .local)
                 )
-            } action: { onLayout($0) })
+            } action: { onLayout($0) }
         }
         
         return AnyView(view)
