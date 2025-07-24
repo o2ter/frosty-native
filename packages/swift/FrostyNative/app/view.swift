@@ -60,6 +60,10 @@ extension FTLayoutViewProtocol {
 
 extension FTLayoutViewProtocol {
     
+    var position: String {
+        return style["position"] as? String ?? "static"
+    }
+    
     var flexDirection: String {
         return style["flexDirection"] as? String ?? "column"
     }
@@ -94,6 +98,13 @@ extension FTLayoutViewProtocol {
     
     var rowGap: CGFloat {
         return style["rowGap"] as? CGFloat ?? 0
+    }
+}
+
+extension FTLayoutViewProtocol {
+    
+    var overflow: String {
+        return style["overflow"] as? String ?? "visible"
     }
 }
 
