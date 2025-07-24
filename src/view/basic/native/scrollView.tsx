@@ -23,7 +23,7 @@
 //  THE SOFTWARE.
 //
 
-import { ComponentType, useRefHandle } from 'frosty';
+import { ComponentRef, ComponentType, mergeRefs, useRef, useRefHandle } from 'frosty';
 import { _createNativeElement } from 'frosty/_native';
 import { NativeModules } from '../../../global';
 import { NativeNode } from '../../../node';
@@ -46,7 +46,8 @@ export const ScrollView: ComponentType<ScrollViewProps> = ({
   children
 }) => {
 
-  useRefHandle(ref, () => ({
+  const nativeRef = useRef<ComponentRef<typeof ScrollView>>();
+  useRefHandle(mergeRefs(nativeRef, ref), () => ({
   }), null);
 
   const _contentContainerStyle = useFlattenStyle(contentContainerStyle);

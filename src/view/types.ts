@@ -31,7 +31,7 @@ type ScrollViewRef = {
 };
 
 export type ScrollViewProps = PropsWithChildren<{
-  ref?: Ref<ScrollViewRef>;
+  ref?: Ref<ScrollViewRef | null | undefined>;
   style?: StyleProp<ViewStyle>;
   contentContainerStyle?: StyleProp<ViewStyle>;
   horizontal?: boolean;
@@ -49,7 +49,7 @@ type ImageRef = {
 };
 
 export type ImageProps = PropsWithChildren<{
-  ref?: Ref<ImageRef>;
+  ref?: Ref<ImageRef | null | undefined>;
   source?: ImageSource;
   style?: StyleProp<ImageStyle>;
 }>;
@@ -59,7 +59,7 @@ type TextViewRef = {
 };
 
 export type TextViewProps = PropsWithChildren<{
-  ref?: Ref<TextViewRef>;
+  ref?: Ref<TextViewRef | null | undefined>;
   style?: StyleProp<TextStyle>;
 }>;
 
@@ -68,7 +68,7 @@ type TextInputRef = {
 };
 
 export type TextInputProps = PropsWithChildren<{
-  ref?: Ref<TextInputRef>;
+  ref?: Ref<TextInputRef | null | undefined>;
   style?: StyleProp<TextStyle>;
   multiline?: boolean;
 }>;
@@ -78,6 +78,6 @@ type ViewRef = {
 };
 
 export type ViewProps = PropsWithChildren<{
-  ref?: Ref<ViewRef>;
+  ref?: Ref<ViewRef | null | undefined>;
   style?: StyleProp<ViewStyle>;
 }>;

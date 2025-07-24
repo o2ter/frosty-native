@@ -24,7 +24,7 @@
 //
 
 import _ from 'lodash';
-import { ComponentType, useRefHandle } from 'frosty';
+import { ComponentRef, ComponentType, mergeRefs, useRef, useRefHandle } from 'frosty';
 import { _createNativeElement } from 'frosty/_native';
 import { NativeModules } from '../../../global';
 import { NativeNode } from '../../../node';
@@ -40,7 +40,8 @@ abstract class FTTextView extends NativeNode {
 
 export const Text: ComponentType<TextViewProps> = ({ ref, style, children }) => {
 
-  useRefHandle(ref, () => ({
+  const nativeRef = useRef<ComponentRef<typeof Text>>();
+  useRefHandle(mergeRefs(nativeRef, ref), () => ({
   }), null);
 
   const text = _.filter(_.castArray(children), x => _.isNumber(x) || _.isString(x)).join(' ');

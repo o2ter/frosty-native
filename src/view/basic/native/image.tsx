@@ -23,7 +23,7 @@
 //  THE SOFTWARE.
 //
 
-import { ComponentType, useRefHandle } from 'frosty';
+import { ComponentRef, ComponentType, mergeRefs, useRef, useRefHandle } from 'frosty';
 import { _createNativeElement } from 'frosty/_native';
 import { NativeModules } from '../../../global';
 import { NativeNode } from '../../../node';
@@ -39,7 +39,8 @@ abstract class FTImageView extends NativeNode {
 
 export const Image: ComponentType<ImageProps> = ({ ref, style, source }) => {
 
-  useRefHandle(ref, () => ({
+  const nativeRef = useRef<ComponentRef<typeof Image>>();
+  useRefHandle(mergeRefs(nativeRef, ref), () => ({
   }), null);
 
   return _createNativeElement(FTImageView, {

@@ -24,7 +24,7 @@
 //
 
 import _ from 'lodash';
-import { ComponentType, mergeRefs, useRef, useRefHandle } from 'frosty';
+import { ComponentRef, ComponentType, mergeRefs, useRef, useRefHandle } from 'frosty';
 import { TextInputProps } from '../../types';
 import { useTextStyle } from '../../components';
 import { encodeTextStyle } from './css';
@@ -34,7 +34,8 @@ import { TextStyle } from '../../../view/style/types';
 export const TextInput: ComponentType<TextInputProps> = ({ ref, style, multiline }) => {
 
   const targetRef = useRef<HTMLElement | null>();
-  useRefHandle(ref, () => ({
+  const nativeRef = useRef<ComponentRef<typeof TextInput>>();
+  useRefHandle(mergeRefs(nativeRef, ref), () => ({
     get _target() { return targetRef.current || undefined; }
   }), null);
 

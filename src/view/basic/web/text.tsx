@@ -24,7 +24,7 @@
 //
 
 import _ from 'lodash';
-import { ComponentType, mergeRefs, useRef, useRefHandle, useStack } from 'frosty';
+import { ComponentRef, ComponentType, mergeRefs, useRef, useRefHandle, useStack } from 'frosty';
 import { TextViewProps } from '../../types';
 import { useTextStyle } from '../../components';
 import { encodeTextStyle } from './css';
@@ -94,7 +94,8 @@ class DOMInnerTextView extends DOMTextBaseView {
 export const Text: ComponentType<TextViewProps> = ({ ref, style, children }) => {
 
   const targetRef = useRef<HTMLElement | null>();
-  useRefHandle(ref, () => ({
+  const nativeRef = useRef<ComponentRef<typeof Text>>();
+  useRefHandle(mergeRefs(nativeRef, ref), () => ({
     get _target() { return targetRef.current || undefined; }
   }), null);
 

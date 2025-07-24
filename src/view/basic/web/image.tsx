@@ -24,7 +24,7 @@
 //
 
 import _ from 'lodash';
-import { ComponentType, useEffect, useRef, useRefHandle, useResource, useState } from 'frosty';
+import { ComponentRef, ComponentType, mergeRefs, useEffect, useRef, useRefHandle, useResource, useState } from 'frosty';
 import { ImageProps } from '../../types';
 import { encodeImageStyle } from './css';
 import { useFlattenStyle } from '../../../view/style/utils';
@@ -34,7 +34,8 @@ const ImageBase: ComponentType<ImageProps & { source?: string; }> = ({ ref, styl
   const [naturalSize, setNaturalSize] = useState<{ width: number; height: number; }>();
 
   const targetRef = useRef<HTMLImageElement>();
-  useRefHandle(ref, () => ({
+  const nativeRef = useRef<ComponentRef<typeof ImageBase>>();
+  useRefHandle(mergeRefs(nativeRef, ref), () => ({
     get _target() { return targetRef.current; }
   }), null);
 

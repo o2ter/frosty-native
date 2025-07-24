@@ -23,7 +23,7 @@
 //  THE SOFTWARE.
 //
 
-import { ComponentType, useRef, useRefHandle } from 'frosty';
+import { ComponentRef, ComponentType, mergeRefs, useRef, useRefHandle } from 'frosty';
 import { ViewProps } from '../../types';
 import { encodeViewStyle } from './css';
 import { useFlattenStyle } from '../../../view/style/utils';
@@ -31,7 +31,8 @@ import { useFlattenStyle } from '../../../view/style/utils';
 export const View: ComponentType<ViewProps> = ({ ref, style, children }) => {
 
   const targetRef = useRef<HTMLDivElement>();
-  useRefHandle(ref, () => ({
+  const nativeRef = useRef<ComponentRef<typeof View>>();
+  useRefHandle(mergeRefs(nativeRef, ref), () => ({
     get _target() { return targetRef.current; }
   }), null);
 

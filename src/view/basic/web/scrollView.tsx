@@ -23,7 +23,7 @@
 //  THE SOFTWARE.
 //
 
-import { ComponentType, useRef, useRefHandle } from 'frosty';
+import { ComponentRef, ComponentType, mergeRefs, useRef, useRefHandle } from 'frosty';
 import { ScrollViewProps } from '../../types';
 import { encodeViewStyle } from './css';
 import { useFlattenStyle } from '../../../view/style/utils';
@@ -38,7 +38,8 @@ export const ScrollView: ComponentType<ScrollViewProps> = ({
 }) => {
 
   const targetRef = useRef<HTMLDivElement>();
-  useRefHandle(ref, () => ({
+  const nativeRef = useRef<ComponentRef<typeof ScrollView>>();
+  useRefHandle(mergeRefs(nativeRef, ref), () => ({
     get _target() { return targetRef.current; }
   }), null);
 
