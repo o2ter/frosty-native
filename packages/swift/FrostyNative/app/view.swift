@@ -64,6 +64,30 @@ extension FTLayoutViewProtocol {
         return style["flexDirection"] as? String ?? "column"
     }
     
+    var alignContent: String {
+        return style["alignContent"] as? String ?? "flex-start"
+    }
+    
+    var alignItems: String {
+        return style["alignItems"] as? String ?? "stretch"
+    }
+    
+    var alignSelf: String {
+        return style["alignSelf"] as? String ?? "auto"
+    }
+    
+    var justifyContent: String {
+        return style["justifyContent"] as? String ?? "stretch"
+    }
+    
+    var justifyItems: String {
+        return style["justifyItems"] as? String ?? "stretch"
+    }
+    
+    var justifySelf: String {
+        return style["justifySelf"] as? String ?? "auto"
+    }
+    
     var columnGap: CGFloat {
         return style["columnGap"] as? CGFloat ?? 0
     }
