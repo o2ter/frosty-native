@@ -47,8 +47,8 @@ export const useEventProps = <Target>(
 
   const { onLayout, onHoverIn, onHoverOut } = props;
 
-  useResizeObserver(onLayout ? elementRef : null, () => {
-
+  useResizeObserver(onLayout ? elementRef : null, (e) => {
+    if (!onLayout) return;
   });
 
   if (supportsPointerEvent()) {
