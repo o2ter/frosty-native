@@ -23,7 +23,7 @@
 //  THE SOFTWARE.
 //
 
-type LayoutEvent<Target> = {
+export type LayoutEvent<Target> = {
   layout: {
     width: number;
     height: number;
@@ -34,7 +34,7 @@ type LayoutEvent<Target> = {
   target: Target;
 };
 
-type MouseEvent<Target> = {
+export type MouseEvent<Target> = {
   clientX: number;
   clientY: number;
   pageX: number;
@@ -43,7 +43,7 @@ type MouseEvent<Target> = {
   target: Target;
 };
 
-type PressEvent<Target> = {
+export type PressEvent<Target> = {
   changedTouches: PressEvent<Target>[],
   identifier: number;
   locationX: number;

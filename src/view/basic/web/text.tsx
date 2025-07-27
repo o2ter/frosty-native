@@ -32,6 +32,7 @@ import { useFlattenStyle } from '../../../view/style/utils';
 import { TextStyle } from '../../../view/style/types';
 import { _DOMRenderer, DOMNativeNode } from 'frosty/web';
 import { _createNativeElement } from 'frosty/_native';
+import { useEventProps } from './events';
 
 class DOMTextBaseView extends DOMNativeNode {
 
@@ -122,6 +123,8 @@ export const Text: ComponentType<TextViewProps> = ({ ref, style, children, ...pr
     style,
   ]));
 
+  const eventProps = useEventProps(props);
+
   return _createNativeElement(isInnerText ? DOMInnerTextView : DOMTextView, {
     ref: targetRef,
     style: [
@@ -132,6 +135,7 @@ export const Text: ComponentType<TextViewProps> = ({ ref, style, children, ...pr
       },
       cssStyle,
     ],
-    children
+    children,
+    ...eventProps,
   });
 };

@@ -28,6 +28,7 @@ import { ComponentRef, ComponentType, mergeRefs, useEffect, useRef, useRefHandle
 import { ImageProps } from '../types/image';
 import { encodeImageStyle } from './css';
 import { useFlattenStyle } from '../../../view/style/utils';
+import { useEventProps } from './events';
 
 const ImageBase: ComponentType<ImageProps & { source?: string; }> = ({ ref, style, source, ...props }) => {
 
@@ -50,6 +51,8 @@ const ImageBase: ComponentType<ImageProps & { source?: string; }> = ({ ref, styl
     style,
   ]));
 
+  const eventProps = useEventProps(props);
+
   return (
     <img
       ref={targetRef}
@@ -61,11 +64,12 @@ const ImageBase: ComponentType<ImageProps & { source?: string; }> = ({ ref, styl
           height: e.currentTarget.naturalHeight,
         });
       }}
+      {...eventProps}
     />
   );
 };
 
-const FetchImageBase: ComponentType<ImageProps & { source: object; }> = ({ ref, style, source }) => {
+const FetchImageBase: ComponentType<ImageProps & { source: object; }> = ({ ref, style, source, ...props }) => {
 
   const [uri, setUri] = useState<string>();
 
@@ -89,17 +93,19 @@ const FetchImageBase: ComponentType<ImageProps & { source: object; }> = ({ ref, 
       ref={ref}
       style={style}
       source={uri}
+      {...props}
     />
   );
 }
 
-export const Image: ComponentType<ImageProps> = ({ ref, style, source }) => {
+export const Image: ComponentType<ImageProps> = ({ ref, style, source, ...props }) => {
 
   if (!source || _.isString(source)) return (
     <ImageBase
       ref={ref}
       style={style}
       source={source}
+      {...props}
     />
   );
 
@@ -109,6 +115,7 @@ export const Image: ComponentType<ImageProps> = ({ ref, style, source }) => {
       ref={ref}
       style={style}
       source={uri}
+      {...props}
     />
   );
 
@@ -117,6 +124,7 @@ export const Image: ComponentType<ImageProps> = ({ ref, style, source }) => {
       ref={ref}
       style={style}
       source={source}
+      {...props}
     />
   );
 };

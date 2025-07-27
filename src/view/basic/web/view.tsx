@@ -27,6 +27,7 @@ import { ComponentRef, ComponentType, mergeRefs, useRef, useRefHandle } from 'fr
 import { ViewProps } from '../types/view';
 import { encodeViewStyle } from './css';
 import { useFlattenStyle } from '../../../view/style/utils';
+import { useEventProps } from './events';
 
 export const View: ComponentType<ViewProps> = ({ ref, style, children, ...props }) => {
 
@@ -64,6 +65,8 @@ export const View: ComponentType<ViewProps> = ({ ref, style, children, ...props 
     style,
   ]));
 
+  const eventProps = useEventProps(props);
+
   return (
     <div
       ref={targetRef}
@@ -72,7 +75,8 @@ export const View: ComponentType<ViewProps> = ({ ref, style, children, ...props 
           listStyle: 'none',
         },
         cssStyle,
-      ]}>
+      ]}
+      {...eventProps}>
       {children}
     </div>
   );

@@ -30,6 +30,7 @@ import { useTextStyle } from '../../components';
 import { encodeTextStyle } from './css';
 import { useFlattenStyle } from '../../../view/style/utils';
 import { TextStyle } from '../../../view/style/types';
+import { useEventProps } from './events';
 
 export const TextInput: ComponentType<TextInputProps> = ({ ref, style, multiline, ...props }) => {
 
@@ -56,6 +57,8 @@ export const TextInput: ComponentType<TextInputProps> = ({ ref, style, multiline
     style,
   ]));
 
+  const eventProps = useEventProps(props);
+
   if (multiline) {
     return (
       <textarea
@@ -69,6 +72,7 @@ export const TextInput: ComponentType<TextInputProps> = ({ ref, style, multiline
           },
           cssStyle,
         ]}
+        {...eventProps}
       />
     );
   }
@@ -85,6 +89,7 @@ export const TextInput: ComponentType<TextInputProps> = ({ ref, style, multiline
         },
         cssStyle,
       ]}
+      {...eventProps}
     />
   );
 };

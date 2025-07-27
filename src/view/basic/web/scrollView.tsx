@@ -27,6 +27,7 @@ import { ComponentRef, ComponentType, mergeRefs, useRef, useRefHandle } from 'fr
 import { ScrollViewProps } from '../types/scrollView';
 import { encodeViewStyle } from './css';
 import { useFlattenStyle } from '../../../view/style/utils';
+import { useEventProps } from './events';
 
 export const ScrollView: ComponentType<ScrollViewProps> = ({
   ref,
@@ -55,6 +56,8 @@ export const ScrollView: ComponentType<ScrollViewProps> = ({
   ]));
   const contentContainerCssStyle = encodeViewStyle(useFlattenStyle(contentContainerStyle));
 
+  const eventProps = useEventProps(props);
+
   return (
     <div
       ref={targetRef}
@@ -65,7 +68,8 @@ export const ScrollView: ComponentType<ScrollViewProps> = ({
           overflowX: horizontal ? 'auto' : 'hidden',
           overflowY: vertical ? 'auto' : 'hidden',
         },
-      ]}>
+      ]}
+      {...eventProps}>
       <div style={contentContainerCssStyle}>{children}</div>
     </div>
   );
