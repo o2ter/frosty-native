@@ -31,7 +31,8 @@ export type LayoutEvent<Target> = {
     y: number;
   };
   timestamp: number;
-  target: Target;
+  currentTarget: Target;
+  target: any;
 };
 
 export type MouseEvent<Target> = {
@@ -40,7 +41,8 @@ export type MouseEvent<Target> = {
   pageX: number;
   pageY: number;
   timestamp: number;
-  target: Target;
+  currentTarget: Target;
+  target: any;
 };
 
 export type PressEvent<Target> = {
@@ -52,7 +54,8 @@ export type PressEvent<Target> = {
   pageY: number;
   timestamp: number;
   touches: PressEvent<Target>[],
-  target: Target;
+  currentTarget: Target;
+  target: any;
 };
 
 export type ViewEventProps<Target> = {

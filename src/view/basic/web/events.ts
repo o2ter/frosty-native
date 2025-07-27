@@ -35,7 +35,8 @@ const wrapMouseEvent = <Target>(e: MouseEvent, ref: RefObject<Target | null | un
   pageX: e.pageX,
   pageY: e.pageY,
   timestamp: e.timeStamp,
-  get target() { return ref.current!; }
+  get currentTarget() { return ref.current!; },
+  get target() { return e.target; },
 });
 
 export const useEventProps = <Target>(
