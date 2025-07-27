@@ -27,17 +27,44 @@ import { RefObject } from 'frosty';
 import { ViewEventProps } from '../types/events';
 import { useResizeObserver } from 'frosty/web';
 
+const supportsPointerEvent = () => typeof window !== 'undefined' && window.PointerEvent != null;
+
+const wrapMouseEvent = <Target>(e: MouseEvent, ref: RefObject<Target | null | undefined>) => ({
+  clientX: e.clientX,
+  clientY: e.clientY,
+  pageX: e.pageX,
+  pageY: e.pageY,
+  timestamp: e.timeStamp,
+  get target() { return ref.current!; }
+});
+
 export const useEventProps = <Target>(
   props: ViewEventProps<Target>,
   targetRef: RefObject<Target | null | undefined>,
   elementRef: RefObject<HTMLElement | null | undefined>
 ) => {
 
-  const { onLayout } = props;
+  const { onLayout, onHoverIn, onHoverOut } = props;
 
   useResizeObserver(onLayout ? elementRef : null, () => {
 
   });
 
-  return {};
+  return {
+    ...supportsPointerEvent() ? {
+      onPointerEnter: onHoverIn ? (e: MouseEvent) => {
+        onHoverIn(wrapMouseEvent(e, targetRef));
+      } : undefined,
+      onPointerLeave: onHoverOut ? (e: MouseEvent) => {
+        onHoverOut(wrapMouseEvent(e, targetRef));
+      } : undefined,
+    } : {
+      onMouseEnter: onHoverIn ? (e: MouseEvent) => {
+        onHoverIn(wrapMouseEvent(e, targetRef));
+      } : undefined,
+      onMouseLeave: onHoverOut ? (e: MouseEvent) => {
+        onHoverOut(wrapMouseEvent(e, targetRef));
+      } : undefined,
+    },
+  };
 };
