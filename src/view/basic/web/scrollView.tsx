@@ -56,7 +56,7 @@ export const ScrollView: ComponentType<ScrollViewProps> = ({
   ]));
   const contentContainerCssStyle = encodeViewStyle(useFlattenStyle(contentContainerStyle));
 
-  const eventProps = useEventProps(props);
+  const eventProps = useEventProps(props, nativeRef);
 
   return (
     <div

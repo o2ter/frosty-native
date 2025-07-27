@@ -51,7 +51,7 @@ const ImageBase: ComponentType<ImageProps & { source?: string; }> = ({ ref, styl
     style,
   ]));
 
-  const eventProps = useEventProps(props);
+  const eventProps = useEventProps(props, nativeRef);
 
   return (
     <img

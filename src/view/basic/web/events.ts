@@ -23,9 +23,10 @@
 //  THE SOFTWARE.
 //
 
+import { RefObject } from 'frosty';
 import { ViewEventProps } from '../types/events';
 
-export const useEventProps = <Target>(props: ViewEventProps<Target>) => {
+export const useEventProps = <Target>(props: ViewEventProps<Target>, ref: RefObject<Target | null | undefined>) => {
 
 
   return {};
