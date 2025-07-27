@@ -25,6 +25,7 @@
 
 import { RefObject } from 'frosty';
 import { ViewEventProps } from '../types/events';
+import { useResizeObserver } from 'frosty/web';
 
 export const useEventProps = <Target>(
   props: ViewEventProps<Target>,
@@ -32,6 +33,9 @@ export const useEventProps = <Target>(
   elementRef: RefObject<HTMLElement | null | undefined>
 ) => {
 
+  useResizeObserver(elementRef, () => {
+
+  });
 
   return {};
 };
