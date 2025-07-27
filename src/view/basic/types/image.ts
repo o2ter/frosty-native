@@ -25,6 +25,7 @@
 
 import { Ref, StyleProp } from 'frosty';
 import { ImageStyle } from '../../style/types';
+import { ViewEventProps } from './events';
 
 interface ImageURISource extends RequestInit {
   uri: string;
@@ -35,7 +36,7 @@ type ImageRef = {
   readonly _target?: HTMLElement;
 };
 
-export type ImageProps = {
+export type ImageProps = ViewEventProps & {
   ref?: Ref<ImageRef | null | undefined>;
   source?: ImageSource;
   style?: StyleProp<ImageStyle>;

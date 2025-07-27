@@ -25,12 +25,13 @@
 
 import { Ref, StyleProp } from 'frosty';
 import { TextStyle } from '../../style/types';
+import { ViewEventProps } from './events';
 
 type TextInputRef = {
   readonly _target?: HTMLElement;
 };
 
-export type TextInputProps = {
+export type TextInputProps = ViewEventProps & {
   ref?: Ref<TextInputRef | null | undefined>;
   style?: StyleProp<TextStyle>;
   multiline?: boolean;

@@ -25,12 +25,13 @@
 
 import { PropsWithChildren, Ref, StyleProp } from 'frosty';
 import { ViewStyle } from '../../style/types';
+import { ViewEventProps } from './events';
 
 type ViewRef = {
   readonly _target?: HTMLElement;
 };
 
-export type ViewProps = PropsWithChildren<{
+export type ViewProps = PropsWithChildren<ViewEventProps & {
   ref?: Ref<ViewRef | null | undefined>;
   style?: StyleProp<ViewStyle>;
 }>;
