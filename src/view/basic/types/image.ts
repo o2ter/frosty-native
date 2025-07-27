@@ -36,7 +36,7 @@ type ImageRef = {
   readonly _target?: HTMLElement;
 };
 
-export type ImageProps = ViewEventProps & {
+export type ImageProps = ViewEventProps<ImageRef> & {
   ref?: Ref<ImageRef | null | undefined>;
   source?: ImageSource;
   style?: StyleProp<ImageStyle>;

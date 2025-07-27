@@ -31,7 +31,7 @@ type ScrollViewRef = {
   readonly _target?: HTMLElement;
 };
 
-export type ScrollViewProps = PropsWithChildren<ViewEventProps & {
+export type ScrollViewProps = PropsWithChildren<ViewEventProps<ScrollViewRef> & {
   ref?: Ref<ScrollViewRef | null | undefined>;
   style?: StyleProp<ViewStyle>;
   contentContainerStyle?: StyleProp<ViewStyle>;

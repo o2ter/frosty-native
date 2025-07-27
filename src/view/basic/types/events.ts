@@ -23,7 +23,7 @@
 //  THE SOFTWARE.
 //
 
-type LayoutEvent = {
+type LayoutEvent<Target> = {
   layout: {
     width: number;
     height: number;
@@ -31,41 +31,47 @@ type LayoutEvent = {
     y: number;
   };
   timestamp: number;
+  target: Target;
 };
 
-type MouseEvent = {
-
+type MouseEvent<Target> = {
+  clientX: number;
+  clientY: number;
+  pageX: number;
+  pageY: number;
+  timestamp: number;
+  target: Target;
 };
 
-type PressEvent = {
-  changedTouches: PressEvent[],
+type PressEvent<Target> = {
+  changedTouches: PressEvent<Target>[],
   identifier: number;
   locationX: number;
   locationY: number;
   pageX: number;
   pageY: number;
-  target: number;
   timestamp: number;
-  touches: PressEvent[],
+  touches: PressEvent<Target>[],
+  target: Target;
 };
 
-export type ViewEventProps = {
+export type ViewEventProps<Target> = {
   delayLongPress?: number;
-  onLayout?: (event: { nativeEvent: LayoutEvent }) => void;
-  onHoverIn?: (event: { nativeEvent: MouseEvent }) => void;
-  onHoverOut?: (event: { nativeEvent: MouseEvent }) => void;
-  onLongPress?: (event: { nativeEvent: PressEvent }) => void;
-  onPress?: (event: { nativeEvent: PressEvent }) => void;
-  onPressIn?: (event: { nativeEvent: PressEvent }) => void;
-  onPressOut?: (event: { nativeEvent: PressEvent }) => void;
-  onMoveShouldSetResponder?: (event: { nativeEvent: PressEvent }) => boolean;
-  onMoveShouldSetResponderCapture?: (event: { nativeEvent: PressEvent }) => boolean;
-  onResponderGrant?: (event: { nativeEvent: PressEvent }) => void | boolean;
-  onResponderMove?: (event: { nativeEvent: PressEvent }) => void;
-  onResponderReject?: (event: { nativeEvent: PressEvent }) => void;
-  onResponderRelease?: (event: { nativeEvent: PressEvent }) => void;
-  onResponderTerminate?: (event: { nativeEvent: PressEvent }) => void;
-  onResponderTerminationRequest?: (event: { nativeEvent: PressEvent }) => void;
-  onStartShouldSetResponder?: (event: { nativeEvent: PressEvent }) => boolean;
-  onStartShouldSetResponderCapture?: (event: { nativeEvent: PressEvent }) => boolean;
+  onLayout?: (event: LayoutEvent<Target>) => void;
+  onHoverIn?: (event: MouseEvent<Target>) => void;
+  onHoverOut?: (event: MouseEvent<Target>) => void;
+  onLongPress?: (event: PressEvent<Target>) => void;
+  onPress?: (event: PressEvent<Target>) => void;
+  onPressIn?: (event: PressEvent<Target>) => void;
+  onPressOut?: (event: PressEvent<Target>) => void;
+  onMoveShouldSetResponder?: (event: PressEvent<Target>) => boolean;
+  onMoveShouldSetResponderCapture?: (event: PressEvent<Target>) => boolean;
+  onResponderGrant?: (event: PressEvent<Target>) => void | boolean;
+  onResponderMove?: (event: PressEvent<Target>) => void;
+  onResponderReject?: (event: PressEvent<Target>) => void;
+  onResponderRelease?: (event: PressEvent<Target>) => void;
+  onResponderTerminate?: (event: PressEvent<Target>) => void;
+  onResponderTerminationRequest?: (event: PressEvent<Target>) => void;
+  onStartShouldSetResponder?: (event: PressEvent<Target>) => boolean;
+  onStartShouldSetResponderCapture?: (event: PressEvent<Target>) => boolean;
 }

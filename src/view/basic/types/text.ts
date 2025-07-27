@@ -31,7 +31,7 @@ type TextViewRef = {
   readonly _target?: HTMLElement;
 };
 
-export type TextViewProps = PropsWithChildren<ViewEventProps & {
+export type TextViewProps = PropsWithChildren<ViewEventProps<TextViewRef> & {
   ref?: Ref<TextViewRef | null | undefined>;
   style?: StyleProp<TextStyle>;
 }>;

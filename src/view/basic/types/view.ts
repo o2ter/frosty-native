@@ -31,7 +31,7 @@ type ViewRef = {
   readonly _target?: HTMLElement;
 };
 
-export type ViewProps = PropsWithChildren<ViewEventProps & {
+export type ViewProps = PropsWithChildren<ViewEventProps<ViewRef> & {
   ref?: Ref<ViewRef | null | undefined>;
   style?: StyleProp<ViewStyle>;
 }>;
