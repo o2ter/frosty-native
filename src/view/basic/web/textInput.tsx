@@ -57,7 +57,7 @@ export const TextInput: ComponentType<TextInputProps> = ({ ref, style, multiline
     style,
   ]));
 
-  const eventProps = useEventProps(props, nativeRef);
+  const eventProps = useEventProps(props, nativeRef, targetRef);
 
   if (multiline) {
     return (

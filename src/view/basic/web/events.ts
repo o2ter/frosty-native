@@ -28,7 +28,8 @@ import { ViewEventProps } from '../types/events';
 
 export const useEventProps = <Target>(
   props: ViewEventProps<Target>,
-  ref: RefObject<Target | null | undefined>
+  targetRef: RefObject<Target | null | undefined>,
+  elementRef: RefObject<HTMLElement | null | undefined>
 ) => {
 
 

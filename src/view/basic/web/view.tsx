@@ -65,7 +65,7 @@ export const View: ComponentType<ViewProps> = ({ ref, style, children, ...props 
     style,
   ]));
 
-  const eventProps = useEventProps(props, nativeRef);
+  const eventProps = useEventProps(props, nativeRef, targetRef);
 
   return (
     <div
