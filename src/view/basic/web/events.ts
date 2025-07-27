@@ -33,7 +33,9 @@ export const useEventProps = <Target>(
   elementRef: RefObject<HTMLElement | null | undefined>
 ) => {
 
-  useResizeObserver(elementRef, () => {
+  const { onLayout } = props;
+
+  useResizeObserver(onLayout ? elementRef : null, () => {
 
   });
 
