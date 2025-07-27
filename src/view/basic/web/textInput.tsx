@@ -31,7 +31,7 @@ import { encodeTextStyle } from './css';
 import { useFlattenStyle } from '../../../view/style/utils';
 import { TextStyle } from '../../../view/style/types';
 
-export const TextInput: ComponentType<TextInputProps> = ({ ref, style, multiline }) => {
+export const TextInput: ComponentType<TextInputProps> = ({ ref, style, multiline, ...props }) => {
 
   const targetRef = useRef<HTMLElement | null>();
   const nativeRef = useRef<ComponentRef<typeof TextInput>>();

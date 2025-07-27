@@ -28,7 +28,7 @@ import { ViewProps } from '../types/view';
 import { encodeViewStyle } from './css';
 import { useFlattenStyle } from '../../../view/style/utils';
 
-export const View: ComponentType<ViewProps> = ({ ref, style, children }) => {
+export const View: ComponentType<ViewProps> = ({ ref, style, children, ...props }) => {
 
   const targetRef = useRef<HTMLDivElement>();
   const nativeRef = useRef<ComponentRef<typeof View>>();

@@ -34,7 +34,8 @@ export const ScrollView: ComponentType<ScrollViewProps> = ({
   contentContainerStyle,
   horizontal = false,
   vertical = !horizontal,
-  children
+  children,
+  ...props
 }) => {
 
   const targetRef = useRef<HTMLDivElement>();
@@ -57,8 +58,15 @@ export const ScrollView: ComponentType<ScrollViewProps> = ({
   return (
     <div
       ref={targetRef}
-      style={cssStyle}>
-      {children}
+      style={[
+        cssStyle,
+        {
+          overflow: undefined,
+          overflowX: horizontal ? 'auto' : 'hidden',
+          overflowY: vertical ? 'auto' : 'hidden',
+        },
+      ]}>
+      <div style={contentContainerCssStyle}>{children}</div>
     </div>
   );
 };

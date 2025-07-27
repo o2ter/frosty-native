@@ -29,7 +29,7 @@ import { ImageProps } from '../types/image';
 import { encodeImageStyle } from './css';
 import { useFlattenStyle } from '../../../view/style/utils';
 
-const ImageBase: ComponentType<ImageProps & { source?: string; }> = ({ ref, style, source }) => {
+const ImageBase: ComponentType<ImageProps & { source?: string; }> = ({ ref, style, source, ...props }) => {
 
   const [naturalSize, setNaturalSize] = useState<{ width: number; height: number; }>();
 
