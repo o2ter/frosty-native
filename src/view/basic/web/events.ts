@@ -51,21 +51,23 @@ export const useEventProps = <Target>(
 
   });
 
-  return {
-    ...supportsPointerEvent() ? {
+  if (supportsPointerEvent()) {
+    return {
       onPointerEnter: onHoverIn ? (e: MouseEvent) => {
         onHoverIn(wrapMouseEvent(e, targetRef));
       } : undefined,
       onPointerLeave: onHoverOut ? (e: MouseEvent) => {
         onHoverOut(wrapMouseEvent(e, targetRef));
       } : undefined,
-    } : {
-      onMouseEnter: onHoverIn ? (e: MouseEvent) => {
-        onHoverIn(wrapMouseEvent(e, targetRef));
-      } : undefined,
-      onMouseLeave: onHoverOut ? (e: MouseEvent) => {
-        onHoverOut(wrapMouseEvent(e, targetRef));
-      } : undefined,
-    },
+    };
+  }
+
+  return {
+    onMouseEnter: onHoverIn ? (e: MouseEvent) => {
+      onHoverIn(wrapMouseEvent(e, targetRef));
+    } : undefined,
+    onMouseLeave: onHoverOut ? (e: MouseEvent) => {
+      onHoverOut(wrapMouseEvent(e, targetRef));
+    } : undefined,
   };
 };
