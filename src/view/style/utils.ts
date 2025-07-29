@@ -43,6 +43,10 @@ const normalize = <S extends ViewStyle>(
     left = dir === 'ltr' ? start : end,
     right = dir === 'ltr' ? end : start,
     bottom = inset,
+    flex,
+    flexGrow = _.isNumber(flex) ? flex : flex === 'auto' ? 1 : 0,
+    flexShrink = flex === 'none' ? 0 : 1,
+    flexBasis = _.isNumber(flex) ? 0 : 'auto',
     margin,
     marginHorizontal = margin,
     marginVertical = margin,
@@ -88,6 +92,9 @@ const normalize = <S extends ViewStyle>(
   } = style;
   return {
     ..._style,
+    ..._.isNil(flexGrow) ? {} : { flexGrow },
+    ..._.isNil(flexShrink) ? {} : { flexShrink },
+    ..._.isNil(flexBasis) ? {} : { flexBasis },
     ..._.isNil(rowGap) ? {} : { rowGap },
     ..._.isNil(columnGap) ? {} : { columnGap },
     ..._.isNil(top) ? {} : { top },

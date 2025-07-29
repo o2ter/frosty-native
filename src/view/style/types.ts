@@ -90,7 +90,7 @@ export type LayoutStyle = {
   boxSizing?: 'border-box' | 'content-box';
   display?: 'none' | 'flex' | (string & {});
   end?: DimensionValue;
-  flex?: number;
+  flex?: number | 'auto' | 'none';
   flexBasis?: DimensionValue;
   flexDirection?:
   | 'row'
