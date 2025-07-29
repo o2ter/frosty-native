@@ -216,6 +216,7 @@ public struct FTRoot: View {
     public var body: some View {
         GeometryReader { geometry in
             FTNode(state: self.$node)
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
                 .ignoresSafeArea()
                 .onChange(of: WindowDimensions(geometry), initial: true) { _, newValue in
                     runner?.invokeMethod("setEnvironment", withArguments: [
