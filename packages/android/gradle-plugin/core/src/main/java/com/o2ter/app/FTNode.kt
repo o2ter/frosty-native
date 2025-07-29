@@ -37,8 +37,6 @@ import androidx.compose.ui.Modifier
 import com.eclipsesource.v8.V8
 import com.eclipsesource.v8.V8Object
 import com.eclipsesource.v8.utils.V8ObjectUtils
-import com.o2ter.runtime.FTContext
-import kotlinx.coroutines.Deferred
 import java.util.UUID
 
 internal typealias ComponentHandler = (method: String, args: List<Any?>) -> Unit
@@ -109,6 +107,7 @@ internal class FTNodeState(
     }
 }
 
+@RequiresApi(Build.VERSION_CODES.P)
 @Composable
 internal fun FTNode(
     modifier: Modifier = Modifier,
