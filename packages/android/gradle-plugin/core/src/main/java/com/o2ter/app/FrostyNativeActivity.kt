@@ -223,16 +223,18 @@ internal fun FTRoot(activity: FrostyNativeActivity, rootView: FTNodeState) {
                 }
         ) { safeAreaInset ->
             FTNode(
-                Modifier.onSizeChanged {
-                    activity.setEnvironment(mapOf(
-                        "safeAreaInsets" to mapOf(
-                            "top" to safeAreaInset.calculateTopPadding().value,
-                            "left" to safeAreaInset.calculateLeftPadding(layoutDirection).value,
-                            "right" to safeAreaInset.calculateRightPadding(layoutDirection).value,
-                            "bottom" to safeAreaInset.calculateBottomPadding().value,
-                        ),
-                    ))
-                },
+                Modifier
+                    .fillMaxSize()
+                    .onSizeChanged {
+                        activity.setEnvironment(mapOf(
+                            "safeAreaInsets" to mapOf(
+                                "top" to safeAreaInset.calculateTopPadding().value,
+                                "left" to safeAreaInset.calculateLeftPadding(layoutDirection).value,
+                                "right" to safeAreaInset.calculateRightPadding(layoutDirection).value,
+                                "bottom" to safeAreaInset.calculateBottomPadding().value,
+                            ),
+                        ))
+                    },
                 activity,
                 rootView
             )
