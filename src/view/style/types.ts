@@ -113,6 +113,7 @@ export type LayoutStyle = {
   maxWidth?: DimensionValue;
   minHeight?: DimensionValue;
   minWidth?: DimensionValue;
+  order?: number;
   overflow?: 'visible' | 'hidden';
   position?: 'absolute' | 'relative' | 'static' | 'fixed' | 'sticky' | (string & {});
   right?: DimensionValue;
