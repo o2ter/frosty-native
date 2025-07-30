@@ -26,10 +26,6 @@
 import { createContext, useContext } from 'frosty';
 import { EventEmitter } from 'frosty/_native';
 
-export const AppEventContext = createContext<EventEmitter>();
+export const AppEventContext = createContext(new EventEmitter);
 
-export const useAppEvent = () => {
-  const emitter = useContext(AppEventContext);
-  if (!emitter) throw Error('AppEventContext is missing. Make sure your component is wrapped in an AppEventContext.Provider.');
-  return emitter;
-};
+export const useAppEvent = () => useContext(AppEventContext);
