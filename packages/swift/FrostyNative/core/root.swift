@@ -25,6 +25,30 @@
 
 import Network
 
+extension CGRect {
+    
+    func toJSValue() -> SwiftJS.Value {
+        return [
+            "x": SwiftJS.Value(self.minX),
+            "y": SwiftJS.Value(self.minY),
+            "width": SwiftJS.Value(self.width),
+            "height": SwiftJS.Value(self.height),
+        ]
+    }
+}
+
+extension EdgeInsets {
+    
+    func toJSValue() -> SwiftJS.Value {
+        return [
+            "top": SwiftJS.Value(self.top),
+            "left": SwiftJS.Value(self.leading),
+            "right": SwiftJS.Value(self.trailing),
+            "bottom": SwiftJS.Value(self.bottom),
+        ]
+    }
+}
+
 struct WindowDimensions: Equatable {
     
     var size: CGSize
@@ -40,12 +64,7 @@ struct WindowDimensions: Equatable {
         return [
             "displayWidth": SwiftJS.Value(size.width),
             "displayHeight": SwiftJS.Value(size.height),
-            "safeAreaInsets": [
-                "top": SwiftJS.Value(safeAreaInsets.top),
-                "left": SwiftJS.Value(safeAreaInsets.leading),
-                "right": SwiftJS.Value(safeAreaInsets.trailing),
-                "bottom": SwiftJS.Value(safeAreaInsets.bottom),
-            ],
+            "safeAreaInsets": safeAreaInsets.toJSValue(),
         ]
     }
 }
@@ -156,6 +175,17 @@ final class NetworkMonitor {
     }
 }
 
+extension Publishers {
+    
+    static var keyboardFrame: any Publisher<CGRect?, Never> {
+        NotificationCenter.default.publisher(for: UIResponder.keyboardWillShowNotification)
+            .map { $0.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? CGRect }
+            .merge(with: NotificationCenter.default.publisher(for: UIResponder.keyboardWillHideNotification)
+                .map { _ in nil }
+            )
+    }
+}
+
 public struct FTRoot: View {
     
     @State
@@ -214,19 +244,15 @@ public struct FTRoot: View {
     }
     
     public var body: some View {
-        GeometryReader { geometry in
+        AnyView(GeometryReader { geometry in
             FTNode(state: self.$node)
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
                 .ignoresSafeArea()
                 .onChange(of: WindowDimensions(geometry), initial: true) { _, newValue in
-                    runner?.invokeMethod("setEnvironment", withArguments: [
-                        newValue.toJSValue()
-                    ])
+                    runner?.invokeMethod("setEnvironment", withArguments: [newValue.toJSValue()])
                 }
                 .onChange(of: environment, initial: true) { _, newValue in
-                    runner?.invokeMethod("setEnvironment", withArguments: [
-                        newValue.toJSValue()
-                    ])
+                    runner?.invokeMethod("setEnvironment", withArguments: [newValue.toJSValue()])
                 }
                 .onAppear {
                     let runner = FTRoot.run(
@@ -244,7 +270,9 @@ public struct FTRoot: View {
                     self.runner?.invokeMethod("unmount")
                     self.runner = nil
                 }
-        }
+        }.onReceive(Publishers.keyboardFrame) { frame in
+            runner?.invokeMethod("setEnvironment", withArguments: [["keyboardFrame": frame?.toJSValue() ?? .undefined]])
+        })
     }
 }
 
