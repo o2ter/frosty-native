@@ -65,7 +65,7 @@ export class NativeRenderer extends _Renderer<NativeNode> {
     element.replaceChildren(children);
   }
 
-  notify(nodeId: string, method: string, ...args: any[]) {
+  notifyNode(nodeId: string, method: string, ...args: any[]) {
     const props = this._callbacks.get(nodeId) ?? {};
     if (_.isFunction(props[method])) props[method](...args);
   }
