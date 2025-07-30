@@ -29,6 +29,8 @@ import { NativeRenderer } from './renderer';
 import { NativeNode } from './node';
 import { Environment } from './view';
 import { EnvironmentValues } from './view/components/environment/types';
+import { AppEventContext } from './view/components/appEvent';
+import { EventEmitter } from 'frosty/_native';
 
 export const AppRegistry = (() => {
   const registry: Record<string, ComponentType<any>> = {};
@@ -49,10 +51,13 @@ export const AppRegistry = (() => {
           const renderer = new NativeRenderer();
           const runner = renderer.createRoot(options?.root);
           const env = createStore(options?.environment ?? {});
+          const emitter = new EventEmitter();
           const Runner = ({ ...props }) => (
-            <Environment {...useStore(env)}>
-              {createElement(component, props)}
-            </Environment>
+            <AppEventContext value={emitter}>
+              <Environment {...useStore(env)}>
+                {createElement(component, props)}
+              </Environment>
+            </AppEventContext>
           );
           runner.mount(createElement(Runner, options?.props));
           return {
@@ -61,6 +66,9 @@ export const AppRegistry = (() => {
             },
             unmount() {
               runner.unmount();
+            },
+            notify(event: string, ...args: any[]) {
+              emitter.emit(event, ...args);
             },
             notifyNode(nodeId: string, method: string, ...args: any[]) {
               renderer.notifyNode(nodeId, method, ...args);

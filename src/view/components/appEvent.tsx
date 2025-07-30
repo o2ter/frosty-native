@@ -1,5 +1,5 @@
 //
-//  index.ts
+//  appEvent.tsx
 //
 //  The MIT License
 //  Copyright (c) 2021 - 2025 O2ter Limited. All rights reserved.
@@ -23,6 +23,13 @@
 //  THE SOFTWARE.
 //
 
-export { useAppEvent } from './appEvent';
-export * from './environment';
-export * from './textStyle';
+import { createContext, useContext } from 'frosty';
+import { EventEmitter } from 'frosty/_native';
+
+export const AppEventContext = createContext<EventEmitter>();
+
+export const useAppEvent = () => {
+  const emitter = useContext(AppEventContext);
+  if (!emitter) throw Error('AppEventContext is missing. Make sure your component is wrapped in an AppEventContext.Provider.');
+  return emitter;
+};
