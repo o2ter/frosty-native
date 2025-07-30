@@ -175,17 +175,6 @@ final class NetworkMonitor {
     }
 }
 
-extension Publishers {
-    
-    static var keyboardFrame: any Publisher<CGRect?, Never> {
-        NotificationCenter.default.publisher(for: UIResponder.keyboardWillShowNotification)
-            .map { $0.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? CGRect }
-            .merge(with: NotificationCenter.default.publisher(for: UIResponder.keyboardWillHideNotification)
-                .map { _ in nil }
-            )
-    }
-}
-
 public struct FTRoot: View {
     
     @State
@@ -270,8 +259,6 @@ public struct FTRoot: View {
                     self.runner?.invokeMethod("unmount")
                     self.runner = nil
                 }
-        }.onReceive(Publishers.keyboardFrame) { frame in
-            runner?.invokeMethod("setEnvironment", withArguments: [["keyboardFrame": frame?.toJSValue() ?? .undefined]])
         })
     }
 }
