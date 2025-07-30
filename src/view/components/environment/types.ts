@@ -66,4 +66,5 @@ export type EnvironmentValues = {
     online: boolean;
     type?: 'wifi' | 'cellular' | 'ethernet';
   },
+  [x: string]: any;
 };
