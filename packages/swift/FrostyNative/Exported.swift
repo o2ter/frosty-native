@@ -26,5 +26,6 @@
 @_exported import Foundation
 @_exported import SwiftJS
 @_exported import SwiftUI
+@_exported import Combine
 @_exported import Algorithms
 @_exported import AsyncAlgorithms
