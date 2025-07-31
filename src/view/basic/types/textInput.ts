@@ -31,8 +31,28 @@ type TextInputRef = {
   readonly _target?: HTMLElement;
 };
 
+type _TextInputProps<Value> = {
+  value?: Value;
+  onChange?: (value: Value) => void;
+};
+
+type AttributedString = string & {
+  attributes: {
+    range: [number, number];
+    record: Record<string, any>;
+  }[];
+};
+
+type SimpleTextInputProps = _TextInputProps<string> & {
+  formatted?: false;
+};
+
+type FormattedTextInputProps = _TextInputProps<AttributedString> & {
+  formatted: true;
+};
+
 export type TextInputProps = ViewEventProps<TextInputRef> & {
   ref?: Ref<TextInputRef | null | undefined>;
   style?: StyleProp<TextStyle>;
   multiline?: boolean;
-};
+} & (SimpleTextInputProps | FormattedTextInputProps);
