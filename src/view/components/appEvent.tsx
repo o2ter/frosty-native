@@ -23,9 +23,16 @@
 //  THE SOFTWARE.
 //
 
+import _ from 'lodash';
 import { createContext, useContext } from 'frosty';
 import { EventEmitter } from 'frosty/_native';
 
-export const AppEventContext = createContext(new EventEmitter);
+export const AppEventContext = createContext<EventEmitter>();
 
-export const useAppEvent = () => useContext(AppEventContext);
+export const useAppEvent = () => {
+  const emitter = useContext(AppEventContext);
+  if (_.isNil(emitter)) throw Error(
+    'useAppEvent must be used with AppRegistry.'
+  );
+  return emitter;
+};
