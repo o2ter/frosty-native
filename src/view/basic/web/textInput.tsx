@@ -32,7 +32,7 @@ import { useFlattenStyle } from '../../../view/style/utils';
 import { TextStyle } from '../../../view/style/types';
 import { useEventProps } from './events';
 
-export const TextInput: ComponentType<TextInputProps> = ({ ref, style, multiline, ...props }) => {
+export const TextInput: ComponentType<TextInputProps> = ({ ref, style, multiline, value, onChange, onChangeValue, formatted, ...props }) => {
 
   const targetRef = useRef<HTMLElement | null>();
   const nativeRef = useRef<ComponentRef<typeof TextInput>>();

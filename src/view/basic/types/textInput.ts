@@ -31,9 +31,17 @@ type TextInputRef = {
   readonly _target?: HTMLElement;
 };
 
+type TextInputChangeEvent<Value> = {
+  value: Value;
+  timestamp: number;
+  currentTarget: TextInputRef;
+  target: any;
+};
+
 type _TextInputProps<Value> = {
   value?: Value;
-  onChange?: (value: Value) => void;
+  onChange?: (event: TextInputChangeEvent<Value>) => void;
+  onChangeValue?: (value: Value) => void;
 };
 
 type AttributedString = string & {
