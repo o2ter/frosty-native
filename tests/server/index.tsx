@@ -45,7 +45,7 @@ const app = new Server({
 
 app.use(Server.static(path.join(__dirname, 'public'), { cacheControl: true }));
 
-app.express().get('*', (req, res) => {
+app.express().get('*', async (req, res) => {
   const renderer = new ServerDOMRenderer();
   const component = (
     <html>
@@ -84,7 +84,7 @@ body {
     </html>
   );
   res.setHeader('Content-Type', 'text/html');
-  res.send(renderer.renderToString(component));
+  res.send(await renderer.renderToString(component));
 });
 
 const PORT = !_.isEmpty(process.env.PORT) ? parseInt(process.env.PORT!) : 8080;
