@@ -39,7 +39,7 @@ type _TextInputProps<Value> = {
 type AttributedString = string & {
   attributes: {
     range: [number, number];
-    record: Record<string, any>;
+    format: Record<string, any>;
   }[];
 };
 
