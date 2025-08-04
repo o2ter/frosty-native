@@ -27,7 +27,42 @@ import { RefObject } from 'frosty';
 import { ViewEventProps } from '../types/events';
 import { useResizeObserver } from 'frosty/web';
 
+const supportsTouchEvent = () => typeof window !== 'undefined' && window.TouchEvent != null;
 const supportsPointerEvent = () => typeof window !== 'undefined' && window.PointerEvent != null;
+
+const pressHandler = ({ onPressIn, onPressMove, onPressOut }: {
+  onPressIn: (e: TouchEvent | PointerEvent) => void;
+  onPressMove: (e: TouchEvent | PointerEvent) => void;
+  onPressOut: (e: TouchEvent | PointerEvent) => void;
+}) => {
+  return supportsTouchEvent ()? {
+    onTouchStart: (e: TouchEvent) => {
+      onPressIn(e);
+    },
+    onTouchMove: (e: TouchEvent) => {
+      onPressMove(e);
+    },
+    onTouchEnd: (e: TouchEvent) => {
+      onPressOut(e);
+    },
+    onTouchCancel: (e: TouchEvent) => {
+      onPressOut(e);
+    },
+  } : {
+    onPointerDown: (e: PointerEvent) => {
+      onPressIn(e);
+    },
+    onPointerMove: (e: PointerEvent) => {
+      onPressMove(e);
+    },
+    onPointerUp: (e: PointerEvent) => {
+      onPressOut(e);
+    },
+    onPointerCancel: (e: PointerEvent) => {
+      onPressOut(e);
+    },
+  }
+}
 
 const wrapMouseEvent = <Target>(e: MouseEvent, ref: RefObject<Target | null | undefined>) => ({
   clientX: e.clientX,
