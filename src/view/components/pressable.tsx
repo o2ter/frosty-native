@@ -24,20 +24,81 @@
 //
 
 import { ComponentProps, ComponentRef, useRef } from 'frosty';
-import { PressEvent } from '../basic/types/events';
+import { PressEvent, ViewEventProps } from '../basic/types/events';
 import { View } from '../basic';
 import { uniqueId } from 'lodash';
 
-type PressableProps = ComponentProps<typeof View> & {
+type PressResponderProps<Target> = ViewEventProps<Target> & {
   delayLongPress?: number;
-  onLongPress?: (event: PressEvent<ComponentRef<typeof View>>) => void;
-  onPress?: (event: PressEvent<ComponentRef<typeof View>>) => void;
-  onPressIn?: (event: PressEvent<ComponentRef<typeof View>>) => void;
-  onPressOut?: (event: PressEvent<ComponentRef<typeof View>>) => void;
+  onLongPress?: (event: PressEvent<Target>) => void;
+  onPress?: (event: PressEvent<Target>) => void;
+  onPressIn?: (event: PressEvent<Target>) => void;
+  onPressOut?: (event: PressEvent<Target>) => void;
+};
+
+type PressableProps = ComponentProps<typeof View> & PressResponderProps<ComponentRef<typeof View>>;
+
+export const PressResponder = {
+  create: <Target extends any = any>({
+    delayLongPress,
+    onLongPress,
+    onPress,
+    onPressIn,
+    onPressOut,
+    onResponderGrant,
+    onResponderRelease,
+    onResponderTerminate,
+  }: PressResponderProps<Target>) => {
+
+    const pressState = {
+      token: '',
+      timeout: true,
+    };
+
+    const _onPressIn = (e: PressEvent<Target>) => {
+      if (onPressIn) onPressIn(e);
+      const token = uniqueId();
+      pressState.token = token;
+      pressState.timeout = _.isNil(onLongPress);
+      if (onLongPress) {
+        setTimeout(() => {
+          if (pressState.token !== token) return;
+          onLongPress(e);
+          pressState.timeout = true;
+        }, delayLongPress || 500);
+      } else if (onPress) {
+        onPress(e);
+      }
+    };
+
+    const _onPressOut = (e: PressEvent<Target>) => {
+      if (pressState.token === '') return;
+      pressState.token = '';
+      if (onPressOut) onPressOut(e);
+      if (!pressState.timeout) {
+        if (onPress) onPress(e);
+      }
+    };
+
+    return {
+      onResponderGrant: (e: PressEvent<Target>) => {
+        if (onResponderGrant) onResponderGrant(e);
+        _onPressIn(e);
+      },
+      onResponderRelease: (e: PressEvent<Target>) => {
+        if (onResponderRelease) onResponderRelease(e);
+        _onPressOut(e);
+      },
+      onResponderTerminate: (e: PressEvent<Target>) => {
+        if (onResponderTerminate) onResponderTerminate(e);
+        _onPressOut(e);
+      },
+    };
+  }
 };
 
 export const Pressable = ({
-  delayLongPress = 500,
+  delayLongPress,
   onLongPress,
   onPress,
   onPressIn,
@@ -49,50 +110,20 @@ export const Pressable = ({
   ...props
 }: PressableProps) => {
 
-  const pressState = useRef({
-    token: '',
-    timeout: true,
-  });
-
-  const _onPressIn = (e: PressEvent<ComponentRef<typeof View>>) => {
-    if (onPressIn) onPressIn(e);
-    const token = uniqueId();
-    pressState.current.token = token;
-    pressState.current.timeout = _.isNil(onLongPress);
-    if (onLongPress) {
-      setTimeout(() => {
-        if (pressState.current.token !== token) return;
-        onLongPress(e);
-        pressState.current.timeout = true;
-      }, delayLongPress);
-    } else if (onPress) {
-      onPress(e);
-    }
-  };
-
-  const _onPressOut = (e: PressEvent<ComponentRef<typeof View>>) => {
-    if (pressState.current.token === '') return;
-    pressState.current.token = '';
-    if (onPressOut) onPressOut(e);
-    if (!pressState.current.timeout) {
-      if (onPress) onPress(e);
-    }
-  };
+  const pressHandler = useRef(() => PressResponder.create({
+    delayLongPress,
+    onLongPress,
+    onPress,
+    onPressIn,
+    onPressOut,
+    onResponderGrant,
+    onResponderRelease,
+    onResponderTerminate,
+  }));
 
   return (
     <View
-      onResponderGrant={(e) => {
-        if (onResponderGrant) onResponderGrant(e);
-        _onPressIn(e);
-      }}
-      onResponderRelease={(e) => {
-        if (onResponderRelease) onResponderRelease(e);
-        _onPressOut(e);
-      }}
-      onResponderTerminate={(e) => {
-        if (onResponderTerminate) onResponderTerminate(e);
-        _onPressOut(e);
-      }}
+      {...pressHandler}
       {...props}>
       {children}
     </View>
