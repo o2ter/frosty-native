@@ -28,6 +28,7 @@ import { ComponentProps, ComponentRef, useMemo } from 'frosty';
 import { PressEvent, ViewEventProps } from '../basic/types/events';
 import { View } from '../basic';
 import { uniqueId } from 'frosty/_native';
+import { _useCallbacks } from '../../internal/hooks/callbacks';
 
 type PressResponderProps<Target> = ViewEventProps<Target> & {
   delayLongPress?: number;
@@ -80,7 +81,7 @@ export const usePressResponder = <Target extends any = any>({
     }
   };
 
-  return {
+  return _useCallbacks({
     onResponderGrant: (e: PressEvent<Target>) => {
       if (onResponderGrant) onResponderGrant(e);
       _onPressIn(e);
@@ -93,7 +94,7 @@ export const usePressResponder = <Target extends any = any>({
       if (onResponderTerminate) onResponderTerminate(e);
       _onPressOut(e);
     },
-  };
+  });
 };
 
 export const Pressable = ({
