@@ -60,6 +60,85 @@ const wrapMouseEvent = <Target>(e: MouseEvent, currentTarget: Target) => ({
   get target() { return e.target; },
 });
 
+/*                                             Negotiation Performed
+                                             +-----------------------+
+                                            /                         \
+Process low level events to    +     Current Responder      +   wantsResponderID
+determine who to perform negot-|   (if any exists at all)   |
+iation/transition              | Otherwise just pass through|
+-------------------------------+----------------------------+------------------+
+Bubble to find first ID        |                            |
+to return true:wantsResponderID|                            |
+                               |                            |
+     +--------------+          |                            |
+     | onTouchStart |          |                            |
+     +------+-------+    none  |                            |
+            |            return|                            |
++-----------v-------------+true| +------------------------+ |
+|onStartShouldSetResponder|----->| onResponderStart (cur) |<-----------+
++-----------+-------------+    | +------------------------+ |          |
+            |                  |                            | +--------+-------+
+            | returned true for|       false:REJECT +-------->|onResponderReject
+            | wantsResponderID |                    |       | +----------------+
+            | (now attempt     | +------------------+-----+ |
+            |  handoff)        | | onResponder            | |
+            +------------------->|    TerminationRequest  | |
+                               | +------------------+-----+ |
+                               |                    |       | +----------------+
+                               |         true:GRANT +-------->|onResponderGrant|
+                               |                            | +--------+-------+
+                               | +------------------------+ |          |
+                               | | onResponderTerminate   |<-----------+
+                               | +------------------+-----+ |
+                               |                    |       | +----------------+
+                               |                    +-------->|onResponderStart|
+                               |                            | +----------------+
+Bubble to find first ID        |                            |
+to return true:wantsResponderID|                            |
+                               |                            |
+     +-------------+           |                            |
+     | onTouchMove |           |                            |
+     +------+------+     none  |                            |
+            |            return|                            |
++-----------v-------------+true| +------------------------+ |
+|onMoveShouldSetResponder |----->| onResponderMove (cur)  |<-----------+
++-----------+-------------+    | +------------------------+ |          |
+            |                  |                            | +--------+-------+
+            | returned true for|       false:REJECT +-------->|onResponderReject
+            | wantsResponderID |                    |       | +----------------+
+            | (now attempt     | +------------------+-----+ |
+            |  handoff)        | |   onResponder          | |
+            +------------------->|      TerminationRequest| |
+                               | +------------------+-----+ |
+                               |                    |       | +----------------+
+                               |         true:GRANT +-------->|onResponderGrant|
+                               |                            | +--------+-------+
+                               | +------------------------+ |          |
+                               | |   onResponderTerminate |<-----------+
+                               | +------------------+-----+ |
+                               |                    |       | +----------------+
+                               |                    +-------->|onResponderMove |
+                               |                            | +----------------+
+                               |                            |
+                               |                            |
+      Some active touch started|                            |
+      inside current responder | +------------------------+ |
+      +------------------------->|      onResponderEnd    | |
+      |                        | +------------------------+ |
+  +---+---------+              |                            |
+  | onTouchEnd  |              |                            |
+  +---+---------+              |                            |
+      |                        | +------------------------+ |
+      +------------------------->|     onResponderEnd     | |
+      No active touches started| +-----------+------------+ |
+      inside current responder |             |              |
+                               |             v              |
+                               | +------------------------+ |
+                               | |    onResponderRelease  | |
+                               | +------------------------+ |
+                               |                            |
+                               +                            + */
+
 const _currentResponder = new WeakMap<ReturnType<typeof useWindow>, { target: any; } & ViewEventProps<any>>();
 
 export const useResponderEvents = <Target>(
@@ -133,12 +212,14 @@ export const useResponderEvents = <Target>(
       if (termination === false) {
         if (_.isFunction(onResponderReject)) onResponderReject(wrapPressEvent(e, target));
       } else {
-        if (_.isFunction(onResponderTerminate)) onResponderTerminate(wrapPressEvent(e, currentResponder.target));
         let granted = true;
         if (_.isFunction(onResponderGrant)) {
           granted = onResponderGrant(wrapPressEvent(e, target)) ?? true;
         }
-        if (granted) _currentResponder.set(window, { target, ...props });
+        if (granted) {
+          if (_.isFunction(onResponderTerminate)) onResponderTerminate(wrapPressEvent(e, currentResponder.target));
+          _currentResponder.set(window, { target, ...props });
+        }
       }
     } else {
 
@@ -163,12 +244,14 @@ export const useResponderEvents = <Target>(
       if (termination === false) {
         if (_.isFunction(onResponderReject)) onResponderReject(wrapPressEvent(e, target));
       } else {
-        if (_.isFunction(onResponderTerminate)) onResponderTerminate(wrapPressEvent(e, currentResponder.target));
         let granted = true;
         if (_.isFunction(onResponderGrant)) {
           granted = onResponderGrant(wrapPressEvent(e, target)) ?? true;
         }
-        if (granted) _currentResponder.set(window, { target, ...props });
+        if (granted) {
+          if (_.isFunction(onResponderTerminate)) onResponderTerminate(wrapPressEvent(e, currentResponder.target));
+          _currentResponder.set(window, { target, ...props });
+        }
       }
     } else {
 
