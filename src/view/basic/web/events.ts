@@ -28,66 +28,6 @@ import { RefObject, useCallback, useEffect } from 'frosty';
 import { ViewEventProps } from '../types/events';
 import { useResizeObserver, useWindow } from 'frosty/web';
 
-const useResponderHandler = ({ onPressIn, onPressMove, onPressOut }: {
-  onPressIn: (e: TouchEvent | MouseEvent) => void;
-  onPressMove: (e: TouchEvent | MouseEvent) => void;
-  onPressOut: (e: TouchEvent | MouseEvent) => void;
-}) => {
-  const window = useWindow();
-  const _onPressOut = useCallback(onPressOut);
-  useEffect(() => {
-    if ('TouchEvent' in window) {
-      window.addEventListener('touchend', _onPressOut);
-      return () => window.removeEventListener('touchend', _onPressOut);
-    };
-    if ('PointerEvent' in window) {
-      window.addEventListener('pointerup', _onPressOut);
-      return () => window.removeEventListener('pointerup', _onPressOut);
-    };
-    window.addEventListener('mouseup', _onPressOut);
-    return () => window.removeEventListener('mouseup', _onPressOut);
-  }, []);
-  if ('TouchEvent' in window) return {
-    onTouchStart: (e: TouchEvent) => {
-      onPressIn(e);
-    },
-    onTouchMove: (e: TouchEvent) => {
-      onPressMove(e);
-    },
-    onTouchEnd: (e: TouchEvent) => {
-      _onPressOut(e);
-    },
-    onTouchCancel: (e: TouchEvent) => {
-      _onPressOut(e);
-    },
-  };
-  if ('PointerEvent' in window) return {
-    onPointerDown: (e: PointerEvent) => {
-      onPressIn(e);
-    },
-    onPointerMove: (e: PointerEvent) => {
-      onPressMove(e);
-    },
-    onPointerUp: (e: PointerEvent) => {
-      _onPressOut(e);
-    },
-    onPointerCancel: (e: PointerEvent) => {
-      _onPressOut(e);
-    },
-  };
-  return {
-    onMouseDown: (e: MouseEvent) => {
-      onPressIn(e);
-    },
-    onMouseMove: (e: MouseEvent) => {
-      onPressMove(e);
-    },
-    onMouseUp: (e: MouseEvent) => {
-      _onPressOut(e);
-    },
-  }
-}
-
 const wrapPressEvent = <Target>(e: TouchEvent | MouseEvent, ref: RefObject<Target | null | undefined>) => e instanceof MouseEvent ? ({
   timestamp: e.timeStamp,
   locationX: e.clientX,
@@ -158,18 +98,52 @@ export const useResponderEvents = <Target>(
     onHoverOut(wrapMouseEvent(e, targetRef));
   });
 
+  const _onPressIn = (e: TouchEvent | MouseEvent) => {
+
+  };
+  const _onPressMove = (e: TouchEvent | MouseEvent) => {
+
+  };
+  const _onPressOut = useCallback((e: TouchEvent | MouseEvent) => {
+
+  });
+
+  useEffect(() => {
+    if ('TouchEvent' in window) {
+      window.addEventListener('touchend', _onPressOut);
+      return () => window.removeEventListener('touchend', _onPressOut);
+    };
+    if ('PointerEvent' in window) {
+      window.addEventListener('pointerup', _onPressOut);
+      return () => window.removeEventListener('pointerup', _onPressOut);
+    };
+    window.addEventListener('mouseup', _onPressOut);
+    return () => window.removeEventListener('mouseup', _onPressOut);
+  }, []);
+
   if ('TouchEvent' in window) return {
     onPointerEnter: _onHoverIn,
     onPointerLeave: _onHoverOut,
+    onTouchStart: _onPressIn,
+    onTouchMove: _onPressMove,
+    onTouchEnd: _onPressOut,
+    onTouchCancel: _onPressOut,
   };
 
   if ('PointerEvent' in window) return {
     onPointerEnter: _onHoverIn,
     onPointerLeave: _onHoverOut,
+    onPointerDown: _onPressIn,
+    onPointerMove: _onPressMove,
+    onPointerUp: _onPressOut,
+    onPointerCancel: _onPressOut,
   };
 
   return {
     onMouseEnter: _onHoverIn,
     onMouseLeave: _onHoverOut,
+    onMouseDown: _onPressIn,
+    onMouseMove: _onPressMove,
+    onMouseUp: _onPressOut,
   };
 };
