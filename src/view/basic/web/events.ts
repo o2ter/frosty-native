@@ -60,7 +60,7 @@ const wrapMouseEvent = <Target>(e: MouseEvent, currentTarget: Target) => ({
   get target() { return e.target; },
 });
 
-const currentResponder = new WeakMap<ReturnType<typeof useWindow>, { target: any; } & ViewEventProps<any>>();
+const _currentResponder = new WeakMap<ReturnType<typeof useWindow>, { target: any; } & ViewEventProps<any>>();
 
 export const useResponderEvents = <Target>(
   props: ViewEventProps<Target>,
@@ -120,7 +120,15 @@ export const useResponderEvents = <Target>(
     const target = targetRef.current;
     if (!target) return;
 
-    const shouldSetResponder = onStartShouldSetResponder?.(wrapPressEvent(e, target)) !== false;
+    const shouldSetResponder = onStartShouldSetResponder?.(wrapPressEvent(e, target));
+    if (shouldSetResponder === false) return;
+
+    const currentResponder = _currentResponder.get(window);
+    if (currentResponder) {
+
+    } else {
+
+    }
 
   };
   const _onPressInCapture = !enableResponder ? undefined : (e: TouchEvent | MouseEvent) => {
@@ -128,7 +136,15 @@ export const useResponderEvents = <Target>(
     const target = targetRef.current;
     if (!target) return;
 
-    const shouldSetResponder = onStartShouldSetResponderCapture?.(wrapPressEvent(e, target)) === true;
+    const shouldSetResponder = onStartShouldSetResponderCapture?.(wrapPressEvent(e, target));
+    if (shouldSetResponder !== true) return;
+
+    const currentResponder = _currentResponder.get(window);
+    if (currentResponder) {
+
+    } else {
+
+    }
 
   };
   const _onPressMove = !enableResponder ? undefined : (e: TouchEvent | MouseEvent) => {
