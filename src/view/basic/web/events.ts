@@ -39,8 +39,16 @@ const useResponderHandler = ({ onPressIn, onPressMove, onPressOut }: {
   const window = useWindow();
   const _onPressOut = useCallback(onPressOut);
   useEffect(() => {
-    window.addEventListener('mouseup', _onPressOut as any);
-    return () => window.removeEventListener('mouseup', _onPressOut as any);
+    if (supportsTouchEvent()) {
+      window.addEventListener('touchend', _onPressOut);
+      return () => window.removeEventListener('touchend', _onPressOut);
+    };
+    if (supportsPointerEvent()) {
+      window.addEventListener('pointerup', _onPressOut);
+      return () => window.removeEventListener('pointerup', _onPressOut);
+    };
+    window.addEventListener('mouseup', _onPressOut);
+    return () => window.removeEventListener('mouseup', _onPressOut);
   }, []);
   if (supportsTouchEvent()) return {
     onTouchStart: (e: TouchEvent) => {
