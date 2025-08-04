@@ -46,9 +46,8 @@ export const usePressResponder = <Target extends any = any>({
   onPress,
   onPressIn,
   onPressOut,
-  onResponderGrant,
-  onResponderRelease,
-  onResponderTerminate,
+  onResponderStart,
+  onResponderEnd,
 }: PressResponderProps<Target>) => {
 
   const pressState = useMemo(() => ({
@@ -82,16 +81,12 @@ export const usePressResponder = <Target extends any = any>({
   };
 
   return _useCallbacks({
-    onResponderGrant: (e: PressEvent<Target>) => {
-      if (onResponderGrant) onResponderGrant(e);
+    onResponderStart: (e: PressEvent<Target>) => {
+      if (onResponderStart) onResponderStart(e);
       _onPressIn(e);
     },
-    onResponderRelease: (e: PressEvent<Target>) => {
-      if (onResponderRelease) onResponderRelease(e);
-      _onPressOut(e);
-    },
-    onResponderTerminate: (e: PressEvent<Target>) => {
-      if (onResponderTerminate) onResponderTerminate(e);
+    onResponderEnd: (e: PressEvent<Target>) => {
+      if (onResponderEnd) onResponderEnd(e);
       _onPressOut(e);
     },
   });
@@ -103,9 +98,8 @@ export const Pressable = ({
   onPress,
   onPressIn,
   onPressOut,
-  onResponderGrant,
-  onResponderRelease,
-  onResponderTerminate,
+  onResponderStart,
+  onResponderEnd,
   children,
   ...props
 }: PressableProps) => {
@@ -116,9 +110,8 @@ export const Pressable = ({
     onPress,
     onPressIn,
     onPressOut,
-    onResponderGrant,
-    onResponderRelease,
-    onResponderTerminate,
+    onResponderStart,
+    onResponderEnd,
   });
 
   return (
