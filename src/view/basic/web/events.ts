@@ -24,15 +24,14 @@
 //
 
 import _ from 'lodash';
-import { RefObject, useCallback, useEffect, useRef } from 'frosty';
+import { RefObject, useCallback, useEffect } from 'frosty';
 import { ViewEventProps } from '../types/events';
 import { useResizeObserver, useWindow } from 'frosty/web';
-import { uniqueId } from 'frosty/_native';
 
 const supportsTouchEvent = () => typeof window !== 'undefined' && window.TouchEvent != null;
 const supportsPointerEvent = () => typeof window !== 'undefined' && window.PointerEvent != null;
 
-const usePressHandler = ({ onPressIn, onPressMove, onPressOut }: {
+const useResponderHandler = ({ onPressIn, onPressMove, onPressOut }: {
   onPressIn: (e: TouchEvent | MouseEvent) => void;
   onPressMove: (e: TouchEvent | MouseEvent) => void;
   onPressOut: (e: TouchEvent | MouseEvent) => void;
@@ -123,59 +122,17 @@ export const useEventProps = <Target>(
 ) => {
 
   const {
-    delayLongPress = 500,
     onLayout,
     onHoverIn,
     onHoverOut,
-    onPress,
-    onLongPress,
-    onPressIn,
-    onPressOut,
-    onResponderMove,
   } = props;
-
-  const pressState = useRef({
-    token: '',
-    timeout: true,
-  });
 
   useResizeObserver(onLayout ? elementRef : null, (e) => {
     if (!onLayout) return;
   });
 
-  const pressHandler = usePressHandler({
-    onPressIn: (e) => {
-      if (onPressIn) onPressIn(wrapPressEvent(e, targetRef));
-      const token = uniqueId();
-      pressState.current.token = token;
-      pressState.current.timeout = _.isNil(onLongPress);
-      if (onLongPress) {
-        setTimeout(() => {
-          if (pressState.current.token !== token) return;
-          onLongPress(wrapPressEvent(e, targetRef));
-          pressState.current.timeout = true;
-        }, delayLongPress);
-      } else if (onPress) {
-        onPress(wrapPressEvent(e, targetRef));
-      }
-    },
-    onPressMove: (e) => {
-      if (pressState.current.token === '') return;
-      if (onResponderMove) onResponderMove(wrapPressEvent(e, targetRef));
-    },
-    onPressOut: (e) => {
-      if (pressState.current.token === '') return;
-      pressState.current.token = '';
-      if (onPressOut) onPressOut(wrapPressEvent(e, targetRef));
-      if (!pressState.current.timeout) {
-        if (onPress) onPress(wrapPressEvent(e, targetRef));
-      }
-    },
-  });
-
   if (supportsPointerEvent()) {
     return {
-      ...pressHandler,
       onPointerEnter: onHoverIn ? (e: MouseEvent) => {
         onHoverIn(wrapMouseEvent(e, targetRef));
       } : undefined,
@@ -186,7 +143,6 @@ export const useEventProps = <Target>(
   }
 
   return {
-    ...pressHandler,
     onMouseEnter: onHoverIn ? (e: MouseEvent) => {
       onHoverIn(wrapMouseEvent(e, targetRef));
     } : undefined,

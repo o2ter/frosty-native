@@ -71,14 +71,10 @@ export type PressEvent<Target> = {
 };
 
 export type ViewEventProps<Target> = {
-  delayLongPress?: number;
+  disabled?: boolean;
   onLayout?: (event: LayoutEvent<Target>) => void;
   onHoverIn?: (event: MouseEvent<Target>) => void;
   onHoverOut?: (event: MouseEvent<Target>) => void;
-  onLongPress?: (event: PressEvent<Target>) => void;
-  onPress?: (event: PressEvent<Target>) => void;
-  onPressIn?: (event: PressEvent<Target>) => void;
-  onPressOut?: (event: PressEvent<Target>) => void;
   onMoveShouldSetResponder?: (event: PressEvent<Target>) => boolean;
   onMoveShouldSetResponderCapture?: (event: PressEvent<Target>) => boolean;
   onResponderGrant?: (event: PressEvent<Target>) => void | boolean;
