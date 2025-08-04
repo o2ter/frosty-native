@@ -134,8 +134,11 @@ export const useResponderEvents = <Target>(
         if (_.isFunction(onResponderReject)) onResponderReject(wrapPressEvent(e, target));
       } else {
         if (_.isFunction(onResponderTerminate)) onResponderTerminate(wrapPressEvent(e, currentResponder.target));
-        if (_.isFunction(onResponderGrant)) onResponderGrant(wrapPressEvent(e, target));
-        _currentResponder.set(window, { target, ...props });
+        let granted = true;
+        if (_.isFunction(onResponderGrant)) {
+          granted = onResponderGrant(wrapPressEvent(e, target)) ?? true;
+        }
+        if (granted) _currentResponder.set(window, { target, ...props });
       }
     } else {
 
@@ -161,8 +164,11 @@ export const useResponderEvents = <Target>(
         if (_.isFunction(onResponderReject)) onResponderReject(wrapPressEvent(e, target));
       } else {
         if (_.isFunction(onResponderTerminate)) onResponderTerminate(wrapPressEvent(e, currentResponder.target));
-        if (_.isFunction(onResponderGrant)) onResponderGrant(wrapPressEvent(e, target));
-        _currentResponder.set(window, { target, ...props });
+        let granted = true;
+        if (_.isFunction(onResponderGrant)) {
+          granted = onResponderGrant(wrapPressEvent(e, target)) ?? true;
+        }
+        if (granted) _currentResponder.set(window, { target, ...props });
       }
     } else {
 
