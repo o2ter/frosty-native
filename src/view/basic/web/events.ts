@@ -28,9 +28,6 @@ import { RefObject, useCallback, useEffect } from 'frosty';
 import { ViewEventProps } from '../types/events';
 import { useResizeObserver, useWindow } from 'frosty/web';
 
-const supportsTouchEvent = () => typeof window !== 'undefined' && window.TouchEvent != null;
-const supportsPointerEvent = () => typeof window !== 'undefined' && window.PointerEvent != null;
-
 const useResponderHandler = ({ onPressIn, onPressMove, onPressOut }: {
   onPressIn: (e: TouchEvent | MouseEvent) => void;
   onPressMove: (e: TouchEvent | MouseEvent) => void;
@@ -39,18 +36,18 @@ const useResponderHandler = ({ onPressIn, onPressMove, onPressOut }: {
   const window = useWindow();
   const _onPressOut = useCallback(onPressOut);
   useEffect(() => {
-    if (supportsTouchEvent()) {
+    if ('TouchEvent' in window) {
       window.addEventListener('touchend', _onPressOut);
       return () => window.removeEventListener('touchend', _onPressOut);
     };
-    if (supportsPointerEvent()) {
+    if ('PointerEvent' in window) {
       window.addEventListener('pointerup', _onPressOut);
       return () => window.removeEventListener('pointerup', _onPressOut);
     };
     window.addEventListener('mouseup', _onPressOut);
     return () => window.removeEventListener('mouseup', _onPressOut);
   }, []);
-  if (supportsTouchEvent()) return {
+  if ('TouchEvent' in window) return {
     onTouchStart: (e: TouchEvent) => {
       onPressIn(e);
     },
@@ -64,7 +61,7 @@ const useResponderHandler = ({ onPressIn, onPressMove, onPressOut }: {
       _onPressOut(e);
     },
   };
-  if (supportsPointerEvent()) return {
+  if ('PointerEvent' in window) return {
     onPointerDown: (e: PointerEvent) => {
       onPressIn(e);
     },
@@ -129,6 +126,8 @@ export const useResponderEvents = <Target>(
   elementRef: RefObject<HTMLElement | null | undefined>
 ) => {
 
+  const window = useWindow();
+
   const {
     disabled,
     onLayout,
@@ -150,7 +149,7 @@ export const useResponderEvents = <Target>(
     if (!onLayout) return;
   });
 
-  if (supportsTouchEvent()) return {
+  if ('TouchEvent' in window) return {
     onPointerEnter: onHoverIn ? (e: MouseEvent) => {
       onHoverIn(wrapMouseEvent(e, targetRef));
     } : undefined,
@@ -159,7 +158,7 @@ export const useResponderEvents = <Target>(
     } : undefined,
   };
 
-  if (supportsPointerEvent()) return {
+  if ('PointerEvent' in window) return {
     onPointerEnter: onHoverIn ? (e: MouseEvent) => {
       onHoverIn(wrapMouseEvent(e, targetRef));
     } : undefined,
