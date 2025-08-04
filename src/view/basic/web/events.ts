@@ -120,6 +120,8 @@ const wrapMouseEvent = <Target>(e: MouseEvent, ref: RefObject<Target | null | un
   get target() { return e.target; },
 });
 
+const currentResponder = new WeakMap<ReturnType<typeof useWindow>, any>();
+
 export const useResponderEvents = <Target>(
   props: ViewEventProps<Target>,
   targetRef: RefObject<Target | null | undefined>,
@@ -149,30 +151,25 @@ export const useResponderEvents = <Target>(
     if (!onLayout) return;
   });
 
+  const _onHoverIn = onHoverIn && ((e: MouseEvent) => {
+    onHoverIn(wrapMouseEvent(e, targetRef));
+  });
+  const _onHoverOut = onHoverOut && ((e: MouseEvent) => {
+    onHoverOut(wrapMouseEvent(e, targetRef));
+  });
+
   if ('TouchEvent' in window) return {
-    onPointerEnter: onHoverIn ? (e: MouseEvent) => {
-      onHoverIn(wrapMouseEvent(e, targetRef));
-    } : undefined,
-    onPointerLeave: onHoverOut ? (e: MouseEvent) => {
-      onHoverOut(wrapMouseEvent(e, targetRef));
-    } : undefined,
+    onPointerEnter: _onHoverIn,
+    onPointerLeave: _onHoverOut,
   };
 
   if ('PointerEvent' in window) return {
-    onPointerEnter: onHoverIn ? (e: MouseEvent) => {
-      onHoverIn(wrapMouseEvent(e, targetRef));
-    } : undefined,
-    onPointerLeave: onHoverOut ? (e: MouseEvent) => {
-      onHoverOut(wrapMouseEvent(e, targetRef));
-    } : undefined,
+    onPointerEnter: _onHoverIn,
+    onPointerLeave: _onHoverOut,
   };
 
   return {
-    onMouseEnter: onHoverIn ? (e: MouseEvent) => {
-      onHoverIn(wrapMouseEvent(e, targetRef));
-    } : undefined,
-    onMouseLeave: onHoverOut ? (e: MouseEvent) => {
-      onHoverOut(wrapMouseEvent(e, targetRef));
-    } : undefined,
+    onMouseEnter: _onHoverIn,
+    onMouseLeave: _onHoverOut,
   };
 };
