@@ -74,9 +74,6 @@ const usePressHandler = ({ onPressIn, onPressMove, onPressOut }: {
     onMouseUp: (e: MouseEvent) => {
       onPressOut(e);
     },
-    onMouseCancel: (e: MouseEvent) => {
-      onPressOut(e);
-    },
   }
 }
 
