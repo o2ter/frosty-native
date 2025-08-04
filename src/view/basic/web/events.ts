@@ -159,7 +159,7 @@ export const useEventProps = <Target>(
       if (pressState.current.token === '') return;
       if (onResponderMove) onResponderMove(wrapPressEvent(e, targetRef));
     },
-    onPressOut: (e: TouchEvent | MouseEvent) => {
+    onPressOut: (e) => {
       if (pressState.current.token === '') return;
       pressState.current.token = '';
       if (onPressOut) onPressOut(wrapPressEvent(e, targetRef));
