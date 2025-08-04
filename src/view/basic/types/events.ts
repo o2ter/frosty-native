@@ -82,7 +82,7 @@ export type ViewEventProps<Target> = {
   onResponderReject?: (event: PressEvent<Target>) => void;
   onResponderRelease?: (event: PressEvent<Target>) => void;
   onResponderTerminate?: (event: PressEvent<Target>) => void;
-  onResponderTerminationRequest?: (event: PressEvent<Target>) => void;
+  onResponderTerminationRequest?: (event: PressEvent<Target>) => boolean;
   onStartShouldSetResponder?: (event: PressEvent<Target>) => boolean;
   onStartShouldSetResponderCapture?: (event: PressEvent<Target>) => boolean;
 }
