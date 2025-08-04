@@ -23,10 +23,11 @@
 //  THE SOFTWARE.
 //
 
+import _ from 'lodash';
 import { ComponentProps, ComponentRef, useRef } from 'frosty';
 import { PressEvent, ViewEventProps } from '../basic/types/events';
 import { View } from '../basic';
-import { uniqueId } from 'lodash';
+import { uniqueId } from 'frosty/_native';
 
 type PressResponderProps<Target> = ViewEventProps<Target> & {
   delayLongPress?: number;
