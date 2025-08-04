@@ -23,7 +23,7 @@
 //  THE SOFTWARE.
 //
 
-import { RefObject } from 'frosty';
+import { RefObject, useRef } from 'frosty';
 import { ViewEventProps } from '../types/events';
 import { useResizeObserver } from 'frosty/web';
 
@@ -80,11 +80,56 @@ export const useEventProps = <Target>(
   elementRef: RefObject<HTMLElement | null | undefined>
 ) => {
 
-  const { onLayout, onHoverIn, onHoverOut } = props;
+  const {
+    delayLongPress = 500,
+    onLayout,
+    onHoverIn,
+    onHoverOut,
+    onPress,
+    onLongPress,
+    onPressIn,
+    onPressOut,
+    onResponderMove,
+  } = props;
+
+  const pressState = useRef({
+    token: '',
+    timeout: true,
+  });
 
   useResizeObserver(onLayout ? elementRef : null, (e) => {
     if (!onLayout) return;
   });
+
+  // const press = pressHandler({
+  //   onPressIn: (e) => {
+  //     if (onPressIn) onPressIn(wrapMouseEvent(e));
+  //     const token = _.uniqueId();
+  //     pressState.current.token = token;
+  //     pressState.current.timeout = _.isNil(onLongPress);
+  //     if (onLongPress) {
+  //       setInterval(() => {
+  //         if (pressState.current.token !== token) return;
+  //         onLongPress(wrapMouseEvent(e));
+  //         pressState.current.timeout = true;
+  //       }, delayLongPress);
+  //     } else if (onPress) {
+  //       onPress(wrapMouseEvent(e));
+  //     }
+  //   },
+  //   onPressMove: (e) => {
+  //     if (pressState.current.token === '') return;
+  //     if (onResponderMove) onResponderMove(wrapMouseEvent(e));
+  //   },
+  //   onPressOut: (e) => {
+  //     if (pressState.current.token === '') return;
+  //     pressState.current.token = '';
+  //     if (onPressOut) onPressOut(wrapMouseEvent(e));
+  //     if (!pressState.current.timeout) {
+  //       if (onPress) onPress(wrapMouseEvent(e));
+  //     }
+  //   },
+  // });
 
   if (supportsPointerEvent()) {
     return {
