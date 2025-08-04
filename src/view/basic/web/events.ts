@@ -126,8 +126,6 @@ export const useResponderEvents = <Target>(
   elementRef: RefObject<HTMLElement | null | undefined>
 ) => {
 
-  const window = useWindow();
-
   const {
     disabled,
     onLayout,
@@ -144,6 +142,8 @@ export const useResponderEvents = <Target>(
     onStartShouldSetResponder,
     onStartShouldSetResponderCapture,
   } = props;
+
+  const window = useWindow();
 
   useResizeObserver(onLayout ? elementRef : null, (e) => {
     if (!onLayout) return;
