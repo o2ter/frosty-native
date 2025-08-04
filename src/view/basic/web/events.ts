@@ -98,23 +98,41 @@ export const useResponderEvents = <Target>(
     onHoverOut(wrapMouseEvent(e, targetRef));
   });
 
-  const _onPressIn = (e: TouchEvent | MouseEvent) => {
+  const enableResponder = !disabled && (
+    _.isFunction(onMoveShouldSetResponder) ||
+    _.isFunction(onMoveShouldSetResponderCapture) ||
+    _.isFunction(onResponderGrant) ||
+    _.isFunction(onResponderMove) ||
+    _.isFunction(onResponderReject) ||
+    _.isFunction(onResponderRelease) ||
+    _.isFunction(onResponderTerminate) ||
+    _.isFunction(onResponderTerminationRequest) ||
+    _.isFunction(onStartShouldSetResponder) ||
+    _.isFunction(onStartShouldSetResponderCapture)
+  );
+
+  const _onPressIn = !enableResponder ? undefined : (e: TouchEvent | MouseEvent) => {
+
+    const shouldSetResponder = onStartShouldSetResponder?.(wrapPressEvent(e, targetRef)) !== false;
 
   };
-  const _onPressInCapture = (e: TouchEvent | MouseEvent) => {
+  const _onPressInCapture = !enableResponder ? undefined : (e: TouchEvent | MouseEvent) => {
+
+    const shouldSetResponder = onStartShouldSetResponderCapture?.(wrapPressEvent(e, targetRef)) === true;
 
   };
-  const _onPressMove = (e: TouchEvent | MouseEvent) => {
+  const _onPressMove = !enableResponder ? undefined : (e: TouchEvent | MouseEvent) => {
 
   };
-  const _onPressMoveCapture = (e: TouchEvent | MouseEvent) => {
+  const _onPressMoveCapture = !enableResponder ? undefined : (e: TouchEvent | MouseEvent) => {
 
   };
-  const _onPressOut = useCallback((e: TouchEvent | MouseEvent) => {
+  const _onPressOut = useCallback(!enableResponder ? undefined : (e: TouchEvent | MouseEvent) => {
 
   });
 
   useEffect(() => {
+    if (!_onPressOut) return;
     if ('TouchEvent' in window) {
       window.addEventListener('touchend', _onPressOut);
       return () => window.removeEventListener('touchend', _onPressOut);
