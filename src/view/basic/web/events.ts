@@ -60,7 +60,7 @@ const wrapMouseEvent = <Target>(e: MouseEvent, currentTarget: Target) => ({
   get target() { return e.target; },
 });
 
-const currentResponder = new WeakMap<ReturnType<typeof useWindow>, any>();
+const currentResponder = new WeakMap<ReturnType<typeof useWindow>, { target: any; }>();
 
 export const useResponderEvents = <Target>(
   props: ViewEventProps<Target>,
