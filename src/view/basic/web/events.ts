@@ -101,7 +101,13 @@ export const useResponderEvents = <Target>(
   const _onPressIn = (e: TouchEvent | MouseEvent) => {
 
   };
+  const _onPressInCapture = (e: TouchEvent | MouseEvent) => {
+
+  };
   const _onPressMove = (e: TouchEvent | MouseEvent) => {
+
+  };
+  const _onPressMoveCapture = (e: TouchEvent | MouseEvent) => {
 
   };
   const _onPressOut = useCallback((e: TouchEvent | MouseEvent) => {
@@ -125,7 +131,9 @@ export const useResponderEvents = <Target>(
     onPointerEnter: _onHoverIn,
     onPointerLeave: _onHoverOut,
     onTouchStart: _onPressIn,
+    onTouchStartCapture: _onPressInCapture,
     onTouchMove: _onPressMove,
+    onTouchMoveCapture: _onPressMoveCapture,
     onTouchEnd: _onPressOut,
     onTouchCancel: _onPressOut,
   };
@@ -134,7 +142,9 @@ export const useResponderEvents = <Target>(
     onPointerEnter: _onHoverIn,
     onPointerLeave: _onHoverOut,
     onPointerDown: _onPressIn,
+    onPointerDownCapture: _onPressInCapture,
     onPointerMove: _onPressMove,
+    onPointerMoveCapture: _onPressMoveCapture,
     onPointerUp: _onPressOut,
     onPointerCancel: _onPressOut,
   };
@@ -143,7 +153,9 @@ export const useResponderEvents = <Target>(
     onMouseEnter: _onHoverIn,
     onMouseLeave: _onHoverOut,
     onMouseDown: _onPressIn,
+    onMouseDownCapture: _onPressInCapture,
     onMouseMove: _onPressMove,
+    onMouseMoveCapture: _onPressMoveCapture,
     onMouseUp: _onPressOut,
   };
 };
