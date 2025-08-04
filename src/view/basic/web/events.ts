@@ -122,9 +122,20 @@ export const useResponderEvents = <Target>(
 ) => {
 
   const {
+    disabled,
     onLayout,
     onHoverIn,
     onHoverOut,
+    onMoveShouldSetResponder,
+    onMoveShouldSetResponderCapture,
+    onResponderGrant,
+    onResponderMove,
+    onResponderReject,
+    onResponderRelease,
+    onResponderTerminate,
+    onResponderTerminationRequest,
+    onStartShouldSetResponder,
+    onStartShouldSetResponderCapture,
   } = props;
 
   useResizeObserver(onLayout ? elementRef : null, (e) => {
