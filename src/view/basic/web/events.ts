@@ -108,7 +108,7 @@ export const useEventProps = <Target>(
   //     pressState.current.token = token;
   //     pressState.current.timeout = _.isNil(onLongPress);
   //     if (onLongPress) {
-  //       setInterval(() => {
+  //       setTimeout(() => {
   //         if (pressState.current.token !== token) return;
   //         onLongPress(wrapMouseEvent(e));
   //         pressState.current.timeout = true;
