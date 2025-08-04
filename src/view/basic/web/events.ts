@@ -32,11 +32,11 @@ const supportsTouchEvent = () => typeof window !== 'undefined' && window.TouchEv
 const supportsPointerEvent = () => typeof window !== 'undefined' && window.PointerEvent != null;
 
 const usePressHandler = ({ onPressIn, onPressMove, onPressOut }: {
-  onPressIn: (e: TouchEvent | PointerEvent) => void;
-  onPressMove: (e: TouchEvent | PointerEvent) => void;
-  onPressOut: (e: TouchEvent | PointerEvent) => void;
+  onPressIn: (e: TouchEvent | MouseEvent) => void;
+  onPressMove: (e: TouchEvent | MouseEvent) => void;
+  onPressOut: (e: TouchEvent | MouseEvent) => void;
 }) => {
-  return supportsTouchEvent() ? {
+  if (supportsTouchEvent()) return {
     onTouchStart: (e: TouchEvent) => {
       onPressIn(e);
     },
@@ -49,7 +49,8 @@ const usePressHandler = ({ onPressIn, onPressMove, onPressOut }: {
     onTouchCancel: (e: TouchEvent) => {
       onPressOut(e);
     },
-  } : {
+  };
+  if (supportsPointerEvent()) return {
     onPointerDown: (e: PointerEvent) => {
       onPressIn(e);
     },
@@ -60,6 +61,20 @@ const usePressHandler = ({ onPressIn, onPressMove, onPressOut }: {
       onPressOut(e);
     },
     onPointerCancel: (e: PointerEvent) => {
+      onPressOut(e);
+    },
+  };
+  return {
+    onMouseDown: (e: MouseEvent) => {
+      onPressIn(e);
+    },
+    onMouseMove: (e: MouseEvent) => {
+      onPressMove(e);
+    },
+    onMouseUp: (e: MouseEvent) => {
+      onPressOut(e);
+    },
+    onMouseCancel: (e: MouseEvent) => {
       onPressOut(e);
     },
   }
