@@ -24,9 +24,9 @@
 //
 
 import _ from 'lodash';
-import { RefObject, useRef } from 'frosty';
+import { RefObject, useCallback, useEffect, useRef } from 'frosty';
 import { ViewEventProps } from '../types/events';
-import { useResizeObserver } from 'frosty/web';
+import { useResizeObserver, useWindow } from 'frosty/web';
 import { uniqueId } from 'frosty/_native';
 
 const supportsTouchEvent = () => typeof window !== 'undefined' && window.TouchEvent != null;
@@ -37,6 +37,12 @@ const usePressHandler = ({ onPressIn, onPressMove, onPressOut }: {
   onPressMove: (e: TouchEvent | MouseEvent) => void;
   onPressOut: (e: TouchEvent | MouseEvent) => void;
 }) => {
+  const window = useWindow();
+  const _onPressOut = useCallback(onPressOut);
+  useEffect(() => {
+    window.addEventListener('mouseup', _onPressOut as any);
+    return () => window.removeEventListener('mouseup', _onPressOut as any);
+  }, []);
   if (supportsTouchEvent()) return {
     onTouchStart: (e: TouchEvent) => {
       onPressIn(e);
@@ -45,10 +51,10 @@ const usePressHandler = ({ onPressIn, onPressMove, onPressOut }: {
       onPressMove(e);
     },
     onTouchEnd: (e: TouchEvent) => {
-      onPressOut(e);
+      _onPressOut(e);
     },
     onTouchCancel: (e: TouchEvent) => {
-      onPressOut(e);
+      _onPressOut(e);
     },
   };
   if (supportsPointerEvent()) return {
@@ -59,10 +65,10 @@ const usePressHandler = ({ onPressIn, onPressMove, onPressOut }: {
       onPressMove(e);
     },
     onPointerUp: (e: PointerEvent) => {
-      onPressOut(e);
+      _onPressOut(e);
     },
     onPointerCancel: (e: PointerEvent) => {
-      onPressOut(e);
+      _onPressOut(e);
     },
   };
   return {
@@ -73,7 +79,7 @@ const usePressHandler = ({ onPressIn, onPressMove, onPressOut }: {
       onPressMove(e);
     },
     onMouseUp: (e: MouseEvent) => {
-      onPressOut(e);
+      _onPressOut(e);
     },
   }
 }
@@ -153,7 +159,7 @@ export const useEventProps = <Target>(
       if (pressState.current.token === '') return;
       if (onResponderMove) onResponderMove(wrapPressEvent(e, targetRef));
     },
-    onPressOut: (e) => {
+    onPressOut: (e: TouchEvent | MouseEvent) => {
       if (pressState.current.token === '') return;
       pressState.current.token = '';
       if (onPressOut) onPressOut(wrapPressEvent(e, targetRef));
