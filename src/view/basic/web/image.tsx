@@ -28,7 +28,7 @@ import { ComponentRef, ComponentType, mergeRefs, useEffect, useRef, useRefHandle
 import { ImageProps } from '../types/image';
 import { encodeImageStyle } from './css';
 import { useFlattenStyle } from '../../../view/style/utils';
-import { useEventProps } from './events';
+import { useResponderEvents } from './events';
 
 const ImageBase: ComponentType<ImageProps & { source?: string; }> = ({ ref, style, source, ...props }) => {
 
@@ -51,7 +51,7 @@ const ImageBase: ComponentType<ImageProps & { source?: string; }> = ({ ref, styl
     style,
   ]));
 
-  const eventProps = useEventProps(props, nativeRef, targetRef);
+  const responders = useResponderEvents(props, nativeRef, targetRef);
 
   return (
     <img
@@ -64,7 +64,7 @@ const ImageBase: ComponentType<ImageProps & { source?: string; }> = ({ ref, styl
           height: e.currentTarget.naturalHeight,
         });
       }}
-      {...eventProps}
+      {...responders}
     />
   );
 };

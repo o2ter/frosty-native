@@ -115,7 +115,7 @@ const wrapMouseEvent = <Target>(e: MouseEvent, ref: RefObject<Target | null | un
   get target() { return e.target; },
 });
 
-export const useEventProps = <Target>(
+export const useResponderEvents = <Target>(
   props: ViewEventProps<Target>,
   targetRef: RefObject<Target | null | undefined>,
   elementRef: RefObject<HTMLElement | null | undefined>

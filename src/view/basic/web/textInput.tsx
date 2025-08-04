@@ -30,7 +30,7 @@ import { useTextStyle } from '../../components';
 import { encodeTextStyle } from './css';
 import { useFlattenStyle } from '../../../view/style/utils';
 import { TextStyle } from '../../../view/style/types';
-import { useEventProps } from './events';
+import { useResponderEvents } from './events';
 
 export const TextInput: ComponentType<TextInputProps> = ({ ref, style, multiline, value, onChange, onChangeValue, formatted, ...props }) => {
 
@@ -57,7 +57,7 @@ export const TextInput: ComponentType<TextInputProps> = ({ ref, style, multiline
     style,
   ]));
 
-  const eventProps = useEventProps(props, nativeRef, targetRef);
+  const responders = useResponderEvents(props, nativeRef, targetRef);
 
   if (multiline) {
     return (
@@ -72,7 +72,7 @@ export const TextInput: ComponentType<TextInputProps> = ({ ref, style, multiline
           },
           cssStyle,
         ]}
-        {...eventProps}
+        {...responders}
       />
     );
   }
@@ -89,7 +89,7 @@ export const TextInput: ComponentType<TextInputProps> = ({ ref, style, multiline
         },
         cssStyle,
       ]}
-      {...eventProps}
+      {...responders}
     />
   );
 };
