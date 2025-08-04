@@ -145,7 +145,7 @@ export const useResponderEvents = <Target>(
     return () => window.removeEventListener('mouseup', _onPressOut);
   }, []);
 
-  if ('TouchEvent' in window) return {
+  if ('TouchEvent' in window) return _.pickBy({
     onPointerEnter: _onHoverIn,
     onPointerLeave: _onHoverOut,
     onTouchStart: _onPressIn,
@@ -154,9 +154,9 @@ export const useResponderEvents = <Target>(
     onTouchMoveCapture: _onPressMoveCapture,
     onTouchEnd: _onPressOut,
     onTouchCancel: _onPressOut,
-  };
+  }, v => !!v);
 
-  if ('PointerEvent' in window) return {
+  if ('PointerEvent' in window) return _.pickBy({
     onPointerEnter: _onHoverIn,
     onPointerLeave: _onHoverOut,
     onPointerDown: _onPressIn,
@@ -165,9 +165,9 @@ export const useResponderEvents = <Target>(
     onPointerMoveCapture: _onPressMoveCapture,
     onPointerUp: _onPressOut,
     onPointerCancel: _onPressOut,
-  };
+  }, v => !!v);
 
-  return {
+  return _.pickBy({
     onMouseEnter: _onHoverIn,
     onMouseLeave: _onHoverOut,
     onMouseDown: _onPressIn,
@@ -175,5 +175,5 @@ export const useResponderEvents = <Target>(
     onMouseMove: _onPressMove,
     onMouseMoveCapture: _onPressMoveCapture,
     onMouseUp: _onPressOut,
-  };
+  }, v => !!v);
 };
