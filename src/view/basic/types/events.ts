@@ -62,6 +62,8 @@ export type PressEvent<Target> = {
   changedTouches: Touch[],
   locationX: number;
   locationY: number;
+  pageX: number;
+  pageY: number;
   timestamp: number;
   touches: Touch[],
   currentTarget: Target;
