@@ -155,7 +155,9 @@ export const useResponderEvents = <Target>(
     onMoveShouldSetResponder,
     onMoveShouldSetResponderCapture,
     onResponderGrant,
+    onResponderStart,
     onResponderMove,
+    onResponderEnd,
     onResponderReject,
     onResponderRelease,
     onResponderTerminate,
@@ -185,7 +187,9 @@ export const useResponderEvents = <Target>(
     _.isFunction(onMoveShouldSetResponder) ||
     _.isFunction(onMoveShouldSetResponderCapture) ||
     _.isFunction(onResponderGrant) ||
+    _.isFunction(onResponderStart) ||
     _.isFunction(onResponderMove) ||
+    _.isFunction(onResponderEnd) ||
     _.isFunction(onResponderReject) ||
     _.isFunction(onResponderRelease) ||
     _.isFunction(onResponderTerminate) ||
@@ -219,6 +223,7 @@ export const useResponderEvents = <Target>(
         if (granted) {
           if (_.isFunction(onResponderTerminate)) onResponderTerminate(wrapPressEvent(e, currentResponder.target));
           _currentResponder.set(window, { target, ...props });
+          if (_.isFunction(onResponderStart)) onResponderStart(wrapPressEvent(e, target));
         }
       }
     } else {
@@ -251,6 +256,7 @@ export const useResponderEvents = <Target>(
         if (granted) {
           if (_.isFunction(onResponderTerminate)) onResponderTerminate(wrapPressEvent(e, currentResponder.target));
           _currentResponder.set(window, { target, ...props });
+          if (_.isFunction(onResponderStart)) onResponderStart(wrapPressEvent(e, target));
         }
       }
     } else {
