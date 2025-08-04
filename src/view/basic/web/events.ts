@@ -23,6 +23,7 @@
 //  THE SOFTWARE.
 //
 
+import _ from 'lodash';
 import { RefObject, useRef } from 'frosty';
 import { ViewEventProps } from '../types/events';
 import { useResizeObserver } from 'frosty/web';
@@ -30,12 +31,12 @@ import { useResizeObserver } from 'frosty/web';
 const supportsTouchEvent = () => typeof window !== 'undefined' && window.TouchEvent != null;
 const supportsPointerEvent = () => typeof window !== 'undefined' && window.PointerEvent != null;
 
-const pressHandler = ({ onPressIn, onPressMove, onPressOut }: {
+const usePressHandler = ({ onPressIn, onPressMove, onPressOut }: {
   onPressIn: (e: TouchEvent | PointerEvent) => void;
   onPressMove: (e: TouchEvent | PointerEvent) => void;
   onPressOut: (e: TouchEvent | PointerEvent) => void;
 }) => {
-  return supportsTouchEvent ()? {
+  return supportsTouchEvent() ? {
     onTouchStart: (e: TouchEvent) => {
       onPressIn(e);
     },
@@ -63,6 +64,24 @@ const pressHandler = ({ onPressIn, onPressMove, onPressOut }: {
     },
   }
 }
+
+const wrapPressEvent = <Target>(e: TouchEvent | MouseEvent, ref: RefObject<Target | null | undefined>) => e instanceof MouseEvent ? ({
+  timestamp: e.timeStamp,
+  locationX: e.clientX,
+  locationY: e.clientY,
+  get currentTarget() { return ref.current!; },
+  get target() { return e.target; },
+  get touches() { return [e]; },
+  get changedTouches() { return [e]; },
+}) : ({
+  timestamp: e.timeStamp,
+  locationX: _.sumBy(e.touches, x => x.clientX) / e.touches.length,
+  locationY: _.sumBy(e.touches, x => x.clientY) / e.touches.length,
+  get currentTarget() { return ref.current!; },
+  get target() { return e.target; },
+  get touches() { return [...e.touches]; },
+  get changedTouches() { return [...e.changedTouches]; },
+});
 
 const wrapMouseEvent = <Target>(e: MouseEvent, ref: RefObject<Target | null | undefined>) => ({
   clientX: e.clientX,
@@ -101,38 +120,39 @@ export const useEventProps = <Target>(
     if (!onLayout) return;
   });
 
-  // const press = pressHandler({
-  //   onPressIn: (e) => {
-  //     if (onPressIn) onPressIn(wrapMouseEvent(e));
-  //     const token = _.uniqueId();
-  //     pressState.current.token = token;
-  //     pressState.current.timeout = _.isNil(onLongPress);
-  //     if (onLongPress) {
-  //       setTimeout(() => {
-  //         if (pressState.current.token !== token) return;
-  //         onLongPress(wrapMouseEvent(e));
-  //         pressState.current.timeout = true;
-  //       }, delayLongPress);
-  //     } else if (onPress) {
-  //       onPress(wrapMouseEvent(e));
-  //     }
-  //   },
-  //   onPressMove: (e) => {
-  //     if (pressState.current.token === '') return;
-  //     if (onResponderMove) onResponderMove(wrapMouseEvent(e));
-  //   },
-  //   onPressOut: (e) => {
-  //     if (pressState.current.token === '') return;
-  //     pressState.current.token = '';
-  //     if (onPressOut) onPressOut(wrapMouseEvent(e));
-  //     if (!pressState.current.timeout) {
-  //       if (onPress) onPress(wrapMouseEvent(e));
-  //     }
-  //   },
-  // });
+  const pressHandler = usePressHandler({
+    onPressIn: (e) => {
+      if (onPressIn) onPressIn(wrapPressEvent(e, targetRef));
+      const token = _.uniqueId();
+      pressState.current.token = token;
+      pressState.current.timeout = _.isNil(onLongPress);
+      if (onLongPress) {
+        setTimeout(() => {
+          if (pressState.current.token !== token) return;
+          onLongPress(wrapPressEvent(e, targetRef));
+          pressState.current.timeout = true;
+        }, delayLongPress);
+      } else if (onPress) {
+        onPress(wrapPressEvent(e, targetRef));
+      }
+    },
+    onPressMove: (e) => {
+      if (pressState.current.token === '') return;
+      if (onResponderMove) onResponderMove(wrapPressEvent(e, targetRef));
+    },
+    onPressOut: (e) => {
+      if (pressState.current.token === '') return;
+      pressState.current.token = '';
+      if (onPressOut) onPressOut(wrapPressEvent(e, targetRef));
+      if (!pressState.current.timeout) {
+        if (onPress) onPress(wrapPressEvent(e, targetRef));
+      }
+    },
+  });
 
   if (supportsPointerEvent()) {
     return {
+      ...pressHandler,
       onPointerEnter: onHoverIn ? (e: MouseEvent) => {
         onHoverIn(wrapMouseEvent(e, targetRef));
       } : undefined,
@@ -143,6 +163,7 @@ export const useEventProps = <Target>(
   }
 
   return {
+    ...pressHandler,
     onMouseEnter: onHoverIn ? (e: MouseEvent) => {
       onHoverIn(wrapMouseEvent(e, targetRef));
     } : undefined,

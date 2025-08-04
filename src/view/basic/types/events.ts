@@ -45,15 +45,25 @@ export type MouseEvent<Target> = {
   target: any;
 };
 
-export type PressEvent<Target> = {
-  changedTouches: PressEvent<Target>[],
-  identifier: number;
-  locationX: number;
-  locationY: number;
+export type Touch = {
+  identifier?: number;
+  force?: number;
+  clientX: number;
+  clientY: number;
   pageX: number;
   pageY: number;
+  radiusX?: number;
+  radiusY?: number;
+  rotationAngle?: number;
+  target: any;
+};
+
+export type PressEvent<Target> = {
+  changedTouches: Touch[],
+  locationX: number;
+  locationY: number;
   timestamp: number;
-  touches: PressEvent<Target>[],
+  touches: Touch[],
   currentTarget: Target;
   target: any;
 };
