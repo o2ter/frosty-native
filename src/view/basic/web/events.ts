@@ -131,16 +131,23 @@ export const useResponderEvents = <Target>(
     if (!onLayout) return;
   });
 
-  if (supportsPointerEvent()) {
-    return {
-      onPointerEnter: onHoverIn ? (e: MouseEvent) => {
-        onHoverIn(wrapMouseEvent(e, targetRef));
-      } : undefined,
-      onPointerLeave: onHoverOut ? (e: MouseEvent) => {
-        onHoverOut(wrapMouseEvent(e, targetRef));
-      } : undefined,
-    };
-  }
+  if (supportsTouchEvent()) return {
+    onPointerEnter: onHoverIn ? (e: MouseEvent) => {
+      onHoverIn(wrapMouseEvent(e, targetRef));
+    } : undefined,
+    onPointerLeave: onHoverOut ? (e: MouseEvent) => {
+      onHoverOut(wrapMouseEvent(e, targetRef));
+    } : undefined,
+  };
+
+  if (supportsPointerEvent()) return {
+    onPointerEnter: onHoverIn ? (e: MouseEvent) => {
+      onHoverIn(wrapMouseEvent(e, targetRef));
+    } : undefined,
+    onPointerLeave: onHoverOut ? (e: MouseEvent) => {
+      onHoverOut(wrapMouseEvent(e, targetRef));
+    } : undefined,
+  };
 
   return {
     onMouseEnter: onHoverIn ? (e: MouseEvent) => {
