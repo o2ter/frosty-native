@@ -31,6 +31,7 @@ export const _useCallbacks = <T extends { [x: string]: (...args: any) => any }>(
     current: callbacks,
     stable: _.mapValues(callbacks, (v, k) => (...args: any) => store.current[k](...args)),
   }), []);
+  store.current = callbacks;
   store.stable = _.mapValues(callbacks, (v, k) => store.stable[k] ?? ((...args: any) => store.current[k](...args)));
   return store.stable as T;
 };
