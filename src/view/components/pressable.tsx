@@ -24,7 +24,7 @@
 //
 
 import _ from 'lodash';
-import { ComponentProps, ComponentRef, useRef } from 'frosty';
+import { ComponentProps, ComponentRef, useMemo } from 'frosty';
 import { PressEvent, ViewEventProps } from '../basic/types/events';
 import { View } from '../basic';
 import { uniqueId } from 'frosty/_native';
@@ -39,63 +39,61 @@ type PressResponderProps<Target> = ViewEventProps<Target> & {
 
 type PressableProps = ComponentProps<typeof View> & PressResponderProps<ComponentRef<typeof View>>;
 
-export const PressResponder = {
-  create: <Target extends any = any>({
-    delayLongPress,
-    onLongPress,
-    onPress,
-    onPressIn,
-    onPressOut,
-    onResponderGrant,
-    onResponderRelease,
-    onResponderTerminate,
-  }: PressResponderProps<Target>) => {
+export const usePressResponder = <Target extends any = any>({
+  delayLongPress,
+  onLongPress,
+  onPress,
+  onPressIn,
+  onPressOut,
+  onResponderGrant,
+  onResponderRelease,
+  onResponderTerminate,
+}: PressResponderProps<Target>) => {
 
-    const pressState = {
-      token: '',
-      timeout: true,
-    };
+  const pressState = useMemo(() => ({
+    token: '',
+    timeout: true,
+  }), []);
 
-    const _onPressIn = (e: PressEvent<Target>) => {
-      if (onPressIn) onPressIn(e);
-      const token = uniqueId();
-      pressState.token = token;
-      pressState.timeout = _.isNil(onLongPress);
-      if (onLongPress) {
-        setTimeout(() => {
-          if (pressState.token !== token) return;
-          onLongPress(e);
-          pressState.timeout = true;
-        }, delayLongPress || 500);
-      } else if (onPress) {
-        onPress(e);
-      }
-    };
+  const _onPressIn = (e: PressEvent<Target>) => {
+    if (onPressIn) onPressIn(e);
+    const token = uniqueId();
+    pressState.token = token;
+    pressState.timeout = _.isNil(onLongPress);
+    if (onLongPress) {
+      setTimeout(() => {
+        if (pressState.token !== token) return;
+        onLongPress(e);
+        pressState.timeout = true;
+      }, delayLongPress || 500);
+    } else if (onPress) {
+      onPress(e);
+    }
+  };
 
-    const _onPressOut = (e: PressEvent<Target>) => {
-      if (pressState.token === '') return;
-      pressState.token = '';
-      if (onPressOut) onPressOut(e);
-      if (!pressState.timeout) {
-        if (onPress) onPress(e);
-      }
-    };
+  const _onPressOut = (e: PressEvent<Target>) => {
+    if (pressState.token === '') return;
+    pressState.token = '';
+    if (onPressOut) onPressOut(e);
+    if (!pressState.timeout) {
+      if (onPress) onPress(e);
+    }
+  };
 
-    return {
-      onResponderGrant: (e: PressEvent<Target>) => {
-        if (onResponderGrant) onResponderGrant(e);
-        _onPressIn(e);
-      },
-      onResponderRelease: (e: PressEvent<Target>) => {
-        if (onResponderRelease) onResponderRelease(e);
-        _onPressOut(e);
-      },
-      onResponderTerminate: (e: PressEvent<Target>) => {
-        if (onResponderTerminate) onResponderTerminate(e);
-        _onPressOut(e);
-      },
-    };
-  }
+  return {
+    onResponderGrant: (e: PressEvent<Target>) => {
+      if (onResponderGrant) onResponderGrant(e);
+      _onPressIn(e);
+    },
+    onResponderRelease: (e: PressEvent<Target>) => {
+      if (onResponderRelease) onResponderRelease(e);
+      _onPressOut(e);
+    },
+    onResponderTerminate: (e: PressEvent<Target>) => {
+      if (onResponderTerminate) onResponderTerminate(e);
+      _onPressOut(e);
+    },
+  };
 };
 
 export const Pressable = ({
@@ -111,7 +109,7 @@ export const Pressable = ({
   ...props
 }: PressableProps) => {
 
-  const pressHandler = useRef(() => PressResponder.create({
+  const pressHandler = usePressResponder({
     delayLongPress,
     onLongPress,
     onPress,
@@ -120,7 +118,7 @@ export const Pressable = ({
     onResponderGrant,
     onResponderRelease,
     onResponderTerminate,
-  }));
+  });
 
   return (
     <View
