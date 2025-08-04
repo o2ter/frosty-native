@@ -28,13 +28,13 @@ import { RefObject, useCallback, useEffect } from 'frosty';
 import { ViewEventProps } from '../types/events';
 import { useResizeObserver, useWindow } from 'frosty/web';
 
-const wrapPressEvent = <Target>(e: TouchEvent | MouseEvent, ref: RefObject<Target | null | undefined>) => e instanceof MouseEvent ? ({
+const wrapPressEvent = <Target>(e: TouchEvent | MouseEvent, currentTarget: Target) => e instanceof MouseEvent ? ({
   timestamp: e.timeStamp,
   locationX: e.clientX,
   locationY: e.clientY,
   pageX: e.pageX,
   pageY: e.pageY,
-  get currentTarget() { return ref.current!; },
+  get currentTarget() { return currentTarget; },
   get target() { return e.target; },
   get touches() { return [e]; },
   get changedTouches() { return [e]; },
@@ -44,19 +44,19 @@ const wrapPressEvent = <Target>(e: TouchEvent | MouseEvent, ref: RefObject<Targe
   locationY: _.sumBy(e.touches, x => x.clientY) / e.touches.length,
   pageX: _.sumBy(e.touches, x => x.pageX) / e.touches.length,
   pageY: _.sumBy(e.touches, x => x.pageY) / e.touches.length,
-  get currentTarget() { return ref.current!; },
+  get currentTarget() { return currentTarget; },
   get target() { return e.target; },
   get touches() { return [...e.touches]; },
   get changedTouches() { return [...e.changedTouches]; },
 });
 
-const wrapMouseEvent = <Target>(e: MouseEvent, ref: RefObject<Target | null | undefined>) => ({
+const wrapMouseEvent = <Target>(e: MouseEvent, currentTarget: Target) => ({
   clientX: e.clientX,
   clientY: e.clientY,
   pageX: e.pageX,
   pageY: e.pageY,
   timestamp: e.timeStamp,
-  get currentTarget() { return ref.current!; },
+  get currentTarget() { return currentTarget; },
   get target() { return e.target; },
 });
 
@@ -92,10 +92,14 @@ export const useResponderEvents = <Target>(
   });
 
   const _onHoverIn = onHoverIn && ((e: MouseEvent) => {
-    onHoverIn(wrapMouseEvent(e, targetRef));
+    const target = targetRef.current;
+    if (!target) return;
+    onHoverIn(wrapMouseEvent(e, target));
   });
   const _onHoverOut = onHoverOut && ((e: MouseEvent) => {
-    onHoverOut(wrapMouseEvent(e, targetRef));
+    const target = targetRef.current;
+    if (!target) return;
+    onHoverOut(wrapMouseEvent(e, target));
   });
 
   const enableResponder = !disabled && (
@@ -116,7 +120,7 @@ export const useResponderEvents = <Target>(
     const target = targetRef.current;
     if (!target) return;
 
-    const shouldSetResponder = onStartShouldSetResponder?.(wrapPressEvent(e, targetRef)) !== false;
+    const shouldSetResponder = onStartShouldSetResponder?.(wrapPressEvent(e, target)) !== false;
 
   };
   const _onPressInCapture = !enableResponder ? undefined : (e: TouchEvent | MouseEvent) => {
@@ -124,7 +128,7 @@ export const useResponderEvents = <Target>(
     const target = targetRef.current;
     if (!target) return;
 
-    const shouldSetResponder = onStartShouldSetResponderCapture?.(wrapPressEvent(e, targetRef)) === true;
+    const shouldSetResponder = onStartShouldSetResponderCapture?.(wrapPressEvent(e, target)) === true;
 
   };
   const _onPressMove = !enableResponder ? undefined : (e: TouchEvent | MouseEvent) => {
