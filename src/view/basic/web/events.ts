@@ -120,12 +120,23 @@ export const useResponderEvents = <Target>(
     const target = targetRef.current;
     if (!target) return;
 
-    const shouldSetResponder = onStartShouldSetResponder?.(wrapPressEvent(e, target));
-    if (shouldSetResponder === false) return;
+    const shouldSetResponder = _.isFunction(onStartShouldSetResponder) ? onStartShouldSetResponder(wrapPressEvent(e, target)) : true;
+    if (!shouldSetResponder) return;
 
     const currentResponder = _currentResponder.get(window);
     if (currentResponder) {
-
+      const {
+        onResponderTerminationRequest,
+        onResponderTerminate,
+      } = currentResponder;
+      const termination = _.isFunction(onResponderTerminationRequest) ? onResponderTerminationRequest(wrapPressEvent(e, currentResponder.target)) : true;
+      if (termination === false) {
+        if (_.isFunction(onResponderReject)) onResponderReject(wrapPressEvent(e, target));
+      } else {
+        if (_.isFunction(onResponderTerminate)) onResponderTerminate(wrapPressEvent(e, currentResponder.target));
+        if (_.isFunction(onResponderGrant)) onResponderGrant(wrapPressEvent(e, target));
+        _currentResponder.set(window, { target, ...props });
+      }
     } else {
 
     }
@@ -136,12 +147,23 @@ export const useResponderEvents = <Target>(
     const target = targetRef.current;
     if (!target) return;
 
-    const shouldSetResponder = onStartShouldSetResponderCapture?.(wrapPressEvent(e, target));
-    if (shouldSetResponder !== true) return;
+    const shouldSetResponder = _.isFunction(onStartShouldSetResponderCapture) ? onStartShouldSetResponderCapture(wrapPressEvent(e, target)) : false;
+    if (!shouldSetResponder) return;
 
     const currentResponder = _currentResponder.get(window);
     if (currentResponder) {
-
+      const {
+        onResponderTerminationRequest,
+        onResponderTerminate,
+      } = currentResponder;
+      const termination = _.isFunction(onResponderTerminationRequest) ? onResponderTerminationRequest(wrapPressEvent(e, currentResponder.target)) : true;
+      if (termination === false) {
+        if (_.isFunction(onResponderReject)) onResponderReject(wrapPressEvent(e, target));
+      } else {
+        if (_.isFunction(onResponderTerminate)) onResponderTerminate(wrapPressEvent(e, currentResponder.target));
+        if (_.isFunction(onResponderGrant)) onResponderGrant(wrapPressEvent(e, target));
+        _currentResponder.set(window, { target, ...props });
+      }
     } else {
 
     }
