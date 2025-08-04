@@ -27,6 +27,7 @@ import _ from 'lodash';
 import { RefObject, useRef } from 'frosty';
 import { ViewEventProps } from '../types/events';
 import { useResizeObserver } from 'frosty/web';
+import { uniqueId } from 'frosty/_native';
 
 const supportsTouchEvent = () => typeof window !== 'undefined' && window.TouchEvent != null;
 const supportsPointerEvent = () => typeof window !== 'undefined' && window.PointerEvent != null;
@@ -135,7 +136,7 @@ export const useEventProps = <Target>(
   const pressHandler = usePressHandler({
     onPressIn: (e) => {
       if (onPressIn) onPressIn(wrapPressEvent(e, targetRef));
-      const token = _.uniqueId();
+      const token = uniqueId();
       pressState.current.token = token;
       pressState.current.timeout = _.isNil(onLongPress);
       if (onLongPress) {
