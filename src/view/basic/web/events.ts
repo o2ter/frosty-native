@@ -25,7 +25,7 @@
 
 import _ from 'lodash';
 import { RefObject, useCallback, useEffect } from 'frosty';
-import { ViewEventProps } from '../types/events';
+import { PressEvent, ViewEventProps } from '../types/events';
 import { useResizeObserver, useWindow } from 'frosty/web';
 
 const wrapPressEvent = <Target>(e: TouchEvent | MouseEvent, currentTarget: Target) => e instanceof MouseEvent ? ({
@@ -60,7 +60,7 @@ const wrapMouseEvent = <Target>(e: MouseEvent, currentTarget: Target) => ({
   get target() { return e.target; },
 });
 
-const currentResponder = new WeakMap<ReturnType<typeof useWindow>, { target: any; }>();
+const currentResponder = new WeakMap<ReturnType<typeof useWindow>, { target: any; } & ViewEventProps<any>>();
 
 export const useResponderEvents = <Target>(
   props: ViewEventProps<Target>,
