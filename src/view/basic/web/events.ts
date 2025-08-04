@@ -113,21 +113,36 @@ export const useResponderEvents = <Target>(
 
   const _onPressIn = !enableResponder ? undefined : (e: TouchEvent | MouseEvent) => {
 
+    const target = targetRef.current;
+    if (!target) return;
+
     const shouldSetResponder = onStartShouldSetResponder?.(wrapPressEvent(e, targetRef)) !== false;
 
   };
   const _onPressInCapture = !enableResponder ? undefined : (e: TouchEvent | MouseEvent) => {
+
+    const target = targetRef.current;
+    if (!target) return;
 
     const shouldSetResponder = onStartShouldSetResponderCapture?.(wrapPressEvent(e, targetRef)) === true;
 
   };
   const _onPressMove = !enableResponder ? undefined : (e: TouchEvent | MouseEvent) => {
 
+    const target = targetRef.current;
+    if (!target) return;
+
   };
   const _onPressMoveCapture = !enableResponder ? undefined : (e: TouchEvent | MouseEvent) => {
 
+    const target = targetRef.current;
+    if (!target) return;
+
   };
   const _onPressOut = useCallback(!enableResponder ? undefined : (e: TouchEvent | MouseEvent) => {
+
+    const target = targetRef.current;
+    if (!target) return;
 
   });
 
