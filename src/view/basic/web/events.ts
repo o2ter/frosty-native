@@ -79,6 +79,43 @@ const wrapMouseEvent = <Target>(e: MouseEvent, currentTarget: Target) => ({
   get currentTarget() { return currentTarget; },
 });
 
+const getRect = (node: HTMLElement) => {
+  const height = node.offsetHeight;
+  const width = node.offsetWidth;
+  let left = node.offsetLeft;
+  let top = node.offsetTop;
+  node = node.offsetParent as HTMLElement;
+
+  while (node && node.nodeType === 1 /* Node.ELEMENT_NODE */) {
+    left += node.offsetLeft + node.clientLeft - node.scrollLeft;
+    top += node.offsetTop + node.clientTop - node.scrollTop;
+    node = node.offsetParent as HTMLElement;
+  }
+
+  top -= window.scrollY;
+  left -= window.scrollX;
+
+  return { width, height, top, left };
+};
+
+const measureLayout = (node: HTMLElement, relativeToNativeNode?: HTMLElement) => {
+  const relativeNode = relativeToNativeNode || (node && node.parentNode) as HTMLElement;
+  if (node && relativeNode && node.isConnected && relativeNode.isConnected) {
+    const relativeRect = getRect(relativeNode);
+    const { height, left, top, width } = getRect(node);
+    const x = left - relativeRect.left;
+    const y = top - relativeRect.top;
+    return { x, y, width, height, left, top };
+  }
+};
+
+const wrapLayoutEvent = <Target>(e: ResizeObserverEntry, currentTarget: Target) => ({
+  layout: measureLayout(e.target as HTMLElement) ?? { x: 0, y: 0, width: 0, height: 0, left: 0, top: 0 },
+  timestamp: Date.now(),
+  get target() { return e.target; },
+  get currentTarget() { return currentTarget; },
+});
+
 const _currentResponder = new WeakMap<ReturnType<typeof useWindow>, { target: any; } & ViewEventProps<any>>();
 
 export const useResponderEvents = <Target>(
@@ -109,7 +146,9 @@ export const useResponderEvents = <Target>(
   const window = useWindow();
 
   useResizeObserver(onLayout ? elementRef : null, (e) => {
-    if (!onLayout) return;
+    const target = targetRef.current;
+    if (!target || !onLayout) return;
+    onLayout.call(target, wrapLayoutEvent(e, target));
   });
 
   const _onHoverIn = onHoverIn && ((e: MouseEvent) => {
