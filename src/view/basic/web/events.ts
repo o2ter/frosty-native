@@ -141,7 +141,7 @@ export const useResponderEvents = <Target>(
   const _transferResponder = (e: TouchEvent | MouseEvent, target: Target) => {
 
     const currentResponder = _currentResponder.get(window);
-    if (!currentResponder) return true;
+    if (!currentResponder || currentResponder.target === target) return true;
 
     const {
       onResponderTerminationRequest,

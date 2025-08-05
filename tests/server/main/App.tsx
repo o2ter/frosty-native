@@ -22,7 +22,11 @@ export const App = () => {
         flex: 1,
         backgroundColor: 'blue',
       }}>
-        <Pressable onPress={function (e) { console.log(this, e) }}>
+        <Pressable
+          onPressIn={function (e) { console.log('onPressIn', this, e) }}
+          onPressOut={function (e) { console.log('onPressOut', this, e) }}
+          onPress={function (e) { console.log('onPress', this, e) }}
+        >
           <Text>Hello, <Text>World</Text></Text>
         </Pressable>
         <Text>Hello, <Text>World</Text></Text>
