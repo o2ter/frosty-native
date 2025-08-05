@@ -37,6 +37,7 @@ const wrapPressEvent = <Target>(e: TouchEvent | MouseEvent, currentTarget: Targe
   get currentTarget() { return currentTarget; },
   get target() { return e.target; },
   get touches() { return [e]; },
+  get targetTouches() { return [e]; },
   get changedTouches() { return [e]; },
 }) : ({
   timestamp: e.timeStamp,
@@ -47,6 +48,7 @@ const wrapPressEvent = <Target>(e: TouchEvent | MouseEvent, currentTarget: Targe
   get currentTarget() { return currentTarget; },
   get target() { return e.target; },
   get touches() { return [...e.touches]; },
+  get targetTouches() { return [...e.targetTouches]; },
   get changedTouches() { return [...e.changedTouches]; },
 });
 
@@ -56,8 +58,8 @@ const wrapMouseEvent = <Target>(e: MouseEvent, currentTarget: Target) => ({
   pageX: e.pageX,
   pageY: e.pageY,
   timestamp: e.timeStamp,
-  get currentTarget() { return currentTarget; },
   get target() { return e.target; },
+  get currentTarget() { return currentTarget; },
 });
 
 /*                                             Negotiation Performed

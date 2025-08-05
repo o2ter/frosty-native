@@ -59,12 +59,13 @@ export type Touch = {
 };
 
 export type PressEvent<Target> = Event<Target> & {
-  changedTouches: Touch[],
   locationX: number;
   locationY: number;
   pageX: number;
   pageY: number;
   touches: Touch[],
+  targetTouches: Touch[],
+  changedTouches: Touch[],
 };
 
 export type ViewEventProps<Target> = {
