@@ -24,7 +24,7 @@
 //
 
 type Event<Target> = {
-  timestamp: number;
+  timeStamp: number;
   currentTarget: Target;
   target: any;
 }

@@ -33,15 +33,15 @@ type TextInputRef = {
 
 type TextInputChangeEvent<Value> = {
   value: Value;
-  timestamp: number;
+  timeStamp: number;
   currentTarget: TextInputRef;
   target: any;
 };
 
 type _TextInputProps<Value> = {
   value?: Value;
-  onChange?: (event: TextInputChangeEvent<Value>) => void;
-  onChangeValue?: (value: Value) => void;
+  onChange?: (this: TextInputRef, event: TextInputChangeEvent<Value>) => void;
+  onChangeValue?: (this: TextInputRef, value: Value) => void;
 };
 
 type AttributedString = string & {
