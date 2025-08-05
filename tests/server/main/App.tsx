@@ -18,10 +18,12 @@ export const App = () => {
         <TextInput />
         <TextInput multiline />
       </View>
-      <View style={{
-        flex: 1,
-        backgroundColor: 'blue',
-      }}>
+      <View
+        onLayout={function (e) { console.log('onLayout', this, e) }}
+        style={{
+          flex: 1,
+          backgroundColor: 'blue',
+        }}>
         <Pressable
           onPressIn={function (e) { console.log('onPressIn', this, e) }}
           onPressOut={function (e) { console.log('onPressOut', this, e) }}
