@@ -201,26 +201,24 @@ export const useResponderEvents = <Target>(
   const _transferResponder = (e: TouchEvent | MouseEvent, target: Target) => {
 
     const currentResponder = _currentResponder.get(window);
-    if (currentResponder) {
+    if (!currentResponder) return true;
 
-      const {
-        onResponderTerminationRequest,
-        onResponderTerminate,
-      } = currentResponder;
+    const {
+      onResponderTerminationRequest,
+      onResponderTerminate,
+    } = currentResponder;
 
-      const termination = _.isFunction(onResponderTerminationRequest) ? onResponderTerminationRequest(wrapPressEvent(e, currentResponder.target)) : true;
+    const termination = _.isFunction(onResponderTerminationRequest) ? onResponderTerminationRequest(wrapPressEvent(e, currentResponder.target)) : true;
 
-      if (termination === false) {
-        if (_.isFunction(onResponderReject)) onResponderReject(wrapPressEvent(e, target));
-        return;
-      }
-
-      if (_.isFunction(onResponderGrant)) onResponderGrant(wrapPressEvent(e, target));
-      if (_.isFunction(onResponderTerminate)) onResponderTerminate(wrapPressEvent(e, currentResponder.target));
+    if (termination === false) {
+      if (_.isFunction(onResponderReject)) onResponderReject(wrapPressEvent(e, target));
+      return false;
     }
 
-    if (_.isFunction(onResponderStart)) onResponderStart(wrapPressEvent(e, target));
-    _currentResponder.set(window, { target, ...props });
+    if (_.isFunction(onResponderGrant)) onResponderGrant(wrapPressEvent(e, target));
+    if (_.isFunction(onResponderTerminate)) onResponderTerminate(wrapPressEvent(e, currentResponder.target));
+
+    return true;
   };
 
   const _onPressIn = !enableResponder ? undefined : (e: TouchEvent | MouseEvent) => {
@@ -231,7 +229,10 @@ export const useResponderEvents = <Target>(
     const shouldSetResponder = _.isFunction(onStartShouldSetResponder) ? onStartShouldSetResponder(wrapPressEvent(e, target)) : true;
     if (!shouldSetResponder) return;
 
-    _transferResponder(e, target);
+    if (_transferResponder(e, target)) {
+      if (_.isFunction(onResponderStart)) onResponderStart(wrapPressEvent(e, target));
+      _currentResponder.set(window, { target, ...props });
+    }
   };
   const _onPressInCapture = !enableResponder ? undefined : (e: TouchEvent | MouseEvent) => {
 
@@ -241,19 +242,36 @@ export const useResponderEvents = <Target>(
     const shouldSetResponder = _.isFunction(onStartShouldSetResponderCapture) ? onStartShouldSetResponderCapture(wrapPressEvent(e, target)) : false;
     if (!shouldSetResponder) return;
 
-    _transferResponder(e, target);
+    if (_transferResponder(e, target)) {
+      if (_.isFunction(onResponderStart)) onResponderStart(wrapPressEvent(e, target));
+      _currentResponder.set(window, { target, ...props });
+    }
   };
   const _onPressMove = !enableResponder ? undefined : (e: TouchEvent | MouseEvent) => {
 
     const target = targetRef.current;
     if (!target) return;
 
+    const shouldSetResponder = _.isFunction(onMoveShouldSetResponder) ? onMoveShouldSetResponder(wrapPressEvent(e, target)) : true;
+    if (!shouldSetResponder) return;
+
+    if (_transferResponder(e, target)) {
+      if (_.isFunction(onResponderMove)) onResponderMove(wrapPressEvent(e, target));
+      _currentResponder.set(window, { target, ...props });
+    }
   };
   const _onPressMoveCapture = !enableResponder ? undefined : (e: TouchEvent | MouseEvent) => {
 
     const target = targetRef.current;
     if (!target) return;
 
+    const shouldSetResponder = _.isFunction(onMoveShouldSetResponderCapture) ? onMoveShouldSetResponderCapture(wrapPressEvent(e, target)) : true;
+    if (!shouldSetResponder) return;
+
+    if (_transferResponder(e, target)) {
+      if (_.isFunction(onResponderMove)) onResponderMove(wrapPressEvent(e, target));
+      _currentResponder.set(window, { target, ...props });
+    }
   };
   const _onPressOut = useCallback(!enableResponder ? undefined : (e: TouchEvent | MouseEvent) => {
 
