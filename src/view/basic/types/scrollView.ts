@@ -28,7 +28,7 @@ import { ViewStyle } from '../../style/types';
 import { ViewEventProps } from './events';
 
 type ScrollViewRef = {
-  readonly _target?: HTMLElement;
+  readonly _native?: HTMLElement;
 };
 
 export type ScrollViewProps = PropsWithChildren<ViewEventProps<ScrollViewRef> & {

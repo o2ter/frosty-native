@@ -42,7 +42,7 @@ export const ScrollView: ComponentType<ScrollViewProps> = ({
   const targetRef = useRef<HTMLDivElement>();
   const nativeRef = useRef<ComponentRef<typeof ScrollView>>();
   useRefHandle(mergeRefs(nativeRef, ref), () => ({
-    get _target() { return targetRef.current; }
+    get _native() { return targetRef.current; }
   }), null);
 
   const cssStyle = encodeViewStyle(useFlattenStyle([

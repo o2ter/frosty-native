@@ -34,7 +34,7 @@ export const View: ComponentType<ViewProps> = ({ ref, style, children, ...props 
   const targetRef = useRef<HTMLDivElement>();
   const nativeRef = useRef<ComponentRef<typeof View>>();
   useRefHandle(mergeRefs(nativeRef, ref), () => ({
-    get _target() { return targetRef.current; }
+    get _native() { return targetRef.current; }
   }), null);
 
   const cssStyle = encodeViewStyle(useFlattenStyle([

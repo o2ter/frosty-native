@@ -97,7 +97,7 @@ export const Text: ComponentType<TextViewProps> = ({ ref, style, children, ...pr
   const targetRef = useRef<HTMLElement | null>();
   const nativeRef = useRef<ComponentRef<typeof Text>>();
   useRefHandle(mergeRefs(nativeRef, ref), () => ({
-    get _target() { return targetRef.current || undefined; }
+    get _native() { return targetRef.current || undefined; }
   }), null);
 
   const isInnerText = _.some(useStack(), (item) => item.type === Text);

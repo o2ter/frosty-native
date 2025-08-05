@@ -28,7 +28,7 @@ import { TextStyle } from '../../style/types';
 import { ViewEventProps } from './events';
 
 type TextViewRef = {
-  readonly _target?: HTMLElement;
+  readonly _native?: HTMLElement;
 };
 
 export type TextViewProps = PropsWithChildren<ViewEventProps<TextViewRef> & {

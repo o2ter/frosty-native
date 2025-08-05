@@ -37,7 +37,7 @@ export const TextInput: ComponentType<TextInputProps> = ({ ref, style, multiline
   const targetRef = useRef<HTMLElement | null>();
   const nativeRef = useRef<ComponentRef<typeof TextInput>>();
   useRefHandle(mergeRefs(nativeRef, ref), () => ({
-    get _target() { return targetRef.current || undefined; }
+    get _native() { return targetRef.current || undefined; }
   }), null);
 
   const cssStyle = encodeTextStyle(useFlattenStyle([

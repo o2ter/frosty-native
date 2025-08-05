@@ -37,7 +37,7 @@ const ImageBase: ComponentType<ImageProps & { source?: string; }> = ({ ref, styl
   const targetRef = useRef<HTMLImageElement>();
   const nativeRef = useRef<ComponentRef<typeof ImageBase>>();
   useRefHandle(mergeRefs(nativeRef, ref), () => ({
-    get _target() { return targetRef.current; }
+    get _native() { return targetRef.current; }
   }), null);
 
   const cssStyle = encodeImageStyle(useFlattenStyle([

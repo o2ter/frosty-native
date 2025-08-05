@@ -28,7 +28,7 @@ import { TextStyle } from '../../style/types';
 import { ViewEventProps } from './events';
 
 type TextInputRef = {
-  readonly _target?: HTMLElement;
+  readonly _native?: HTMLElement;
 };
 
 type TextInputChangeEvent<Value> = {

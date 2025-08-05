@@ -33,7 +33,7 @@ interface ImageURISource extends RequestInit {
 type ImageSource = string | ImageURISource;
 
 type ImageRef = {
-  readonly _target?: HTMLElement;
+  readonly _native?: HTMLElement;
 };
 
 export type ImageProps = ViewEventProps<ImageRef> & {
