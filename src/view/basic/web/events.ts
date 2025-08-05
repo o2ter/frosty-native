@@ -109,9 +109,9 @@ const measureLayout = (node: HTMLElement, relativeToNativeNode?: HTMLElement) =>
   }
 };
 
-const wrapLayoutEvent = <Target>(e: ResizeObserverEntry, currentTarget: Target) => ({
+const wrapLayoutEvent = <Target>(e: ResizeObserverEntry, currentTarget: Target, window: ReturnType<typeof useWindow>) => ({
   layout: measureLayout(e.target as HTMLElement) ?? { x: 0, y: 0, width: 0, height: 0, left: 0, top: 0 },
-  timestamp: Date.now(),
+  timestamp: window.performance.now(),
   get target() { return e.target; },
   get currentTarget() { return currentTarget; },
 });
@@ -148,7 +148,7 @@ export const useResponderEvents = <Target>(
   useResizeObserver(onLayout ? elementRef : null, (e) => {
     const target = targetRef.current;
     if (!target || !onLayout) return;
-    onLayout.call(target, wrapLayoutEvent(e, target));
+    onLayout.call(target, wrapLayoutEvent(e, target, window));
   });
 
   const _onHoverIn = onHoverIn && ((e: MouseEvent) => {
