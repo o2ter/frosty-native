@@ -29,9 +29,13 @@ import { useMemo } from 'frosty';
 export const _useCallbacks = <T extends { [x: string]: (...args: any) => any }>(callbacks: T) => {
   const store = useMemo(() => ({
     current: callbacks,
-    stable: _.mapValues(callbacks, (v, k) => (...args: any) => store.current[k](...args)),
+    stable: _.mapValues(callbacks, (v, k) => function (this: any, ...args: any) {
+      return store.current[k].call(this, ...args);
+    }),
   }), []);
   store.current = callbacks;
-  store.stable = _.mapValues(callbacks, (v, k) => store.stable[k] ?? ((...args: any) => store.current[k](...args)));
+  store.stable = _.mapValues(callbacks, (v, k) => store.stable[k] ?? (function (this: any, ...args: any) {
+    return store.current[k].call(this, ...args);
+  }));
   return store.stable as T;
 };
