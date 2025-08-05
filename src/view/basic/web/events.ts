@@ -216,15 +216,10 @@ export const useResponderEvents = <Target>(
       if (termination === false) {
         if (_.isFunction(onResponderReject)) onResponderReject(wrapPressEvent(e, target));
       } else {
-        let granted = true;
-        if (_.isFunction(onResponderGrant)) {
-          granted = onResponderGrant(wrapPressEvent(e, target)) ?? true;
-        }
-        if (granted) {
-          if (_.isFunction(onResponderTerminate)) onResponderTerminate(wrapPressEvent(e, currentResponder.target));
-          _currentResponder.set(window, { target, ...props });
-          if (_.isFunction(onResponderStart)) onResponderStart(wrapPressEvent(e, target));
-        }
+        if (_.isFunction(onResponderGrant)) onResponderGrant(wrapPressEvent(e, target));
+        if (_.isFunction(onResponderTerminate)) onResponderTerminate(wrapPressEvent(e, currentResponder.target));
+        if (_.isFunction(onResponderStart)) onResponderStart(wrapPressEvent(e, target));
+        _currentResponder.set(window, { target, ...props });
       }
     } else {
 
@@ -249,15 +244,10 @@ export const useResponderEvents = <Target>(
       if (termination === false) {
         if (_.isFunction(onResponderReject)) onResponderReject(wrapPressEvent(e, target));
       } else {
-        let granted = true;
-        if (_.isFunction(onResponderGrant)) {
-          granted = onResponderGrant(wrapPressEvent(e, target)) ?? true;
-        }
-        if (granted) {
-          if (_.isFunction(onResponderTerminate)) onResponderTerminate(wrapPressEvent(e, currentResponder.target));
-          _currentResponder.set(window, { target, ...props });
-          if (_.isFunction(onResponderStart)) onResponderStart(wrapPressEvent(e, target));
-        }
+        if (_.isFunction(onResponderGrant)) onResponderGrant(wrapPressEvent(e, target));
+        if (_.isFunction(onResponderTerminate)) onResponderTerminate(wrapPressEvent(e, currentResponder.target));
+        if (_.isFunction(onResponderStart)) onResponderStart(wrapPressEvent(e, target));
+        _currentResponder.set(window, { target, ...props });
       }
     } else {
 
