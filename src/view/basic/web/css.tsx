@@ -148,6 +148,7 @@ export const encodeViewStyle = <S extends ViewStyle>(
     borderBottomLeftRadius,
     borderTopRightRadius,
     borderBottomRightRadius,
+    userSelect,
     zIndex,
   } = style;
 
@@ -216,6 +217,7 @@ export const encodeViewStyle = <S extends ViewStyle>(
     borderBottomLeftRadius,
     borderTopRightRadius,
     borderBottomRightRadius,
+    userSelect,
     zIndex,
   }, v => !_.isNil(v)) as ExtendedCSSProperties;
 }
@@ -258,7 +260,6 @@ export const encodeTextStyle = <S extends TextStyle>(
     textShadowOffsetY,
     textShadowRadius,
     textTransform,
-    userSelect,
   } = style;
 
   return _.pickBy({
@@ -281,6 +282,5 @@ export const encodeTextStyle = <S extends TextStyle>(
       color: textShadowColor,
     }),
     textTransform,
-    userSelect,
   }, v => !_.isNil(v)) as ExtendedCSSProperties;
 }

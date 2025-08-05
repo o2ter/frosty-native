@@ -88,6 +88,7 @@ export const usePressResponder = <Target extends any = any>({
 };
 
 export const Pressable = ({
+  style,
   delayLongPress,
   onLongPress,
   onPress,
@@ -113,6 +114,7 @@ export const Pressable = ({
 
   return (
     <View
+      style={[{ userSelect: 'none', cursor: 'pointer' }, style]}
       {...pressHandler}
       {...props}>
       {children}

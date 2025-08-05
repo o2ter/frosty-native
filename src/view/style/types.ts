@@ -214,6 +214,7 @@ export type ViewStyle = LayoutStyle & TransformsStyle & {
   filter?: FilterFunction | FilterFunction[];
   mixBlendMode?: BlendMode;
   cursor?: 'auto' | 'pointer' | (string & {});
+  userSelect?: 'auto' | 'none' | 'text' | 'contain' | 'all';
 } & {
   [x in typeof _borderColorKeys[number]]?: ColorValue;
 } & {
@@ -282,7 +283,6 @@ export type TextStyle = ViewStyle & {
   textShadowOffsetY?: number | string;
   textShadowRadius?: number;
   textTransform?: 'none' | 'capitalize' | 'uppercase' | 'lowercase';
-  userSelect?: 'auto' | 'none' | 'text' | 'contain' | 'all';
 }
 
 export const textStyleKeys = [
@@ -302,7 +302,6 @@ export const textStyleKeys = [
   'textShadowOffsetY',
   'textShadowRadius',
   'textTransform',
-  'userSelect',
 ] as const;
 
 export type ImageStyle = ViewStyle & {
