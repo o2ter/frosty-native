@@ -184,16 +184,21 @@ export const useResponderEvents = <Target>(
 
   const _transferResponder = (e: TouchEvent | MouseEvent, target: Target) => {
 
+    const wrapped = wrapPressEvent(e, target);
+
     const currentResponder = _currentResponder.get(window);
-    if (!currentResponder || currentResponder.target === target) return true;
+    if (!currentResponder) {
+      if (_.isFunction(onResponderGrant)) onResponderGrant.call(target, wrapped);
+      return true;
+    }
+    if (currentResponder.target === target) return true;
+
+    const wrapped2 = wrapPressEvent(e, currentResponder.target);
 
     const {
       onResponderTerminationRequest,
       onResponderTerminate,
     } = currentResponder;
-
-    const wrapped = wrapPressEvent(e, target);
-    const wrapped2 = wrapPressEvent(e, currentResponder.target);
 
     const termination = _.isFunction(onResponderTerminationRequest) ? onResponderTerminationRequest.call(currentResponder.target, wrapped2) : true;
 
