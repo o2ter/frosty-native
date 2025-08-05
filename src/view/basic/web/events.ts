@@ -40,6 +40,8 @@ const wrapPressEvent = <Target>(e: TouchEvent | MouseEvent, currentTarget: Targe
     return _.includes([
       'mouseup',
       'dragstart',
+      'pointerup',
+      'pointercancel',
       'touchend',
       'touchcancel',
     ], e.type) ? [] : [e];
@@ -48,6 +50,8 @@ const wrapPressEvent = <Target>(e: TouchEvent | MouseEvent, currentTarget: Targe
     return _.includes([
       'mouseup',
       'dragstart',
+      'pointerup',
+      'pointercancel',
       'touchend',
       'touchcancel',
     ], e.type) ? [] : [e]; },
