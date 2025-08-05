@@ -36,8 +36,21 @@ const wrapPressEvent = <Target>(e: TouchEvent | MouseEvent, currentTarget: Targe
   pageY: e.pageY,
   get currentTarget() { return currentTarget; },
   get target() { return e.target; },
-  get touches() { return [e]; },
-  get targetTouches() { return [e]; },
+  get touches() {
+    return _.includes([
+      'mouseup',
+      'dragstart',
+      'touchend',
+      'touchcancel',
+    ], e.type) ? [] : [e];
+  },
+  get targetTouches() {
+    return _.includes([
+      'mouseup',
+      'dragstart',
+      'touchend',
+      'touchcancel',
+    ], e.type) ? [] : [e]; },
   get changedTouches() { return [e]; },
 }) : ({
   timestamp: e.timeStamp,
@@ -292,12 +305,13 @@ export const useResponderEvents = <Target>(
       onResponderRelease,
     } = currentResponder;
 
-    if (_.isFunction(onResponderEnd)) onResponderEnd(wrapPressEvent(e, currentResponder.target));
-    if (currentResponder.target !== target) {
-      if (_.isFunction(onResponderRelease)) onResponderRelease(wrapPressEvent(e, currentResponder.target));
-    }
+    const wrapped = wrapPressEvent(e, currentResponder.target);
 
-    _currentResponder.delete(window);
+    if (_.isFunction(onResponderEnd)) onResponderEnd(wrapped);
+    if (_.isEmpty(wrapped.targetTouches)) {
+      if (_.isFunction(onResponderRelease)) onResponderRelease(wrapped);
+      _currentResponder.delete(window);
+    }
   });
 
   useEffect(() => {
@@ -344,5 +358,6 @@ export const useResponderEvents = <Target>(
     onMouseMove: _onTouchMove,
     onMouseMoveCapture: _onTouchMoveCapture,
     onMouseUp: _onTouchEnd,
+    onDragStart: _onTouchEnd,
   }, v => !!v);
 };
