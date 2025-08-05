@@ -212,12 +212,11 @@ export const useResponderEvents = <Target>(
       } else {
         if (_.isFunction(onResponderGrant)) onResponderGrant(wrapPressEvent(e, target));
         if (_.isFunction(onResponderTerminate)) onResponderTerminate(wrapPressEvent(e, currentResponder.target));
-        if (_.isFunction(onResponderStart)) onResponderStart(wrapPressEvent(e, target));
-        _currentResponder.set(window, { target, ...props });
       }
-    } else {
+    } 
 
-    }
+    if (_.isFunction(onResponderStart)) onResponderStart(wrapPressEvent(e, target));
+    _currentResponder.set(window, { target, ...props });
   };
 
   const _onPressIn = !enableResponder ? undefined : (e: TouchEvent | MouseEvent) => {
