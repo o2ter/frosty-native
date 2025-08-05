@@ -56,41 +56,33 @@ export const usePressResponder = <Target extends any = any>({
     timeout: true,
   }), []);
 
-  function _onPressIn(this: Target, e: PressEvent<Target>) {
-    if (onPressIn) onPressIn.call(this, e);
-    const token = uniqueId();
-    pressState.token = token;
-    pressState.timeout = false;
-    if (onLongPress) {
-      setTimeout(() => {
-        if (pressState.token !== token) return;
-        onLongPress.call(this, e);
-        pressState.timeout = true;
-      }, delayLongPress || 500);
-    }
-  };
-
-  function _onPressOut(this: Target, e: PressEvent<Target>) {
-    if (pressState.token === '') return;
-    pressState.token = '';
-    if (onPressOut) onPressOut.call(this, e);
-    if (!pressState.timeout) {
-      if (onPress) onPress.call(this, e);
-    }
-  };
-
   return _useCallbacks({
     onResponderStart: function (this: Target, e: PressEvent<Target>) {
       if (onResponderStart) onResponderStart.call(this, e);
-      _onPressIn.call(this, e);
+      if (onPressIn) onPressIn.call(this, e);
+      const token = uniqueId();
+      pressState.token = token;
+      pressState.timeout = false;
+      if (onLongPress) {
+        setTimeout(() => {
+          if (pressState.token !== token) return;
+          onLongPress.call(this, e);
+          pressState.timeout = true;
+        }, delayLongPress || 500);
+      }
     },
     onResponderRelease: function (this: Target, e: PressEvent<Target>) {
       if (onResponderRelease) onResponderRelease.call(this, e);
-      _onPressOut.call(this, e);
+      if (pressState.token === '') return;
+      pressState.token = '';
+      if (onPressOut) onPressOut.call(this, e);
+      if (!pressState.timeout && onPress) onPress.call(this, e);
     },
     onResponderTerminate: function (this: Target, e: PressEvent<Target>) {
       if (onResponderTerminate) onResponderTerminate.call(this, e);
-      _onPressOut.call(this, e);
+      if (pressState.token === '') return;
+      pressState.token = '';
+      if (onPressOut) onPressOut.call(this, e);
     },
   });
 };
