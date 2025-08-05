@@ -46,7 +46,7 @@ export const usePressResponder = <Target extends any = any>({
   onPress,
   onPressIn,
   onPressOut,
-  onResponderStart,
+  onResponderGrant,
   onResponderRelease,
   onResponderTerminate,
 }: PressResponderProps<Target>) => {
@@ -57,8 +57,8 @@ export const usePressResponder = <Target extends any = any>({
   }), []);
 
   return _useCallbacks({
-    onResponderStart: function (this: Target, e: PressEvent<Target>) {
-      if (onResponderStart) onResponderStart.call(this, e);
+    onResponderGrant: function (this: Target, e: PressEvent<Target>) {
+      if (onResponderGrant) onResponderGrant.call(this, e);
       if (onPressIn) onPressIn.call(this, e);
       const token = uniqueId();
       pressState.token = token;
@@ -94,7 +94,7 @@ export const Pressable = ({
   onPress,
   onPressIn,
   onPressOut,
-  onResponderStart,
+  onResponderGrant,
   onResponderRelease,
   onResponderTerminate,
   children,
@@ -107,7 +107,7 @@ export const Pressable = ({
     onPress,
     onPressIn,
     onPressOut,
-    onResponderStart,
+    onResponderGrant,
     onResponderRelease,
     onResponderTerminate,
   });
