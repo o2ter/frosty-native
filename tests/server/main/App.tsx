@@ -25,6 +25,8 @@ export const App = () => {
           backgroundColor: 'blue',
         }}>
         <Pressable
+          onHoverIn={function (e) { console.log('onHoverIn', this, e) }}
+          onHoverOut={function (e) { console.log('onHoverOut', this, e) }}
           onPressIn={function (e) { console.log('onPressIn', this, e) }}
           onPressOut={function (e) { console.log('onPressOut', this, e) }}
           onPress={function (e) { console.log('onPress', this, e) }}
