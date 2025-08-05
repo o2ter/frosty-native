@@ -60,15 +60,13 @@ export const usePressResponder = <Target extends any = any>({
     if (onPressIn) onPressIn.call(this, e);
     const token = uniqueId();
     pressState.token = token;
-    pressState.timeout = _.isNil(onLongPress);
+    pressState.timeout = false;
     if (onLongPress) {
       setTimeout(() => {
         if (pressState.token !== token) return;
         onLongPress.call(this, e);
         pressState.timeout = true;
       }, delayLongPress || 500);
-    } else if (onPress) {
-      onPress.call(this, e);
     }
   };
 
