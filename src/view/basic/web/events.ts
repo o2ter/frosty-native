@@ -115,12 +115,12 @@ export const useResponderEvents = <Target>(
   const _onHoverIn = onHoverIn && ((e: MouseEvent) => {
     const target = targetRef.current;
     if (!target) return;
-    onHoverIn(wrapMouseEvent(e, target));
+    onHoverIn.call(target, wrapMouseEvent(e, target));
   });
   const _onHoverOut = onHoverOut && ((e: MouseEvent) => {
     const target = targetRef.current;
     if (!target) return;
-    onHoverOut(wrapMouseEvent(e, target));
+    onHoverOut.call(target, wrapMouseEvent(e, target));
   });
 
   const enableResponder = !disabled && (
@@ -151,15 +151,15 @@ export const useResponderEvents = <Target>(
     const wrapped = wrapPressEvent(e, target);
     const wrapped2 = wrapPressEvent(e, currentResponder.target);
 
-    const termination = _.isFunction(onResponderTerminationRequest) ? onResponderTerminationRequest(wrapped2) : true;
+    const termination = _.isFunction(onResponderTerminationRequest) ? onResponderTerminationRequest.call(currentResponder.target, wrapped2) : true;
 
     if (termination === false) {
-      if (_.isFunction(onResponderReject)) onResponderReject(wrapped);
+      if (_.isFunction(onResponderReject)) onResponderReject.call(target, wrapped);
       return false;
     }
 
-    if (_.isFunction(onResponderGrant)) onResponderGrant(wrapped);
-    if (_.isFunction(onResponderTerminate)) onResponderTerminate(wrapped2);
+    if (_.isFunction(onResponderGrant)) onResponderGrant.call(target, wrapped);
+    if (_.isFunction(onResponderTerminate)) onResponderTerminate.call(currentResponder.target, wrapped2);
 
     return true;
   };
@@ -171,11 +171,11 @@ export const useResponderEvents = <Target>(
 
     const wrapped = wrapPressEvent(e, target);
 
-    const shouldSetResponder = _.isFunction(onStartShouldSetResponder) ? onStartShouldSetResponder(wrapped) : true;
+    const shouldSetResponder = _.isFunction(onStartShouldSetResponder) ? onStartShouldSetResponder.call(target, wrapped) : true;
     if (!shouldSetResponder) return;
 
     if (_transferResponder(e, target)) {
-      if (_.isFunction(onResponderStart)) onResponderStart(wrapped);
+      if (_.isFunction(onResponderStart)) onResponderStart.call(target, wrapped);
       _currentResponder.set(window, { target, ...props });
       e.stopPropagation();
     }
@@ -187,11 +187,11 @@ export const useResponderEvents = <Target>(
 
     const wrapped = wrapPressEvent(e, target);
 
-    const shouldSetResponder = _.isFunction(onStartShouldSetResponderCapture) ? onStartShouldSetResponderCapture(wrapped) : false;
+    const shouldSetResponder = _.isFunction(onStartShouldSetResponderCapture) ? onStartShouldSetResponderCapture.call(target, wrapped) : false;
     if (!shouldSetResponder) return;
 
     if (_transferResponder(e, target)) {
-      if (_.isFunction(onResponderStart)) onResponderStart(wrapped);
+      if (_.isFunction(onResponderStart)) onResponderStart.call(target, wrapped);
       _currentResponder.set(window, { target, ...props });
       e.stopPropagation();
     }
@@ -203,11 +203,11 @@ export const useResponderEvents = <Target>(
 
     const wrapped = wrapPressEvent(e, target);
 
-    const shouldSetResponder = _.isFunction(onMoveShouldSetResponder) ? onMoveShouldSetResponder(wrapped) : true;
+    const shouldSetResponder = _.isFunction(onMoveShouldSetResponder) ? onMoveShouldSetResponder.call(target, wrapped) : true;
     if (!shouldSetResponder) return;
 
     if (_transferResponder(e, target)) {
-      if (_.isFunction(onResponderMove)) onResponderMove(wrapped);
+      if (_.isFunction(onResponderMove)) onResponderMove.call(target, wrapped);
       _currentResponder.set(window, { target, ...props });
       e.stopPropagation();
     }
@@ -219,11 +219,11 @@ export const useResponderEvents = <Target>(
 
     const wrapped = wrapPressEvent(e, target);
 
-    const shouldSetResponder = _.isFunction(onMoveShouldSetResponderCapture) ? onMoveShouldSetResponderCapture(wrapped) : true;
+    const shouldSetResponder = _.isFunction(onMoveShouldSetResponderCapture) ? onMoveShouldSetResponderCapture.call(target, wrapped) : true;
     if (!shouldSetResponder) return;
 
     if (_transferResponder(e, target)) {
-      if (_.isFunction(onResponderMove)) onResponderMove(wrapped);
+      if (_.isFunction(onResponderMove)) onResponderMove.call(target, wrapped);
       _currentResponder.set(window, { target, ...props });
       e.stopPropagation();
     }
@@ -243,9 +243,9 @@ export const useResponderEvents = <Target>(
 
     const wrapped = wrapPressEvent(e, currentResponder.target);
 
-    if (_.isFunction(onResponderEnd)) onResponderEnd(wrapped);
+    if (_.isFunction(onResponderEnd)) onResponderEnd.call(currentResponder.target, wrapped);
     if (_.isEmpty(wrapped.targetTouches)) {
-      if (_.isFunction(onResponderRelease)) onResponderRelease(wrapped);
+      if (_.isFunction(onResponderRelease)) onResponderRelease.call(currentResponder.target, wrapped);
       _currentResponder.delete(window);
     }
   });

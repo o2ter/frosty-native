@@ -70,19 +70,19 @@ export type PressEvent<Target> = Event<Target> & {
 
 export type ViewEventProps<Target> = {
   disabled?: boolean;
-  onLayout?: (event: LayoutEvent<Target>) => void;
-  onHoverIn?: (event: MouseEvent<Target>) => void;
-  onHoverOut?: (event: MouseEvent<Target>) => void;
-  onMoveShouldSetResponder?: (event: PressEvent<Target>) => boolean;
-  onMoveShouldSetResponderCapture?: (event: PressEvent<Target>) => boolean;
-  onResponderGrant?: (event: PressEvent<Target>) => void;
-  onResponderStart?: (event: PressEvent<Target>) => void;
-  onResponderMove?: (event: PressEvent<Target>) => void;
-  onResponderEnd?: (event: PressEvent<Target>) => void;
-  onResponderReject?: (event: PressEvent<Target>) => void;
-  onResponderRelease?: (event: PressEvent<Target>) => void;
-  onResponderTerminate?: (event: PressEvent<Target>) => void;
-  onResponderTerminationRequest?: (event: PressEvent<Target>) => boolean;
-  onStartShouldSetResponder?: (event: PressEvent<Target>) => boolean;
-  onStartShouldSetResponderCapture?: (event: PressEvent<Target>) => boolean;
+  onLayout?: (this: Target, event: LayoutEvent<Target>) => void;
+  onHoverIn?: (this: Target, event: MouseEvent<Target>) => void;
+  onHoverOut?: (this: Target, event: MouseEvent<Target>) => void;
+  onMoveShouldSetResponder?: (this: Target, event: PressEvent<Target>) => boolean;
+  onMoveShouldSetResponderCapture?: (this: Target, event: PressEvent<Target>) => boolean;
+  onResponderGrant?: (this: Target, event: PressEvent<Target>) => void;
+  onResponderStart?: (this: Target, event: PressEvent<Target>) => void;
+  onResponderMove?: (this: Target, event: PressEvent<Target>) => void;
+  onResponderEnd?: (this: Target, event: PressEvent<Target>) => void;
+  onResponderReject?: (this: Target, event: PressEvent<Target>) => void;
+  onResponderRelease?: (this: Target, event: PressEvent<Target>) => void;
+  onResponderTerminate?: (this: Target, event: PressEvent<Target>) => void;
+  onResponderTerminationRequest?: (this: Target, event: PressEvent<Target>) => boolean;
+  onStartShouldSetResponder?: (this: Target, event: PressEvent<Target>) => boolean;
+  onStartShouldSetResponderCapture?: (this: Target, event: PressEvent<Target>) => boolean;
 }
