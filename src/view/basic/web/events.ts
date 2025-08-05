@@ -282,6 +282,20 @@ export const useResponderEvents = <Target>(
     const target = targetRef.current;
     if (!target) return;
 
+    const currentResponder = _currentResponder.get(window);
+    if (!currentResponder) return;
+
+    const {
+      onResponderEnd,
+      onResponderRelease,
+    } = currentResponder;
+
+    if (_.isFunction(onResponderEnd)) onResponderEnd(wrapPressEvent(e, currentResponder.target));
+    if (currentResponder.target !== target) {
+      if (_.isFunction(onResponderRelease)) onResponderRelease(wrapPressEvent(e, currentResponder.target));
+    }
+
+    _currentResponder.delete(window);
   });
 
   useEffect(() => {
