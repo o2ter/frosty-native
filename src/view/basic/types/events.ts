@@ -23,26 +23,26 @@
 //  THE SOFTWARE.
 //
 
-export type LayoutEvent<Target> = {
+type Event<Target> = {
+  timestamp: number;
+  currentTarget: Target;
+  target: any;
+}
+
+export type LayoutEvent<Target> = Event<Target> & {
   layout: {
     width: number;
     height: number;
     x: number;
     y: number;
   };
-  timestamp: number;
-  currentTarget: Target;
-  target: any;
 };
 
-export type MouseEvent<Target> = {
+export type MouseEvent<Target> = Event<Target> & {
   clientX: number;
   clientY: number;
   pageX: number;
   pageY: number;
-  timestamp: number;
-  currentTarget: Target;
-  target: any;
 };
 
 export type Touch = {
@@ -58,16 +58,13 @@ export type Touch = {
   target: any;
 };
 
-export type PressEvent<Target> = {
+export type PressEvent<Target> = Event<Target> & {
   changedTouches: Touch[],
   locationX: number;
   locationY: number;
   pageX: number;
   pageY: number;
-  timestamp: number;
   touches: Touch[],
-  currentTarget: Target;
-  target: any;
 };
 
 export type ViewEventProps<Target> = {

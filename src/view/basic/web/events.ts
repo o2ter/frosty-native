@@ -232,6 +232,7 @@ export const useResponderEvents = <Target>(
     if (_transferResponder(e, target)) {
       if (_.isFunction(onResponderStart)) onResponderStart(wrapPressEvent(e, target));
       _currentResponder.set(window, { target, ...props });
+      e.stopPropagation();
     }
   };
   const _onPressInCapture = !enableResponder ? undefined : (e: TouchEvent | MouseEvent) => {
@@ -245,6 +246,7 @@ export const useResponderEvents = <Target>(
     if (_transferResponder(e, target)) {
       if (_.isFunction(onResponderStart)) onResponderStart(wrapPressEvent(e, target));
       _currentResponder.set(window, { target, ...props });
+      e.stopPropagation();
     }
   };
   const _onPressMove = !enableResponder ? undefined : (e: TouchEvent | MouseEvent) => {
@@ -258,6 +260,7 @@ export const useResponderEvents = <Target>(
     if (_transferResponder(e, target)) {
       if (_.isFunction(onResponderMove)) onResponderMove(wrapPressEvent(e, target));
       _currentResponder.set(window, { target, ...props });
+      e.stopPropagation();
     }
   };
   const _onPressMoveCapture = !enableResponder ? undefined : (e: TouchEvent | MouseEvent) => {
@@ -271,6 +274,7 @@ export const useResponderEvents = <Target>(
     if (_transferResponder(e, target)) {
       if (_.isFunction(onResponderMove)) onResponderMove(wrapPressEvent(e, target));
       _currentResponder.set(window, { target, ...props });
+      e.stopPropagation();
     }
   };
   const _onPressOut = useCallback(!enableResponder ? undefined : (e: TouchEvent | MouseEvent) => {
