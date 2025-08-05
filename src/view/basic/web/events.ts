@@ -34,8 +34,8 @@ const wrapPressEvent = <Target>(e: TouchEvent | MouseEvent, currentTarget: Targe
   locationY: e.clientY,
   pageX: e.pageX,
   pageY: e.pageY,
-  get currentTarget() { return currentTarget; },
-  get target() { return e.target; },
+  target: e.target,
+  currentTarget,
   get touches() {
     return _.includes([
       'mouseup',
@@ -62,8 +62,8 @@ const wrapPressEvent = <Target>(e: TouchEvent | MouseEvent, currentTarget: Targe
   locationY: _.sumBy(e.touches, x => x.clientY) / e.touches.length,
   pageX: _.sumBy(e.touches, x => x.pageX) / e.touches.length,
   pageY: _.sumBy(e.touches, x => x.pageY) / e.touches.length,
-  get currentTarget() { return currentTarget; },
-  get target() { return e.target; },
+  target: e.target,
+  currentTarget,
   get touches() { return [...e.touches]; },
   get targetTouches() { return [...e.targetTouches]; },
   get changedTouches() { return [...e.changedTouches]; },
@@ -75,8 +75,8 @@ const wrapMouseEvent = <Target>(e: MouseEvent, currentTarget: Target) => ({
   pageX: e.pageX,
   pageY: e.pageY,
   timestamp: e.timeStamp,
-  get target() { return e.target; },
-  get currentTarget() { return currentTarget; },
+  target: e.target,
+  currentTarget,
 });
 
 const getRect = (node: HTMLElement) => {
@@ -112,8 +112,8 @@ const measureLayout = (node: HTMLElement, relativeToNativeNode?: HTMLElement) =>
 const wrapLayoutEvent = <Target>(e: ResizeObserverEntry, currentTarget: Target, window: ReturnType<typeof useWindow>) => ({
   layout: measureLayout(e.target as HTMLElement) ?? { x: 0, y: 0, width: 0, height: 0, left: 0, top: 0 },
   timestamp: window.performance.now(),
-  get target() { return e.target; },
-  get currentTarget() { return currentTarget; },
+  target: e.target,
+  currentTarget,
 });
 
 const _currentResponder = new WeakMap<ReturnType<typeof useWindow>, { target: any; } & ViewEventProps<any>>();
