@@ -29,6 +29,7 @@ import { ViewEventProps } from '../types/events';
 import { useResizeObserver, useWindow } from 'frosty/web';
 
 const wrapPressEvent = <Target>(e: TouchEvent | MouseEvent, currentTarget: Target) => e instanceof MouseEvent ? ({
+  _native: e,
   timeStamp: e.timeStamp,
   locationX: e.clientX,
   locationY: e.clientY,
@@ -54,10 +55,12 @@ const wrapPressEvent = <Target>(e: TouchEvent | MouseEvent, currentTarget: Targe
       'pointercancel',
       'touchend',
       'touchcancel',
-    ], e.type) ? [] : [e]; },
+    ], e.type) ? [] : [e];
+  },
   get changedTouches() { return [e]; },
 }) : ({
-    timeStamp: e.timeStamp,
+  _native: e,
+  timeStamp: e.timeStamp,
   locationX: _.sumBy(e.touches, x => x.clientX) / e.touches.length,
   locationY: _.sumBy(e.touches, x => x.clientY) / e.touches.length,
   pageX: _.sumBy(e.touches, x => x.pageX) / e.touches.length,
@@ -70,6 +73,7 @@ const wrapPressEvent = <Target>(e: TouchEvent | MouseEvent, currentTarget: Targe
 });
 
 const wrapMouseEvent = <Target>(e: MouseEvent, currentTarget: Target) => ({
+  _native: e,
   clientX: e.clientX,
   clientY: e.clientY,
   pageX: e.pageX,
@@ -110,6 +114,7 @@ const measureLayout = (node: HTMLElement, relativeToNativeNode?: HTMLElement) =>
 };
 
 const wrapLayoutEvent = <Target>(e: ResizeObserverEntry, currentTarget: Target, window: ReturnType<typeof useWindow>) => ({
+  _native: e,
   layout: measureLayout(e.target as HTMLElement) ?? { x: 0, y: 0, width: 0, height: 0, left: 0, top: 0 },
   timeStamp: window.performance.now(),
   target: e.target,

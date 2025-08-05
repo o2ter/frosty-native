@@ -24,6 +24,7 @@
 //
 
 type Event<Target> = {
+  _native: any;
   timeStamp: number;
   currentTarget: Target;
   target: any;
