@@ -70,7 +70,12 @@ const wrapPressEvent = <Target>(e: TouchEvent | MouseEvent, currentTarget: Targe
 });
 
 const wrapMouseEvent = <Target>(e: MouseEvent, currentTarget: Target) => ({
-  __proto__: e,
+  clientX: e.clientX,
+  clientY: e.clientY,
+  pageX: e.pageX,
+  pageY: e.pageY,
+  timeStamp: e.timeStamp,
+  target: e.target,
   currentTarget,
 });
 
