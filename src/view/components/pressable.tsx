@@ -38,7 +38,7 @@ type PressResponderProps<Target> = ViewEventProps<Target> & {
   onPressOut?: (this: Target, event: PressEvent<Target>) => void;
 };
 
-type PressableProps = ComponentProps<typeof View> & PressResponderProps<ComponentRef<typeof View>>;
+type PressableProps = ComponentProps<typeof View> & PressResponderProps<NonNullable<ComponentRef<typeof View>>>;
 
 export const usePressResponder = <Target extends any = any>({
   delayLongPress,
