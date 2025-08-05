@@ -32,10 +32,10 @@ import { _useCallbacks } from '../../internal/hooks/callbacks';
 
 type PressResponderProps<Target> = ViewEventProps<Target> & {
   delayLongPress?: number;
-  onLongPress?: (event: PressEvent<Target>) => void;
-  onPress?: (event: PressEvent<Target>) => void;
-  onPressIn?: (event: PressEvent<Target>) => void;
-  onPressOut?: (event: PressEvent<Target>) => void;
+  onLongPress?: (this: Target, event: PressEvent<Target>) => void;
+  onPress?: (this: Target, event: PressEvent<Target>) => void;
+  onPressIn?: (this: Target, event: PressEvent<Target>) => void;
+  onPressOut?: (this: Target, event: PressEvent<Target>) => void;
 };
 
 type PressableProps = ComponentProps<typeof View> & PressResponderProps<ComponentRef<typeof View>>;
@@ -56,43 +56,43 @@ export const usePressResponder = <Target extends any = any>({
     timeout: true,
   }), []);
 
-  const _onPressIn = (e: PressEvent<Target>) => {
-    if (onPressIn) onPressIn(e);
+  const _onPressIn = function (this: Target, e: PressEvent<Target>) {
+    if (onPressIn) onPressIn.call(this, e);
     const token = uniqueId();
     pressState.token = token;
     pressState.timeout = _.isNil(onLongPress);
     if (onLongPress) {
       setTimeout(() => {
         if (pressState.token !== token) return;
-        onLongPress(e);
+        onLongPress.call(this, e);
         pressState.timeout = true;
       }, delayLongPress || 500);
     } else if (onPress) {
-      onPress(e);
+      onPress.call(this, e);
     }
   };
 
-  const _onPressOut = (e: PressEvent<Target>) => {
+  const _onPressOut = function (this: Target, e: PressEvent<Target>) {
     if (pressState.token === '') return;
     pressState.token = '';
-    if (onPressOut) onPressOut(e);
+    if (onPressOut) onPressOut.call(this, e);
     if (!pressState.timeout) {
-      if (onPress) onPress(e);
+      if (onPress) onPress.call(this, e);
     }
   };
 
   return _useCallbacks({
-    onResponderStart: (e: PressEvent<Target>) => {
-      if (onResponderStart) onResponderStart(e);
-      _onPressIn(e);
+    onResponderStart: function (this: Target, e: PressEvent<Target>) {
+      if (onResponderStart) onResponderStart.call(this, e);
+      _onPressIn.call(this, e);
     },
-    onResponderRelease: (e: PressEvent<Target>) => {
-      if (onResponderRelease) onResponderRelease(e);
-      _onPressOut(e);
+    onResponderRelease: function (this: Target, e: PressEvent<Target>) {
+      if (onResponderRelease) onResponderRelease.call(this, e);
+      _onPressOut.call(this, e);
     },
-    onResponderTerminate: (e: PressEvent<Target>) => {
-      if (onResponderTerminate) onResponderTerminate(e);
-      _onPressOut(e);
+    onResponderTerminate: function (this: Target, e: PressEvent<Target>) {
+      if (onResponderTerminate) onResponderTerminate.call(this, e);
+      _onPressOut.call(this, e);
     },
   });
 };
