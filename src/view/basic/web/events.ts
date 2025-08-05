@@ -221,7 +221,7 @@ export const useResponderEvents = <Target>(
     return true;
   };
 
-  const _onPressIn = !enableResponder ? undefined : (e: TouchEvent | MouseEvent) => {
+  const _onTouchStart = !enableResponder ? undefined : (e: TouchEvent | MouseEvent) => {
 
     const target = targetRef.current;
     if (!target) return;
@@ -235,7 +235,7 @@ export const useResponderEvents = <Target>(
       e.stopPropagation();
     }
   };
-  const _onPressInCapture = !enableResponder ? undefined : (e: TouchEvent | MouseEvent) => {
+  const _onTouchStartCapture = !enableResponder ? undefined : (e: TouchEvent | MouseEvent) => {
 
     const target = targetRef.current;
     if (!target) return;
@@ -249,7 +249,7 @@ export const useResponderEvents = <Target>(
       e.stopPropagation();
     }
   };
-  const _onPressMove = !enableResponder ? undefined : (e: TouchEvent | MouseEvent) => {
+  const _onTouchMove = !enableResponder ? undefined : (e: TouchEvent | MouseEvent) => {
 
     const target = targetRef.current;
     if (!target) return;
@@ -263,7 +263,7 @@ export const useResponderEvents = <Target>(
       e.stopPropagation();
     }
   };
-  const _onPressMoveCapture = !enableResponder ? undefined : (e: TouchEvent | MouseEvent) => {
+  const _onTouchMoveCapture = !enableResponder ? undefined : (e: TouchEvent | MouseEvent) => {
 
     const target = targetRef.current;
     if (!target) return;
@@ -277,7 +277,7 @@ export const useResponderEvents = <Target>(
       e.stopPropagation();
     }
   };
-  const _onPressOut = useCallback(!enableResponder ? undefined : (e: TouchEvent | MouseEvent) => {
+  const _onTouchEnd = useCallback(!enableResponder ? undefined : (e: TouchEvent | MouseEvent) => {
 
     const target = targetRef.current;
     if (!target) return;
@@ -299,48 +299,48 @@ export const useResponderEvents = <Target>(
   });
 
   useEffect(() => {
-    if (!_onPressOut) return;
+    if (!_onTouchEnd) return;
     if ('TouchEvent' in window) {
-      window.addEventListener('touchend', _onPressOut);
-      return () => window.removeEventListener('touchend', _onPressOut);
+      window.addEventListener('touchend', _onTouchEnd);
+      return () => window.removeEventListener('touchend', _onTouchEnd);
     };
     if ('PointerEvent' in window) {
-      window.addEventListener('pointerup', _onPressOut);
-      return () => window.removeEventListener('pointerup', _onPressOut);
+      window.addEventListener('pointerup', _onTouchEnd);
+      return () => window.removeEventListener('pointerup', _onTouchEnd);
     };
-    window.addEventListener('mouseup', _onPressOut);
-    return () => window.removeEventListener('mouseup', _onPressOut);
+    window.addEventListener('mouseup', _onTouchEnd);
+    return () => window.removeEventListener('mouseup', _onTouchEnd);
   }, []);
 
   if ('TouchEvent' in window) return _.pickBy({
     onPointerEnter: _onHoverIn,
     onPointerLeave: _onHoverOut,
-    onTouchStart: _onPressIn,
-    onTouchStartCapture: _onPressInCapture,
-    onTouchMove: _onPressMove,
-    onTouchMoveCapture: _onPressMoveCapture,
-    onTouchEnd: _onPressOut,
-    onTouchCancel: _onPressOut,
+    onTouchStart: _onTouchStart,
+    onTouchStartCapture: _onTouchStartCapture,
+    onTouchMove: _onTouchMove,
+    onTouchMoveCapture: _onTouchMoveCapture,
+    onTouchEnd: _onTouchEnd,
+    onTouchCancel: _onTouchEnd,
   }, v => !!v);
 
   if ('PointerEvent' in window) return _.pickBy({
     onPointerEnter: _onHoverIn,
     onPointerLeave: _onHoverOut,
-    onPointerDown: _onPressIn,
-    onPointerDownCapture: _onPressInCapture,
-    onPointerMove: _onPressMove,
-    onPointerMoveCapture: _onPressMoveCapture,
-    onPointerUp: _onPressOut,
-    onPointerCancel: _onPressOut,
+    onPointerDown: _onTouchStart,
+    onPointerDownCapture: _onTouchStartCapture,
+    onPointerMove: _onTouchMove,
+    onPointerMoveCapture: _onTouchMoveCapture,
+    onPointerUp: _onTouchEnd,
+    onPointerCancel: _onTouchEnd,
   }, v => !!v);
 
   return _.pickBy({
     onMouseEnter: _onHoverIn,
     onMouseLeave: _onHoverOut,
-    onMouseDown: _onPressIn,
-    onMouseDownCapture: _onPressInCapture,
-    onMouseMove: _onPressMove,
-    onMouseMoveCapture: _onPressMoveCapture,
-    onMouseUp: _onPressOut,
+    onMouseDown: _onTouchStart,
+    onMouseDownCapture: _onTouchStartCapture,
+    onMouseMove: _onTouchMove,
+    onMouseMoveCapture: _onTouchMoveCapture,
+    onMouseUp: _onTouchEnd,
   }, v => !!v);
 };
