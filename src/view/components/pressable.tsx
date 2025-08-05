@@ -56,7 +56,7 @@ export const usePressResponder = <Target extends any = any>({
     timeout: true,
   }), []);
 
-  const _onPressIn = function (this: Target, e: PressEvent<Target>) {
+  function _onPressIn(this: Target, e: PressEvent<Target>) {
     if (onPressIn) onPressIn.call(this, e);
     const token = uniqueId();
     pressState.token = token;
@@ -72,7 +72,7 @@ export const usePressResponder = <Target extends any = any>({
     }
   };
 
-  const _onPressOut = function (this: Target, e: PressEvent<Target>) {
+  function _onPressOut(this: Target, e: PressEvent<Target>) {
     if (pressState.token === '') return;
     pressState.token = '';
     if (onPressOut) onPressOut.call(this, e);
