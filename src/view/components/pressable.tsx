@@ -47,7 +47,7 @@ export const usePressResponder = <Target extends any = any>({
   onPressIn,
   onPressOut,
   onResponderStart,
-  onResponderEnd,
+  onResponderRelease,
   onResponderTerminate,
 }: PressResponderProps<Target>) => {
 
@@ -86,8 +86,8 @@ export const usePressResponder = <Target extends any = any>({
       if (onResponderStart) onResponderStart(e);
       _onPressIn(e);
     },
-    onResponderEnd: (e: PressEvent<Target>) => {
-      if (onResponderEnd) onResponderEnd(e);
+    onResponderRelease: (e: PressEvent<Target>) => {
+      if (onResponderRelease) onResponderRelease(e);
       _onPressOut(e);
     },
     onResponderTerminate: (e: PressEvent<Target>) => {
@@ -104,7 +104,7 @@ export const Pressable = ({
   onPressIn,
   onPressOut,
   onResponderStart,
-  onResponderEnd,
+  onResponderRelease,
   onResponderTerminate,
   children,
   ...props
@@ -117,7 +117,7 @@ export const Pressable = ({
     onPressIn,
     onPressOut,
     onResponderStart,
-    onResponderEnd,
+    onResponderRelease,
     onResponderTerminate,
   });
 
