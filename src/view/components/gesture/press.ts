@@ -1,5 +1,5 @@
 //
-//  pressable.ts
+//  press.ts
 //
 //  The MIT License
 //  Copyright (c) 2021 - 2025 O2ter Limited. All rights reserved.
@@ -24,39 +24,12 @@
 //
 
 import _ from 'lodash';
-import { ComponentProps, ComponentRef } from 'frosty';
-import { View } from '../basic';
-import { PressGestureProps } from './gesture/press';
-import { useGestureResponder } from './gesture';
+import { PressEvent, ViewEventProps } from '../../basic/types/events';
 
-type PressableProps = ComponentProps<typeof View> & PressGestureProps<NonNullable<ComponentRef<typeof View>>>;
-
-export const Pressable = ({
-  style,
-  delayLongPress,
-  onLongPress,
-  onPress,
-  onPressIn,
-  onPressOut,
-  onResponderGrant,
-  onResponderRelease,
-  onResponderTerminate,
-  children,
-  ...props
-}: PressableProps) => (
-  <View
-    style={[{ userSelect: 'none', cursor: 'pointer' }, style]}
-    {...useGestureResponder({
-      delayLongPress,
-      onLongPress,
-      onPress,
-      onPressIn,
-      onPressOut,
-      onResponderGrant,
-      onResponderRelease,
-      onResponderTerminate,
-    })}
-    {...props}>
-    {children}
-  </View>
-);
+export type PressGestureProps<Target> = ViewEventProps<Target> & {
+  delayLongPress?: number;
+  onLongPress?: (this: Target, event: PressEvent<Target>) => void;
+  onPress?: (this: Target, event: PressEvent<Target>) => void;
+  onPressIn?: (this: Target, event: PressEvent<Target>) => void;
+  onPressOut?: (this: Target, event: PressEvent<Target>) => void;
+};
