@@ -26,7 +26,7 @@
 import _ from 'lodash';
 import { ComponentProps, ComponentRef } from 'frosty';
 import { View } from '../basic';
-import { PressGestureProps } from './gesture/press';
+import { PressGestureProps } from './gesture';
 import { useGestureResponder } from './gesture';
 
 type PressableProps = ComponentProps<typeof View> & PressGestureProps<NonNullable<ComponentRef<typeof View>>>;

@@ -1,5 +1,5 @@
 //
-//  index.ts
+//  gesture.ts
 //
 //  The MIT License
 //  Copyright (c) 2021 - 2025 O2ter Limited. All rights reserved.
@@ -25,10 +25,17 @@
 
 import _ from 'lodash';
 import { useMemo } from 'frosty';
-import { PressEvent } from '../../basic/types/events';
+import { PressEvent, ViewEventProps } from '../basic/types/events';
 import { uniqueId } from 'frosty/_native';
-import { _useCallbacks } from '../../../internal/hooks/callbacks';
-import { PressGestureProps } from './press';
+import { _useCallbacks } from '../../internal/hooks/callbacks';
+
+export type PressGestureProps<Target> = ViewEventProps<Target> & {
+  delayLongPress?: number;
+  onLongPress?: (this: Target, event: PressEvent<Target>) => void;
+  onPress?: (this: Target, event: PressEvent<Target>) => void;
+  onPressIn?: (this: Target, event: PressEvent<Target>) => void;
+  onPressOut?: (this: Target, event: PressEvent<Target>) => void;
+};
 
 type GestureResponderProps<Target> = PressGestureProps<Target>;
 
