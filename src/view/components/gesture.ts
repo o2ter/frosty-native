@@ -38,8 +38,8 @@ export type PressGestureProps<Target> = {
 };
 
 export type PanGestureProps<Target> = {
-  onPanMove?: (this: Target, event: PressEvent<Target>) => void;
   onPanStart?: (this: Target, event: PressEvent<Target>) => void;
+  onPanMove?: (this: Target, event: PressEvent<Target>) => void;
   onPanEnd?: (this: Target, event: PressEvent<Target>) => void;
 };
 
@@ -51,6 +51,9 @@ export const useGestureResponder = <Target extends any = any>({
   onPress,
   onPressIn,
   onPressOut,
+  onPanStart,
+  onPanMove,
+  onPanEnd,
   onResponderGrant,
   onResponderRelease,
   onResponderTerminate,
