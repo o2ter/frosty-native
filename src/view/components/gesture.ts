@@ -29,7 +29,7 @@ import { PressEvent, ViewEventProps } from '../basic/types/events';
 import { uniqueId } from 'frosty/_native';
 import { _useCallbacks } from '../../internal/hooks/callbacks';
 
-export type PressGestureProps<Target> = ViewEventProps<Target> & {
+export type PressGestureProps<Target> = {
   delayLongPress?: number;
   onLongPress?: (this: Target, event: PressEvent<Target>) => void;
   onPress?: (this: Target, event: PressEvent<Target>) => void;
@@ -37,7 +37,13 @@ export type PressGestureProps<Target> = ViewEventProps<Target> & {
   onPressOut?: (this: Target, event: PressEvent<Target>) => void;
 };
 
-type GestureResponderProps<Target> = PressGestureProps<Target>;
+export type PanGestureProps<Target> = {
+  onPanMove?: (this: Target, event: PressEvent<Target>) => void;
+  onPanStart?: (this: Target, event: PressEvent<Target>) => void;
+  onPanEnd?: (this: Target, event: PressEvent<Target>) => void;
+};
+
+type GestureResponderProps<Target> = ViewEventProps<Target> & PressGestureProps<Target> & PanGestureProps<Target>;
 
 export const useGestureResponder = <Target extends any = any>({
   delayLongPress,
