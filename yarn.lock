@@ -3009,10 +3009,10 @@ fresh@0.5.2:
   resolved "https://registry.yarnpkg.com/fresh/-/fresh-0.5.2.tgz#3d8cadd90d976569fa835ab1f8e4b23a105605a7"
   integrity sha512-zJ2mQYM18rEFOudeV4GShTGIQ7RbzA7ozbU9I/XBpm7kqgMywgmylMwXHxZJmkVoYkna9d2pVXVXPdYTP9ej8Q==
 
-frosty@^0.0.60:
-  version "0.0.60"
-  resolved "https://registry.yarnpkg.com/frosty/-/frosty-0.0.60.tgz#4f9a51ce0e1f6bff3eca88bf573a88fb8f04847a"
-  integrity sha512-IhcdnixEPbPyEujKUt00qyzjOOhlpr+rhICzLkYixDzp11pVa6HRQ5AwJA+hqrasZO4yzjNwa9jy0G7YSzVUGA==
+frosty@^0.0.65:
+  version "0.0.65"
+  resolved "https://registry.yarnpkg.com/frosty/-/frosty-0.0.65.tgz#a754b873482f48500e754cea5954db8e19e3de92"
+  integrity sha512-NtKG9njFJ7XDeRADpDAgbybEcQ8MFkc6sY2iiGZ8Y6jznyoPXNiKq2ROH6CiJf6LVV4HRTtDpMWXK/Uofcq5yw==
   dependencies:
     "@o2ter/utils-js" "^0.0.19"
     "@types/jsdom" "^21.1.7"
@@ -3026,6 +3026,7 @@ frosty@^0.0.60:
     postcss "^8.5.3"
     postcss-js "^4.0.1"
     postcss-nested "^7.0.2"
+    subpkg "^4.1.0"
 
 fs.realpath@^1.0.0:
   version "1.0.0"
@@ -4783,6 +4784,11 @@ strip-json-comments@^3.1.1:
   version "3.1.1"
   resolved "https://registry.yarnpkg.com/strip-json-comments/-/strip-json-comments-3.1.1.tgz#31f1281b3832630434831c310c01cccda8cbe006"
   integrity sha512-6fPc+R4ihwqP6N/aIv2f1gMH8lOVtWQHoqC4yK6oSDVVocumAsfCqjkXnqiYMhmMwS/mEHLp7Vehlt3ql6lEig==
+
+subpkg@^4.1.0:
+  version "4.1.0"
+  resolved "https://registry.yarnpkg.com/subpkg/-/subpkg-4.1.0.tgz#01390a8ed1ebd7b77518d74c842e176d36f91916"
+  integrity sha512-rUZussLImOmo7ugj4b5TQrPZrEMO93j3yIsFUpkwZS938E6/TVj5mt4mqiBMkxI94ikCN8ZBs+5nAPxU5AwLJg==
 
 supports-color@^7.1.0:
   version "7.2.0"
