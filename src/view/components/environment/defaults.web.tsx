@@ -23,16 +23,24 @@
 //  THE SOFTWARE.
 //
 
-import { useColorScheme, useOnline, useVisibility, useWindow, useWindowMetrics } from 'frosty/web';
+import {
+  useColorScheme,
+  useOnline,
+  useVisibility,
+  useWindow,
+  useWindowMetrics,
+  useVisualViewportMetrics,
+} from 'frosty/web';
 import { defaultEnvironmentValues } from './types';
 
 export const useDefault = () => {
   const window = useWindow();
-  const { document, visualViewport } = window;
+  const { document } = window;
   const {
     devicePixelRatio,
     safeAreaInsets,
   } = useWindowMetrics();
+  const visualViewport = useVisualViewportMetrics();
 
   const scenePhase = useVisibility();
   const online = useOnline();
