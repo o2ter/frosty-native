@@ -17,9 +17,7 @@
   "scripts": {
     "clean": "rm -rf ./dist/*",
     "rollup": "yarn clean && rollup -c",
-    "watch:build": "./tests/server/bin/build.sh -w",
-    "watch:start": "until [ -f ./tests/server/dist/server.js ]; do sleep 1; done && npx nodemon --watch ./tests/server/dist ./tests/server/dist/server.js",
-    "start": "rm -rf ./tests/server/dist/* && npx npm-run-all --parallel watch:*"
+    "start": "npx frosty run -d -w -s ./src tests/server/app.tsx"
   },
   "bin": {
     "frosty-native": "./bin/frosty-native.sh"
