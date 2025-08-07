@@ -103,7 +103,7 @@ const getRect = (node: HTMLElement) => {
 };
 
 const measureLayout = (node: HTMLElement, relativeToNativeNode?: HTMLElement) => {
-  const relativeNode = relativeToNativeNode || (node && node.parentNode) as HTMLElement;
+  const relativeNode = relativeToNativeNode || node.parentElement;
   if (node && relativeNode && node.isConnected && relativeNode.isConnected) {
     const relativeRect = getRect(relativeNode);
     const { height, left, top, width } = getRect(node);
