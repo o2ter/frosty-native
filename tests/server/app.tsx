@@ -27,7 +27,7 @@ import _ from 'lodash';
 import { useState, useEffect } from 'frosty';
 import { Text, TextInput, useEnvironment, View, Image, Pressable } from '../../src/view';
 
-import 'app.scss';
+import './app.scss';
 
 export const App = () => {
   const env = useEnvironment();
