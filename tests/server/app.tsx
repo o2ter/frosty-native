@@ -57,20 +57,6 @@ export const App = () => {
         </>
       ))}
       {_.map([
-        'flex-start', 'flex-end', 'center', 'stretch', 'baseline'
-      ] as const, x => (
-        <>
-          <Text>justifyItems {x}</Text>
-          <View style={{ gap: 8, padding: 8, backgroundColor: 'purple', flexDirection: 'row', justifyItems: x, flexWrap: 'wrap', height: 250 }}>
-            <View style={{ width: 50, minHeight: 50, backgroundColor: 'yellow' }} />
-            <View style={{ width: 20, minHeight: 50, backgroundColor: 'yellow' }} />
-            <View style={{ width: 50, minHeight: 50, backgroundColor: 'yellow' }} />
-            <div style={{ width: '100%' }} />
-            <View style={{ width: 40, minHeight: 50, backgroundColor: 'yellow' }} />
-          </View>
-        </>
-      ))}
-      {_.map([
         'flex-start', 'flex-end', 'center', 'stretch', 'space-between', 'space-around', 'space-evenly'
       ] as const, x => (
         <>
