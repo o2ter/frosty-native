@@ -29,6 +29,7 @@ import { NativeModules } from '../../../global';
 import { NativeNode } from '../../../node';
 import { ScrollViewProps } from '../types/scrollView';
 import { useFlattenStyle } from '../../../view/style/utils';
+import { View } from './view';
 
 abstract class FTScrollView extends NativeNode {
 
@@ -56,6 +57,6 @@ export const ScrollView: ComponentType<ScrollViewProps> = ({
     style: useFlattenStyle(style),
     horizontal,
     vertical,
-    children,
+    children: <View style={_contentContainerStyle}>{children}</View>,
   });
 };
