@@ -38,9 +38,18 @@ export const Pressable = ({
   onPress,
   onPressIn,
   onPressOut,
+  onMoveShouldSetResponder,
+  onMoveShouldSetResponderCapture,
   onResponderGrant,
+  onResponderStart,
+  onResponderMove,
+  onResponderEnd,
+  onResponderReject,
   onResponderRelease,
   onResponderTerminate,
+  onResponderTerminationRequest,
+  onStartShouldSetResponder,
+  onStartShouldSetResponderCapture,
   children,
   ...props
 }: PressableProps) => (
@@ -52,9 +61,18 @@ export const Pressable = ({
       onPress,
       onPressIn,
       onPressOut,
+      onMoveShouldSetResponder,
+      onMoveShouldSetResponderCapture,
       onResponderGrant,
+      onResponderStart,
+      onResponderMove,
+      onResponderEnd,
+      onResponderReject,
       onResponderRelease,
       onResponderTerminate,
+      onResponderTerminationRequest,
+      onStartShouldSetResponder,
+      onStartShouldSetResponderCapture,
     })}
     {...props}>
     {children}
