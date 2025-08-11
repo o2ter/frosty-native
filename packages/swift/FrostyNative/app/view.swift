@@ -355,10 +355,6 @@ struct FTScrollView: FTLayoutViewProtocol {
     }
     
     var content: some View {
-        ScrollView(axes) {
-            ForEach(Array(children.enumerated()), id: \.offset) {
-                $0.element
-            }
-        }
+        ScrollView(axes) { children.first }
     }
 }
