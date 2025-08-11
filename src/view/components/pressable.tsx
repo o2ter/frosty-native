@@ -33,48 +33,14 @@ type PressableProps = ComponentProps<typeof View> & PressGestureProps<NonNullabl
 
 export const Pressable = ({
   style,
-  delayLongPress,
-  onLongPress,
-  onPress,
-  onPressIn,
-  onPressOut,
-  onMoveShouldSetResponder,
-  onMoveShouldSetResponderCapture,
-  onResponderGrant,
-  onResponderStart,
-  onResponderMove,
-  onResponderEnd,
-  onResponderReject,
-  onResponderRelease,
-  onResponderTerminate,
-  onResponderTerminationRequest,
-  onStartShouldSetResponder,
-  onStartShouldSetResponderCapture,
   children,
   ...props
 }: PressableProps) => (
   <View
     style={[{ userSelect: 'none', cursor: 'pointer' }, style]}
-    {...useGestureResponder({
-      delayLongPress,
-      onLongPress,
-      onPress,
-      onPressIn,
-      onPressOut,
-      onMoveShouldSetResponder,
-      onMoveShouldSetResponderCapture,
-      onResponderGrant,
-      onResponderStart,
-      onResponderMove,
-      onResponderEnd,
-      onResponderReject,
-      onResponderRelease,
-      onResponderTerminate,
-      onResponderTerminationRequest,
-      onStartShouldSetResponder,
-      onStartShouldSetResponderCapture,
-    })}
-    {...props}>
+    {...props}
+    {...useGestureResponder(props)}
+  >
     {children}
   </View>
 );
