@@ -113,14 +113,6 @@ const measureLayout = (node: HTMLElement, relativeToNativeNode?: HTMLElement) =>
   }
 };
 
-const wrapLayoutEvent = <Target>(e: ResizeObserverEntry, currentTarget: Target, window: ReturnType<typeof useWindow>) => ({
-  _native: e,
-  layout: measureLayout(e.target as HTMLElement) ?? { x: 0, y: 0, width: 0, height: 0, left: 0, top: 0 },
-  timeStamp: window.performance.now(),
-  target: e.target,
-  currentTarget,
-});
-
 const _currentResponder = new WeakMap<ReturnType<typeof useWindow>, { target: any; } & ViewEventProps<any>>();
 
 export const useResponderEvents = <Target>(
@@ -153,7 +145,13 @@ export const useResponderEvents = <Target>(
   useResizeObserver(onLayout ? elementRef : null, (e) => {
     const target = targetRef.current;
     if (!target || !onLayout) return;
-    onLayout.call(target, wrapLayoutEvent(e, target, window));
+    onLayout.call(target, {
+      _native: e,
+      layout: measureLayout(e.target as HTMLElement) ?? { x: 0, y: 0, width: 0, height: 0, left: 0, top: 0 },
+      timeStamp: window.performance.now(),
+      target: e.target,
+      currentTarget: target,
+    });
   });
 
   const _onHoverIn = onHoverIn && ((e: MouseEvent) => {
