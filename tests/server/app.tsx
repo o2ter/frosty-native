@@ -49,10 +49,10 @@ export const App = () => {
         <>
           <Text>justifyContent {x}</Text>
           <View style={{ gap: 8, padding: 8, backgroundColor: 'purple', flexDirection: 'row', justifyContent: x }}>
-            <View style={{ width: 50, height: 50, backgroundColor: 'yellow' }} />
-            <View style={{ width: 50, height: 20, backgroundColor: 'yellow' }} />
-            <View style={{ width: 50, height: 50, backgroundColor: 'yellow' }} />
-            <View style={{ width: 50, height: 40, backgroundColor: 'yellow' }} />
+            <View style={{ minWidth: 50, height: 50, backgroundColor: 'yellow' }} />
+            <View style={{ minWidth: 50, height: 20, backgroundColor: 'yellow' }} />
+            <View style={{ minWidth: 50, height: 50, backgroundColor: 'yellow' }} />
+            <View style={{ minWidth: 50, height: 40, backgroundColor: 'yellow' }} />
           </View>
         </>
       ))}
@@ -62,11 +62,11 @@ export const App = () => {
         <>
           <Text>justifyItems {x}</Text>
           <View style={{ gap: 8, padding: 8, backgroundColor: 'purple', flexDirection: 'row', justifyItems: x, flexWrap: 'wrap', height: 250 }}>
-            <View style={{ width: 50, height: 50, backgroundColor: 'yellow' }} />
-            <View style={{ width: 20, height: 50, backgroundColor: 'yellow' }} />
-            <View style={{ width: 50, height: 50, backgroundColor: 'yellow' }} />
+            <View style={{ width: 50, minHeight: 50, backgroundColor: 'yellow' }} />
+            <View style={{ width: 20, minHeight: 50, backgroundColor: 'yellow' }} />
+            <View style={{ width: 50, minHeight: 50, backgroundColor: 'yellow' }} />
             <div style={{ width: '100%' }} />
-            <View style={{ width: 40, height: 50, backgroundColor: 'yellow' }} />
+            <View style={{ width: 40, minHeight: 50, backgroundColor: 'yellow' }} />
           </View>
         </>
       ))}
@@ -76,11 +76,11 @@ export const App = () => {
         <>
           <Text>alignContent {x}</Text>
           <View style={{ gap: 8, padding: 8, backgroundColor: 'purple', flexDirection: 'row', alignContent: x, flexWrap: 'wrap', height: 250 }}>
-            <View style={{ width: 50, height: 50, backgroundColor: 'yellow' }} />
-            <View style={{ width: 20, height: 50, backgroundColor: 'yellow' }} />
-            <View style={{ width: 50, height: 50, backgroundColor: 'yellow' }} />
+            <View style={{ width: 50, minHeight: 50, backgroundColor: 'yellow' }} />
+            <View style={{ width: 20, minHeight: 50, backgroundColor: 'yellow' }} />
+            <View style={{ width: 50, minHeight: 50, backgroundColor: 'yellow' }} />
             <div style={{ width: '100%' }} />
-            <View style={{ width: 40, height: 50, backgroundColor: 'yellow' }} />
+            <View style={{ width: 40, minHeight: 50, backgroundColor: 'yellow' }} />
           </View>
         </>
       ))}
@@ -92,10 +92,10 @@ export const App = () => {
           <View style={{
             gap: 8, padding: 8, backgroundColor: 'purple', flexDirection: 'row', alignItems: x
           }}>
-            <View style={{ width: 50, height: 50, backgroundColor: 'yellow' }} />
-            <View style={{ width: 50, height: 20, backgroundColor: 'yellow' }} />
-            <View style={{ width: 50, height: 50, backgroundColor: 'yellow' }} />
-            <View style={{ width: 50, height: 40, backgroundColor: 'yellow' }} />
+            <View style={{ minWidth: 50, height: 50, backgroundColor: 'yellow' }} />
+            <View style={{ minWidth: 50, height: 20, backgroundColor: 'yellow' }} />
+            <View style={{ minWidth: 50, height: 50, backgroundColor: 'yellow' }} />
+            <View style={{ minWidth: 50, height: 40, backgroundColor: 'yellow' }} />
           </View>
         </>
       ))}
