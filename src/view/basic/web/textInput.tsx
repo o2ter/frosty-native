@@ -32,14 +32,6 @@ import { useFlattenStyle } from '../../../view/style/utils';
 import { TextStyle } from '../../../view/style/types';
 import { useResponderEvents } from './events';
 
-const wrapTextInputEvent = (e: Event & { currentTarget: HTMLTextAreaElement | HTMLInputElement }, currentTarget: NonNullable<ComponentRef<typeof TextInput>>) => ({
-  _native: e,
-  value: e.currentTarget.value as any,
-  timeStamp: e.timeStamp,
-  target: e.target,
-  currentTarget,
-});
-
 export const TextInput: ComponentType<TextInputProps> = ({ ref, style, multiline, value, onChange, onChangeValue, formatted, ...props }) => {
 
   const targetRef = useRef<HTMLElement | null>();
@@ -69,7 +61,13 @@ export const TextInput: ComponentType<TextInputProps> = ({ ref, style, multiline
     const target = nativeRef.current;
     if (!target) return;
     if (_.isFunction(onChange)) {
-      onChange.call(target, wrapTextInputEvent(e, target));
+      onChange.call(target, {
+        _native: e,
+        value: e.currentTarget.value as any,
+        timeStamp: e.timeStamp,
+        target: e.target,
+        currentTarget: target,
+      });
     }
     if (_.isFunction(onChangeValue)) {
       onChangeValue.call(target, e.currentTarget.value as any);
