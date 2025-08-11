@@ -37,22 +37,7 @@ export type PressGestureProps<Target> = {
   onPressOut?: (this: Target, event: PressEvent<Target>) => void;
 };
 
-export type PanGestureProps<Target> = {
-  onMoveShouldSetPanResponder?: (this: Target, event: PressEvent<Target>) => boolean;
-  onMoveShouldSetPanResponderCapture?: (this: Target, event: PressEvent<Target>) => boolean;
-  onPanResponderGrant?: (this: Target, event: PressEvent<Target>) => void;
-  onPanResponderStart?: (this: Target, event: PressEvent<Target>) => void;
-  onPanResponderMove?: (this: Target, event: PressEvent<Target>) => void;
-  onPanResponderEnd?: (this: Target, event: PressEvent<Target>) => void;
-  onPanResponderReject?: (this: Target, event: PressEvent<Target>) => void;
-  onPanResponderRelease?: (this: Target, event: PressEvent<Target>) => void;
-  onPanResponderTerminate?: (this: Target, event: PressEvent<Target>) => void;
-  onPanResponderTerminationRequest?: (this: Target, event: PressEvent<Target>) => boolean;
-  onStartShouldSetPanResponder?: (this: Target, event: PressEvent<Target>) => boolean;
-  onStartShouldSetPanResponderCapture?: (this: Target, event: PressEvent<Target>) => boolean;
-};
-
-type GestureResponderProps<Target> = ViewEventProps<Target> & PressGestureProps<Target> & PanGestureProps<Target>;
+type GestureResponderProps<Target> = ViewEventProps<Target> & PressGestureProps<Target>;
 
 export const useGestureResponder = <Target extends any = any>({
   delayLongPress,
@@ -60,21 +45,18 @@ export const useGestureResponder = <Target extends any = any>({
   onPress,
   onPressIn,
   onPressOut,
-  onMoveShouldSetPanResponder,
-  onMoveShouldSetPanResponderCapture,
-  onPanResponderGrant,
-  onPanResponderStart,
-  onPanResponderMove,
-  onPanResponderEnd,
-  onPanResponderReject,
-  onPanResponderRelease,
-  onPanResponderTerminate,
-  onPanResponderTerminationRequest,
-  onStartShouldSetPanResponder,
-  onStartShouldSetPanResponderCapture,
+  onMoveShouldSetResponder,
+  onMoveShouldSetResponderCapture,
   onResponderGrant,
+  onResponderStart,
+  onResponderMove,
+  onResponderEnd,
+  onResponderReject,
   onResponderRelease,
   onResponderTerminate,
+  onResponderTerminationRequest,
+  onStartShouldSetResponder,
+  onStartShouldSetResponderCapture,
 }: GestureResponderProps<Target>) => {
 
   const state = useMemo(() => ({
@@ -82,7 +64,7 @@ export const useGestureResponder = <Target extends any = any>({
     timeout: true,
   }), []);
 
-  return _useCallbacks({
+  return _useCallbacks(_.pickBy({
     onResponderGrant: function (this: Target, e: PressEvent<Target>) {
       if (onResponderGrant) onResponderGrant.call(this, e);
       if (onPressIn) onPressIn.call(this, e);
@@ -110,5 +92,14 @@ export const useGestureResponder = <Target extends any = any>({
       state.token = '';
       if (onPressOut) onPressOut.call(this, e);
     },
-  });
+    onMoveShouldSetResponder,
+    onMoveShouldSetResponderCapture,
+    onResponderStart,
+    onResponderMove,
+    onResponderEnd,
+    onResponderReject,
+    onResponderTerminationRequest,
+    onStartShouldSetResponder,
+    onStartShouldSetResponderCapture,
+  }, v => _.isFunction(v)));
 };
