@@ -57,7 +57,7 @@ export const App = () => {
         </>
       ))}
       {_.map([
-        'auto', 'flex-start', 'flex-end', 'center', 'stretch', 'baseline'
+        'flex-start', 'flex-end', 'center', 'stretch', 'baseline'
       ] as const, x => (
         <>
           <Text>justifyItems {x}</Text>
@@ -83,7 +83,7 @@ export const App = () => {
         </>
       ))}
       {_.map([
-        'auto', 'flex-start', 'flex-end', 'center', 'stretch', 'baseline'
+        'flex-start', 'flex-end', 'center', 'stretch', 'baseline'
       ] as const, x => (
         <>
           <Text>alignItems {x}</Text>

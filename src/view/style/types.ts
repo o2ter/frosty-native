@@ -37,7 +37,6 @@ type FlexLayoutContentType =
   | 'space-evenly';
 
 type FlexLayoutItemsType =
-  | 'auto'
   | 'flex-start'
   | 'flex-end'
   | 'center'
@@ -84,7 +83,7 @@ const _borderRadiusKeys = [
 export type LayoutStyle = {
   alignContent?: FlexLayoutContentType;
   alignItems?: FlexLayoutItemsType;
-  alignSelf?: FlexLayoutItemsType;
+  alignSelf?: 'auto' | FlexLayoutItemsType;
   aspectRatio?: number | string;
   bottom?: DimensionValue;
   boxSizing?: 'border-box' | 'content-box';
@@ -107,7 +106,7 @@ export type LayoutStyle = {
   inset?: DimensionValue;
   justifyContent?: FlexLayoutContentType;
   justifyItems?: FlexLayoutItemsType;
-  justifySelf?: FlexLayoutItemsType;
+  justifySelf?: 'auto' | FlexLayoutItemsType;
   left?: DimensionValue;
   maxHeight?: DimensionValue;
   maxWidth?: DimensionValue;
