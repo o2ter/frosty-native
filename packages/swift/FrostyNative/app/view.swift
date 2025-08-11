@@ -327,6 +327,23 @@ struct FTScrollView: FTLayoutViewProtocol {
     @Binding
     var children: [AnyView]
     
+    var horizontal: Bool {
+        return props["horizontal"] as? Bool ?? false
+    }
+    
+    var vertical: Bool {
+        return props["vertical"] as? Bool ?? false
+    }
+    
+    var axes: Axis.Set {
+        switch (horizontal, vertical) {
+        case (false, false): return []
+        case (true, false): return [.horizontal]
+        case (false, true): return [.vertical]
+        case (true, true): return [.horizontal, .vertical]
+        }
+    }
+    
     init(
         nodeId: ObjectIdentifier,
         props: Binding<[String: any Sendable]>,
@@ -338,7 +355,7 @@ struct FTScrollView: FTLayoutViewProtocol {
     }
     
     var content: some View {
-        ScrollView {
+        ScrollView(axes) {
             ForEach(Array(children.enumerated()), id: \.offset) {
                 $0.element
             }
