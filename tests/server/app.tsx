@@ -61,7 +61,7 @@ export const App = () => {
       ] as const, x => (
         <>
           <Text>alignContent {x}</Text>
-          <View style={{ gap: 8, padding: 8, backgroundColor: 'purple', flexDirection: 'row', alignContent: x, flexWrap: 'wrap', height: 100 }}>
+          <View style={{ gap: 8, padding: 8, backgroundColor: 'purple', flexDirection: 'row', alignContent: x, flexWrap: 'wrap', height: 200 }}>
             <View style={{ width: 50, height: 50, backgroundColor: 'yellow' }} />
             <View style={{ width: 20, height: 20, backgroundColor: 'yellow' }} />
             <View style={{ width: 50, height: 50, backgroundColor: 'yellow' }} />
