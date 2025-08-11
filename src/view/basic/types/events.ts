@@ -23,7 +23,7 @@
 //  THE SOFTWARE.
 //
 
-type Event<Target> = {
+export type Event<Target> = {
   _native: any;
   timeStamp: number;
   currentTarget: Target;

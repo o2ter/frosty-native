@@ -25,17 +25,14 @@
 
 import { Ref, StyleProp } from 'frosty';
 import { TextStyle } from '../../style/types';
-import { ViewEventProps } from './events';
+import { Event, ViewEventProps } from './events';
 
 type TextInputRef = {
   readonly _native?: HTMLElement;
 };
 
-type TextInputChangeEvent<Value> = {
+type TextInputChangeEvent<Value> = Event<TextInputRef> & {
   value: Value;
-  timeStamp: number;
-  currentTarget: TextInputRef;
-  target: any;
 };
 
 type _TextInputProps<Value> = {

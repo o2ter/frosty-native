@@ -24,7 +24,7 @@
 //
 
 import _ from 'lodash';
-import { ComponentRef, ComponentType, mergeRefs, useRef, useRefHandle } from 'frosty';
+import { ComponentRef, ComponentType, mergeRefs, useCallback, useRef, useRefHandle } from 'frosty';
 import { TextInputProps } from '../types/textInput';
 import { useTextStyle } from '../../components/textStyle';
 import { encodeTextStyle } from './css';
@@ -57,12 +57,22 @@ export const TextInput: ComponentType<TextInputProps> = ({ ref, style, multiline
     style,
   ]));
 
+  const _onChange = useCallback(onChange || onChangeValue ? (e: Event & { currentTarget: HTMLTextAreaElement | HTMLInputElement }) => {
+    const target = nativeRef.current;
+    if (!target) return;
+    if (_.isFunction(onChangeValue)) {
+      onChangeValue.call(target, e.currentTarget.value as any);
+    }
+  } : undefined);
+
   const responders = useResponderEvents(props, nativeRef, targetRef);
 
   if (multiline) {
     return (
       <textarea
         ref={mergeRefs(targetRef)}
+        value={value}
+        onChange={_onChange}
         style={[
           {
             listStyle: 'none',
@@ -80,6 +90,8 @@ export const TextInput: ComponentType<TextInputProps> = ({ ref, style, multiline
   return (
     <input
       ref={mergeRefs(targetRef)}
+      value={value}
+      onChange={_onChange}
       style={[
         {
           listStyle: 'none',
