@@ -24,8 +24,7 @@
 //
 
 import _ from 'lodash';
-import { useState, useEffect } from 'frosty';
-import { Text, TextInput, useEnvironment, View, Image, Pressable } from '../../src/view';
+import { Text, useEnvironment, View } from '../../src/view';
 
 import './app.scss';
 
@@ -35,35 +34,69 @@ export const App = () => {
   return (
     <View style={{
       width: '100%',
-      height: '100%',
-      flexDirection: 'row',
+      gap: 8,
+      padding: 8,
     }}>
-      <View style={{
-        flex: 1,
-        backgroundColor: 'red',
-      }}>
-        <TextInput />
-        <TextInput multiline />
+      <View style={{ gap: 8, padding: 8, backgroundColor: 'purple', flexDirection: 'row' }}>
+        <View style={{ width: 50, height: 50, backgroundColor: 'yellow' }} />
+        <View style={{ width: 50, height: 20, backgroundColor: 'yellow' }} />
+        <View style={{ width: 50, height: 50, backgroundColor: 'yellow' }} />
+        <View style={{ width: 50, height: 40, backgroundColor: 'yellow' }} />
       </View>
-      <View
-        onLayout={function (e) { console.log('onLayout', this, e) }}
-        style={{
-          flex: 1,
-          backgroundColor: 'blue',
-        }}>
-        <Pressable
-          onHoverIn={function (e) { console.log('onHoverIn', this, e) }}
-          onHoverOut={function (e) { console.log('onHoverOut', this, e) }}
-          onPressIn={function (e) { console.log('onPressIn', this, e) }}
-          onPressOut={function (e) { console.log('onPressOut', this, e) }}
-          onPress={function (e) { console.log('onPress', this, e) }}
-        >
-          <Text>Hello, <Text>World</Text></Text>
-        </Pressable>
-        <Text>Hello, <Text>World</Text></Text>
-        <Image source="https://upload.wikimedia.org/wikipedia/commons/b/b6/SIPI_Jelly_Beans_4.1.07.tiff" />
-        <Image source="https://upload.wikimedia.org/wikipedia/commons/b/b6/SIPI_Jelly_Beans_4.1.07.tiff" />
-      </View>
+      {_.map([
+        'flex-start', 'flex-end', 'center', 'stretch', 'space-between', 'space-around', 'space-evenly'
+      ] as const, x => (
+        <>
+          <Text>justifyContent {x}</Text>
+          <View style={{ gap: 8, padding: 8, backgroundColor: 'purple', flexDirection: 'row', justifyContent: x }}>
+            <View style={{ width: 50, height: 50, backgroundColor: 'yellow' }} />
+            <View style={{ width: 50, height: 20, backgroundColor: 'yellow' }} />
+            <View style={{ width: 50, height: 50, backgroundColor: 'yellow' }} />
+            <View style={{ width: 50, height: 40, backgroundColor: 'yellow' }} />
+          </View>
+        </>
+      ))}
+      {_.map([
+        'auto', 'flex-start', 'flex-end', 'center', 'stretch', 'baseline'
+      ] as const, x => (
+        <>
+          <Text>justifyItems {x}</Text>
+          <View style={{ gap: 8, padding: 8, backgroundColor: 'purple', flexDirection: 'row', justifyItems: x }}>
+            <View style={{ width: 50, height: 50, backgroundColor: 'yellow' }} />
+            <View style={{ width: 50, height: 20, backgroundColor: 'yellow' }} />
+            <View style={{ width: 50, height: 50, backgroundColor: 'yellow' }} />
+            <View style={{ width: 50, height: 40, backgroundColor: 'yellow' }} />
+          </View>
+        </>
+      ))}
+      {_.map([
+        'flex-start', 'flex-end', 'center', 'stretch', 'space-between', 'space-around', 'space-evenly'
+      ] as const, x => (
+        <>
+          <Text>alignContent {x}</Text>
+          <View style={{ gap: 8, padding: 8, backgroundColor: 'purple', flexDirection: 'row', alignContent: x }}>
+            <View style={{ width: 50, height: 50, backgroundColor: 'yellow' }} />
+            <View style={{ width: 50, height: 20, backgroundColor: 'yellow' }} />
+            <View style={{ width: 50, height: 50, backgroundColor: 'yellow' }} />
+            <View style={{ width: 50, height: 40, backgroundColor: 'yellow' }} />
+          </View>
+        </>
+      ))}
+      {_.map([
+        'auto', 'flex-start', 'flex-end', 'center', 'stretch', 'baseline'
+      ] as const, x => (
+        <>
+          <Text>alignItems {x}</Text>
+          <View style={{
+            gap: 8, padding: 8, backgroundColor: 'purple', flexDirection: 'row', alignItems: x
+          }}>
+            <View style={{ width: 50, height: 50, backgroundColor: 'yellow' }} />
+            <View style={{ width: 50, height: 20, backgroundColor: 'yellow' }} />
+            <View style={{ width: 50, height: 50, backgroundColor: 'yellow' }} />
+            <View style={{ width: 50, height: 40, backgroundColor: 'yellow' }} />
+          </View>
+        </>
+      ))}
     </View>
   );
 };
