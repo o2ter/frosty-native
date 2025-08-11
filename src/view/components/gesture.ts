@@ -38,9 +38,18 @@ export type PressGestureProps<Target> = {
 };
 
 export type PanGestureProps<Target> = {
-  onPanStart?: (this: Target, event: PressEvent<Target>) => void;
-  onPanMove?: (this: Target, event: PressEvent<Target>) => void;
-  onPanEnd?: (this: Target, event: PressEvent<Target>) => void;
+  onMoveShouldSetPanResponder?: (this: Target, event: PressEvent<Target>) => boolean;
+  onMoveShouldSetPanResponderCapture?: (this: Target, event: PressEvent<Target>) => boolean;
+  onPanResponderGrant?: (this: Target, event: PressEvent<Target>) => void;
+  onPanResponderStart?: (this: Target, event: PressEvent<Target>) => void;
+  onPanResponderMove?: (this: Target, event: PressEvent<Target>) => void;
+  onPanResponderEnd?: (this: Target, event: PressEvent<Target>) => void;
+  onPanResponderReject?: (this: Target, event: PressEvent<Target>) => void;
+  onPanResponderRelease?: (this: Target, event: PressEvent<Target>) => void;
+  onPanResponderTerminate?: (this: Target, event: PressEvent<Target>) => void;
+  onPanResponderTerminationRequest?: (this: Target, event: PressEvent<Target>) => boolean;
+  onStartShouldSetPanResponder?: (this: Target, event: PressEvent<Target>) => boolean;
+  onStartShouldSetPanResponderCapture?: (this: Target, event: PressEvent<Target>) => boolean;
 };
 
 type GestureResponderProps<Target> = ViewEventProps<Target> & PressGestureProps<Target> & PanGestureProps<Target>;
@@ -51,9 +60,18 @@ export const useGestureResponder = <Target extends any = any>({
   onPress,
   onPressIn,
   onPressOut,
-  onPanStart,
-  onPanMove,
-  onPanEnd,
+  onMoveShouldSetPanResponder,
+  onMoveShouldSetPanResponderCapture,
+  onPanResponderGrant,
+  onPanResponderStart,
+  onPanResponderMove,
+  onPanResponderEnd,
+  onPanResponderReject,
+  onPanResponderRelease,
+  onPanResponderTerminate,
+  onPanResponderTerminationRequest,
+  onStartShouldSetPanResponder,
+  onStartShouldSetPanResponderCapture,
   onResponderGrant,
   onResponderRelease,
   onResponderTerminate,
