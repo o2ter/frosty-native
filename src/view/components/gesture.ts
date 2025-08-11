@@ -101,5 +101,5 @@ export const useGestureResponder = <Target extends any = any>({
     onResponderTerminationRequest,
     onStartShouldSetResponder,
     onStartShouldSetResponderCapture,
-  }, v => _.isFunction(v)));
+  }, v => _.isFunction(v))) as GestureResponderProps<Target>;
 };
