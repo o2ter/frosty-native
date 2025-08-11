@@ -28,7 +28,9 @@ import { _createNativeElement } from 'frosty/_native';
 import { NativeModules } from '../../../global';
 import { NativeNode } from '../../../node';
 import { TextInputProps } from '../types/textInput';
+import { useTextStyle } from '../../components/textStyle';
 import { useFlattenStyle } from '../../../view/style/utils';
+import { TextStyle } from '../../style/types';
 
 abstract class FTTextInput extends NativeNode {
 
@@ -43,9 +45,10 @@ export const TextInput: ComponentType<TextInputProps> = ({ ref, style, multiline
   useRefHandle(mergeRefs(nativeRef, ref), () => ({
   }), null);
 
-  const _style = useFlattenStyle(style);
-
   return _createNativeElement(FTTextInput, {
-    style: useFlattenStyle(style),
+    style: useFlattenStyle([
+      useTextStyle() as TextStyle,
+      style,
+    ]),
   });
 };
