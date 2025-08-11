@@ -60,32 +60,6 @@ export const App = () => {
         'flex-start', 'flex-end', 'center', 'stretch', 'baseline'
       ] as const, x => (
         <>
-          <Text>justifyItems {x}</Text>
-          <View style={{ gap: 8, padding: 8, backgroundColor: 'purple', flexDirection: 'row', justifyItems: x }}>
-            <View style={{ width: 50, height: 50, backgroundColor: 'yellow' }} />
-            <View style={{ width: 50, height: 20, backgroundColor: 'yellow' }} />
-            <View style={{ width: 50, height: 50, backgroundColor: 'yellow' }} />
-            <View style={{ width: 50, height: 40, backgroundColor: 'yellow' }} />
-          </View>
-        </>
-      ))}
-      {_.map([
-        'flex-start', 'flex-end', 'center', 'stretch', 'space-between', 'space-around', 'space-evenly'
-      ] as const, x => (
-        <>
-          <Text>alignContent {x}</Text>
-          <View style={{ gap: 8, padding: 8, backgroundColor: 'purple', flexDirection: 'row', alignContent: x }}>
-            <View style={{ width: 50, height: 50, backgroundColor: 'yellow' }} />
-            <View style={{ width: 50, height: 20, backgroundColor: 'yellow' }} />
-            <View style={{ width: 50, height: 50, backgroundColor: 'yellow' }} />
-            <View style={{ width: 50, height: 40, backgroundColor: 'yellow' }} />
-          </View>
-        </>
-      ))}
-      {_.map([
-        'flex-start', 'flex-end', 'center', 'stretch', 'baseline'
-      ] as const, x => (
-        <>
           <Text>alignItems {x}</Text>
           <View style={{
             gap: 8, padding: 8, backgroundColor: 'purple', flexDirection: 'row', alignItems: x
