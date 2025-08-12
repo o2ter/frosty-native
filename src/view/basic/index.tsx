@@ -23,6 +23,8 @@
 //  THE SOFTWARE.
 //
 
+export type { useResponderEvents } from './web/events';
+
 export { ScrollView } from './native/scrollView';
 export { Text } from './native/text';
 export { TextInput } from './native/textInput';
