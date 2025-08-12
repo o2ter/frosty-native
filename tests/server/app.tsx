@@ -39,9 +39,9 @@ export const App = () => {
     }}>
       <View style={{ gap: 8, padding: 8, backgroundColor: 'purple', flexDirection: 'row' }}>
         <View style={{ width: 50, height: 50, backgroundColor: 'yellow' }} />
-        <View style={{ width: 50, height: 20, backgroundColor: 'yellow' }} />
+        <View style={{ width: 20, height: 20, backgroundColor: 'yellow' }} />
         <View style={{ width: 50, height: 50, backgroundColor: 'yellow' }} />
-        <View style={{ width: 50, height: 40, backgroundColor: 'yellow' }} />
+        <View style={{ width: 40, height: 40, backgroundColor: 'yellow' }} />
       </View>
       {_.map([
         'flex-start', 'flex-end', 'center', 'stretch', 'space-between', 'space-around', 'space-evenly'
@@ -50,9 +50,9 @@ export const App = () => {
           <Text>justifyContent {x}</Text>
           <View style={{ gap: 8, padding: 8, backgroundColor: 'purple', flexDirection: 'row', justifyContent: x }}>
             <View style={{ minWidth: 50, height: 50, backgroundColor: 'yellow' }} />
-            <View style={{ minWidth: 50, height: 20, backgroundColor: 'yellow' }} />
+            <View style={{ minWidth: 20, height: 20, backgroundColor: 'yellow' }} />
             <View style={{ minWidth: 50, height: 50, backgroundColor: 'yellow' }} />
-            <View style={{ minWidth: 50, height: 40, backgroundColor: 'yellow' }} />
+            <View style={{ minWidth: 40, height: 40, backgroundColor: 'yellow' }} />
           </View>
         </>
       ))}
@@ -77,10 +77,10 @@ export const App = () => {
           <View style={{
             gap: 8, padding: 8, backgroundColor: 'purple', flexDirection: 'row', alignItems: x
           }}>
-            <View style={{ minWidth: 50, height: 50, backgroundColor: 'yellow' }} />
-            <View style={{ minWidth: 50, height: 20, backgroundColor: 'yellow' }} />
-            <View style={{ minWidth: 50, height: 50, backgroundColor: 'yellow' }} />
-            <View style={{ minWidth: 50, height: 40, backgroundColor: 'yellow' }} />
+            <View style={{ width: 50, height: 50, backgroundColor: 'yellow' }} />
+            <View style={{ width: 20, height: 20, backgroundColor: 'yellow' }} />
+            <View style={{ width: 50, height: 50, backgroundColor: 'yellow' }} />
+            <View style={{ width: 40, height: 40, backgroundColor: 'yellow' }} />
           </View>
         </>
       ))}
