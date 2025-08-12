@@ -31,9 +31,9 @@ import {
   useWindowMetrics,
   useVisualViewportMetrics,
 } from 'frosty/web';
-import { defaultEnvironmentValues } from './types';
+import { defaultEnvironmentValues, EnvironmentValues } from './types';
 
-export const useDefault = () => {
+export const useDefault = (): EnvironmentValues => {
   const window = useWindow();
   const { document } = window;
   const {
@@ -69,8 +69,8 @@ export const useDefault = () => {
     network: { online },
     ...typeof navigator === 'undefined' ? {} : {
       userLocale: navigator.language,
-      languages: navigator.languages || [navigator.language],
+      languages: navigator.languages ? [...navigator.languages] : [navigator.language],
       timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
     },
-  } as const;
+  };
 };

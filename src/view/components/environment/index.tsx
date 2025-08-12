@@ -23,16 +23,17 @@
 //  THE SOFTWARE.
 //
 
+import _ from 'lodash';
 import { createContext, PropsWithChildren, useContext } from 'frosty';
 import { EnvironmentValues } from './types';
 import { useDefault } from './defaults';
 
-const Context = createContext<Partial<EnvironmentValues>>({});
+const Context = createContext<EnvironmentValues | typeof useDefault>(useDefault);
 
-export const useEnvironment = () => ({
-  ...useDefault(),
-  ...useContext(Context),
-}) as EnvironmentValues;
+export const useEnvironment = () => {
+  const env = useContext(Context);
+  return _.isFunction(env) ? env() : env;
+};
 
 type EnvironmentProps = PropsWithChildren<Partial<EnvironmentValues>>;
 
@@ -41,7 +42,7 @@ export const Environment = ({
   ...props
 }: EnvironmentProps) => {
   const values = {
-    ...useContext(Context),
+    ...useEnvironment(),
     ...props,
   };
   return (

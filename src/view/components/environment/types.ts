@@ -23,7 +23,7 @@
 //  THE SOFTWARE.
 //
 
-export const defaultEnvironmentValues = {
+export const defaultEnvironmentValues: EnvironmentValues = {
   scenePhase: 'unknown',
   layoutDirection: 'ltr',
   pixelDensity: 1,
@@ -43,7 +43,7 @@ export const defaultEnvironmentValues = {
   network: {
     online: false,
   },
-} as const;
+};
 
 export type EnvironmentValues = {
   scenePhase: 'background' | 'inactive' | 'active' | 'unknown';
