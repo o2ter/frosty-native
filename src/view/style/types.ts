@@ -230,7 +230,9 @@ type TextDecorationLine =
 export type TextStyle = ViewStyle & {
   color?: ColorValue;
   fontFamily?: string;
-  fontSize?: number;
+  fontSize?:
+  | number
+  | `${number}%`;
   fontStyle?: 'normal' | 'italic';
   fontWeight?:
   | 'normal'
@@ -265,7 +267,8 @@ export type TextStyle = ViewStyle & {
   | 900;
   letterSpacing?:
   | 'normal'
-  | number;
+  | number
+  | `${number}%`;
   lineHeight?:
   | 'normal'
   | number
