@@ -42,6 +42,11 @@ export const TextInput: ComponentType<TextInputProps> = ({
   onChangeValue,
   onBlur,
   onFocus,
+  onEndEditing,
+  onSubmitEditing,
+  onSelectionChange,
+  onScroll,
+  onContentSizeChange,
   ...props
 }) => {
 

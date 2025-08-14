@@ -44,7 +44,9 @@ export const ScrollView: ComponentType<ScrollViewProps> = ({
   contentContainerStyle,
   horizontal = false,
   vertical = !horizontal,
-  children
+  children,
+  onScroll,
+  onContentSizeChange,
 }) => {
 
   const nativeRef = useRef<ComponentRef<typeof ScrollView>>();
