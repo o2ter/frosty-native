@@ -24,7 +24,7 @@
 //
 
 import _ from 'lodash';
-import { Image, ScrollView, Text, useEnvironment, View } from '../../src/view';
+import { Image, ScrollView, Text, TextInput, useEnvironment, View } from '../../src/view';
 
 import './app.scss';
 
@@ -37,6 +37,10 @@ export const App = () => {
       gap: 8,
       padding: 8,
     }}>
+      <View style={{ flexDirection: 'row' }}>
+        <TextInput />
+        <TextInput multiline />
+      </View>
       <View style={{ flexDirection: 'row' }}>
         <ScrollView style={{ width: 200, height: 200 }}>
           <Image source='https://upload.wikimedia.org/wikipedia/commons/4/47/PNG_transparency_demonstration_1.png' />

@@ -80,7 +80,7 @@ export const TextInput: ComponentType<TextInputProps> = ({ ref, style, multiline
     return (
       <textarea
         ref={mergeRefs(targetRef)}
-        value={value}
+        value={value?.toString() ?? ''}
         onChange={_onChange}
         style={[
           {
@@ -99,7 +99,7 @@ export const TextInput: ComponentType<TextInputProps> = ({ ref, style, multiline
   return (
     <input
       ref={mergeRefs(targetRef)}
-      value={value}
+      value={value?.toString() ?? ''}
       onChange={_onChange}
       style={[
         {
