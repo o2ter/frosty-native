@@ -45,7 +45,7 @@ export const App = () => {
           <Image source='https://upload.wikimedia.org/wikipedia/commons/4/47/PNG_transparency_demonstration_1.png' />
         </View>
       </View>
-      <View style={{ height: 200 }}>
+      <View style={{ height: 200, alignItems: 'center' }}>
         <Image source='https://upload.wikimedia.org/wikipedia/commons/4/47/PNG_transparency_demonstration_1.png' />
       </View>
       <View style={{ gap: 8, padding: 8, backgroundColor: 'purple', flexDirection: 'row' }}>
