@@ -87,3 +87,8 @@ export type ViewEventProps<Target> = {
   onStartShouldSetResponder?: (this: Target, event: PressEvent<Target>) => boolean;
   onStartShouldSetResponderCapture?: (this: Target, event: PressEvent<Target>) => boolean;
 }
+
+export type ScrollEventProps<Target> = {
+  onScroll?: (this: Target, event: Event<Target>) => void;
+  onContentSizeChange?: (this: Target, event: Event<Target>) => void;
+}

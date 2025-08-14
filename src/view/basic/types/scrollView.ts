@@ -25,13 +25,13 @@
 
 import { PropsWithChildren, Ref, StyleProp } from 'frosty';
 import { ViewStyle } from '../../style/types';
-import { ViewEventProps } from './events';
+import { ScrollEventProps, ViewEventProps } from './events';
 
 type ScrollViewRef = {
   readonly _native?: HTMLElement;
 };
 
-export type ScrollViewProps = PropsWithChildren<ViewEventProps<ScrollViewRef> & {
+export type ScrollViewProps = PropsWithChildren<ViewEventProps<ScrollViewRef> & ScrollEventProps<ScrollViewRef> & {
   ref?: Ref<ScrollViewRef | null | undefined>;
   style?: StyleProp<ViewStyle>;
   contentContainerStyle?: StyleProp<ViewStyle>;

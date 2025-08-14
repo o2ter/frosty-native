@@ -25,7 +25,7 @@
 
 import { Ref, StyleProp } from 'frosty';
 import { TextStyle } from '../../style/types';
-import { Event, ViewEventProps } from './events';
+import { Event, ScrollEventProps, ViewEventProps } from './events';
 
 type TextInputRef = {
   readonly _native?: HTMLElement;
@@ -35,7 +35,7 @@ type TextInputChangeEvent = Event<TextInputRef> & {
   value: string;
 };
 
-export type TextInputProps = ViewEventProps<TextInputRef> & {
+export type TextInputProps = ViewEventProps<TextInputRef> & ScrollEventProps<TextInputRef> & {
   ref?: Ref<TextInputRef | null | undefined>;
   style?: StyleProp<TextStyle>;
   value?: string;
@@ -45,4 +45,7 @@ export type TextInputProps = ViewEventProps<TextInputRef> & {
   onChangeValue?: (this: TextInputRef, string: string) => void;
   onBlur?: (this: TextInputRef, event: Event<TextInputRef>) => void;
   onFocus?: (this: TextInputRef, event: Event<TextInputRef>) => void;
+  onEndEditing?: (this: TextInputRef, event: Event<TextInputRef>) => void;
+  onSubmitEditing?: (this: TextInputRef, event: Event<TextInputRef>) => void;
+  onSelectionChange?: (this: TextInputRef, event: Event<TextInputRef>) => void;
 };
