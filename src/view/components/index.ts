@@ -25,5 +25,6 @@
 
 export { useAppEvent } from './appEvent';
 export * from './environment';
+export * from './gesture';
 export * from './pressable';
 export * from './textStyle';
