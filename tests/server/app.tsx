@@ -27,18 +27,22 @@ import _ from 'lodash';
 import { Image, ScrollView, Text, TextInput, useEnvironment, View } from '../../src/view';
 
 import './app.scss';
+import { useState } from 'frosty';
 
 export const App = () => {
   const env = useEnvironment();
   console.log(env);
+  const [value, setValue] = useState('');
   return (
     <View style={{
       width: '100%',
       gap: 8,
       padding: 8,
     }}>
-      <TextInput style={{ backgroundColor: 'lime' }} />
-      <TextInput style={{ backgroundColor: 'yellow' }} multiline />
+      <TextInput value={value} onChangeValue={setValue} style={{ backgroundColor: 'lime' }} />
+      <TextInput value={value} onChangeValue={setValue} style={{ backgroundColor: 'yellow' }} multiline />
+      <TextInput value={value} onChangeValue={setValue} disabled style={{ backgroundColor: 'lime' }} />
+      <TextInput value={value} onChangeValue={setValue} disabled style={{ backgroundColor: 'yellow' }} multiline />
       <View style={{ flexDirection: 'row' }}>
         <ScrollView style={{ width: 200, height: 200 }}>
           <Image source='https://upload.wikimedia.org/wikipedia/commons/4/47/PNG_transparency_demonstration_1.png' />

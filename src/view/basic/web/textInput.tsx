@@ -32,7 +32,7 @@ import { useFlattenStyle } from '../../../view/style/utils';
 import { TextStyle } from '../../../view/style/types';
 import { useResponderEvents } from './events';
 
-export const TextInput: ComponentType<TextInputProps> = ({ ref, style, multiline, value, onChange, onChangeValue, ...props }) => {
+export const TextInput: ComponentType<TextInputProps> = ({ ref, style, multiline, disabled, value, onChange, onChangeValue, ...props }) => {
 
   const targetRef = useRef<HTMLElement | null>();
   const nativeRef = useRef<ComponentRef<typeof TextInput>>();
@@ -83,6 +83,7 @@ export const TextInput: ComponentType<TextInputProps> = ({ ref, style, multiline
         value={value?.toString() ?? ''}
         onChange={_onChange}
         rows={1}
+        readOnly={disabled}
         style={[
           {
             listStyle: 'none',
@@ -102,6 +103,7 @@ export const TextInput: ComponentType<TextInputProps> = ({ ref, style, multiline
       ref={mergeRefs(targetRef)}
       value={value?.toString() ?? ''}
       onChange={_onChange}
+      readOnly={disabled}
       style={[
         {
           listStyle: 'none',

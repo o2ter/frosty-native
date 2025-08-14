@@ -40,6 +40,7 @@ export type TextInputProps = ViewEventProps<TextInputRef> & {
   style?: StyleProp<TextStyle>;
   value?: string;
   multiline?: boolean;
+  disabled?: boolean;
   onChange?: (this: TextInputRef, event: TextInputChangeEvent) => void;
   onChangeValue?: (this: TextInputRef, string: string) => void;
 };
