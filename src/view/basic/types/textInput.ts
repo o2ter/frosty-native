@@ -47,5 +47,5 @@ export type TextInputProps = ViewEventProps<TextInputRef> & ScrollEventProps<Tex
   onFocus?: (this: TextInputRef, event: Event<TextInputRef>) => void;
   onEndEditing?: (this: TextInputRef, event: Event<TextInputRef>) => void;
   onSubmitEditing?: (this: TextInputRef, event: Event<TextInputRef>) => void;
-  onSelectionChange?: (this: TextInputRef, event: Event<TextInputRef> & { selection: { start: number; end: number; } }) => void;
+  onSelectionChange?: (this: TextInputRef, event: Event<TextInputRef> & { selection?: { start: number; end: number; } }) => void;
 };

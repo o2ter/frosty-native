@@ -116,6 +116,21 @@ export const TextInput: ComponentType<TextInputProps> = ({
     }
   } : undefined);
 
+  const _onSelectionChange = useCallback(onSelectionChange ? (e: Event & { currentTarget: HTMLTextAreaElement | HTMLInputElement }) => {
+    const target = nativeRef.current;
+    if (!target) return;
+    if (_.isFunction(onSelectionChange)) {
+      const { selectionStart: start, selectionEnd: end } = e.currentTarget
+      onSelectionChange.call(target, {
+        _native: e,
+        timeStamp: e.timeStamp,
+        target: e.target,
+        currentTarget: target,
+        ...(_.isNil(start) || _.isNil(end) ? {} : { selection: { start, end } }),
+      });
+    }
+  } : undefined);
+
   const responders = useResponderEvents(props, nativeRef, targetRef);
 
   if (multiline) {
@@ -128,6 +143,7 @@ export const TextInput: ComponentType<TextInputProps> = ({
         readOnly={disabled}
         onBlur={_onBlur}
         onFocus={_onFocus}
+        onSelect={_onSelectionChange}
         style={[
           {
             listStyle: 'none',
