@@ -81,7 +81,7 @@ export const TextInput: ComponentType<TextInputProps> = ({ ref, style, multiline
       <textarea
         ref={mergeRefs(targetRef)}
         value={value?.toString() ?? ''}
-        onChange={_onChange}
+        onInput={_onChange}
         rows={1}
         readOnly={disabled}
         style={[
@@ -102,7 +102,7 @@ export const TextInput: ComponentType<TextInputProps> = ({ ref, style, multiline
     <input
       ref={mergeRefs(targetRef)}
       value={value?.toString() ?? ''}
-      onChange={_onChange}
+      onInput={_onChange}
       readOnly={disabled}
       style={[
         {
