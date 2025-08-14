@@ -82,6 +82,7 @@ export const TextInput: ComponentType<TextInputProps> = ({ ref, style, multiline
         ref={mergeRefs(targetRef)}
         value={value?.toString() ?? ''}
         onChange={_onChange}
+        rows={1}
         style={[
           {
             listStyle: 'none',
