@@ -63,14 +63,14 @@ export const TextInput: ComponentType<TextInputProps> = ({ ref, style, multiline
     if (_.isFunction(onChange)) {
       onChange.call(target, {
         _native: e,
-        value: e.currentTarget.value as any,
+        value: e.currentTarget.value,
         timeStamp: e.timeStamp,
         target: e.target,
         currentTarget: target,
       });
     }
     if (_.isFunction(onChangeValue)) {
-      onChangeValue.call(target, e.currentTarget.value as any);
+      onChangeValue.call(target, e.currentTarget.value);
     }
   } : undefined);
 
