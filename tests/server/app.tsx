@@ -37,9 +37,17 @@ export const App = () => {
       gap: 8,
       padding: 8,
     }}>
-      <ScrollView>
+      <View style={{ flexDirection: 'row' }}>
+        <ScrollView style={{ height: 200 }}>
+          <Image source='https://upload.wikimedia.org/wikipedia/commons/4/47/PNG_transparency_demonstration_1.png' />
+        </ScrollView>
+        <View style={{ height: 200 }}>
+          <Image source='https://upload.wikimedia.org/wikipedia/commons/4/47/PNG_transparency_demonstration_1.png' />
+        </View>
+      </View>
+      <View style={{ height: 200 }}>
         <Image source='https://upload.wikimedia.org/wikipedia/commons/4/47/PNG_transparency_demonstration_1.png' />
-      </ScrollView>
+      </View>
       <View style={{ gap: 8, padding: 8, backgroundColor: 'purple', flexDirection: 'row' }}>
         <View style={{ width: 50, height: 50, backgroundColor: 'yellow' }} />
         <View style={{ width: 20, height: 20, backgroundColor: 'yellow' }} />
