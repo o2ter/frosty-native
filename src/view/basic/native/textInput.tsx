@@ -39,7 +39,7 @@ abstract class FTTextInput extends NativeNode {
   }
 }
 
-export const TextInput: ComponentType<TextInputProps> = ({ ref, style, multiline, value, onChange, onChangeValue, formatted }) => {
+export const TextInput: ComponentType<TextInputProps> = ({ ref, style, multiline, value, onChange, onChangeValue }) => {
 
   const nativeRef = useRef<ComponentRef<typeof TextInput>>();
   useRefHandle(mergeRefs(nativeRef, ref), () => ({
