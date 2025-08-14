@@ -229,7 +229,7 @@ type TextDecorationLine =
 
 export type TextStyle = ViewStyle & {
   color?: ColorValue;
-  fontFamily?: string;
+  fontFamily?: string | string[];
   fontSize?:
   | number
   | `${number}%`;

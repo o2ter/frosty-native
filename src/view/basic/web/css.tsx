@@ -265,7 +265,7 @@ export const encodeTextStyle = <S extends TextStyle>(
   return _.pickBy({
     ...encodeViewStyle(style),
     color,
-    fontFamily,
+    fontFamily: fontFamily ? _.join(_.castArray(fontFamily || []), ', ') : undefined,
     fontSize: _.isString(fontSize) && _.endsWith(fontSize, '%') ? `${parseFloat(fontSize) / 100}em` : fontSize,
     fontStyle,
     fontWeight,
