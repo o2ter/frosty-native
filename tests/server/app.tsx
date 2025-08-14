@@ -58,6 +58,20 @@ export const App = () => {
         </ScrollView>
       </View>
       <View style={{ flexDirection: 'row' }}>
+        <ScrollView style={{ width: 200, height: 200 }}>
+          <Image style={{ width: 800, height: 600 }} source='https://upload.wikimedia.org/wikipedia/commons/4/47/PNG_transparency_demonstration_1.png' />
+        </ScrollView>
+        <ScrollView vertical style={{ width: 200, height: 200 }}>
+          <Image style={{ width: 800, height: 600 }} source='https://upload.wikimedia.org/wikipedia/commons/4/47/PNG_transparency_demonstration_1.png' />
+        </ScrollView>
+        <ScrollView horizontal style={{ width: 200, height: 200 }}>
+          <Image style={{ width: 800, height: 600 }} source='https://upload.wikimedia.org/wikipedia/commons/4/47/PNG_transparency_demonstration_1.png' />
+        </ScrollView>
+        <ScrollView horizontal vertical style={{ width: 200, height: 200 }}>
+          <Image style={{ width: 800, height: 600 }} source='https://upload.wikimedia.org/wikipedia/commons/4/47/PNG_transparency_demonstration_1.png' />
+        </ScrollView>
+      </View>
+      <View style={{ flexDirection: 'row' }}>
         <View style={{ width: 200 }}>
           <Image source='https://upload.wikimedia.org/wikipedia/commons/4/47/PNG_transparency_demonstration_1.png' />
         </View>

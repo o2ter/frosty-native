@@ -123,8 +123,6 @@ export const Text: ComponentType<TextViewProps> = ({ ref, style, children, ...pr
     style,
   ]));
 
-  const responders = useResponderEvents(props, nativeRef, targetRef);
-
   return _createNativeElement(isInnerText ? DOMInnerTextView : DOMTextView, {
     ref: targetRef,
     style: [
@@ -136,6 +134,6 @@ export const Text: ComponentType<TextViewProps> = ({ ref, style, children, ...pr
       cssStyle,
     ],
     children,
-    ...responders,
+    ...useResponderEvents(props, nativeRef, targetRef),
   });
 };

@@ -65,8 +65,6 @@ export const View: ComponentType<ViewProps> = ({ ref, style, children, ...props 
     style,
   ]));
 
-  const responders = useResponderEvents(props, nativeRef, targetRef);
-
   return (
     <div
       ref={targetRef}
@@ -76,7 +74,7 @@ export const View: ComponentType<ViewProps> = ({ ref, style, children, ...props 
         },
         cssStyle,
       ]}
-      {...responders}>
+      {...useResponderEvents(props, nativeRef, targetRef)}>
       {children}
     </div>
   );

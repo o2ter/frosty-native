@@ -28,6 +28,7 @@ import { ScrollViewProps } from '../types/scrollView';
 import { encodeViewStyle } from './css';
 import { useFlattenStyle } from '../../../view/style/utils';
 import { useResponderEvents } from './events';
+import { View } from './view';
 
 export const ScrollView: ComponentType<ScrollViewProps> = ({
   ref,
@@ -79,9 +80,6 @@ export const ScrollView: ComponentType<ScrollViewProps> = ({
     },
     style,
   ]));
-  const contentContainerCssStyle = encodeViewStyle(useFlattenStyle(contentContainerStyle));
-
-  const responders = useResponderEvents(props, nativeRef, targetRef);
 
   return (
     <div
@@ -94,8 +92,8 @@ export const ScrollView: ComponentType<ScrollViewProps> = ({
           overflowY: vertical ? 'auto' : 'hidden',
         },
       ]}
-      {...responders}>
-      <div style={contentContainerCssStyle}>{children}</div>
+      {...useResponderEvents(props, nativeRef, targetRef)}>
+      <View style={contentContainerStyle}>{children}</View>
     </div>
   );
 };

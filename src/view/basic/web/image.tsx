@@ -51,8 +51,6 @@ const ImageBase: ComponentType<ImageProps & { source?: string; }> = ({ ref, styl
     style,
   ]));
 
-  const responders = useResponderEvents(props, nativeRef, targetRef);
-
   return (
     <img
       ref={targetRef}
@@ -64,7 +62,7 @@ const ImageBase: ComponentType<ImageProps & { source?: string; }> = ({ ref, styl
           height: e.currentTarget.naturalHeight,
         });
       }}
-      {...responders}
+      {...useResponderEvents(props, nativeRef, targetRef)}
     />
   );
 };
