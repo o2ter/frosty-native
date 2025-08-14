@@ -32,7 +32,18 @@ import { useFlattenStyle } from '../../../view/style/utils';
 import { TextStyle } from '../../../view/style/types';
 import { useResponderEvents } from './events';
 
-export const TextInput: ComponentType<TextInputProps> = ({ ref, style, multiline, disabled, value, onChange, onChangeValue, ...props }) => {
+export const TextInput: ComponentType<TextInputProps> = ({
+  ref,
+  style,
+  multiline,
+  disabled,
+  value,
+  onChange,
+  onChangeValue,
+  onBlur,
+  onFocus,
+  ...props
+}) => {
 
   const targetRef = useRef<HTMLElement | null>();
   const nativeRef = useRef<ComponentRef<typeof TextInput>>();
@@ -56,6 +67,32 @@ export const TextInput: ComponentType<TextInputProps> = ({ ref, style, multiline
     useTextStyle() as TextStyle,
     style,
   ]));
+
+  const _onBlur = useCallback(onBlur ? (e: Event & { currentTarget: HTMLTextAreaElement | HTMLInputElement }) => {
+    const target = nativeRef.current;
+    if (!target) return;
+    if (_.isFunction(onBlur)) {
+      onBlur.call(target, {
+        _native: e,
+        timeStamp: e.timeStamp,
+        target: e.target,
+        currentTarget: target,
+      });
+    }
+  } : undefined);
+
+  const _onFocus = useCallback(onFocus ? (e: Event & { currentTarget: HTMLTextAreaElement | HTMLInputElement }) => {
+    const target = nativeRef.current;
+    if (!target) return;
+    if (_.isFunction(onFocus)) {
+      onFocus.call(target, {
+        _native: e,
+        timeStamp: e.timeStamp,
+        target: e.target,
+        currentTarget: target,
+      });
+    }
+  } : undefined);
 
   const _onChange = useCallback(onChange || onChangeValue ? (e: Event & { currentTarget: HTMLTextAreaElement | HTMLInputElement }) => {
     const target = nativeRef.current;
@@ -84,6 +121,8 @@ export const TextInput: ComponentType<TextInputProps> = ({ ref, style, multiline
         onInput={_onChange}
         rows={1}
         readOnly={disabled}
+        onBlur={_onBlur}
+        onFocus={_onFocus}
         style={[
           {
             listStyle: 'none',
@@ -104,6 +143,8 @@ export const TextInput: ComponentType<TextInputProps> = ({ ref, style, multiline
       value={value?.toString() ?? ''}
       onInput={_onChange}
       readOnly={disabled}
+      onBlur={_onBlur}
+      onFocus={_onFocus}
       style={[
         {
           listStyle: 'none',

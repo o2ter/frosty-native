@@ -43,4 +43,6 @@ export type TextInputProps = ViewEventProps<TextInputRef> & {
   disabled?: boolean;
   onChange?: (this: TextInputRef, event: TextInputChangeEvent) => void;
   onChangeValue?: (this: TextInputRef, string: string) => void;
+  onBlur?: (this: TextInputRef, event: Event<TextInputRef>) => void;
+  onFocus?: (this: TextInputRef, event: Event<TextInputRef>) => void;
 };
