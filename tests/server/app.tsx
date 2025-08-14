@@ -24,7 +24,7 @@
 //
 
 import _ from 'lodash';
-import { Text, useEnvironment, View } from '../../src/view';
+import { Image, ScrollView, Text, useEnvironment, View } from '../../src/view';
 
 import './app.scss';
 
@@ -37,6 +37,9 @@ export const App = () => {
       gap: 8,
       padding: 8,
     }}>
+      <ScrollView>
+        <Image source='https://upload.wikimedia.org/wikipedia/commons/4/47/PNG_transparency_demonstration_1.png' />
+      </ScrollView>
       <View style={{ gap: 8, padding: 8, backgroundColor: 'purple', flexDirection: 'row' }}>
         <View style={{ width: 50, height: 50, backgroundColor: 'yellow' }} />
         <View style={{ width: 20, height: 20, backgroundColor: 'yellow' }} />
