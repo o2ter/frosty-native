@@ -52,8 +52,13 @@ export const TextInput: ComponentType<TextInputProps> = ({
   onEndEditing,
   onSubmitEditing,
   onSelectionChange,
-  onScroll,
   onContentSizeChange,
+  onMomentumScrollBegin,
+  onMomentumScrollEnd,
+  onScroll,
+  onScrollBeginDrag,
+  onScrollEndDrag,
+  onScrollToTop,
 }) => {
 
   const nativeRef = useRef<ComponentRef<typeof TextInput>>();

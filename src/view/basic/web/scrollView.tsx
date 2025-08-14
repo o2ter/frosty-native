@@ -36,8 +36,13 @@ export const ScrollView: ComponentType<ScrollViewProps> = ({
   horizontal = false,
   vertical = !horizontal,
   children,
-  onScroll,
   onContentSizeChange,
+  onMomentumScrollBegin,
+  onMomentumScrollEnd,
+  onScroll,
+  onScrollBeginDrag,
+  onScrollEndDrag,
+  onScrollToTop,
   ...props
 }) => {
 

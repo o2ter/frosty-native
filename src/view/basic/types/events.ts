@@ -89,6 +89,17 @@ export type ViewEventProps<Target> = {
 }
 
 export type ScrollEventProps<Target> = {
-  onScroll?: (this: Target, event: Event<Target>) => void;
   onContentSizeChange?: (this: Target, event: Event<Target>) => void;
+  onMomentumScrollBegin?: (this: Target, event: Event<Target>) => void;
+  onMomentumScrollEnd?: (this: Target, event: Event<Target>) => void;
+  onScroll?: (this: Target, event: Event<Target> & {
+    contentInset: { bottom: number; left: number; right: number; top: number; };
+    contentOffset: { x: number; y: number; };
+    contentSize: { height: number; width: number; };
+    layoutMeasurement: { height: number; width: number; };
+    zoomScale: number;
+  }) => void;
+  onScrollBeginDrag?: (this: Target, event: Event<Target>) => void;
+  onScrollEndDrag?: (this: Target, event: Event<Target>) => void;
+  onScrollToTop?: (this: Target, event: Event<Target>) => void;
 }
