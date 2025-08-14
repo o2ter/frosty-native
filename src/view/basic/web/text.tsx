@@ -175,7 +175,7 @@ export const Text: ComponentType<TextViewProps> = ({ ref, style, children, ...pr
       boxSizing: 'border-box',
       color: 'black',
       display: 'inline',
-      fontFamily: 'System',
+      fontFamily: 'sans-serif',
       fontSize: 14,
       margin: 0,
       padding: 0,

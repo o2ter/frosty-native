@@ -69,7 +69,7 @@ export const TextInput: ComponentType<TextInputProps> = ({
       borderColor: 'black',
       borderRadius: 0,
       boxSizing: 'border-box',
-      fontFamily: 'System',
+      fontFamily: 'sans-serif',
       fontSize: 14,
       margin: 0,
       padding: 0,
