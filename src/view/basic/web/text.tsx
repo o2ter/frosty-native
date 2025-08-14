@@ -39,6 +39,8 @@ class DOMTextBaseView extends DOMNativeNode {
   #renderer: _DOMRenderer;
   #target: HTMLElement;
 
+  #listener: Record<string, EventListener | undefined> = {};
+
   constructor(target: HTMLElement, renderer: _DOMRenderer) {
     super();
     this.#renderer = renderer;
@@ -54,7 +56,33 @@ class DOMTextBaseView extends DOMNativeNode {
     style?: string;
   }) {
 
-    const { ref, className, style } = props;
+    const {
+      ref,
+      className,
+      style,
+      onPointerEnter,
+      onPointerLeave,
+      onTouchStart,
+      onTouchStartCapture,
+      onTouchMove,
+      onTouchMoveCapture,
+      onTouchEnd,
+      onTouchCancel,
+      onPointerDown,
+      onPointerDownCapture,
+      onPointerMove,
+      onPointerMoveCapture,
+      onPointerUp,
+      onPointerCancel,
+      onMouseEnter,
+      onMouseLeave,
+      onMouseDown,
+      onMouseDownCapture,
+      onMouseMove,
+      onMouseMoveCapture,
+      onMouseUp,
+      onDragStart,
+    } = props;
     mergeRefs(ref)(this.#target);
 
     if (className) {
@@ -66,6 +94,39 @@ class DOMTextBaseView extends DOMNativeNode {
       this.#target.setAttribute('style', style);
     } else {
       this.#target.removeAttribute('style');
+    }
+    const events = {
+      onPointerEnter,
+      onPointerLeave,
+      onTouchStart,
+      onTouchStartCapture,
+      onTouchMove,
+      onTouchMoveCapture,
+      onTouchEnd,
+      onTouchCancel,
+      onPointerDown,
+      onPointerDownCapture,
+      onPointerMove,
+      onPointerMoveCapture,
+      onPointerUp,
+      onPointerCancel,
+      onMouseEnter,
+      onMouseLeave,
+      onMouseDown,
+      onMouseDownCapture,
+      onMouseMove,
+      onMouseMoveCapture,
+      onMouseUp,
+      onDragStart,
+    };
+    for (const [key, listener] of _.entries(events)) {
+      const event = key.endsWith('Capture') ? key.slice(2, -7).toLowerCase() : key.slice(2).toLowerCase();
+      if (this.#listener[key] !== listener) {
+        const options = { capture: key.endsWith('Capture') };
+        if (_.isFunction(this.#listener[key])) this.#target.removeEventListener(event, this.#listener[key], options);
+        if (_.isFunction(listener)) this.#target.addEventListener(event, listener, options);
+      }
+      this.#listener[key] = listener;
     }
   }
 
