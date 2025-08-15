@@ -34,7 +34,7 @@ import { View } from './view';
 export const useScrollProps = <Target extends any>({
   horizontal = false,
   vertical = !horizontal,
-  scrollEnabled,
+  scrollEnabled = true,
   directionalLockEnabled,
   contentInset,
   contentOffset,
