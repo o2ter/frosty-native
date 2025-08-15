@@ -139,6 +139,12 @@ class DOMTextBaseView extends DOMNativeNode {
   }
 
   destroy() {
+    for (const [key, listener] of _.entries(this.#listener)) {
+      const event = key.endsWith('Capture') ? key.slice(2, -7).toLowerCase() : key.slice(2).toLowerCase();
+      if (_.isFunction(listener)) {
+        this.#target.removeEventListener(event, listener, { capture: key.endsWith('Capture') });
+      }
+    }
   }
 }
 
