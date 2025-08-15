@@ -31,6 +31,7 @@ import { encodeTextStyle } from './css';
 import { useFlattenStyle } from '../../../view/style/utils';
 import { TextStyle } from '../../../view/style/types';
 import { useResponderEvents } from './events';
+import { useScrollProps } from './scrollView';
 
 export const TextInput: ComponentType<TextInputProps> = ({
   ref,
@@ -68,7 +69,7 @@ export const TextInput: ComponentType<TextInputProps> = ({
     get _native() { return targetRef.current || undefined; }
   }), null);
 
-  const cssStyle = encodeTextStyle(useFlattenStyle([
+  const { overflow, overflowX, overflowY, ...cssStyle } = encodeTextStyle(useFlattenStyle([
     {
       backgroundColor: 'transparent',
       borderWidth: 0,
@@ -145,6 +146,8 @@ export const TextInput: ComponentType<TextInputProps> = ({
 
   const responders = useResponderEvents(props, nativeRef, targetRef);
 
+  const { style: scrollStyle, ...scrollProps } = useScrollProps(props);
+
   if (multiline) {
     return (
       <textarea
@@ -167,7 +170,9 @@ export const TextInput: ComponentType<TextInputProps> = ({
             resize: 'none',
           },
           cssStyle,
+          scrollStyle,
         ]}
+        {...scrollProps}
         {...responders}
       />
     );
@@ -193,7 +198,9 @@ export const TextInput: ComponentType<TextInputProps> = ({
           resize: 'none',
         },
         cssStyle,
+        scrollStyle,
       ]}
+      {...scrollProps}
       {...responders}
     />
   );

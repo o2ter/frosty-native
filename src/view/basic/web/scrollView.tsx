@@ -23,20 +23,34 @@
 //  THE SOFTWARE.
 //
 
+import _ from 'lodash';
 import { ComponentRef, ComponentType, mergeRefs, useRef, useRefHandle } from 'frosty';
-import { ScrollViewProps } from '../types/scrollView';
+import { ScrollBaseProps, ScrollViewProps } from '../types/scrollView';
 import { encodeViewStyle } from './css';
 import { useFlattenStyle } from '../../../view/style/utils';
 import { useResponderEvents } from './events';
 import { View } from './view';
 
+export const useScrollProps = <Target extends any>({
+  horizontal = false,
+  vertical = !horizontal,
+  scrollEnabled,
+}: ScrollBaseProps<Target>) => {
+
+  return {
+    style: scrollEnabled ? {
+      overflowX: horizontal ? 'auto' : 'hidden',
+      overflowY: vertical ? 'auto' : 'hidden',
+    } as const : {
+      overflow: 'hidden',
+    } as const,
+  };
+};
+
 export const ScrollView: ComponentType<ScrollViewProps> = ({
   ref,
   style,
   contentContainerStyle,
-  horizontal = false,
-  vertical = !horizontal,
-  scrollEnabled,
   children,
   onContentSizeChange,
   onMomentumScrollBegin,
@@ -54,7 +68,7 @@ export const ScrollView: ComponentType<ScrollViewProps> = ({
     get _native() { return targetRef.current; }
   }), null);
 
-  const cssStyle = encodeViewStyle(useFlattenStyle([
+  const { overflow, overflowX, overflowY, ...cssStyle } = encodeViewStyle(useFlattenStyle([
     {
       alignContent: 'flex-start',
       alignItems: 'stretch',
@@ -82,21 +96,16 @@ export const ScrollView: ComponentType<ScrollViewProps> = ({
     style,
   ]));
 
+  const { style: scrollStyle, ...scrollProps } = useScrollProps(props);
+
   return (
     <div
       ref={targetRef}
       style={[
         cssStyle,
-        scrollEnabled ? {
-          overflow: undefined,
-          overflowX: horizontal ? 'auto' : 'hidden',
-          overflowY: vertical ? 'auto' : 'hidden',
-        } : {
-          overflow: 'hidden',
-          overflowX: undefined,
-          overflowY: undefined,
-        },
+        scrollStyle,
       ]}
+      {...scrollProps}
       {...useResponderEvents(props, nativeRef, targetRef)}>
       <View style={contentContainerStyle}>{children}</View>
     </div>
