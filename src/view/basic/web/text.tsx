@@ -60,6 +60,8 @@ class DOMTextBaseView extends DOMNativeNode {
       ref,
       className,
       style,
+      disabled,
+      tabIndex,
       onPointerEnter,
       onPointerLeave,
       onTouchStart,
@@ -98,6 +100,8 @@ class DOMTextBaseView extends DOMNativeNode {
     } else if (!_.isNil(this.#target.getAttribute('style'))) {
       this.#target.removeAttribute('style');
     }
+    if (this.#target.tabIndex !== tabIndex)
+      this.#target.tabIndex = tabIndex;
     const events = {
       onPointerEnter,
       onPointerLeave,
@@ -162,7 +166,7 @@ class DOMInnerTextView extends DOMTextBaseView {
   }
 }
 
-export const Text: ComponentType<TextViewProps> = ({ ref, style, maxFontSizeMultiplier, minimumFontScale, numberOfLines, children, ...props }) => {
+export const Text: ComponentType<TextViewProps> = ({ ref, style, maxFontSizeMultiplier, minimumFontScale, numberOfLines, tabIndex, children, ...props }) => {
 
   const targetRef = useRef<HTMLElement | null>();
   const nativeRef = useRef<ComponentRef<typeof Text>>();
@@ -203,6 +207,7 @@ export const Text: ComponentType<TextViewProps> = ({ ref, style, maxFontSizeMult
       },
       cssStyle,
     ],
+    tabIndex,
     children,
     ...useResponderEvents(props, nativeRef, targetRef),
   });

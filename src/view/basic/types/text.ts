@@ -40,4 +40,5 @@ export type TextViewProps = PropsWithChildren<ViewEventProps<TextViewRef> & {
   allowFontScaling?: boolean;
   adjustsFontSizeToFit?: boolean;
   ellipsizeMode?: 'head' | 'middle' | 'tail' | 'clip';
+  tabIndex?: number;
 }>;

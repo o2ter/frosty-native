@@ -69,4 +69,5 @@ export type ScrollViewProps = PropsWithChildren<ViewEventProps<ScrollViewRef> & 
   style?: StyleProp<ViewStyle>;
   contentContainerStyle?: StyleProp<ViewStyle>;
   keyboardDismissMode?: 'none' | 'on-drag' | 'interactive';
+  tabIndex?: number;
 }>;

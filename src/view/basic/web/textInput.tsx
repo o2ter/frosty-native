@@ -47,6 +47,7 @@ export const TextInput: ComponentType<TextInputProps> = ({
   numberOfLines,
   secureTextEntry,
   autofocus,
+  tabIndex,
   onChange,
   onChangeValue,
   onBlur,
@@ -156,6 +157,7 @@ export const TextInput: ComponentType<TextInputProps> = ({
         disabled={disabled}
         readOnly={readOnly}
         autofocus={autofocus}
+        tabIndex={tabIndex}
         onBlur={_onBlur}
         onFocus={_onFocus}
         onSelect={_onSelectionChange}
@@ -186,6 +188,7 @@ export const TextInput: ComponentType<TextInputProps> = ({
       readOnly={readOnly}
       maxLength={maxLength}
       autofocus={autofocus}
+      tabIndex={tabIndex}
       onBlur={_onBlur}
       onFocus={_onFocus}
       style={[

@@ -34,4 +34,5 @@ type ViewRef = {
 export type ViewProps = PropsWithChildren<ViewEventProps<ViewRef> & {
   ref?: Ref<ViewRef | null | undefined>;
   style?: StyleProp<ViewStyle>;
+  tabIndex?: number;
 }>;

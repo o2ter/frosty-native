@@ -52,6 +52,7 @@ export type TextInputProps = ViewEventProps<TextInputRef> & ScrollBaseProps<Text
   numberOfLines?: number;
   secureTextEntry?: boolean;
   autofocus?: boolean;
+  tabIndex?: number;
   onChange?: (this: TextInputRef, event: TextInputChangeEvent) => void;
   onChangeValue?: (this: TextInputRef, string: string) => void;
   onBlur?: (this: TextInputRef, event: Event<TextInputRef>) => void;

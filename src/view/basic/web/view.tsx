@@ -29,7 +29,7 @@ import { encodeViewStyle } from './css';
 import { useFlattenStyle } from '../../../view/style/utils';
 import { useResponderEvents } from './events';
 
-export const View: ComponentType<ViewProps> = ({ ref, style, children, ...props }) => {
+export const View: ComponentType<ViewProps> = ({ ref, style, children, tabIndex, ...props }) => {
 
   const targetRef = useRef<HTMLDivElement>();
   const nativeRef = useRef<ComponentRef<typeof View>>();
@@ -74,6 +74,7 @@ export const View: ComponentType<ViewProps> = ({ ref, style, children, ...props 
         },
         cssStyle,
       ]}
+      tabIndex={tabIndex}
       {...useResponderEvents(props, nativeRef, targetRef)}>
       {children}
     </div>

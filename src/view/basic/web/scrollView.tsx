@@ -66,6 +66,7 @@ export const ScrollView: ComponentType<ScrollViewProps> = ({
   ref,
   style,
   contentContainerStyle,
+  tabIndex,
   children,
   ...props
 }) => {
@@ -116,6 +117,7 @@ export const ScrollView: ComponentType<ScrollViewProps> = ({
         cssStyle,
         scrollStyle,
       ]}
+      tabIndex={tabIndex}
       {...scrollProps}
       {...useResponderEvents(props, nativeRef, targetRef)}>
       <View style={contentContainerStyle}>{children}</View>

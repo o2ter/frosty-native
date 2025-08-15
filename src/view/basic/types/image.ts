@@ -40,4 +40,5 @@ export type ImageProps = ViewEventProps<ImageRef> & {
   ref?: Ref<ImageRef | null | undefined>;
   source?: ImageSource;
   style?: StyleProp<ImageStyle>;
+  tabIndex?: number;
 };
