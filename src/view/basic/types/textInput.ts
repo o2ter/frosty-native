@@ -30,6 +30,8 @@ import { ScrollBaseProps } from './scrollView';
 
 type TextInputRef = {
   readonly _native?: HTMLElement;
+  focus(): void;
+  blur(): void;
 };
 
 type TextInputChangeEvent = Event<TextInputRef> & {

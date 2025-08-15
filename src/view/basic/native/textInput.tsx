@@ -70,6 +70,8 @@ export const TextInput: ComponentType<TextInputProps> = ({
 
   const nativeRef = useRef<ComponentRef<typeof TextInput>>();
   useRefHandle(mergeRefs(nativeRef, ref), () => ({
+    focus() { },
+    blur() { },
   }), null);
 
   return _createNativeElement(FTTextInput, {
