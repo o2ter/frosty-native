@@ -24,7 +24,7 @@
 //
 
 import _ from 'lodash';
-import { ComponentRef, ComponentType, mergeRefs, useRef, useRefHandle } from 'frosty';
+import { ComponentRef, ComponentType, ExtendedCSSProperties, mergeRefs, useRef, useRefHandle } from 'frosty';
 import { ScrollBaseProps, ScrollViewProps } from '../types/scrollView';
 import { encodeViewStyle } from './css';
 import { useFlattenStyle } from '../../../view/style/utils';
@@ -35,13 +35,13 @@ export const useScrollProps = <Target extends any>({
   horizontal = false,
   vertical = !horizontal,
   scrollEnabled = true,
-  directionalLockEnabled,
+  directionalLockEnabled = false,
   contentInset,
   contentOffset,
-  zoomScale,
-  maximumZoomScale,
-  minimumZoomScale,
-  bounces,
+  zoomScale = 1,
+  maximumZoomScale = 1,
+  minimumZoomScale = 1,
+  bounces = true,
   bouncesZoom,
   decelerationRate,
   onContentSizeChange,
@@ -54,12 +54,12 @@ export const useScrollProps = <Target extends any>({
 }: ScrollBaseProps<Target>) => {
 
   return {
-    style: scrollEnabled ? {
-      overflowX: horizontal ? 'auto' : 'hidden',
-      overflowY: vertical ? 'auto' : 'hidden',
-    } as const : {
-      overflow: 'hidden',
-    } as const,
+    style: {
+      overflow: scrollEnabled ? 'hidden' : undefined,
+      overflowX: horizontal && scrollEnabled ? 'auto' : 'hidden',
+      overflowY: vertical && scrollEnabled ? 'auto' : 'hidden',
+      overscrollBehavior: bounces ? 'contain' : 'none',
+    } as ExtendedCSSProperties,
   };
 };
 
