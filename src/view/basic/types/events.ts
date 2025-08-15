@@ -89,6 +89,8 @@ export type ViewEventProps<Target> = {
 }
 
 export type ScrollEventProps<Target> = {
+  scrollEnabled?: boolean;
+  directionalLockEnabled?: boolean;
   onContentSizeChange?: (this: Target, event: Event<Target>) => void;
   onMomentumScrollBegin?: (this: Target, event: Event<Target>) => void;
   onMomentumScrollEnd?: (this: Target, event: Event<Target>) => void;

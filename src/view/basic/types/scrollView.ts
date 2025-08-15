@@ -31,10 +31,23 @@ type ScrollViewRef = {
   readonly _native?: HTMLElement;
 };
 
-export type ScrollViewProps = PropsWithChildren<ViewEventProps<ScrollViewRef> & ScrollEventProps<ScrollViewRef> & {
+export type ScrollBaseProps<Target> = ScrollEventProps<Target> & {
+  horizontal?: boolean;
+  vertical?: boolean;
+  contentInset?: { bottom: number; left: number; right: number; top: number; };
+  contentOffset?: { x: number; y: number; };
+  zoomScale?: number;
+  maximumZoomScale?: number;
+  minimumZoomScale?: number;
+  bounces?: boolean;
+  bouncesZoom?: number;
+  decelerationRate?: 'fast' | 'normal';
+  directionalLockEnabled?: boolean;
+};
+
+export type ScrollViewProps = PropsWithChildren<ViewEventProps<ScrollViewRef> & ScrollBaseProps<ScrollViewRef> & {
   ref?: Ref<ScrollViewRef | null | undefined>;
   style?: StyleProp<ViewStyle>;
   contentContainerStyle?: StyleProp<ViewStyle>;
-  horizontal?: boolean;
-  vertical?: boolean;
+  keyboardDismissMode?: 'none' | 'on-drag' | 'interactive';
 }>;

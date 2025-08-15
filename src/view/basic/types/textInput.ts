@@ -25,7 +25,8 @@
 
 import { Ref, StyleProp } from 'frosty';
 import { TextStyle } from '../../style/types';
-import { Event, ScrollEventProps, ViewEventProps } from './events';
+import { Event, ViewEventProps } from './events';
+import { ScrollBaseProps } from './scrollView';
 
 type TextInputRef = {
   readonly _native?: HTMLElement;
@@ -35,7 +36,7 @@ type TextInputChangeEvent = Event<TextInputRef> & {
   value: string;
 };
 
-export type TextInputProps = ViewEventProps<TextInputRef> & ScrollEventProps<TextInputRef> & {
+export type TextInputProps = ViewEventProps<TextInputRef> & ScrollBaseProps<TextInputRef> & {
   ref?: Ref<TextInputRef | null | undefined>;
   style?: StyleProp<TextStyle>;
   value?: string;
