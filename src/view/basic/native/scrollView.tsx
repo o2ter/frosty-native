@@ -56,6 +56,9 @@ export const ScrollView: ComponentType<ScrollViewProps> = ({
 
   const nativeRef = useRef<ComponentRef<typeof ScrollView>>();
   useRefHandle(mergeRefs(nativeRef, ref), () => ({
+    flashScrollIndicators() { },
+    scrollTo() { },
+    scrollToEnd() { },
   }), null);
 
   return _createNativeElement(FTScrollView, {

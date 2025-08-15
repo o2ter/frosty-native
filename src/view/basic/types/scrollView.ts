@@ -29,6 +29,13 @@ import { Event, ViewEventProps } from './events';
 
 type ScrollViewRef = {
   readonly _native?: HTMLElement;
+  flashScrollIndicators(): void;
+  scrollTo(
+    options?: { x?: number, y?: number, animated?: boolean } | number,
+    deprecatedX?: number,
+    deprecatedAnimated?: boolean,
+  ): void;
+  scrollToEnd(options?: { animated?: boolean }): void;
 };
 
 export type ScrollBaseProps<Target> = {
