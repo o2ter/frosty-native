@@ -40,6 +40,10 @@ export type TextInputProps = ViewEventProps<TextInputRef> & ScrollEventProps<Tex
   style?: StyleProp<TextStyle>;
   value?: string;
   multiline?: boolean;
+  maxFontSizeMultiplier?: number;
+  minimumFontScale?: number;
+  maxLength?: number;
+  numberOfLines?: number;
   disabled?: boolean;
   onChange?: (this: TextInputRef, event: TextInputChangeEvent) => void;
   onChangeValue?: (this: TextInputRef, string: string) => void;

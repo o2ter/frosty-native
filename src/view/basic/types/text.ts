@@ -34,4 +34,7 @@ type TextViewRef = {
 export type TextViewProps = PropsWithChildren<ViewEventProps<TextViewRef> & {
   ref?: Ref<TextViewRef | null | undefined>;
   style?: StyleProp<TextStyle>;
+  maxFontSizeMultiplier?: number;
+  minimumFontScale?: number;
+  numberOfLines?: number;
 }>;

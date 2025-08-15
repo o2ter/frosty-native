@@ -40,7 +40,7 @@ abstract class FTTextView extends NativeNode {
   }
 }
 
-export const Text: ComponentType<TextViewProps> = ({ ref, style, children }) => {
+export const Text: ComponentType<TextViewProps> = ({ ref, style, maxFontSizeMultiplier, minimumFontScale, numberOfLines, children }) => {
 
   const nativeRef = useRef<ComponentRef<typeof Text>>();
   useRefHandle(mergeRefs(nativeRef, ref), () => ({

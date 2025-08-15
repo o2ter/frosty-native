@@ -36,6 +36,10 @@ export const TextInput: ComponentType<TextInputProps> = ({
   ref,
   style,
   multiline,
+  maxFontSizeMultiplier,
+  minimumFontScale,
+  maxLength,
+  numberOfLines,
   disabled,
   value,
   onChange,
@@ -144,7 +148,8 @@ export const TextInput: ComponentType<TextInputProps> = ({
         ref={mergeRefs(targetRef)}
         value={value?.toString() ?? ''}
         onInput={_onChange}
-        rows={1}
+        rows={numberOfLines || 1}
+        maxLength={maxLength}
         readOnly={disabled}
         onBlur={_onBlur}
         onFocus={_onFocus}
@@ -169,6 +174,7 @@ export const TextInput: ComponentType<TextInputProps> = ({
       value={value?.toString() ?? ''}
       onInput={_onChange}
       readOnly={disabled}
+      maxLength={maxLength}
       onBlur={_onBlur}
       onFocus={_onFocus}
       style={[

@@ -156,7 +156,7 @@ class DOMInnerTextView extends DOMTextBaseView {
   }
 }
 
-export const Text: ComponentType<TextViewProps> = ({ ref, style, children, ...props }) => {
+export const Text: ComponentType<TextViewProps> = ({ ref, style, maxFontSizeMultiplier, minimumFontScale, numberOfLines, children, ...props }) => {
 
   const targetRef = useRef<HTMLElement | null>();
   const nativeRef = useRef<ComponentRef<typeof Text>>();
