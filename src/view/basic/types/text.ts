@@ -37,4 +37,7 @@ export type TextViewProps = PropsWithChildren<ViewEventProps<TextViewRef> & {
   maxFontSizeMultiplier?: number;
   minimumFontScale?: number;
   numberOfLines?: number;
+  allowFontScaling?: boolean;
+  adjustsFontSizeToFit?: boolean;
+  ellipsizeMode?: 'head' | 'middle' | 'tail' | 'clip';
 }>;
