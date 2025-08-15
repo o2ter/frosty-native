@@ -273,6 +273,15 @@ export type TextStyle = ViewStyle & {
   | 'normal'
   | number
   | `${number}%`;
+  verticalAlign?:
+  | 'baseline'
+  | 'sub'
+  | 'super'
+  | 'middle'
+  | 'top'
+  | 'bottom'
+  | number
+  | `${number}%`;
   textAlign?: 'start' | 'end' | 'left' | 'right' | 'center' | 'justify';
   textDecorationLine?:
   | 'none'
