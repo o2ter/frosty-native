@@ -36,7 +36,6 @@ export const useScrollProps = <Target extends any>({
   vertical = !horizontal,
   scrollEnabled = true,
   directionalLockEnabled = false,
-  contentInset,
   contentOffset,
   zoomScale = 1,
   maximumZoomScale = 1,

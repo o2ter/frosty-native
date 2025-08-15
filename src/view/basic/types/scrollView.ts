@@ -25,16 +25,16 @@
 
 import { PropsWithChildren, Ref, StyleProp } from 'frosty';
 import { ViewStyle } from '../../style/types';
-import { ScrollEventProps, ViewEventProps } from './events';
+import { Event, ViewEventProps } from './events';
 
 type ScrollViewRef = {
   readonly _native?: HTMLElement;
 };
 
-export type ScrollBaseProps<Target> = ScrollEventProps<Target> & {
+export type ScrollBaseProps<Target> = {
+  scrollEnabled?: boolean;
   horizontal?: boolean;
   vertical?: boolean;
-  contentInset?: { bottom: number; left: number; right: number; top: number; };
   contentOffset?: { x: number; y: number; };
   zoomScale?: number;
   maximumZoomScale?: number;
@@ -43,6 +43,18 @@ export type ScrollBaseProps<Target> = ScrollEventProps<Target> & {
   bouncesZoom?: number;
   decelerationRate?: 'fast' | 'normal';
   directionalLockEnabled?: boolean;
+  onContentSizeChange?: (this: Target, event: Event<Target>) => void;
+  onMomentumScrollBegin?: (this: Target, event: Event<Target>) => void;
+  onMomentumScrollEnd?: (this: Target, event: Event<Target>) => void;
+  onScroll?: (this: Target, event: Event<Target> & {
+    contentOffset: { x: number; y: number; };
+    contentSize: { height: number; width: number; };
+    layoutMeasurement: { height: number; width: number; };
+    zoomScale: number;
+  }) => void;
+  onScrollBeginDrag?: (this: Target, event: Event<Target>) => void;
+  onScrollEndDrag?: (this: Target, event: Event<Target>) => void;
+  onScrollToTop?: (this: Target, event: Event<Target>) => void;
 };
 
 export type ScrollViewProps = PropsWithChildren<ViewEventProps<ScrollViewRef> & ScrollBaseProps<ScrollViewRef> & {
