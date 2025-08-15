@@ -30,7 +30,7 @@ import { encodeImageStyle } from './css';
 import { useFlattenStyle } from '../../../view/style/utils';
 import { useResponderEvents } from './events';
 
-const ImageBase: ComponentType<ImageProps & { source?: string; }> = ({ ref, style, source, tabIndex, ...props }) => {
+const ImageBase: ComponentType<ImageProps & { source?: string; }> = ({ id, ref, style, source, tabIndex, ...props }) => {
 
   const [naturalSize, setNaturalSize] = useState<{ width: number; height: number; }>();
 
@@ -53,6 +53,7 @@ const ImageBase: ComponentType<ImageProps & { source?: string; }> = ({ ref, styl
 
   return (
     <img
+      id={id}
       ref={targetRef}
       style={cssStyle}
       src={source}

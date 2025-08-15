@@ -34,6 +34,7 @@ import { useResponderEvents } from './events';
 import { useScrollProps } from './scrollView';
 
 export const TextInput: ComponentType<TextInputProps> = ({
+  id,
   ref,
   style,
   value,
@@ -148,8 +149,9 @@ export const TextInput: ComponentType<TextInputProps> = ({
   if (multiline) {
     return (
       <textarea
+        id={id}
         ref={mergeRefs(targetRef)}
-        value={value?.toString() ?? ''}
+        value={value?.toString()}
         placeholder={placeholder?.toString()}
         onInput={_onChange}
         rows={numberOfLines || 1}
@@ -179,9 +181,10 @@ export const TextInput: ComponentType<TextInputProps> = ({
 
   return (
     <input
+      id={id}
       ref={mergeRefs(targetRef)}
       type={secureTextEntry ? 'password' : undefined}
-      value={value?.toString() ?? ''}
+      value={value?.toString()}
       placeholder={placeholder?.toString()}
       onInput={_onChange}
       disabled={disabled}

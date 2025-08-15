@@ -39,6 +39,7 @@ type TextInputChangeEvent = Event<TextInputRef> & {
 };
 
 export type TextInputProps = ViewEventProps<TextInputRef> & ScrollBaseProps<TextInputRef> & {
+  id?: string;
   ref?: Ref<TextInputRef | null | undefined>;
   style?: StyleProp<TextStyle>;
   value?: string;

@@ -57,10 +57,10 @@ class DOMTextBaseView extends DOMNativeNode {
   }) {
 
     const {
+      id,
       ref,
       className,
       style,
-      disabled,
       tabIndex,
       onPointerEnter,
       onPointerLeave,
@@ -87,6 +87,18 @@ class DOMTextBaseView extends DOMNativeNode {
     } = props;
     mergeRefs(ref)(this.#target);
 
+    if (id) {
+      if (this.#target.id !== id)
+        this.#target.id = id;
+    } else if (!_.isNil(this.#target.getAttribute('id'))) {
+      this.#target.removeAttribute('id');
+    }
+    if (tabIndex) {
+      if (this.#target.tabIndex !== tabIndex)
+        this.#target.tabIndex = tabIndex;
+    } else if (!_.isNil(this.#target.getAttribute('tabindex'))) {
+      this.#target.removeAttribute('tabindex');
+    }
     if (className) {
       if (this.#target.className !== className)
         this.#target.className = className;
@@ -100,8 +112,6 @@ class DOMTextBaseView extends DOMNativeNode {
     } else if (!_.isNil(this.#target.getAttribute('style'))) {
       this.#target.removeAttribute('style');
     }
-    if (this.#target.tabIndex !== tabIndex)
-      this.#target.tabIndex = tabIndex;
     const events = {
       onPointerEnter,
       onPointerLeave,
@@ -166,7 +176,7 @@ class DOMInnerTextView extends DOMTextBaseView {
   }
 }
 
-export const Text: ComponentType<TextViewProps> = ({ ref, style, maxFontSizeMultiplier, minimumFontScale, numberOfLines, tabIndex, children, ...props }) => {
+export const Text: ComponentType<TextViewProps> = ({ id, ref, style, maxFontSizeMultiplier, minimumFontScale, numberOfLines, tabIndex, children, ...props }) => {
 
   const targetRef = useRef<HTMLElement | null>();
   const nativeRef = useRef<ComponentRef<typeof Text>>();
@@ -198,6 +208,7 @@ export const Text: ComponentType<TextViewProps> = ({ ref, style, maxFontSizeMult
   ]));
 
   return _createNativeElement(isInnerText ? DOMInnerTextView : DOMTextView, {
+    id,
     ref: targetRef,
     style: [
       !isInnerText && {

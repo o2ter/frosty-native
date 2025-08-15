@@ -37,6 +37,7 @@ type ImageRef = {
 };
 
 export type ImageProps = ViewEventProps<ImageRef> & {
+  id?: string;
   ref?: Ref<ImageRef | null | undefined>;
   source?: ImageSource;
   style?: StyleProp<ImageStyle>;

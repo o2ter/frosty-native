@@ -32,6 +32,7 @@ type ViewRef = {
 };
 
 export type ViewProps = PropsWithChildren<ViewEventProps<ViewRef> & {
+  id?: string;
   ref?: Ref<ViewRef | null | undefined>;
   style?: StyleProp<ViewStyle>;
   tabIndex?: number;

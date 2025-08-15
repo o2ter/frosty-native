@@ -65,6 +65,7 @@ export type ScrollBaseProps<Target> = {
 };
 
 export type ScrollViewProps = PropsWithChildren<ViewEventProps<ScrollViewRef> & ScrollBaseProps<ScrollViewRef> & {
+  id?: string;
   ref?: Ref<ScrollViewRef | null | undefined>;
   style?: StyleProp<ViewStyle>;
   contentContainerStyle?: StyleProp<ViewStyle>;

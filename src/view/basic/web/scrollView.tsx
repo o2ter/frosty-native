@@ -63,6 +63,7 @@ export const useScrollProps = <Target extends any>({
 };
 
 export const ScrollView: ComponentType<ScrollViewProps> = ({
+  id,
   ref,
   style,
   contentContainerStyle,
@@ -112,6 +113,7 @@ export const ScrollView: ComponentType<ScrollViewProps> = ({
 
   return (
     <div
+      id={id}
       ref={targetRef}
       style={[
         cssStyle,
