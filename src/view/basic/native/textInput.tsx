@@ -52,6 +52,7 @@ export const TextInput: ComponentType<TextInputProps> = ({
   maxLength,
   numberOfLines,
   secureTextEntry,
+  autofocus,
   onChange,
   onChangeValue,
   onBlur,
