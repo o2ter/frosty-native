@@ -45,6 +45,7 @@ export const TextInput: ComponentType<TextInputProps> = ({
   value,
   placeholder,
   disabled,
+  readOnly,
   multiline,
   maxFontSizeMultiplier,
   minimumFontScale,

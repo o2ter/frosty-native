@@ -38,6 +38,7 @@ export const TextInput: ComponentType<TextInputProps> = ({
   value,
   placeholder,
   disabled,
+  readOnly,
   multiline,
   maxFontSizeMultiplier,
   minimumFontScale,
@@ -154,6 +155,7 @@ export const TextInput: ComponentType<TextInputProps> = ({
         rows={numberOfLines || 1}
         maxLength={maxLength}
         disabled={disabled}
+        readOnly={readOnly}
         onBlur={_onBlur}
         onFocus={_onFocus}
         onSelect={_onSelectionChange}
@@ -179,6 +181,7 @@ export const TextInput: ComponentType<TextInputProps> = ({
       placeholder={placeholder?.toString()}
       onInput={_onChange}
       disabled={disabled}
+      readOnly={readOnly}
       maxLength={maxLength}
       onBlur={_onBlur}
       onFocus={_onFocus}

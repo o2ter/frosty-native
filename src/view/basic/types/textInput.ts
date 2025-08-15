@@ -41,6 +41,7 @@ export type TextInputProps = ViewEventProps<TextInputRef> & ScrollEventProps<Tex
   value?: string;
   placeholder?: string;
   disabled?: boolean;
+  readOnly?: boolean;
   multiline?: boolean;
   maxFontSizeMultiplier?: number;
   minimumFontScale?: number;
