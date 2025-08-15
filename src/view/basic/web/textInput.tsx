@@ -35,13 +35,15 @@ import { useResponderEvents } from './events';
 export const TextInput: ComponentType<TextInputProps> = ({
   ref,
   style,
+  value,
+  placeholder,
+  disabled,
   multiline,
   maxFontSizeMultiplier,
   minimumFontScale,
   maxLength,
   numberOfLines,
-  disabled,
-  value,
+  secureTextEntry,
   onChange,
   onChangeValue,
   onBlur,
@@ -147,6 +149,7 @@ export const TextInput: ComponentType<TextInputProps> = ({
       <textarea
         ref={mergeRefs(targetRef)}
         value={value?.toString() ?? ''}
+        placeholder={placeholder?.toString()}
         onInput={_onChange}
         rows={numberOfLines || 1}
         maxLength={maxLength}
@@ -171,7 +174,9 @@ export const TextInput: ComponentType<TextInputProps> = ({
   return (
     <input
       ref={mergeRefs(targetRef)}
+      type={secureTextEntry ? 'password' : undefined}
       value={value?.toString() ?? ''}
+      placeholder={placeholder?.toString()}
       onInput={_onChange}
       readOnly={disabled}
       maxLength={maxLength}

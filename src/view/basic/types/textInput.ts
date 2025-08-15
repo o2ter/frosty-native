@@ -39,12 +39,14 @@ export type TextInputProps = ViewEventProps<TextInputRef> & ScrollEventProps<Tex
   ref?: Ref<TextInputRef | null | undefined>;
   style?: StyleProp<TextStyle>;
   value?: string;
+  placeholder?: string;
+  disabled?: boolean;
   multiline?: boolean;
   maxFontSizeMultiplier?: number;
   minimumFontScale?: number;
   maxLength?: number;
   numberOfLines?: number;
-  disabled?: boolean;
+  secureTextEntry?: boolean;
   onChange?: (this: TextInputRef, event: TextInputChangeEvent) => void;
   onChangeValue?: (this: TextInputRef, string: string) => void;
   onBlur?: (this: TextInputRef, event: Event<TextInputRef>) => void;
