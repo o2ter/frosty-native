@@ -35,6 +35,22 @@ export const useScrollProps = <Target extends any>({
   horizontal = false,
   vertical = !horizontal,
   scrollEnabled,
+  directionalLockEnabled,
+  contentInset,
+  contentOffset,
+  zoomScale,
+  maximumZoomScale,
+  minimumZoomScale,
+  bounces,
+  bouncesZoom,
+  decelerationRate,
+  onContentSizeChange,
+  onMomentumScrollBegin,
+  onMomentumScrollEnd,
+  onScroll,
+  onScrollBeginDrag,
+  onScrollEndDrag,
+  onScrollToTop,
 }: ScrollBaseProps<Target>) => {
 
   return {
@@ -52,13 +68,6 @@ export const ScrollView: ComponentType<ScrollViewProps> = ({
   style,
   contentContainerStyle,
   children,
-  onContentSizeChange,
-  onMomentumScrollBegin,
-  onMomentumScrollEnd,
-  onScroll,
-  onScrollBeginDrag,
-  onScrollEndDrag,
-  onScrollToTop,
   ...props
 }) => {
 

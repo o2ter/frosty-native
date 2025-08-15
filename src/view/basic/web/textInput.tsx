@@ -53,13 +53,6 @@ export const TextInput: ComponentType<TextInputProps> = ({
   onEndEditing,
   onSubmitEditing,
   onSelectionChange,
-  onContentSizeChange,
-  onMomentumScrollBegin,
-  onMomentumScrollEnd,
-  onScroll,
-  onScrollBeginDrag,
-  onScrollEndDrag,
-  onScrollToTop,
   ...props
 }) => {
 
