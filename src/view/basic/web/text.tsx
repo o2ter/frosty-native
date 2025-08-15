@@ -58,7 +58,6 @@ class DOMTextBaseView extends DOMNativeNode {
 
     const {
       id,
-      ref,
       className,
       style,
       tabIndex,
@@ -85,7 +84,6 @@ class DOMTextBaseView extends DOMNativeNode {
       onMouseUp,
       onDragStart,
     } = props;
-    mergeRefs(ref)(this.#target);
 
     if (id) {
       if (this.#target.id !== id)
