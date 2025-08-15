@@ -60,8 +60,8 @@ export const TextInput: ComponentType<TextInputProps> = ({
   const nativeRef = useRef<ComponentRef<typeof TextInput>>();
   useRefHandle(mergeRefs(nativeRef, ref), () => ({
     get _native() { return targetRef.current || undefined; },
-    focus() { },
-    blur() { },
+    focus() { targetRef.current?.focus(); },
+    blur() { targetRef.current?.blur(); },
   }), null);
 
   const { overflow, overflowX, overflowY, ...cssStyle } = encodeTextStyle(useFlattenStyle([
