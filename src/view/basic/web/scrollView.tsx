@@ -36,6 +36,7 @@ export const ScrollView: ComponentType<ScrollViewProps> = ({
   contentContainerStyle,
   horizontal = false,
   vertical = !horizontal,
+  scrollEnabled,
   children,
   onContentSizeChange,
   onMomentumScrollBegin,
@@ -86,10 +87,14 @@ export const ScrollView: ComponentType<ScrollViewProps> = ({
       ref={targetRef}
       style={[
         cssStyle,
-        {
+        scrollEnabled ? {
           overflow: undefined,
           overflowX: horizontal ? 'auto' : 'hidden',
           overflowY: vertical ? 'auto' : 'hidden',
+        } : {
+          overflow: 'hidden',
+          overflowX: undefined,
+          overflowY: undefined,
         },
       ]}
       {...useResponderEvents(props, nativeRef, targetRef)}>
