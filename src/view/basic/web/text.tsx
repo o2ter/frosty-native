@@ -60,7 +60,7 @@ class DOMTextBaseView extends DOMNativeNode {
   }
 
   destroy() {
-    DOMNativeNode.Utils.destroyElement(this.#target);
+    DOMNativeNode.Utils.destroy(this.#target);
   }
 }
 
