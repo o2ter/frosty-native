@@ -36,14 +36,10 @@ import { useResponderEvents } from './events';
 
 class DOMTextBaseView extends DOMNativeNode {
 
-  #renderer: _DOMRenderer;
   #target: HTMLElement;
 
-  #listener: Record<string, EventListener | undefined> = {};
-
-  constructor(target: HTMLElement, renderer: _DOMRenderer) {
+  constructor(target: HTMLElement) {
     super();
-    this.#renderer = renderer;
     this.#target = target;
   }
 
@@ -55,122 +51,30 @@ class DOMTextBaseView extends DOMNativeNode {
     className?: string;
     style?: string;
   }) {
-
-    const {
-      id,
-      className,
-      style,
-      tabIndex,
-      onPointerEnter,
-      onPointerLeave,
-      onTouchStart,
-      onTouchStartCapture,
-      onTouchMove,
-      onTouchMoveCapture,
-      onTouchEnd,
-      onTouchCancel,
-      onPointerDown,
-      onPointerDownCapture,
-      onPointerMove,
-      onPointerMoveCapture,
-      onPointerUp,
-      onPointerCancel,
-      onMouseEnter,
-      onMouseLeave,
-      onMouseDown,
-      onMouseDownCapture,
-      onMouseMove,
-      onMouseMoveCapture,
-      onMouseUp,
-      onDragStart,
-    } = props;
-
-    if (id) {
-      if (this.#target.id !== id)
-        this.#target.id = id;
-    } else if (!_.isNil(this.#target.getAttribute('id'))) {
-      this.#target.removeAttribute('id');
-    }
-    if (tabIndex) {
-      if (this.#target.tabIndex !== tabIndex)
-        this.#target.tabIndex = tabIndex;
-    } else if (!_.isNil(this.#target.getAttribute('tabindex'))) {
-      this.#target.removeAttribute('tabindex');
-    }
-    if (className) {
-      if (this.#target.className !== className)
-        this.#target.className = className;
-    } else if (!_.isNil(this.#target.getAttribute('class'))) {
-      this.#target.removeAttribute('class');
-    }
-    if (style) {
-      const oldValue = this.#target.getAttribute('style');
-      if (oldValue !== style)
-        this.#target.setAttribute('style', style);
-    } else if (!_.isNil(this.#target.getAttribute('style'))) {
-      this.#target.removeAttribute('style');
-    }
-    const events = {
-      onPointerEnter,
-      onPointerLeave,
-      onTouchStart,
-      onTouchStartCapture,
-      onTouchMove,
-      onTouchMoveCapture,
-      onTouchEnd,
-      onTouchCancel,
-      onPointerDown,
-      onPointerDownCapture,
-      onPointerMove,
-      onPointerMoveCapture,
-      onPointerUp,
-      onPointerCancel,
-      onMouseEnter,
-      onMouseLeave,
-      onMouseDown,
-      onMouseDownCapture,
-      onMouseMove,
-      onMouseMoveCapture,
-      onMouseUp,
-      onDragStart,
-    };
-    for (const [key, listener] of _.entries(events)) {
-      const event = key.endsWith('Capture') ? key.slice(2, -7).toLowerCase() : key.slice(2).toLowerCase();
-      if (this.#listener[key] !== listener) {
-        const options = { capture: key.endsWith('Capture') };
-        if (_.isFunction(this.#listener[key])) this.#target.removeEventListener(event, this.#listener[key], options);
-        if (_.isFunction(listener)) this.#target.addEventListener(event, listener, options);
-      }
-      this.#listener[key] = listener;
-    }
+    DOMNativeNode.Utils.update(this.#target, props);
   }
 
   replaceChildren(children: (string | Element | DOMNativeNode)[]) {
     const filtered = _.filter(children, x => _.isString(x) || x instanceof DOMInnerTextView);
-    this.#renderer.__replaceChildren(this.#target, filtered);
+    DOMNativeNode.Utils.replaceChildren(this.#target, filtered);
   }
 
   destroy() {
-    for (const [key, listener] of _.entries(this.#listener)) {
-      const event = key.endsWith('Capture') ? key.slice(2, -7).toLowerCase() : key.slice(2).toLowerCase();
-      if (_.isFunction(listener)) {
-        this.#target.removeEventListener(event, listener, { capture: key.endsWith('Capture') });
-      }
-    }
+    DOMNativeNode.Utils.destroyElement(this.#target);
   }
 }
 
 class DOMTextView extends DOMTextBaseView {
 
-  static createElement(doc: Document, renderer: _DOMRenderer): DOMNativeNode {
-    return new DOMTextView(doc.createElement('div'), renderer);
+  static createElement(doc: Document): DOMNativeNode {
+    return new DOMTextView(doc.createElement('div'));
   }
 }
 
 class DOMInnerTextView extends DOMTextBaseView {
 
-  static createElement(doc: Document, renderer: _DOMRenderer): DOMNativeNode {
-    return new DOMInnerTextView(doc.createElement('span'), renderer);
+  static createElement(doc: Document): DOMNativeNode {
+    return new DOMInnerTextView(doc.createElement('span'));
   }
 }
 
