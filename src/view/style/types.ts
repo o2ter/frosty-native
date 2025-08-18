@@ -304,6 +304,7 @@ export const textStyleKeys = [
   'fontWeight',
   'letterSpacing',
   'lineHeight',
+  'verticalAlign',
   'textAlign',
   'textDecorationLine',
   'textDecorationStyle',
