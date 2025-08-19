@@ -24,14 +24,14 @@
 //
 
 import _ from 'lodash';
-import { ComponentRef, ComponentType, ExtendedCSSProperties, mergeRefs, useEffect, useRef, useRefHandle, useCallback } from 'frosty';
+import { ComponentRef, ComponentType, ExtendedCSSProperties, mergeRefs, useRef, useRefHandle } from 'frosty';
 import { ScrollBaseProps, ScrollViewProps } from '../types/scrollView';
 import { encodeViewStyle } from './css';
 import { useFlattenStyle } from '../../../view/style/utils';
 import { useResponderEvents } from './events';
 import { View } from './view';
 
-export const useScrollProps = <Target extends { _native?: HTMLElement }>({
+export const useScrollProps = <Target extends any>({
   horizontal = false,
   vertical = !horizontal,
   scrollEnabled = true,
@@ -52,115 +52,13 @@ export const useScrollProps = <Target extends { _native?: HTMLElement }>({
   onScrollToTop,
 }: ScrollBaseProps<Target>) => {
 
-  // Track scroll and drag state
-  const scrollingRef = useRef(false);
-  const dragRef = useRef(false);
-  const momentumRef = useRef(false);
-  const lastScrollPos = useRef({ x: 0, y: 0 });
-  const lockDir = useRef<'x' | 'y' | undefined>();
-  const momentumTimer = useRef<number | undefined>();
-
-  const clearMomentumTimer = () => {
-    if (momentumTimer.current) {
-      window.clearTimeout(momentumTimer.current);
-      momentumTimer.current = undefined;
-    }
-  };
-
-  // Helper constructing event shape expected by callbacks
-  const buildEvent = (target: HTMLElement) => ({
-    currentTarget: target,
-    target,
-    stopPropagation() { },
-    preventDefault() { },
-  });
-
-  const call = <K extends keyof ScrollBaseProps<Target>>(handler: ScrollBaseProps<Target>[K], arg: any) => {
-    (handler as any)?.call(arg.currentTarget as any, arg);
-  };
-
-  const handleScroll = useCallback((e: any) => {
-    if (!scrollEnabled) return;
-    const target: HTMLElement = e.currentTarget;
-    const evt = buildEvent(target) as any;
-    const x = target.scrollLeft;
-    const y = target.scrollTop;
-    const dx = x - lastScrollPos.current.x;
-    const dy = y - lastScrollPos.current.y;
-
-    if (directionalLockEnabled && !lockDir.current) {
-      if (Math.abs(dx) > Math.abs(dy)) lockDir.current = 'x';
-      else if (Math.abs(dy) > Math.abs(dx)) lockDir.current = 'y';
-    }
-
-    if (!dragRef.current) {
-      dragRef.current = true;
-      call(onScrollBeginDrag, evt);
-      momentumRef.current = true;
-      call(onMomentumScrollBegin, evt);
-    }
-
-    const scrollEvent = {
-      ...evt,
-      contentOffset: { x, y },
-      contentSize: { width: target.scrollWidth, height: target.scrollHeight },
-      layoutMeasurement: { width: target.clientWidth, height: target.clientHeight },
-      zoomScale,
-    };
-    call(onScroll, scrollEvent);
-
-    // content size change callback triggered each scroll (simpler heuristic)
-    call(onContentSizeChange, evt);
-
-    if (y === 0) call(onScrollToTop, evt);
-
-    clearMomentumTimer();
-    momentumTimer.current = window.setTimeout(() => {
-      if (dragRef.current) {
-        dragRef.current = false;
-        call(onScrollEndDrag, evt);
-      }
-      if (momentumRef.current) {
-        momentumRef.current = false;
-        call(onMomentumScrollEnd, evt);
-      }
-      lockDir.current = undefined;
-    }, 120);
-
-    lastScrollPos.current = { x, y };
-  }, [scrollEnabled, directionalLockEnabled, onScrollBeginDrag, onScroll, onScrollEndDrag, onMomentumScrollBegin, onMomentumScrollEnd, onContentSizeChange, onScrollToTop, zoomScale]);
-
-  // Apply initial contentOffset
-  const containerRef = useRef<HTMLElement | null>(null);
-  const setContainer = useCallback((el: HTMLElement | null) => {
-    containerRef.current = el;
-    if (el && contentOffset) {
-      if (typeof contentOffset.x === 'number') el.scrollLeft = contentOffset.x;
-      if (typeof contentOffset.y === 'number') el.scrollTop = contentOffset.y;
-    }
-  }, [contentOffset?.x, contentOffset?.y]);
-
-  // Update scroll position when contentOffset changes
-  useEffect(() => {
-    const el = containerRef.current;
-    if (el && contentOffset) {
-      if (contentOffset.x != null) el.scrollLeft = contentOffset.x;
-      if (contentOffset.y != null) el.scrollTop = contentOffset.y;
-    }
-  }, [contentOffset?.x, contentOffset?.y]);
-
-  useEffect(() => () => clearMomentumTimer(), []);
-
   return {
-    ref: setContainer,
     style: {
       overflow: scrollEnabled ? 'hidden' : undefined,
       overflowX: horizontal && scrollEnabled ? 'auto' : 'hidden',
       overflowY: vertical && scrollEnabled ? 'auto' : 'hidden',
       overscrollBehavior: bounces ? 'contain' : 'none',
-      touchAction: directionalLockEnabled ? (horizontal && vertical ? 'pan-x pan-y' : horizontal ? 'pan-x' : 'pan-y') : undefined,
     } as ExtendedCSSProperties,
-    onScroll: handleScroll,
   };
 };
 
@@ -211,19 +109,12 @@ export const ScrollView: ComponentType<ScrollViewProps> = ({
     style,
   ]));
 
-  const { style: scrollStyle, ref: scrollInnerRef, ...scrollProps } = useScrollProps(props as any);
-
-  const combinedRef = useCallback((el: HTMLDivElement | null | undefined) => {
-    (targetRef as any).current = el ?? null;
-    const pass = el ?? null;
-    if (typeof scrollInnerRef === 'function') (scrollInnerRef as any)(pass);
-    else if (scrollInnerRef && 'current' in (scrollInnerRef as any)) (scrollInnerRef as any).current = pass;
-  }, [scrollInnerRef]);
+  const { style: scrollStyle, ...scrollProps } = useScrollProps(props);
 
   return (
     <div
       id={id}
-      ref={combinedRef}
+      ref={targetRef}
       style={[
         cssStyle,
         scrollStyle,
