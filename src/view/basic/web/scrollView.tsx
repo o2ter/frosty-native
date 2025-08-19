@@ -77,8 +77,8 @@ export const ScrollView: ComponentType<ScrollViewProps> = ({
   useRefHandle(mergeRefs(nativeRef, ref), () => ({
     get _native() { return targetRef.current; },
     flashScrollIndicators() {},
-    scrollTo() {},
-    scrollToEnd() {},
+    scrollTo(options) {},
+    scrollToEnd(options) {},
   }), null);
 
   const { overflow, overflowX, overflowY, ...cssStyle } = encodeViewStyle(useFlattenStyle([
