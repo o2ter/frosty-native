@@ -69,6 +69,8 @@ export const ScrollView: ComponentType<ScrollViewProps> = ({
   contentContainerStyle,
   tabIndex,
   children,
+  horizontal = false,
+  vertical = !horizontal,
   ...props
 }) => {
 
@@ -77,8 +79,26 @@ export const ScrollView: ComponentType<ScrollViewProps> = ({
   useRefHandle(mergeRefs(nativeRef, ref), () => ({
     get _native() { return targetRef.current; },
     flashScrollIndicators() {},
-    scrollTo(options) {},
-    scrollToEnd(options) {},
+    scrollTo(options) {
+      const el = targetRef.current;
+      if (!el) return;
+      const { x, y, animated } = options || {} as any;
+      el.scrollTo({
+        left: x ?? el.scrollLeft,
+        top: y ?? el.scrollTop,
+        behavior: animated ? 'smooth' : 'auto',
+      });
+    },
+    scrollToEnd(options) {
+      const el = targetRef.current;
+      if (!el) return;
+      const { animated } = options || {} as any;
+      el.scrollTo({
+        left: horizontal ? (el.scrollWidth - el.clientWidth) : el.scrollLeft,
+        top: vertical ? (el.scrollHeight - el.clientHeight) : el.scrollTop,
+        behavior: animated ? 'smooth' : 'auto',
+      });
+    },
   }), null);
 
   const { overflow, overflowX, overflowY, ...cssStyle } = encodeViewStyle(useFlattenStyle([
@@ -109,7 +129,7 @@ export const ScrollView: ComponentType<ScrollViewProps> = ({
     style,
   ]));
 
-  const { style: scrollStyle, ...scrollProps } = useScrollProps(targetRef, props);
+  const { style: scrollStyle, ...scrollProps } = useScrollProps(targetRef, { horizontal, vertical, ...props });
 
   return (
     <div
