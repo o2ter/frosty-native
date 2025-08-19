@@ -49,6 +49,8 @@ export const TextInput: ComponentType<TextInputProps> = ({
   secureTextEntry,
   autofocus,
   tabIndex,
+  horizontal = false,
+  vertical = !horizontal,
   onChange,
   onChangeValue,
   onBlur,
@@ -65,6 +67,27 @@ export const TextInput: ComponentType<TextInputProps> = ({
     get _native() { return targetRef.current || undefined; },
     focus() { targetRef.current?.focus(); },
     blur() { targetRef.current?.blur(); },
+    flashScrollIndicators() {},
+    scrollTo(options) {
+      const el = targetRef.current;
+      if (!el) return;
+      const { x, y, animated } = options || {} as any;
+      el.scrollTo({
+        left: x ?? el.scrollLeft,
+        top: y ?? el.scrollTop,
+        behavior: animated ? 'smooth' : 'auto',
+      });
+    },
+    scrollToEnd(options) {
+      const el = targetRef.current;
+      if (!el) return;
+      const { animated } = options || {} as any;
+      el.scrollTo({
+        left: horizontal ? (el.scrollWidth - el.clientWidth) : el.scrollLeft,
+        top: vertical ? (el.scrollHeight - el.clientHeight) : el.scrollTop,
+        behavior: animated ? 'smooth' : 'auto',
+      });
+    },
   }), null);
 
   const { overflow, overflowX, overflowY, ...cssStyle } = encodeTextStyle(useFlattenStyle([
@@ -144,7 +167,7 @@ export const TextInput: ComponentType<TextInputProps> = ({
 
   const responders = useResponderEvents(props, nativeRef, targetRef);
 
-  const { style: scrollStyle, ...scrollProps } = useScrollProps(targetRef, props);
+  const { style: scrollStyle, ...scrollProps } = useScrollProps(targetRef, { horizontal, vertical, ...props });
 
   if (multiline) {
     return (

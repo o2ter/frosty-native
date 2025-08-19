@@ -73,6 +73,9 @@ export const TextInput: ComponentType<TextInputProps> = ({
   useRefHandle(mergeRefs(nativeRef, ref), () => ({
     focus() { },
     blur() { },
+    flashScrollIndicators() { },
+    scrollTo() { },
+    scrollToEnd() { },
   }), null);
 
   return _createNativeElement(FTTextInput, {

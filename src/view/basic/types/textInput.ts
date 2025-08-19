@@ -32,6 +32,9 @@ type TextInputRef = {
   readonly _native?: HTMLElement;
   focus(): void;
   blur(): void;
+  flashScrollIndicators(): void;
+  scrollTo(options: { x?: number, y?: number, animated?: boolean }): void;
+  scrollToEnd(options?: { animated?: boolean }): void;
 };
 
 type TextInputChangeEvent = Event<TextInputRef> & {
