@@ -24,14 +24,14 @@
 //
 
 import _ from 'lodash';
-import { ComponentRef, ComponentType, ExtendedCSSProperties, mergeRefs, useRef, useRefHandle } from 'frosty';
+import { ComponentRef, ComponentType, ExtendedCSSProperties, mergeRefs, RefObject, useRef, useRefHandle } from 'frosty';
 import { ScrollBaseProps, ScrollViewProps } from '../types/scrollView';
 import { encodeViewStyle } from './css';
 import { useFlattenStyle } from '../../../view/style/utils';
 import { useResponderEvents } from './events';
 import { View } from './view';
 
-export const useScrollProps = <Target extends any>({
+export const useScrollProps = <Target extends any>(ref: RefObject<HTMLElement | null | undefined>, {
   horizontal = false,
   vertical = !horizontal,
   scrollEnabled = true,
@@ -109,7 +109,7 @@ export const ScrollView: ComponentType<ScrollViewProps> = ({
     style,
   ]));
 
-  const { style: scrollStyle, ...scrollProps } = useScrollProps(props);
+  const { style: scrollStyle, ...scrollProps } = useScrollProps(targetRef, props);
 
   return (
     <div
