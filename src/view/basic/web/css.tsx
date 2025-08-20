@@ -80,6 +80,31 @@ const encodeTextShadow = (value: BoxShadowValue | BoxShadowValue[]): string | un
   ]).join(' ');
 }
 
+const encodeFontFamily = (fontFamily: string | string[]): string => {
+  const genericFamilies = new Set([
+    'serif', 'sans-serif', 'monospace', 'cursive', 'fantasy',
+    'system-ui', 'ui-serif', 'ui-sans-serif', 'ui-monospace', 'ui-rounded'
+  ]);
+
+  const families = _.castArray(fontFamily || []);
+
+  return families.map(family => {
+    const trimmed = family.trim();
+
+    // Don't quote generic font families
+    if (genericFamilies.has(trimmed.toLowerCase())) {
+      return trimmed;
+    }
+
+    // Quote font families that contain spaces, digits at the start, or special characters
+    if (/[\s\d]/.test(trimmed) || /^[\d]/.test(trimmed) || /[^\w-]/.test(trimmed)) {
+      return `"${trimmed}"`;
+    }
+
+    return trimmed;
+  }).join(', ');
+}
+
 export const encodeViewStyle = <S extends ViewStyle>(
   style: ReturnType<typeof useFlattenStyle<S>>
 ): ExtendedCSSProperties => {
@@ -266,7 +291,7 @@ export const encodeTextStyle = <S extends TextStyle>(
   return _.pickBy({
     ...encodeViewStyle(style),
     color,
-    fontFamily: fontFamily ? _.join(_.castArray(fontFamily || []), ', ') : undefined,
+    fontFamily: fontFamily ? encodeFontFamily(fontFamily) : undefined,
     fontSize: _.isString(fontSize) && _.endsWith(fontSize, '%') ? `${parseFloat(fontSize) / 100}em` : fontSize,
     fontStyle,
     fontWeight,
