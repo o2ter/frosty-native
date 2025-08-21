@@ -32,4 +32,4 @@ cd "$SCRIPT_DIR"
 COMMAND="$1"
 shift 1
 
-source "../scripts/bin/$COMMAND.sh" $@
+source "../scripts/bin/$COMMAND.sh" "$@"
