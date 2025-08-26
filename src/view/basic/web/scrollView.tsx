@@ -67,12 +67,16 @@ export const useScrollProps = <Target extends any>(
   const touchStartPos = useRef<{ x: number; y: number } | null>(null);
   const lockDirection = useRef<'horizontal' | 'vertical' | null>(null);
 
+  // Track scroll source to differentiate momentum from active user input
+  const isActivelyWheeling = useRef(false);
+  const dragJustEnded = useRef(false);
+  const wheelJustEnded = useRef(false);
+
   // Handle content size changes
   useResizeObserver(onContentSizeChange ? ref : null, (e) => {
     const targetInstance = target.current;
     if (!targetInstance || !onContentSizeChange) return;
 
-    const element = e.target as HTMLElement;
     onContentSizeChange.call(targetInstance, {
       _native: e,
       timeStamp: window.performance.now(),
@@ -126,31 +130,38 @@ export const useScrollProps = <Target extends any>(
       clearTimeout(momentumTimeout.current);
     }
 
-    if (!isDragging && !isMomentumScrolling) {
+    // Only trigger momentum scrolling if:
+    // 1. Not currently dragging
+    // 2. Not already in momentum scrolling  
+    // 3. Not actively wheeling (but allow wheel momentum)
+    // 4. Either drag just ended OR wheel just ended (indicating potential momentum)
+    if (!isDragging && !isMomentumScrolling && !isActivelyWheeling.current &&
+      (dragJustEnded.current || wheelJustEnded.current) && _.isFunction(onMomentumScrollBegin)) {
       setIsMomentumScrolling(true);
-      if (_.isFunction(onMomentumScrollBegin)) {
-        onMomentumScrollBegin.call(targetInstance, {
-          _native: e,
-          timeStamp: now,
-          target: e.target,
-          currentTarget: targetInstance,
-        });
-      }
-    }
-
-    momentumTimeout.current = setTimeout(() => {
-      if (isMomentumScrolling) {
-        setIsMomentumScrolling(false);
-        if (_.isFunction(onMomentumScrollEnd)) {
-          onMomentumScrollEnd.call(targetInstance, {
-            _native: e,
-            timeStamp: window.performance.now(),
-            target: e.target,
-            currentTarget: targetInstance,
-          });
+      dragJustEnded.current = false; // Reset the flags
+      wheelJustEnded.current = false;
+      onMomentumScrollBegin.call(targetInstance, {
+        _native: e,
+        timeStamp: now,
+        target: e.target,
+        currentTarget: targetInstance,
+      });
+    }    // Only set up momentum end timeout if we're currently in momentum scrolling
+    if (isMomentumScrolling) {
+      momentumTimeout.current = setTimeout(() => {
+        if (isMomentumScrolling) {
+          setIsMomentumScrolling(false);
+          if (_.isFunction(onMomentumScrollEnd)) {
+            onMomentumScrollEnd.call(targetInstance, {
+              _native: e,
+              timeStamp: window.performance.now(),
+              target: e.target,
+              currentTarget: targetInstance,
+            });
+          }
         }
-      }
-    }, 100);
+      }, 100);
+    }
   } : undefined, [target, onScroll, onMomentumScrollBegin, onMomentumScrollEnd, isDragging, isMomentumScrolling, zoomScale]);
 
   const _onTouchStart = useCallback((onScrollBeginDrag || onMomentumScrollEnd || directionalLockEnabled) ? (e: TouchEvent | MouseEvent | PointerEvent) => {
@@ -231,11 +242,19 @@ export const useScrollProps = <Target extends any>(
     }
   } : undefined, [directionalLockEnabled, horizontal, vertical]);
 
-  const _onTouchEnd = useCallback((onScrollEndDrag || directionalLockEnabled) ? (e: TouchEvent | MouseEvent | PointerEvent) => {
+  const _onTouchEnd = useCallback((onScrollEndDrag || directionalLockEnabled || onMomentumScrollBegin) ? (e: TouchEvent | MouseEvent | PointerEvent) => {
     const targetInstance = target.current;
     if (!targetInstance || !isDragging) return;
 
     setIsDragging(false);
+
+    // Set flag to indicate drag just ended - next scroll event might be momentum
+    dragJustEnded.current = true;
+
+    // Reset the flag after a short delay if no scroll occurs
+    setTimeout(() => {
+      dragJustEnded.current = false;
+    }, 100);
 
     // Reset directional lock state
     if (directionalLockEnabled) {
@@ -251,25 +270,47 @@ export const useScrollProps = <Target extends any>(
         currentTarget: targetInstance,
       });
     }
+
+    // After drag ends, any subsequent scroll events should be momentum scrolling
+    // The next scroll event (if any) will trigger momentum begin in _onScroll
   } : undefined, [target, onScrollEndDrag, isDragging, directionalLockEnabled]);
 
-  const _onWheel = useCallback(directionalLockEnabled ? (e: WheelEvent) => {
-    const absX = Math.abs(e.deltaX);
-    const absY = Math.abs(e.deltaY);
+  const _onWheel = useCallback((e: WheelEvent) => {
+    // Mark that active wheel input is occurring
+    isActivelyWheeling.current = true;
 
-    // Determine scroll direction and prevent if not allowed
-    if (absX > absY) {
-      // Horizontal scrolling
-      if (!horizontal) {
-        e.preventDefault();
-      }
-    } else {
-      // Vertical scrolling
-      if (!vertical) {
-        e.preventDefault();
+    // Set flag to indicate wheel input just occurred - next scroll event might be momentum
+    wheelJustEnded.current = true;
+
+    // Reset the actively wheeling flag after a short delay
+    setTimeout(() => {
+      isActivelyWheeling.current = false;
+    }, 50);
+
+    // Reset the wheel just ended flag after a longer delay if no momentum occurs
+    setTimeout(() => {
+      wheelJustEnded.current = false;
+    }, 100);
+
+    // Handle directional locking
+    if (directionalLockEnabled) {
+      const absX = Math.abs(e.deltaX);
+      const absY = Math.abs(e.deltaY);
+
+      // Determine scroll direction and prevent if not allowed
+      if (absX > absY) {
+        // Horizontal scrolling
+        if (!horizontal) {
+          e.preventDefault();
+        }
+      } else {
+        // Vertical scrolling
+        if (!vertical) {
+          e.preventDefault();
+        }
       }
     }
-  } : undefined, [directionalLockEnabled, horizontal, vertical]);
+  }, [directionalLockEnabled, horizontal, vertical]);
 
   // Use global event listeners for touch/mouse end events (like useResponderEvents does)
   useEffect(() => {
@@ -343,7 +384,7 @@ export const useScrollProps = <Target extends any>(
   const scrollEventHandlers = (() => {
     const baseHandlers = {
       onScroll: _onScroll,
-      onWheel: _onWheel,
+      onWheel: _onWheel, // Always include wheel handler to track wheel scrolling
     };
 
     if ('TouchEvent' in window) {
