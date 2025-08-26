@@ -70,6 +70,20 @@ export const App = () => {
         <ScrollView horizontal vertical style={{ width: 200, height: 200 }}>
           <Image style={{ width: 800, height: 600 }} source='https://upload.wikimedia.org/wikipedia/commons/4/47/PNG_transparency_demonstration_1.png' />
         </ScrollView>
+        <ScrollView
+          horizontal
+          vertical
+          directionalLockEnabled
+          style={{ width: 200, height: 200 }}
+          onScroll={(e) => { console.log('onScroll', e) }}
+          onScrollBeginDrag={(e) => { console.log('onScrollBeginDrag', e) }}
+          onContentSizeChange={(e) => { console.log('onContentSizeChange', e) }}
+          onScrollEndDrag={(e) => { console.log('onScrollEndDrag', e) }}
+          onMomentumScrollBegin={(e) => { console.log('onMomentumScrollBegin', e) }}
+          onMomentumScrollEnd={(e) => { console.log('onMomentumScrollEnd', e) }}
+        >
+          <Image style={{ width: 800, height: 600 }} source='https://upload.wikimedia.org/wikipedia/commons/4/47/PNG_transparency_demonstration_1.png' />
+        </ScrollView>
       </View>
       <View style={{ flexDirection: 'row' }}>
         <View style={{ width: 200 }}>
