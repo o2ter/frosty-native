@@ -24,7 +24,7 @@
 //
 
 import _ from 'lodash';
-import { Image, ScrollView, Text, TextInput, useEnvironment, View } from '../../src/view';
+import { Image, Pressable, ScrollView, Text, TextInput, useEnvironment, useGestureResponder, View } from '../../src/view';
 
 import './app.scss';
 import { useState } from 'frosty';
@@ -33,6 +33,17 @@ export const App = () => {
   const env = useEnvironment();
   console.log(env);
   const [value, setValue] = useState('');
+  const panHandler = useGestureResponder({
+    onPanStart: (e) => {
+      console.log('onPanStart', e);
+    },
+    onPanMove: (e) => {
+      console.log('onPanMove', e);
+    },
+    onPanEnd: (e) => {
+      console.log('onPanEnd', e);
+    }
+  });
   return (
     <View style={{
       width: '100%',
@@ -56,6 +67,16 @@ export const App = () => {
         <ScrollView horizontal vertical style={{ width: 200, height: 200 }}>
           <Image source='https://upload.wikimedia.org/wikipedia/commons/4/47/PNG_transparency_demonstration_1.png' />
         </ScrollView>
+      </View>
+      <Pressable
+        onPress={e => console.log('onPress', e)}
+        onPressIn={e => console.log('onPressIn', e)}
+        onPressOut={e => console.log('onPressOut', e)}
+      >
+        <Text>Pressable</Text>
+      </Pressable>
+      <View {...panHandler} style={{ backgroundColor: 'lightblue', width: 200, height: 200, justifyContent: 'center', alignItems: 'center' }}>
+        <Text>Pan here</Text>
       </View>
       <View style={{ flexDirection: 'row' }}>
         <ScrollView style={{ width: 200, height: 200 }}>
