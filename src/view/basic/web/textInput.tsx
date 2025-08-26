@@ -167,7 +167,7 @@ export const TextInput: ComponentType<TextInputProps> = ({
 
   const responders = useResponderEvents(props, nativeRef, targetRef);
 
-  const { style: scrollStyle, ...scrollProps } = useScrollProps(targetRef, { horizontal, vertical, ...props });
+  const { style: scrollStyle, ...scrollProps } = useScrollProps(nativeRef, targetRef, { horizontal, vertical, ...props });
 
   if (multiline) {
     return (

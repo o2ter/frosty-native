@@ -31,26 +31,30 @@ import { useFlattenStyle } from '../../../view/style/utils';
 import { useResponderEvents } from './events';
 import { View } from './view';
 
-export const useScrollProps = <Target extends any>(ref: RefObject<HTMLElement | null | undefined>, {
-  horizontal = false,
-  vertical = !horizontal,
-  scrollEnabled = true,
-  directionalLockEnabled = false,
-  contentOffset,
-  zoomScale = 1,
-  maximumZoomScale = 1,
-  minimumZoomScale = 1,
-  bounces = true,
-  bouncesZoom,
-  decelerationRate,
-  onContentSizeChange,
-  onMomentumScrollBegin,
-  onMomentumScrollEnd,
-  onScroll,
-  onScrollBeginDrag,
-  onScrollEndDrag,
-  onScrollToTop,
-}: ScrollBaseProps<Target>) => {
+export const useScrollProps = <Target extends any>(
+  target: RefObject<Target | null | undefined>,
+  ref: RefObject<HTMLElement | null | undefined>,
+  {
+    horizontal = false,
+    vertical = !horizontal,
+    scrollEnabled = true,
+    directionalLockEnabled = false,
+    contentOffset,
+    zoomScale = 1,
+    maximumZoomScale = 1,
+    minimumZoomScale = 1,
+    bounces = true,
+    bouncesZoom,
+    decelerationRate,
+    onContentSizeChange,
+    onMomentumScrollBegin,
+    onMomentumScrollEnd,
+    onScroll,
+    onScrollBeginDrag,
+    onScrollEndDrag,
+    onScrollToTop,
+  }: ScrollBaseProps<Target>
+) => {
 
   return {
     style: {
@@ -78,7 +82,7 @@ export const ScrollView: ComponentType<ScrollViewProps> = ({
   const nativeRef = useRef<ComponentRef<typeof ScrollView>>();
   useRefHandle(mergeRefs(nativeRef, ref), () => ({
     get _native() { return targetRef.current; },
-    flashScrollIndicators() {},
+    flashScrollIndicators() { },
     scrollTo(options) {
       const el = targetRef.current;
       if (!el) return;
@@ -129,7 +133,7 @@ export const ScrollView: ComponentType<ScrollViewProps> = ({
     style,
   ]));
 
-  const { style: scrollStyle, ...scrollProps } = useScrollProps(targetRef, { horizontal, vertical, ...props });
+  const { style: scrollStyle, ...scrollProps } = useScrollProps(nativeRef, targetRef, { horizontal, vertical, ...props });
 
   return (
     <div
