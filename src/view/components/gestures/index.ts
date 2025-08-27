@@ -23,7 +23,6 @@
 //  THE SOFTWARE.
 //
 
-export * from './types';
 export * from './utils';
 export * from './responders/press';
 export * from './responders/pan';

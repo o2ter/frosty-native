@@ -27,7 +27,34 @@ import _ from 'lodash';
 import { useMemo } from 'frosty';
 import { PressEvent, ViewEventProps } from '../../../basic/types/events';
 import { _useCallbacks } from '../../../../internal/hooks/callbacks';
-import { PanGestureEvent, PanResponderProps } from '../types';
+
+export type PanGestureEvent<Target> = PressEvent<Target> & {
+  translationX: number;
+  translationY: number;
+  velocityX: number;
+  velocityY: number;
+};
+
+export type PanGestureProps<Target> = {
+  minimumPanDistance?: number;
+  onPanStart?: (this: Target, event: PanGestureEvent<Target>) => void;
+  onPanMove?: (this: Target, event: PanGestureEvent<Target>) => void;
+  onPanEnd?: (this: Target, event: PanGestureEvent<Target>) => void;
+
+  // Pan responder events
+  onStartShouldSetPanResponder?: (this: Target, event: PressEvent<Target>) => boolean;
+  onStartShouldSetPanResponderCapture?: (this: Target, event: PressEvent<Target>) => boolean;
+  onMoveShouldSetPanResponder?: (this: Target, event: PressEvent<Target>) => boolean;
+  onMoveShouldSetPanResponderCapture?: (this: Target, event: PressEvent<Target>) => boolean;
+  onPanResponderGrant?: (this: Target, event: PressEvent<Target>) => void;
+  onPanResponderReject?: (this: Target, event: PressEvent<Target>) => void;
+  onPanResponderRelease?: (this: Target, event: PanGestureEvent<Target>) => void;
+  onPanResponderTerminate?: (this: Target, event: PanGestureEvent<Target>) => void;
+  onPanResponderTerminationRequest?: (this: Target, event: PressEvent<Target>) => boolean;
+};
+
+// Type definitions for individual hooks
+export type PanResponderProps<Target> = PanGestureProps<Target>;
 
 // Hook for handling pan gestures only
 export const usePanResponder = <Target extends any = any>({

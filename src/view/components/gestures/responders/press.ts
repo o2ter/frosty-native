@@ -28,7 +28,16 @@ import { useMemo } from 'frosty';
 import { PressEvent, ViewEventProps } from '../../../basic/types/events';
 import { uniqueId } from 'frosty/_native';
 import { _useCallbacks } from '../../../../internal/hooks/callbacks';
-import { PressResponderProps } from '../types';
+
+export type PressGestureProps<Target> = {
+  delayLongPress?: number;
+  onLongPress?: (this: Target, event: PressEvent<Target>) => void;
+  onPress?: (this: Target, event: PressEvent<Target>) => void;
+  onPressIn?: (this: Target, event: PressEvent<Target>) => void;
+  onPressOut?: (this: Target, event: PressEvent<Target>) => void;
+};
+
+export type PressResponderProps<Target> = PressGestureProps<Target>;
 
 // Hook for handling press gestures only
 export const usePressResponder = <Target extends any = any>({
