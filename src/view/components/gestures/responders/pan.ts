@@ -174,7 +174,7 @@ export const usePanResponder = <Target extends any = any>({
 
     // ===== RESPONDER GRANT/REJECT =====
 
-    onResponderGrant: function (this: Target, e: PressEvent<Target>): void {
+    onResponderGrant: function (this: Target, e: PressEvent<Target>) {
       if (_.isFunction(onPanResponderGrant)) {
         onPanResponderGrant.call(this, e);
       }
@@ -193,7 +193,7 @@ export const usePanResponder = <Target extends any = any>({
       });
     },
 
-    onResponderReject: function (this: Target, e: PressEvent<Target>): void {
+    onResponderReject: function (this: Target, e: PressEvent<Target>) {
       if (_.isFunction(onPanResponderReject)) {
         onPanResponderReject.call(this, e);
       }
@@ -201,7 +201,7 @@ export const usePanResponder = <Target extends any = any>({
 
     // ===== GESTURE MOVEMENT =====
 
-    onResponderMove: function (this: Target, e: PressEvent<Target>): void {
+    onResponderMove: function (this: Target, e: PressEvent<Target>) {
       // Only handle pan gesture logic if we have the responder
       if (!state.hasResponder) return;
 
@@ -227,7 +227,7 @@ export const usePanResponder = <Target extends any = any>({
 
     // ===== GESTURE END =====
 
-    onResponderRelease: function (this: Target, e: PressEvent<Target>): void {
+    onResponderRelease: function (this: Target, e: PressEvent<Target>) {
       handlePanEnd(this, e, onPanResponderRelease);
 
       // Reset all state
@@ -235,7 +235,7 @@ export const usePanResponder = <Target extends any = any>({
       state.hasResponder = false;
     },
 
-    onResponderTerminate: function (this: Target, e: PressEvent<Target>): void {
+    onResponderTerminate: function (this: Target, e: PressEvent<Target>) {
       handlePanEnd(this, e, onPanResponderTerminate);
 
       // Reset all state

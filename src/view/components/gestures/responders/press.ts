@@ -65,7 +65,7 @@ export const usePressResponder = <Target extends any = any>({
 
     // ===== RESPONDER GRANT/REJECT =====
 
-    onResponderGrant: function (this: Target, e: PressEvent<Target>): void {
+    onResponderGrant: function (this: Target, e: PressEvent<Target>) {
       onPressIn?.call(this, e);
 
       // Setup long press timer
@@ -85,7 +85,7 @@ export const usePressResponder = <Target extends any = any>({
 
     // ===== GESTURE END =====
 
-    onResponderRelease: function (this: Target, e: PressEvent<Target>): void {
+    onResponderRelease: function (this: Target, e: PressEvent<Target>) {
       if (!state.token) return;
 
       state.token = '';
@@ -97,7 +97,7 @@ export const usePressResponder = <Target extends any = any>({
       }
     },
 
-    onResponderTerminate: function (this: Target, e: PressEvent<Target>): void {
+    onResponderTerminate: function (this: Target, e: PressEvent<Target>) {
       if (!state.token) return;
 
       state.token = '';
