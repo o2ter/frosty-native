@@ -26,8 +26,7 @@
 import _ from 'lodash';
 import { ComponentProps, ComponentRef } from 'frosty';
 import { View } from '../basic';
-import { PressGestureProps } from './gesture';
-import { useGestureResponder } from './gesture';
+import { mergeResponders, PressGestureProps, usePressResponder } from './gesture';
 
 type PressableProps = ComponentProps<typeof View> & PressGestureProps<NonNullable<ComponentRef<typeof View>>>;
 
@@ -39,7 +38,7 @@ export const Pressable = ({
   <View
     style={[{ userSelect: 'none', cursor: 'pointer' }, style]}
     {...props}
-    {...useGestureResponder(props)}
+    {...mergeResponders(props, usePressResponder(props))}
   >
     {children}
   </View>

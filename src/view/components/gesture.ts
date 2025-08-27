@@ -5,7 +5,13 @@
 //  Copyright (c) 2021 - 2025 O2ter Limited. All rights reserved.
 //
 //  Permission is hereby granted, free of charge, to any person obtaining a copy
-//  of this software and associated documentation files (the "Software"), to deal
+//  of this software and associated do    onResponderTerminate: function (this: Target, e: PressEvent<Target>): void {
+      // Handle gesture interruption
+      if (state.token !== '') {
+        state.token = '';
+        if (onPressOut) onPressOut.call(this, e);
+      }
+    },n files (the "Software"), to deal
 //  in the Software without restriction, including without limitation the rights
 //  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 //  copies of the Software, and to permit persons to whom the Software is
@@ -55,18 +61,194 @@ export type PanGestureProps<Target> = {
   onPanResponderTerminationRequest?: (this: Target, event: PressEvent<Target>) => boolean;
 };
 
-type GestureResponderProps<Target> = ViewEventProps<Target> &
-  PressGestureProps<Target> &
-  PanGestureProps<Target>;
+// Type definitions for individual hooks
+type PressResponderProps<Target> = PressGestureProps<Target>;
+type PanResponderProps<Target> = PanGestureProps<Target>;
 
-export const useGestureResponder = <Target extends any = any>({
+// Helper function to merge multiple responder handlers
+export const mergeResponders = <Target>(...responders: ViewEventProps<Target>[]): ViewEventProps<Target> => {
+  const merged: ViewEventProps<Target> = {};
+
+  // Helper to combine boolean return functions (OR logic)
+  const combineBooleanHandlers = (
+    handlerName: keyof ViewEventProps<Target>
+  ) => {
+    const handlers = responders
+      .map(r => r[handlerName])
+      .filter(h => typeof h === 'function') as Array<(this: Target, event: any) => boolean>;
+
+    if (handlers.length === 0) return undefined;
+
+    return function (this: Target, event: any): boolean {
+      // For should-set handlers, return true if ANY handler returns true
+      for (const handler of handlers) {
+        if (handler.call(this, event)) {
+          return true;
+        }
+      }
+      return false;
+    };
+  };
+
+  // Helper to combine void return functions (call all)
+  const combineVoidHandlers = (handlerName: keyof ViewEventProps<Target>) => {
+    const handlers = responders
+      .map(r => r[handlerName])
+      .filter(h => typeof h === 'function') as Array<(this: Target, event: any) => void>;
+
+    if (handlers.length === 0) return undefined;
+
+    return function (this: Target, event: any): void {
+      // Call all handlers in order
+      for (const handler of handlers) {
+        handler.call(this, event);
+      }
+    };
+  };
+
+  // Merge boolean return handlers (should-set responder methods)
+  merged.onStartShouldSetResponder = combineBooleanHandlers('onStartShouldSetResponder');
+  merged.onStartShouldSetResponderCapture = combineBooleanHandlers('onStartShouldSetResponderCapture');
+  merged.onMoveShouldSetResponder = combineBooleanHandlers('onMoveShouldSetResponder');
+  merged.onMoveShouldSetResponderCapture = combineBooleanHandlers('onMoveShouldSetResponderCapture');
+
+  // For termination request, be more conservative - only allow if ALL handlers agree
+  const terminationHandlers = responders
+    .map(r => r.onResponderTerminationRequest)
+    .filter(h => typeof h === 'function') as Array<(this: Target, event: any) => boolean>;
+
+  if (terminationHandlers.length > 0) {
+    merged.onResponderTerminationRequest = function (this: Target, event: any): boolean {
+      // Only allow termination if ALL handlers agree (AND logic)
+      for (const handler of terminationHandlers) {
+        if (!handler.call(this, event)) {
+          return false;
+        }
+      }
+      return true;
+    };
+  }
+
+  // Merge void return handlers (lifecycle and event methods)
+  merged.onResponderGrant = combineVoidHandlers('onResponderGrant');
+  merged.onResponderReject = combineVoidHandlers('onResponderReject');
+  merged.onResponderStart = combineVoidHandlers('onResponderStart');
+  merged.onResponderMove = combineVoidHandlers('onResponderMove');
+  merged.onResponderEnd = combineVoidHandlers('onResponderEnd');
+  merged.onResponderRelease = combineVoidHandlers('onResponderRelease');
+  merged.onResponderTerminate = combineVoidHandlers('onResponderTerminate');
+
+  // Handle layout separately as it's not a responder method
+  merged.onLayout = combineVoidHandlers('onLayout');
+  merged.onHoverIn = combineVoidHandlers('onHoverIn');
+  merged.onHoverOut = combineVoidHandlers('onHoverOut');
+
+  // Handle disabled flag - if ANY responder is disabled, the whole thing is disabled
+  const disabledValues = responders.map(r => r.disabled).filter(d => d !== undefined);
+  if (disabledValues.length > 0) {
+    merged.disabled = disabledValues.some(d => d === true);
+  }
+
+  return merged;
+};
+
+// Hook for handling press gestures only
+export const usePressResponder = <Target extends any = any>({
   // Press gesture props
   delayLongPress,
   onLongPress,
   onPress,
   onPressIn,
   onPressOut,
+}: PressResponderProps<Target>) => {
 
+  // Internal state management for press gestures
+  const state = useMemo(() => ({
+    token: '',
+    timeout: true,
+  }), []);
+
+  return _useCallbacks(_.pickBy({
+    // ===== RESPONDER LIFECYCLE METHODS =====
+
+    onStartShouldSetResponder: function (this: Target, e: PressEvent<Target>): boolean {
+      // For press gestures, claim responder on start
+      const hasPressHandlers = !!(onPress || onPressIn || onPressOut || onLongPress);
+      return hasPressHandlers;
+    },
+
+    onStartShouldSetResponderCapture: function (this: Target, e: PressEvent<Target>): boolean {
+      return false;
+    },
+
+    onMoveShouldSetResponder: function (this: Target, e: PressEvent<Target>): boolean {
+      return false; // Press gestures don't claim responder on move
+    },
+
+    onMoveShouldSetResponderCapture: function (this: Target, e: PressEvent<Target>): boolean {
+      return false;
+    },
+
+    // ===== RESPONDER GRANT/REJECT =====
+
+    onResponderGrant: function (this: Target, e: PressEvent<Target>): void {
+      // Handle press gesture start
+      if (onPressIn) onPressIn.call(this, e);
+
+      // Setup press gesture long press timer
+      const token = uniqueId();
+      state.token = token;
+      state.timeout = false;
+      if (onLongPress) {
+        setTimeout(() => {
+          if (state.token !== token) return;
+          onLongPress.call(this, e);
+          state.timeout = true;
+        }, delayLongPress || 500);
+      }
+    },
+
+    onResponderReject: function (this: Target, e: PressEvent<Target>): void {
+      // No special handling needed for press gestures
+    },
+
+  // ===== GESTURE MOVEMENT =====
+
+    onResponderMove: function (this: Target, e: PressEvent<Target>): void {
+      // Press gestures don't handle movement
+    },
+
+    // ===== GESTURE END =====
+
+    onResponderRelease: function (this: Target, e: PressEvent<Target>): void {
+      // Handle press gesture end
+      if (state.token !== '') {
+        state.token = '';
+        if (onPressOut) onPressOut.call(this, e);
+
+        // Only trigger press if long press timeout hasn't occurred
+        if (!state.timeout && onPress) {
+          onPress.call(this, e);
+        }
+      }
+    },
+
+    onResponderTerminate: function (this: Target, e: PressEvent<Target>): void {
+      // Handle press gesture cleanup
+      if (state.token !== '') {
+        state.token = '';
+        if (onPressOut) onPressOut.call(this, e);
+      }
+    },
+
+    onResponderTerminationRequest: function (this: Target, e: PressEvent<Target>): boolean {
+      return true; // Allow termination for press gestures
+    },
+  }, v => _.isFunction(v))) as ViewEventProps<Target>;
+};
+
+// Hook for handling pan gestures only
+export const usePanResponder = <Target extends any = any>({
   // Pan gesture props
   minimumPanDistance = 10,
   onPanStart,
@@ -83,29 +265,10 @@ export const useGestureResponder = <Target extends any = any>({
   onPanResponderRelease,
   onPanResponderTerminate,
   onPanResponderTerminationRequest,
+}: PanResponderProps<Target>) => {
 
-  // Standard responder props
-  onMoveShouldSetResponder,
-  onMoveShouldSetResponderCapture,
-  onResponderGrant,
-  onResponderStart,
-  onResponderMove,
-  onResponderEnd,
-  onResponderReject,
-  onResponderRelease,
-  onResponderTerminate,
-  onResponderTerminationRequest,
-  onStartShouldSetResponder,
-  onStartShouldSetResponderCapture,
-}: GestureResponderProps<Target>) => {
-
-  // Internal state management
+  // Internal state management for pan gestures
   const state = useMemo(() => ({
-    // Press gesture state
-    token: '',
-    timeout: true,
-
-    // Pan gesture state
     isPanning: false,
     hasResponder: false,
     gestureStarted: false,
@@ -148,38 +311,29 @@ export const useGestureResponder = <Target extends any = any>({
   return _useCallbacks(_.pickBy({
     // ===== RESPONDER LIFECYCLE METHODS =====
 
-    onStartShouldSetResponder: function (this: Target, e: PressEvent<Target>) {
-      if (onStartShouldSetResponder) return onStartShouldSetResponder.call(this, e);
-
+    onStartShouldSetResponder: function (this: Target, e: PressEvent<Target>): boolean {
       // Check pan gesture responder first
       if (onStartShouldSetPanResponder) {
         return onStartShouldSetPanResponder.call(this, e);
       }
 
-      // For any gesture (press or pan), claim responder on start
-      const hasGestureHandlers = !!(
-        onPress || onPressIn || onPressOut || onLongPress ||
-        onPanStart || onPanMove || onPanEnd
-      );
-      return hasGestureHandlers;
+      // For pan gestures, claim responder on start
+      const hasPanHandlers = !!(onPanStart || onPanMove || onPanEnd);
+      return hasPanHandlers;
     },
 
-    onStartShouldSetResponderCapture: function (this: Target, e: PressEvent<Target>) {
-      if (onStartShouldSetResponderCapture) return onStartShouldSetResponderCapture.call(this, e);
+    onStartShouldSetResponderCapture: function (this: Target, e: PressEvent<Target>): boolean {
       if (onStartShouldSetPanResponderCapture) return onStartShouldSetPanResponderCapture.call(this, e);
       return false;
     },
 
-    onMoveShouldSetResponder: function (this: Target, e: PressEvent<Target>) {
-      if (onMoveShouldSetResponder) return onMoveShouldSetResponder.call(this, e);
-
+    onMoveShouldSetResponder: function (this: Target, e: PressEvent<Target>): boolean {
       // Check pan responder first
       if (onMoveShouldSetPanResponder) {
         return onMoveShouldSetPanResponder.call(this, e);
       }
 
       // Only claim responder on move if we already started a gesture on this component
-      // This prevents stealing responder from other components
       const hasPanHandlers = !!(onPanStart || onPanMove || onPanEnd);
       if (hasPanHandlers && state.gestureStarted && state.hasResponder) {
         const translationX = e.pageX - state.startX;
@@ -191,43 +345,21 @@ export const useGestureResponder = <Target extends any = any>({
       return false;
     },
 
-    onMoveShouldSetResponderCapture: function (this: Target, e: PressEvent<Target>) {
-      if (onMoveShouldSetResponderCapture) return onMoveShouldSetResponderCapture.call(this, e);
+    onMoveShouldSetResponderCapture: function (this: Target, e: PressEvent<Target>): boolean {
       if (onMoveShouldSetPanResponderCapture) return onMoveShouldSetPanResponderCapture.call(this, e);
       return false;
     },
 
     // ===== RESPONDER GRANT/REJECT =====
 
-    onResponderGrant: function (this: Target, e: PressEvent<Target>) {
-      if (onResponderGrant) onResponderGrant.call(this, e);
-
+    onResponderGrant: function (this: Target, e: PressEvent<Target>): void {
       // Check if this is for pan gesture and call pan responder grant
-      const isPanResponder = !!(
-        onPanStart || onPanMove || onPanEnd ||
-        onStartShouldSetPanResponder || onMoveShouldSetPanResponder
-      );
-      if (isPanResponder && onPanResponderGrant) {
+      if (onPanResponderGrant) {
         onPanResponderGrant.call(this, e);
       }
 
       // Update responder state
       state.hasResponder = true;
-
-      // Handle press gesture start
-      if (onPressIn) onPressIn.call(this, e);
-
-      // Setup press gesture long press timer
-      const token = uniqueId();
-      state.token = token;
-      state.timeout = false;
-      if (onLongPress) {
-        setTimeout(() => {
-          if (state.token !== token) return;
-          onLongPress.call(this, e);
-          state.timeout = true;
-        }, delayLongPress || 500);
-      }
 
       // Initialize pan gesture state
       state.startX = e.pageX;
@@ -241,16 +373,13 @@ export const useGestureResponder = <Target extends any = any>({
       state.gestureStarted = true;
     },
 
-    onResponderReject: function (this: Target, e: PressEvent<Target>) {
-      if (onResponderReject) onResponderReject.call(this, e);
+    onResponderReject: function (this: Target, e: PressEvent<Target>): void {
       if (onPanResponderReject) onPanResponderReject.call(this, e);
     },
 
     // ===== GESTURE MOVEMENT =====
 
-    onResponderMove: function (this: Target, e: PressEvent<Target>) {
-      if (onResponderMove) onResponderMove.call(this, e);
-
+    onResponderMove: function (this: Target, e: PressEvent<Target>): void {
       // Handle pan gesture logic
       const hasPanHandlers = !!(onPanStart || onPanMove || onPanEnd);
       if (hasPanHandlers) {
@@ -277,9 +406,7 @@ export const useGestureResponder = <Target extends any = any>({
 
     // ===== GESTURE END =====
 
-    onResponderRelease: function (this: Target, e: PressEvent<Target>) {
-      if (onResponderRelease) onResponderRelease.call(this, e);
-
+    onResponderRelease: function (this: Target, e: PressEvent<Target>): void {
       // Handle pan gesture end
       if (state.isPanning && onPanEnd) {
         const translationX = e.pageX - state.startX;
@@ -294,26 +421,13 @@ export const useGestureResponder = <Target extends any = any>({
         }
       }
 
-      // Handle press gesture end
-      if (state.hasResponder && state.token !== '') {
-        state.token = '';
-        if (onPressOut) onPressOut.call(this, e);
-
-        // Only trigger press if long press timeout hasn't occurred and no panning
-        if (!state.timeout && onPress && !state.isPanning) {
-          onPress.call(this, e);
-        }
-      }
-
       // Reset all state
       state.isPanning = false;
       state.hasResponder = false;
       state.gestureStarted = false;
     },
 
-    onResponderTerminate: function (this: Target, e: PressEvent<Target>) {
-      if (onResponderTerminate) onResponderTerminate.call(this, e);
-
+    onResponderTerminate: function (this: Target, e: PressEvent<Target>): void {
       // Handle pan gesture termination
       if (state.isPanning && onPanEnd) {
         const translationX = e.pageX - state.startX;
@@ -328,29 +442,17 @@ export const useGestureResponder = <Target extends any = any>({
         }
       }
 
-      // Handle press gesture cleanup
-      if (state.hasResponder && state.token !== '') {
-        state.token = '';
-        if (onPressOut) onPressOut.call(this, e);
-      }
-
       // Reset all state
       state.isPanning = false;
       state.hasResponder = false;
       state.gestureStarted = false;
     },
 
-    onResponderTerminationRequest: function (this: Target, e: PressEvent<Target>) {
-      if (onResponderTerminationRequest) return onResponderTerminationRequest.call(this, e);
+    onResponderTerminationRequest: function (this: Target, e: PressEvent<Target>): boolean {
       if (onPanResponderTerminationRequest) return onPanResponderTerminationRequest.call(this, e);
 
       // Default behavior: allow termination unless actively panning
       return !state.isPanning;
     },
-
-    // ===== PASSTHROUGH HANDLERS =====
-
-    onResponderStart,
-    onResponderEnd,
   }, v => _.isFunction(v))) as ViewEventProps<Target>;
 };
