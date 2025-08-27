@@ -52,7 +52,6 @@ export const usePanResponder = <Target extends any = any>({
   const state = useMemo(() => ({
     isPanning: false,
     hasResponder: false,
-    gestureStarted: false,
     startX: 0,
     startY: 0,
     lastX: 0,
@@ -127,7 +126,7 @@ export const usePanResponder = <Target extends any = any>({
       }
 
       // Only claim responder on move if we already started a gesture on this component
-      if (state.gestureStarted && state.hasResponder) {
+      if (state.hasResponder) {
         const translationX = e.pageX - state.startX;
         const translationY = e.pageY - state.startY;
         const distance = Math.sqrt(translationX * translationX + translationY * translationY);
@@ -142,7 +141,7 @@ export const usePanResponder = <Target extends any = any>({
 
       // Only claim responder in capture phase if we already have an active gesture
       // This prevents mouse hover from starting a gesture
-      if (!state.gestureStarted || !state.hasResponder) {
+      if (!state.hasResponder) {
         return false;
       }
 
@@ -169,7 +168,6 @@ export const usePanResponder = <Target extends any = any>({
       state.velocityX = 0;
       state.velocityY = 0;
       state.isPanning = false;
-      state.gestureStarted = true;
     },
 
     onResponderReject: function (this: Target, e: PressEvent<Target>): void {
@@ -179,8 +177,8 @@ export const usePanResponder = <Target extends any = any>({
     // ===== GESTURE MOVEMENT =====
 
     onResponderMove: function (this: Target, e: PressEvent<Target>): void {
-      // Only handle pan gesture logic if we have the responder AND a gesture was actually started
-      if (!state.hasResponder || !state.gestureStarted) return;
+      // Only handle pan gesture logic if we have the responder
+      if (!state.hasResponder) return;
 
       const translationX = e.pageX - state.startX;
       const translationY = e.pageY - state.startY;
@@ -222,7 +220,6 @@ export const usePanResponder = <Target extends any = any>({
       // Reset all state
       state.isPanning = false;
       state.hasResponder = false;
-      state.gestureStarted = false;
     },
 
     onResponderTerminate: function (this: Target, e: PressEvent<Target>): void {
@@ -243,7 +240,6 @@ export const usePanResponder = <Target extends any = any>({
       // Reset all state
       state.isPanning = false;
       state.hasResponder = false;
-      state.gestureStarted = false;
     },
 
     onResponderTerminationRequest: function (this: Target, e: PressEvent<Target>): boolean {
