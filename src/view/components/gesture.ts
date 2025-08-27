@@ -346,6 +346,10 @@ export const usePanResponder = <Target extends any = any>({
       state.gestureStarted = true;
     },
 
+    onResponderReject: function (this: Target, e: PressEvent<Target>): void {
+      if (onPanResponderReject) onPanResponderReject.call(this, e);
+    },
+
     // ===== GESTURE MOVEMENT =====
 
     onResponderMove: function (this: Target, e: PressEvent<Target>): void {
