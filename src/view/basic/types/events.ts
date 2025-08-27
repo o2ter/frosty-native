@@ -69,13 +69,6 @@ export type PressEvent<Target> = Event<Target> & {
   changedTouches: Touch[],
 };
 
-export type PanGestureEvent<Target> = PressEvent<Target> & {
-  translationX: number;
-  translationY: number;
-  velocityX: number;
-  velocityY: number;
-};
-
 export type ViewEventProps<Target> = {
   disabled?: boolean;
   onLayout?: (this: Target, event: LayoutEvent<Target>) => void;

@@ -25,9 +25,9 @@
 
 import _ from 'lodash';
 import { useMemo } from 'frosty';
-import { PressEvent, ViewEventProps, PanGestureEvent } from '../../../basic/types/events';
+import { PressEvent, ViewEventProps } from '../../../basic/types/events';
 import { _useCallbacks } from '../../../../internal/hooks/callbacks';
-import { PanResponderProps } from '../types';
+import { PanGestureEvent, PanResponderProps } from '../types';
 
 // Hook for handling pan gestures only
 export const usePanResponder = <Target extends any = any>({

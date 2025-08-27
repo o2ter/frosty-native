@@ -23,7 +23,14 @@
 //  THE SOFTWARE.
 //
 
-import { PressEvent, PanGestureEvent } from '../../basic/types/events';
+import { PressEvent } from '../../basic/types/events';
+
+export type PanGestureEvent<Target> = PressEvent<Target> & {
+  translationX: number;
+  translationY: number;
+  velocityX: number;
+  velocityY: number;
+};
 
 export type PressGestureProps<Target> = {
   delayLongPress?: number;
