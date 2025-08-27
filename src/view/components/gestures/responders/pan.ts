@@ -127,7 +127,7 @@ export const usePanResponder = <Target extends any = any>({
       }
 
       // Only claim responder on move if we already started a gesture on this component
-      if (hasPanHandlers && state.gestureStarted && state.hasResponder) {
+      if (state.gestureStarted && state.hasResponder) {
         const translationX = e.pageX - state.startX;
         const translationY = e.pageY - state.startY;
         const distance = Math.sqrt(translationX * translationX + translationY * translationY);
@@ -175,25 +175,23 @@ export const usePanResponder = <Target extends any = any>({
       // Only handle pan gesture logic if we have the responder AND a gesture was actually started
       if (!state.hasResponder || !state.gestureStarted) return;
 
-      if (hasPanHandlers) {
-        const translationX = e.pageX - state.startX;
-        const translationY = e.pageY - state.startY;
-        const distance = Math.sqrt(translationX * translationX + translationY * translationY);
+      const translationX = e.pageX - state.startX;
+      const translationY = e.pageY - state.startY;
+      const distance = Math.sqrt(translationX * translationX + translationY * translationY);
 
-        calculateVelocity(e.pageX, e.pageY, e.timeStamp);
+      calculateVelocity(e.pageX, e.pageY, e.timeStamp);
 
-        // Check if pan should start
-        if (!state.isPanning && distance >= minimumPanDistance) {
-          state.isPanning = true;
-          if (onPanStart) {
-            onPanStart.call(this, createPanEvent(e, translationX, translationY));
-          }
+      // Check if pan should start
+      if (!state.isPanning && distance >= minimumPanDistance) {
+        state.isPanning = true;
+        if (onPanStart) {
+          onPanStart.call(this, createPanEvent(e, translationX, translationY));
         }
+      }
 
-        // Handle ongoing pan movement
-        if (state.isPanning && onPanMove) {
-          onPanMove.call(this, createPanEvent(e, translationX, translationY));
-        }
+      // Handle ongoing pan movement
+      if (state.isPanning && onPanMove) {
+        onPanMove.call(this, createPanEvent(e, translationX, translationY));
       }
     },
 
