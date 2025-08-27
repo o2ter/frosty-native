@@ -24,7 +24,7 @@
 //
 
 import _ from 'lodash';
-import { Image, Pressable, ScrollView, Text, TextInput, useEnvironment, useGestureResponder, View } from '../../src/view';
+import { Image, Pressable, ScrollView, Text, TextInput, useEnvironment, usePanResponder, View } from '../../src/view';
 
 import './app.scss';
 import { useState } from 'frosty';
@@ -33,7 +33,7 @@ export const App = () => {
   const env = useEnvironment();
   console.log(env);
   const [value, setValue] = useState('');
-  const panHandler = useGestureResponder({
+  const panHandler = usePanResponder({
     onPanStart: (e) => {
       console.log('onPanStart', e);
     },
