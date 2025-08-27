@@ -139,7 +139,14 @@ export const usePanResponder = <Target extends any = any>({
 
     onMoveShouldSetResponderCapture: function (this: Target, e: PressEvent<Target>): boolean {
       if (onMoveShouldSetPanResponderCapture) return onMoveShouldSetPanResponderCapture.call(this, e);
-      return true; // Default to true for move capture phase
+
+      // Only claim responder in capture phase if we already have an active gesture
+      // This prevents mouse hover from starting a gesture
+      if (!state.gestureStarted || !state.hasResponder) {
+        return false;
+      }
+
+      return true; // Allow capture if we already have an active gesture
     },
 
     // ===== RESPONDER GRANT/REJECT =====
