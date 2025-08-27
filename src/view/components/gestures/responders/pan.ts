@@ -23,7 +23,6 @@
 //  THE SOFTWARE.
 //
 
-import _ from 'lodash';
 import { useMemo } from 'frosty';
 import { PressEvent, ViewEventProps, PanGestureEvent } from '../../../basic/types/events';
 import { _useCallbacks } from '../../../../internal/hooks/callbacks';
@@ -47,7 +46,7 @@ export const usePanResponder = <Target extends any = any>({
   onPanResponderRelease,
   onPanResponderTerminate,
   onPanResponderTerminationRequest,
-}: PanResponderProps<Target>) => {
+}: PanResponderProps<Target>): ViewEventProps<Target> => {
 
   // Internal state management for pan gestures
   const state = useMemo(() => ({
@@ -90,7 +89,22 @@ export const usePanResponder = <Target extends any = any>({
     state.lastTimestamp = timestamp;
   };
 
-  return _useCallbacks(_.pickBy({
+  const hasPanHandlers = !!(
+    onPanStart ||
+    onPanMove ||
+    onPanEnd ||
+    onStartShouldSetPanResponder ||
+    onStartShouldSetPanResponderCapture ||
+    onMoveShouldSetPanResponder ||
+    onMoveShouldSetPanResponderCapture ||
+    onPanResponderGrant ||
+    onPanResponderReject ||
+    onPanResponderRelease ||
+    onPanResponderTerminate ||
+    onPanResponderTerminationRequest
+  );
+
+  return _useCallbacks(hasPanHandlers ? {
     // ===== RESPONDER LIFECYCLE METHODS =====
 
     onStartShouldSetResponder: function (this: Target, e: PressEvent<Target>): boolean {
@@ -98,10 +112,7 @@ export const usePanResponder = <Target extends any = any>({
       if (onStartShouldSetPanResponder) {
         return onStartShouldSetPanResponder.call(this, e);
       }
-
-      // For pan gestures, claim responder on start
-      const hasPanHandlers = !!(onPanStart || onPanMove || onPanEnd);
-      return hasPanHandlers;
+      return true;
     },
 
     onStartShouldSetResponderCapture: function (this: Target, e: PressEvent<Target>): boolean {
@@ -116,7 +127,6 @@ export const usePanResponder = <Target extends any = any>({
       }
 
       // Only claim responder on move if we already started a gesture on this component
-      const hasPanHandlers = !!(onPanStart || onPanMove || onPanEnd);
       if (hasPanHandlers && state.gestureStarted && state.hasResponder) {
         const translationX = e.pageX - state.startX;
         const translationY = e.pageY - state.startY;
@@ -165,7 +175,6 @@ export const usePanResponder = <Target extends any = any>({
       // Only handle pan gesture logic if we have the responder AND a gesture was actually started
       if (!state.hasResponder || !state.gestureStarted) return;
 
-      const hasPanHandlers = !!(onPanStart || onPanMove || onPanEnd);
       if (hasPanHandlers) {
         const translationX = e.pageX - state.startX;
         const translationY = e.pageY - state.startY;
@@ -238,5 +247,5 @@ export const usePanResponder = <Target extends any = any>({
       // Default behavior: allow termination unless actively panning
       return !state.isPanning;
     },
-  }, v => _.isFunction(v))) as ViewEventProps<Target>;
+  } : {});
 };

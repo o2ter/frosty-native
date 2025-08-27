@@ -23,7 +23,6 @@
 //  THE SOFTWARE.
 //
 
-import _ from 'lodash';
 import { useMemo } from 'frosty';
 import { PressEvent, ViewEventProps } from '../../../basic/types/events';
 import { uniqueId } from 'frosty/_native';
@@ -38,7 +37,7 @@ export const usePressResponder = <Target extends any = any>({
   onPress,
   onPressIn,
   onPressOut,
-}: PressResponderProps<Target>) => {
+}: PressResponderProps<Target>): ViewEventProps<Target> => {
 
   // Internal state management for press gestures
   const state = useMemo(() => ({
@@ -46,13 +45,13 @@ export const usePressResponder = <Target extends any = any>({
     timeout: true,
   }), []);
 
-  return _useCallbacks(_.pickBy({
+  const hasPressHandlers = !!(onPress || onPressIn || onPressOut || onLongPress);
+
+  return _useCallbacks(hasPressHandlers ? {
     // ===== RESPONDER LIFECYCLE METHODS =====
 
     onStartShouldSetResponder: function (this: Target, e: PressEvent<Target>): boolean {
-      // For press gestures, claim responder on start
-      const hasPressHandlers = !!(onPress || onPressIn || onPressOut || onLongPress);
-      return hasPressHandlers;
+      return true;
     },
 
     onStartShouldSetResponderCapture: function (this: Target, e: PressEvent<Target>): boolean {
@@ -112,5 +111,5 @@ export const usePressResponder = <Target extends any = any>({
     onResponderTerminationRequest: function (this: Target, e: PressEvent<Target>): boolean {
       return true; // Allow termination for press gestures
     },
-  }, v => _.isFunction(v))) as ViewEventProps<Target>;
+  } : {});
 };
