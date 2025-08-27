@@ -353,7 +353,9 @@ export const usePanResponder = <Target extends any = any>({
     // ===== GESTURE MOVEMENT =====
 
     onResponderMove: function (this: Target, e: PressEvent<Target>): void {
-      // Handle pan gesture logic
+      // Only handle pan gesture logic if we have the responder AND a gesture was actually started
+      if (!state.hasResponder || !state.gestureStarted) return;
+
       const hasPanHandlers = !!(onPanStart || onPanMove || onPanEnd);
       if (hasPanHandlers) {
         const translationX = e.pageX - state.startX;
