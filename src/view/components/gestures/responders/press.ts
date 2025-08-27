@@ -23,6 +23,7 @@
 //  THE SOFTWARE.
 //
 
+import _ from 'lodash';
 import { useMemo } from 'frosty';
 import { PressEvent, ViewEventProps } from '../../../basic/types/events';
 import { uniqueId } from 'frosty/_native';
@@ -45,42 +46,32 @@ export const usePressResponder = <Target extends any = any>({
     timeout: true,
   }), []);
 
-  const hasPressHandlers = !!(onPress || onPressIn || onPressOut || onLongPress);
+  const hasPressHandlers = [onPress, onPressIn, onPressOut, onLongPress].some(_.isFunction);
 
   return _useCallbacks(hasPressHandlers ? {
     // ===== RESPONDER LIFECYCLE METHODS =====
 
-    onStartShouldSetResponder: function (this: Target, e: PressEvent<Target>): boolean {
-      return true;
-    },
-
-    onStartShouldSetResponderCapture: function (this: Target, e: PressEvent<Target>): boolean {
-      return false; // Default to false for capture phase
-    },
-
-    onMoveShouldSetResponder: function (this: Target, e: PressEvent<Target>): boolean {
-      return false; // Press gestures don't claim responder on move
-    },
-
-    onMoveShouldSetResponderCapture: function (this: Target, e: PressEvent<Target>): boolean {
-      return false; // Press gestures don't claim responder on move capture
-    },
+    onStartShouldSetResponder: () => true,
+    onStartShouldSetResponderCapture: () => false,
+    onMoveShouldSetResponder: () => false,
+    onMoveShouldSetResponderCapture: () => false,
 
     // ===== RESPONDER GRANT/REJECT =====
 
     onResponderGrant: function (this: Target, e: PressEvent<Target>): void {
-      // Handle press gesture start
-      if (onPressIn) onPressIn.call(this, e);
+      onPressIn?.call(this, e);
 
-      // Setup press gesture long press timer
+      // Setup long press timer
       const token = uniqueId();
       state.token = token;
       state.timeout = false;
-      if (onLongPress) {
+
+      if (_.isFunction(onLongPress)) {
         setTimeout(() => {
-          if (state.token !== token) return;
-          onLongPress.call(this, e);
-          state.timeout = true;
+          if (state.token === token) {
+            onLongPress.call(this, e);
+            state.timeout = true;
+          }
         }, delayLongPress || 500);
       }
     },
@@ -88,28 +79,24 @@ export const usePressResponder = <Target extends any = any>({
     // ===== GESTURE END =====
 
     onResponderRelease: function (this: Target, e: PressEvent<Target>): void {
-      // Handle press gesture end
-      if (state.token !== '') {
-        state.token = '';
-        if (onPressOut) onPressOut.call(this, e);
+      if (!state.token) return;
 
-        // Only trigger press if long press timeout hasn't occurred
-        if (!state.timeout && onPress) {
-          onPress.call(this, e);
-        }
+      state.token = '';
+      onPressOut?.call(this, e);
+
+      // Only trigger press if long press timeout hasn't occurred
+      if (!state.timeout) {
+        onPress?.call(this, e);
       }
     },
 
     onResponderTerminate: function (this: Target, e: PressEvent<Target>): void {
-      // Handle press gesture cleanup
-      if (state.token !== '') {
-        state.token = '';
-        if (onPressOut) onPressOut.call(this, e);
-      }
+      if (!state.token) return;
+
+      state.token = '';
+      onPressOut?.call(this, e);
     },
 
-    onResponderTerminationRequest: function (this: Target, e: PressEvent<Target>): boolean {
-      return true; // Allow termination for press gestures
-    },
+    onResponderTerminationRequest: () => true,
   } : {});
 };

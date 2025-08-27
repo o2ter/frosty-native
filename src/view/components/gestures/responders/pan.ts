@@ -23,6 +23,7 @@
 //  THE SOFTWARE.
 //
 
+import _ from 'lodash';
 import { useMemo } from 'frosty';
 import { PressEvent, ViewEventProps, PanGestureEvent } from '../../../basic/types/events';
 import { _useCallbacks } from '../../../../internal/hooks/callbacks';
@@ -75,103 +76,97 @@ export const usePanResponder = <Target extends any = any>({
   });
 
   // Calculate velocity based on movement over time
-  const calculateVelocity = (currentX: number, currentY: number, timestamp: number) => {
+  const updateVelocity = (currentX: number, currentY: number, timestamp: number) => {
     const timeDelta = timestamp - state.lastTimestamp;
     if (timeDelta > 0) {
-      const deltaX = currentX - state.lastX;
-      const deltaY = currentY - state.lastY;
-      state.velocityX = deltaX / timeDelta;
-      state.velocityY = deltaY / timeDelta;
+      state.velocityX = (currentX - state.lastX) / timeDelta;
+      state.velocityY = (currentY - state.lastY) / timeDelta;
     }
     state.lastX = currentX;
     state.lastY = currentY;
     state.lastTimestamp = timestamp;
   };
 
-  const hasPanHandlers = !!(
-    onPanStart ||
-    onPanMove ||
-    onPanEnd ||
-    onStartShouldSetPanResponder ||
-    onStartShouldSetPanResponderCapture ||
-    onMoveShouldSetPanResponder ||
-    onMoveShouldSetPanResponderCapture ||
-    onPanResponderGrant ||
-    onPanResponderReject ||
-    onPanResponderRelease ||
-    onPanResponderTerminate ||
-    onPanResponderTerminationRequest
-  );
+  // Helper function to handle pan gesture end
+  const handlePanEnd = (
+    context: Target,
+    e: PressEvent<Target>,
+    onResponderCallback?: (this: Target, event: PanGestureEvent<Target>) => void
+  ) => {
+    if (!state.isPanning || !_.isFunction(onPanEnd)) return;
+
+    const translationX = e.pageX - state.startX;
+    const translationY = e.pageY - state.startY;
+    updateVelocity(e.pageX, e.pageY, e.timeStamp);
+    const panEvent = createPanEvent(e, translationX, translationY);
+
+    onPanEnd.call(context, panEvent);
+    onResponderCallback?.call(context, panEvent);
+  };
+
+  const hasPanHandlers = [
+    onPanStart, onPanMove, onPanEnd,
+    onStartShouldSetPanResponder, onStartShouldSetPanResponderCapture,
+    onMoveShouldSetPanResponder, onMoveShouldSetPanResponderCapture,
+    onPanResponderGrant, onPanResponderReject,
+    onPanResponderRelease, onPanResponderTerminate, onPanResponderTerminationRequest
+  ].some(_.isFunction);
 
   return _useCallbacks(hasPanHandlers ? {
     // ===== RESPONDER LIFECYCLE METHODS =====
 
     onStartShouldSetResponder: function (this: Target, e: PressEvent<Target>): boolean {
-      // Check pan gesture responder first
-      if (onStartShouldSetPanResponder) {
-        return onStartShouldSetPanResponder.call(this, e);
-      }
-      return true;
+      return onStartShouldSetPanResponder?.call(this, e) ?? true;
     },
 
     onStartShouldSetResponderCapture: function (this: Target, e: PressEvent<Target>): boolean {
-      if (onStartShouldSetPanResponderCapture) return onStartShouldSetPanResponderCapture.call(this, e);
-      return false; // Default to false for capture phase
+      return onStartShouldSetPanResponderCapture?.call(this, e) ?? false;
     },
 
     onMoveShouldSetResponder: function (this: Target, e: PressEvent<Target>): boolean {
-      // Check pan responder first
       if (onMoveShouldSetPanResponder) {
         return onMoveShouldSetPanResponder.call(this, e);
       }
 
-      // Only claim responder on move if we already started a gesture on this component
-      if (state.hasResponder) {
-        const translationX = e.pageX - state.startX;
-        const translationY = e.pageY - state.startY;
-        const distance = Math.sqrt(translationX * translationX + translationY * translationY);
-        return distance >= minimumPanDistance;
-      }
+      // Only claim responder on move if we have an active gesture
+      if (!state.hasResponder) return false;
 
-      return false;
+      const translationX = e.pageX - state.startX;
+      const translationY = e.pageY - state.startY;
+      const distance = Math.sqrt(translationX * translationX + translationY * translationY);
+      return distance >= minimumPanDistance;
     },
 
     onMoveShouldSetResponderCapture: function (this: Target, e: PressEvent<Target>): boolean {
-      if (onMoveShouldSetPanResponderCapture) return onMoveShouldSetPanResponderCapture.call(this, e);
-
-      // Only claim responder in capture phase if we already have an active gesture
-      // This prevents mouse hover from starting a gesture
-      if (!state.hasResponder) {
-        return false;
+      if (onMoveShouldSetPanResponderCapture) {
+        return onMoveShouldSetPanResponderCapture.call(this, e);
       }
 
-      return true; // Allow capture if we already have an active gesture
+      // Only allow capture if we already have an active gesture
+      return state.hasResponder;
     },
 
     // ===== RESPONDER GRANT/REJECT =====
 
     onResponderGrant: function (this: Target, e: PressEvent<Target>): void {
-      // Call pan responder grant if provided
-      if (onPanResponderGrant) {
-        onPanResponderGrant.call(this, e);
-      }
-
-      // Update responder state
-      state.hasResponder = true;
+      onPanResponderGrant?.call(this, e);
 
       // Initialize pan gesture state
-      state.startX = e.pageX;
-      state.startY = e.pageY;
-      state.lastX = e.pageX;
-      state.lastY = e.pageY;
-      state.lastTimestamp = e.timeStamp;
-      state.velocityX = 0;
-      state.velocityY = 0;
-      state.isPanning = false;
+      Object.assign(state, {
+        hasResponder: true,
+        startX: e.pageX,
+        startY: e.pageY,
+        lastX: e.pageX,
+        lastY: e.pageY,
+        lastTimestamp: e.timeStamp,
+        velocityX: 0,
+        velocityY: 0,
+        isPanning: false,
+      });
     },
 
     onResponderReject: function (this: Target, e: PressEvent<Target>): void {
-      if (onPanResponderReject) onPanResponderReject.call(this, e);
+      onPanResponderReject?.call(this, e);
     },
 
     // ===== GESTURE MOVEMENT =====
@@ -184,18 +179,18 @@ export const usePanResponder = <Target extends any = any>({
       const translationY = e.pageY - state.startY;
       const distance = Math.sqrt(translationX * translationX + translationY * translationY);
 
-      calculateVelocity(e.pageX, e.pageY, e.timeStamp);
+      updateVelocity(e.pageX, e.pageY, e.timeStamp);
 
       // Check if pan should start
       if (!state.isPanning && distance >= minimumPanDistance) {
         state.isPanning = true;
-        if (onPanStart) {
+        if (_.isFunction(onPanStart)) {
           onPanStart.call(this, createPanEvent(e, translationX, translationY));
         }
       }
 
       // Handle ongoing pan movement
-      if (state.isPanning && onPanMove) {
+      if (state.isPanning && _.isFunction(onPanMove)) {
         onPanMove.call(this, createPanEvent(e, translationX, translationY));
       }
     },
@@ -203,19 +198,7 @@ export const usePanResponder = <Target extends any = any>({
     // ===== GESTURE END =====
 
     onResponderRelease: function (this: Target, e: PressEvent<Target>): void {
-      // Handle pan gesture end
-      if (state.isPanning && onPanEnd) {
-        const translationX = e.pageX - state.startX;
-        const translationY = e.pageY - state.startY;
-        calculateVelocity(e.pageX, e.pageY, e.timeStamp);
-        const panEvent = createPanEvent(e, translationX, translationY);
-
-        onPanEnd.call(this, panEvent);
-
-        if (onPanResponderRelease) {
-          onPanResponderRelease.call(this, panEvent);
-        }
-      }
+      handlePanEnd(this, e, onPanResponderRelease);
 
       // Reset all state
       state.isPanning = false;
@@ -223,19 +206,7 @@ export const usePanResponder = <Target extends any = any>({
     },
 
     onResponderTerminate: function (this: Target, e: PressEvent<Target>): void {
-      // Handle pan gesture termination
-      if (state.isPanning && onPanEnd) {
-        const translationX = e.pageX - state.startX;
-        const translationY = e.pageY - state.startY;
-        calculateVelocity(e.pageX, e.pageY, e.timeStamp);
-        const panEvent = createPanEvent(e, translationX, translationY);
-
-        onPanEnd.call(this, panEvent);
-
-        if (onPanResponderTerminate) {
-          onPanResponderTerminate.call(this, panEvent);
-        }
-      }
+      handlePanEnd(this, e, onPanResponderTerminate);
 
       // Reset all state
       state.isPanning = false;
@@ -243,10 +214,7 @@ export const usePanResponder = <Target extends any = any>({
     },
 
     onResponderTerminationRequest: function (this: Target, e: PressEvent<Target>): boolean {
-      if (onPanResponderTerminationRequest) return onPanResponderTerminationRequest.call(this, e);
-
-      // Default behavior: allow termination unless actively panning
-      return !state.isPanning;
+      return onPanResponderTerminationRequest?.call(this, e) ?? !state.isPanning;
     },
   } : {});
 };

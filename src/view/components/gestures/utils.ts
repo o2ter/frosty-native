@@ -23,6 +23,7 @@
 //  THE SOFTWARE.
 //
 
+import _ from 'lodash';
 import { ViewEventProps } from '../../basic/types/events';
 
 // Helper function to merge multiple responder handlers
@@ -30,23 +31,15 @@ export const mergeResponders = <Target>(...responders: ViewEventProps<Target>[])
   const merged: ViewEventProps<Target> = {};
 
   // Helper to combine boolean return functions (OR logic)
-  const combineBooleanHandlers = (
-    handlerName: keyof ViewEventProps<Target>
-  ) => {
+  const combineBooleanHandlers = (handlerName: keyof ViewEventProps<Target>) => {
     const handlers = responders
       .map(r => r[handlerName])
-      .filter(h => typeof h === 'function') as Array<(this: Target, event: any) => boolean>;
+      .filter((h): h is (this: Target, event: any) => boolean => _.isFunction(h));
 
     if (handlers.length === 0) return undefined;
 
     return function (this: Target, event: any): boolean {
-      // For should-set handlers, return true if ANY handler returns true
-      for (const handler of handlers) {
-        if (handler.call(this, event)) {
-          return true;
-        }
-      }
-      return false;
+      return handlers.some(handler => handler.call(this, event));
     };
   };
 
@@ -54,15 +47,12 @@ export const mergeResponders = <Target>(...responders: ViewEventProps<Target>[])
   const combineVoidHandlers = (handlerName: keyof ViewEventProps<Target>) => {
     const handlers = responders
       .map(r => r[handlerName])
-      .filter(h => typeof h === 'function') as Array<(this: Target, event: any) => void>;
+      .filter((h): h is (this: Target, event: any) => void => _.isFunction(h));
 
     if (handlers.length === 0) return undefined;
 
     return function (this: Target, event: any): void {
-      // Call all handlers in order
-      for (const handler of handlers) {
-        handler.call(this, event);
-      }
+      handlers.forEach(handler => handler.call(this, event));
     };
   };
 
@@ -75,17 +65,11 @@ export const mergeResponders = <Target>(...responders: ViewEventProps<Target>[])
   // For termination request, be more conservative - only allow if ALL handlers agree
   const terminationHandlers = responders
     .map(r => r.onResponderTerminationRequest)
-    .filter(h => typeof h === 'function') as Array<(this: Target, event: any) => boolean>;
+    .filter((h): h is (this: Target, event: any) => boolean => _.isFunction(h));
 
   if (terminationHandlers.length > 0) {
     merged.onResponderTerminationRequest = function (this: Target, event: any): boolean {
-      // Only allow termination if ALL handlers agree (AND logic)
-      for (const handler of terminationHandlers) {
-        if (!handler.call(this, event)) {
-          return false;
-        }
-      }
-      return true;
+      return terminationHandlers.every(handler => handler.call(this, event));
     };
   }
 
