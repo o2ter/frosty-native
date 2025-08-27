@@ -132,17 +132,6 @@ export const mergeResponders = <Target>(...responders: ViewEventProps<Target>[])
   merged.onResponderRelease = combineVoidHandlers('onResponderRelease');
   merged.onResponderTerminate = combineVoidHandlers('onResponderTerminate');
 
-  // Handle layout separately as it's not a responder method
-  merged.onLayout = combineVoidHandlers('onLayout');
-  merged.onHoverIn = combineVoidHandlers('onHoverIn');
-  merged.onHoverOut = combineVoidHandlers('onHoverOut');
-
-  // Handle disabled flag - if ANY responder is disabled, the whole thing is disabled
-  const disabledValues = responders.map(r => r.disabled).filter(d => d !== undefined);
-  if (disabledValues.length > 0) {
-    merged.disabled = disabledValues.some(d => d === true);
-  }
-
   return merged;
 };
 
@@ -172,7 +161,7 @@ export const usePressResponder = <Target extends any = any>({
     },
 
     onStartShouldSetResponderCapture: function (this: Target, e: PressEvent<Target>): boolean {
-      return false;
+      return false; // Default to false for capture phase
     },
 
     onMoveShouldSetResponder: function (this: Target, e: PressEvent<Target>): boolean {
@@ -180,7 +169,7 @@ export const usePressResponder = <Target extends any = any>({
     },
 
     onMoveShouldSetResponderCapture: function (this: Target, e: PressEvent<Target>): boolean {
-      return false;
+      return false; // Press gestures don't claim responder on move capture
     },
 
     // ===== RESPONDER GRANT/REJECT =====
@@ -200,16 +189,6 @@ export const usePressResponder = <Target extends any = any>({
           state.timeout = true;
         }, delayLongPress || 500);
       }
-    },
-
-    onResponderReject: function (this: Target, e: PressEvent<Target>): void {
-      // No special handling needed for press gestures
-    },
-
-  // ===== GESTURE MOVEMENT =====
-
-    onResponderMove: function (this: Target, e: PressEvent<Target>): void {
-      // Press gestures don't handle movement
     },
 
     // ===== GESTURE END =====
@@ -318,7 +297,7 @@ export const usePanResponder = <Target extends any = any>({
 
     onStartShouldSetResponderCapture: function (this: Target, e: PressEvent<Target>): boolean {
       if (onStartShouldSetPanResponderCapture) return onStartShouldSetPanResponderCapture.call(this, e);
-      return false;
+      return false; // Default to false for capture phase
     },
 
     onMoveShouldSetResponder: function (this: Target, e: PressEvent<Target>): boolean {
@@ -341,13 +320,13 @@ export const usePanResponder = <Target extends any = any>({
 
     onMoveShouldSetResponderCapture: function (this: Target, e: PressEvent<Target>): boolean {
       if (onMoveShouldSetPanResponderCapture) return onMoveShouldSetPanResponderCapture.call(this, e);
-      return false;
+      return true; // Default to true for move capture phase
     },
 
     // ===== RESPONDER GRANT/REJECT =====
 
     onResponderGrant: function (this: Target, e: PressEvent<Target>): void {
-      // Check if this is for pan gesture and call pan responder grant
+      // Call pan responder grant if provided
       if (onPanResponderGrant) {
         onPanResponderGrant.call(this, e);
       }
@@ -365,10 +344,6 @@ export const usePanResponder = <Target extends any = any>({
       state.velocityY = 0;
       state.isPanning = false;
       state.gestureStarted = true;
-    },
-
-    onResponderReject: function (this: Target, e: PressEvent<Target>): void {
-      if (onPanResponderReject) onPanResponderReject.call(this, e);
     },
 
     // ===== GESTURE MOVEMENT =====
