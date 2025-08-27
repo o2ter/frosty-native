@@ -37,8 +37,6 @@ export type PressGestureProps<Target> = {
   onPressOut?: (this: Target, event: PressEvent<Target>) => void;
 };
 
-export type PressResponderProps<Target> = PressGestureProps<Target>;
-
 // Hook for handling press gestures only
 export const usePressResponder = <Target extends any = any>({
   // Press gesture props
@@ -47,7 +45,7 @@ export const usePressResponder = <Target extends any = any>({
   onPress,
   onPressIn,
   onPressOut,
-}: PressResponderProps<Target>): ViewEventProps<Target> => {
+}: PressGestureProps<Target>): ViewEventProps<Target> => {
 
   // Internal state management for press gestures
   const state = useMemo(() => ({

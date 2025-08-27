@@ -53,9 +53,6 @@ export type PanGestureProps<Target> = {
   onPanResponderTerminationRequest?: (this: Target, event: PressEvent<Target>) => boolean;
 };
 
-// Type definitions for individual hooks
-export type PanResponderProps<Target> = PanGestureProps<Target>;
-
 // Hook for handling pan gestures only
 export const usePanResponder = <Target extends any = any>({
   // Pan gesture props
@@ -74,7 +71,7 @@ export const usePanResponder = <Target extends any = any>({
   onPanResponderRelease,
   onPanResponderTerminate,
   onPanResponderTerminationRequest,
-}: PanResponderProps<Target>): ViewEventProps<Target> => {
+}: PanGestureProps<Target>): ViewEventProps<Target> => {
 
   // Internal state management for pan gestures
   const state = useMemo(() => ({
