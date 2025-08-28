@@ -654,6 +654,25 @@ describe('Color Utilities', () => {
         const result = colorContrast(0xFFFFFFFF, 0x333333FF, 0xEEEEEEFF, 4.5);
         expect(result).toBe('#333333');
       });
+
+      it('should return correct contrast colors for standard color palette', () => {
+        // Test data with minContrastRatio = 4.5, colorContrastDark = black, colorContrastLight = white
+        const testCases = [
+          { color: '#dc3545', expected: '#FFFFFF' }, // Bootstrap danger red
+          { color: '#212529', expected: '#FFFFFF' }, // Bootstrap dark
+          { color: '#0dcaf0', expected: '#000000' }, // Bootstrap info cyan
+          { color: '#f8f9fa', expected: '#000000' }, // Bootstrap light
+          { color: '#0d6efd', expected: '#FFFFFF' }, // Bootstrap primary blue
+          { color: '#6c757d', expected: '#FFFFFF' }, // Bootstrap secondary gray
+          { color: '#198754', expected: '#FFFFFF' }, // Bootstrap success green
+          { color: '#ffc107', expected: '#000000' }  // Bootstrap warning yellow
+        ];
+
+        testCases.forEach(({ color, expected }) => {
+          const result = colorContrast(color, '#000000', '#ffffff', 4.5);
+          expect(result).toBe(expected);
+        });
+      });
     });
   });
 
