@@ -573,3 +573,163 @@ export const toHexString = (color: ColorValue, includeAlpha: boolean = false): s
   const hex = `#${toHex(r)}${toHex(g)}${toHex(b)}`;
   return includeAlpha || a !== 255 ? `${hex}${toHex(a)}` : hex;
 };
+
+/**
+ * Mixes two colors by interpolating between them
+ * @param color1 - First color (string or ColorValue)
+ * @param color2 - Second color (string or ColorValue)
+ * @param weight - Weight of color1 (0-1, where 0 = all color2, 1 = all color1)
+ * @returns Hex string of the mixed color
+ */
+export const mixColor = (
+  color1: string | ColorValue,
+  color2: string | ColorValue,
+  weight: number
+): string => {
+  // Normalize inputs to ColorValue
+  const c1 = typeof color1 === 'string' ? normalizeColor(color1) : color1;
+  const c2 = typeof color2 === 'string' ? normalizeColor(color2) : color2;
+
+  if (c1 === null || c2 === null) {
+    throw new Error('Invalid color input');
+  }
+
+  // Clamp weight to 0-1 range
+  const w = Math.max(0, Math.min(1, weight));
+
+  // Extract RGB components
+  const r1 = getRed(c1);
+  const g1 = getGreen(c1);
+  const b1 = getBlue(c1);
+  const a1 = getAlpha(c1);
+
+  const r2 = getRed(c2);
+  const g2 = getGreen(c2);
+  const b2 = getBlue(c2);
+  const a2 = getAlpha(c2);
+
+  // Interpolate components
+  const r = Math.round(r2 + (r1 - r2) * w);
+  const g = Math.round(g2 + (g1 - g2) * w);
+  const b = Math.round(b2 + (b1 - b2) * w);
+  const a = Math.round(a2 + (a1 - a2) * w);
+
+  const mixedColor = rgba(r, g, b, a);
+  return toHexString(mixedColor);
+};
+
+/**
+ * Tints a color by mixing it with white
+ * @param color - Color to tint (string or ColorValue)
+ * @param weight - Amount of tinting (0-1, where 0 = no change, 1 = white)
+ * @returns Hex string of the tinted color
+ */
+export const tintColor = (
+  color: string | ColorValue,
+  weight: number
+): string => {
+  return mixColor('#ffffff', color, weight);
+};
+
+/**
+ * Shades a color by mixing it with black
+ * @param color - Color to shade (string or ColorValue)
+ * @param weight - Amount of shading (0-1, where 0 = no change, 1 = black)
+ * @returns Hex string of the shaded color
+ */
+export const shadeColor = (
+  color: string | ColorValue,
+  weight: number
+): string => {
+  return mixColor('#000000', color, weight);
+};
+
+/**
+ * Shifts a color lighter or darker based on weight
+ * @param color - Color to shift (string or ColorValue)
+ * @param weight - Shift amount (-1 to 1, negative = tint, positive = shade)
+ * @returns Hex string of the shifted color
+ */
+export const shiftColor = (
+  color: string | ColorValue,
+  weight: number
+): string => {
+  return weight > 0 ? shadeColor(color, weight) : tintColor(color, -weight);
+};
+
+/**
+ * Calculates the relative luminance of a color according to WCAG 2.1
+ * @param color - Color to calculate luminance for (string or ColorValue)
+ * @returns Luminance value (0-1, where 0 = black, 1 = white)
+ */
+export const luminance = (color: string | ColorValue): number => {
+  const c = typeof color === 'string' ? normalizeColor(color) : color;
+
+  if (c === null) {
+    throw new Error('Invalid color input');
+  }
+
+  // Extract and normalize RGB components to 0-1 range
+  const r = getRed(c) / 255;
+  const g = getGreen(c) / 255;
+  const b = getBlue(c) / 255;
+
+  // Apply gamma correction
+  const _r = r <= 0.03928 ? r / 12.92 : Math.pow((r + 0.055) / 1.055, 2.4);
+  const _g = g <= 0.03928 ? g / 12.92 : Math.pow((g + 0.055) / 1.055, 2.4);
+  const _b = b <= 0.03928 ? b / 12.92 : Math.pow((b + 0.055) / 1.055, 2.4);
+
+  // Calculate relative luminance using ITU-R BT.709 coefficients
+  return 0.2126 * _r + 0.7152 * _g + 0.0722 * _b;
+};
+
+/**
+ * Calculates the contrast ratio between two colors according to WCAG 2.1
+ * @param background - Background color (string or ColorValue)
+ * @param foreground - Foreground color (string or ColorValue)
+ * @returns Contrast ratio (1-21, where 1 = no contrast, 21 = maximum contrast)
+ */
+export const contrastRatio = (
+  background: string | ColorValue,
+  foreground: string | ColorValue
+): number => {
+  const l1 = luminance(background);
+  const l2 = luminance(foreground);
+  return l1 > l2 ? (l1 + 0.05) / (l2 + 0.05) : (l2 + 0.05) / (l1 + 0.05);
+};
+
+/**
+ * Finds the best contrasting color from a set of options
+ * @param background - Background color (string or ColorValue)
+ * @param colorContrastDark - Dark color option (string or ColorValue)
+ * @param colorContrastLight - Light color option (string or ColorValue)
+ * @param minContrastRatio - Minimum acceptable contrast ratio (default: 4.5)
+ * @returns Hex string of the color with the best contrast
+ */
+export const colorContrast = (
+  background: string | ColorValue,
+  colorContrastDark: string | ColorValue,
+  colorContrastLight: string | ColorValue,
+  minContrastRatio: number = 4.5
+): string => {
+  let maxRatio = 0;
+  let maxRatioColor: string | ColorValue = background;
+
+  const foregrounds = [colorContrastLight, colorContrastDark, '#ffffff', '#000000'];
+
+  for (const color of foregrounds) {
+    const ratio = contrastRatio(background, color);
+    if (ratio >= minContrastRatio) {
+      // Convert to hex string and return
+      const normalized = typeof color === 'string' ? normalizeColor(color) : color;
+      return normalized !== null ? toHexString(normalized) : toHexString(normalizeColor(background) || 0);
+    } else if (ratio > maxRatio) {
+      maxRatio = ratio;
+      maxRatioColor = color;
+    }
+  }
+
+  // Convert the best option to hex string
+  const normalized = typeof maxRatioColor === 'string' ? normalizeColor(maxRatioColor) : maxRatioColor;
+  return normalized !== null ? toHexString(normalized) : toHexString(normalizeColor(background) || 0);
+};

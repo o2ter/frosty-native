@@ -33,6 +33,13 @@ import {
   getAlpha,
   rgba,
   toHexString,
+  mixColor,
+  tintColor,
+  shadeColor,
+  shiftColor,
+  luminance,
+  contrastRatio,
+  colorContrast,
   type ColorValue,
 } from '../src/internal/color';
 
@@ -345,6 +352,196 @@ describe('Color Utilities', () => {
     it('should pad single digit hex values', () => {
       expect(toHexString(0x01020304)).toBe('#01020304');
       expect(toHexString(0x0A0B0CFF)).toBe('#0A0B0C');
+    });
+  });
+
+  describe('Color manipulation functions', () => {
+    describe('mixColor', () => {
+      it('should mix two colors correctly', () => {
+        // Mix red and blue with equal weight (0.5)
+        expect(mixColor('#FF0000', '#0000FF', 0.5)).toBe('#800080');
+
+        // Mix red and white with 0.3 weight (30% red, 70% white)
+        // Red: (255, 0, 0), White: (255, 255, 255)
+        // Result: White + (Red - White) * 0.3 = (255, 255, 255) + (0, -255, -255) * 0.3 = (255, 179, 179)
+        expect(mixColor('#FF0000', '#FFFFFF', 0.3)).toBe('#FFB3B3');
+
+        // Weight 0 should return second color
+        expect(mixColor('#FF0000', '#00FF00', 0)).toBe('#00FF00');
+
+        // Weight 1 should return first color
+        expect(mixColor('#FF0000', '#00FF00', 1)).toBe('#FF0000');
+      });
+
+      it('should work with ColorValue inputs', () => {
+        const red = 0xFF0000FF;
+        const blue = 0x0000FFFF;
+        expect(mixColor(red, blue, 0.5)).toBe('#800080');
+      });
+
+      it('should clamp weight to 0-1 range', () => {
+        expect(mixColor('#FF0000', '#00FF00', -0.5)).toBe('#00FF00');
+        expect(mixColor('#FF0000', '#00FF00', 1.5)).toBe('#FF0000');
+      });
+
+      it('should handle alpha channel correctly', () => {
+        expect(mixColor('#FF000080', '#0000FF80', 0.5)).toBe('#80008080');
+      });
+
+      it('should throw error for invalid colors', () => {
+        expect(() => mixColor('invalid', '#FF0000', 0.5)).toThrow('Invalid color input');
+        expect(() => mixColor('#FF0000', 'invalid', 0.5)).toThrow('Invalid color input');
+      });
+    });
+
+    describe('tintColor', () => {
+      it('should tint colors with white', () => {
+        // Tinting red with white
+        expect(tintColor('#FF0000', 0.5)).toBe('#FF8080');
+        expect(tintColor('#FF0000', 0)).toBe('#FF0000');
+        expect(tintColor('#FF0000', 1)).toBe('#FFFFFF');
+
+        // Tinting blue
+        expect(tintColor('#0000FF', 0.3)).toBe('#4D4DFF');
+      });
+
+      it('should work with ColorValue inputs', () => {
+        expect(tintColor(0xFF0000FF, 0.5)).toBe('#FF8080');
+      });
+    });
+
+    describe('shadeColor', () => {
+      it('should shade colors with black', () => {
+        // Shading red with black
+        expect(shadeColor('#FF0000', 0.5)).toBe('#800000');
+        expect(shadeColor('#FF0000', 0)).toBe('#FF0000');
+        expect(shadeColor('#FF0000', 1)).toBe('#000000');
+
+        // Shading blue with 0.3 weight
+        // Blue: (0, 0, 255), Black: (0, 0, 0)
+        // Result: Black + (Blue - Black) * 0.3 = (0, 0, 0) + (0, 0, 255) * 0.3 = (0, 0, 179)
+        expect(shadeColor('#0000FF', 0.3)).toBe('#0000B3');
+      });
+
+      it('should work with ColorValue inputs', () => {
+        expect(shadeColor(0xFF0000FF, 0.5)).toBe('#800000');
+      });
+    });
+
+    describe('shiftColor', () => {
+      it('should shade for positive weights', () => {
+        expect(shiftColor('#FF0000', 0.5)).toBe(shadeColor('#FF0000', 0.5));
+      });
+
+      it('should tint for negative weights', () => {
+        expect(shiftColor('#FF0000', -0.5)).toBe(tintColor('#FF0000', 0.5));
+      });
+
+      it('should return original color for weight 0', () => {
+        expect(shiftColor('#FF0000', 0)).toBe('#FF0000');
+      });
+    });
+  });
+
+  describe('Color accessibility functions', () => {
+    describe('luminance', () => {
+      it('should calculate luminance correctly for standard colors', () => {
+        // Pure white should have luminance close to 1
+        expect(luminance('#FFFFFF')).toBeCloseTo(1, 2);
+
+        // Pure black should have luminance close to 0
+        expect(luminance('#000000')).toBeCloseTo(0, 5);
+
+        // Pure red luminance
+        expect(luminance('#FF0000')).toBeCloseTo(0.2126, 3);
+
+        // Pure green luminance
+        expect(luminance('#00FF00')).toBeCloseTo(0.7152, 3);
+
+        // Pure blue luminance
+        expect(luminance('#0000FF')).toBeCloseTo(0.0722, 3);
+      });
+
+      it('should work with ColorValue inputs', () => {
+        expect(luminance(0xFFFFFFFF)).toBeCloseTo(1, 2);
+        expect(luminance(0x000000FF)).toBeCloseTo(0, 5);
+      });
+
+      it('should handle mid-tone grays correctly', () => {
+        // 50% gray should have luminance around 0.18-0.22
+        const grayLuminance = luminance('#808080');
+        expect(grayLuminance).toBeGreaterThan(0.15);
+        expect(grayLuminance).toBeLessThan(0.25);
+      });
+
+      it('should throw error for invalid colors', () => {
+        expect(() => luminance('invalid')).toThrow('Invalid color input');
+      });
+    });
+
+    describe('contrastRatio', () => {
+      it('should calculate contrast ratios correctly', () => {
+        // White on black should have maximum contrast (~21)
+        const whiteOnBlack = contrastRatio('#000000', '#FFFFFF');
+        expect(whiteOnBlack).toBeCloseTo(21, 0);
+
+        // Same colors should have minimum contrast (1)
+        expect(contrastRatio('#FF0000', '#FF0000')).toBeCloseTo(1, 2);
+
+        // Order shouldn't matter
+        expect(contrastRatio('#000000', '#FFFFFF')).toBeCloseTo(contrastRatio('#FFFFFF', '#000000'), 5);
+      });
+
+      it('should work with ColorValue inputs', () => {
+        expect(contrastRatio(0x000000FF, 0xFFFFFFFF)).toBeCloseTo(21, 0);
+      });
+
+      it('should calculate reasonable ratios for common combinations', () => {
+        // Dark gray on white should have good contrast
+        const ratio = contrastRatio('#FFFFFF', '#333333');
+        expect(ratio).toBeGreaterThan(12);
+        expect(ratio).toBeLessThan(15);
+      });
+    });
+
+    describe('colorContrast', () => {
+      it('should return high contrast color when available', () => {
+        // On white background, should prefer dark colors
+        const result = colorContrast('#FFFFFF', '#333333', '#EEEEEE', 4.5);
+        expect(result).toBe('#333333');
+
+        // On black background, should prefer light colors
+        const result2 = colorContrast('#000000', '#333333', '#EEEEEE', 4.5);
+        expect(result2).toBe('#EEEEEE');
+      });
+
+      it('should fallback to white or black if no option meets contrast', () => {
+        // On dark background with poor contrast options, should fallback to white
+        const result = colorContrast('#222222', '#333333', '#444444', 7);
+        expect(result).toBe('#FFFFFF');
+
+        // On light background with poor contrast options, should fallback to black
+        const result2 = colorContrast('#DDDDDD', '#CCCCCC', '#EEEEEE', 7);
+        expect(result2).toBe('#000000');
+      });
+
+      it('should use default minimum contrast ratio of 4.5', () => {
+        const result1 = colorContrast('#FFFFFF', '#333333', '#EEEEEE');
+        const result2 = colorContrast('#FFFFFF', '#333333', '#EEEEEE', 4.5);
+        expect(result1).toBe(result2);
+      });
+
+      it('should return best available option when no color meets minimum', () => {
+        // When no color meets the minimum, should return the one with highest contrast
+        const result = colorContrast('#808080', '#787878', '#888888', 10);
+        // Should return one of the options or fallback colors
+        expect(['#787878', '#888888', '#FFFFFF', '#000000'].includes(result)).toBe(true);
+      });
+
+      it('should work with ColorValue inputs', () => {
+        const result = colorContrast(0xFFFFFFFF, 0x333333FF, 0xEEEEEEFF, 4.5);
+        expect(result).toBe('#333333');
+      });
     });
   });
 
