@@ -440,6 +440,118 @@ describe('Color Utilities', () => {
       it('should return original color for weight 0', () => {
         expect(shiftColor('#FF0000', 0)).toBe('#FF0000');
       });
+
+      it('should work correctly with standard colors and weights', () => {
+        // Blue color palette (#0d6efd)
+        expect(shiftColor('#0d6efd', -0.8)).toBe('#CFE2FF');
+        expect(shiftColor('#0d6efd', -0.6)).toBe('#9EC5FE');
+        expect(shiftColor('#0d6efd', -0.4)).toBe('#6EA8FE');
+        expect(shiftColor('#0d6efd', -0.2)).toBe('#3D8BFD');
+        expect(shiftColor('#0d6efd', 0)).toBe('#0D6EFD');
+        expect(shiftColor('#0d6efd', 0.2)).toBe('#0A58CA');
+        expect(shiftColor('#0d6efd', 0.4)).toBe('#084298');
+        expect(shiftColor('#0d6efd', 0.6)).toBe('#052C65');
+        expect(shiftColor('#0d6efd', 0.8)).toBe('#031633');
+
+        // Cyan color palette (#0dcaf0)
+        expect(shiftColor('#0dcaf0', -0.8)).toBe('#CFF4FC');
+        expect(shiftColor('#0dcaf0', -0.6)).toBe('#9EEAF9');
+        expect(shiftColor('#0dcaf0', -0.4)).toBe('#6EDFF6');
+        expect(shiftColor('#0dcaf0', -0.2)).toBe('#3DD5F3');
+        expect(shiftColor('#0dcaf0', 0)).toBe('#0DCAF0');
+        expect(shiftColor('#0dcaf0', 0.2)).toBe('#0AA2C0');
+        expect(shiftColor('#0dcaf0', 0.4)).toBe('#087990');
+        expect(shiftColor('#0dcaf0', 0.6)).toBe('#055160');
+        expect(shiftColor('#0dcaf0', 0.8)).toBe('#032830');
+
+        // Green color palette (#198754)
+        expect(shiftColor('#198754', -0.8)).toBe('#D1E7DD');
+        expect(shiftColor('#198754', -0.6)).toBe('#A3CFBB');
+        expect(shiftColor('#198754', -0.4)).toBe('#75B798');
+        expect(shiftColor('#198754', -0.2)).toBe('#479F76');
+        expect(shiftColor('#198754', 0)).toBe('#198754');
+        expect(shiftColor('#198754', 0.2)).toBe('#146C43');
+        expect(shiftColor('#198754', 0.4)).toBe('#0F5132');
+        expect(shiftColor('#198754', 0.6)).toBe('#0A3622');
+        expect(shiftColor('#198754', 0.8)).toBe('#051B11');
+
+        // Indigo color palette (#6610f2)
+        expect(shiftColor('#6610f2', -0.8)).toBe('#E0CFFC');
+        expect(shiftColor('#6610f2', -0.6)).toBe('#C29FFA');
+        expect(shiftColor('#6610f2', -0.4)).toBe('#A370F7');
+        expect(shiftColor('#6610f2', -0.2)).toBe('#8540F5');
+        expect(shiftColor('#6610f2', 0)).toBe('#6610F2');
+        expect(shiftColor('#6610f2', 0.2)).toBe('#520DC2');
+        expect(shiftColor('#6610f2', 0.4)).toBe('#3D0A91');
+        expect(shiftColor('#6610f2', 0.6)).toBe('#290661');
+        expect(shiftColor('#6610f2', 0.8)).toBe('#140330');
+
+        // Orange color palette (#fd7e14)
+        expect(shiftColor('#fd7e14', -0.8)).toBe('#FFE5D0');
+        expect(shiftColor('#fd7e14', -0.6)).toBe('#FECBA1');
+        expect(shiftColor('#fd7e14', -0.4)).toBe('#FEB272');
+        expect(shiftColor('#fd7e14', -0.2)).toBe('#FD9843');
+        expect(shiftColor('#fd7e14', 0)).toBe('#FD7E14');
+        expect(shiftColor('#fd7e14', 0.2)).toBe('#CA6510');
+        expect(shiftColor('#fd7e14', 0.4)).toBe('#984C0C');
+        expect(shiftColor('#fd7e14', 0.6)).toBe('#653208');
+        expect(shiftColor('#fd7e14', 0.8)).toBe('#331904');
+
+        // Pink color palette (#d63384)
+        expect(shiftColor('#d63384', -0.8)).toBe('#F7D6E6');
+        expect(shiftColor('#d63384', -0.6)).toBe('#EFADCE');
+        expect(shiftColor('#d63384', -0.4)).toBe('#E685B5');
+        expect(shiftColor('#d63384', -0.2)).toBe('#DE5C9D');
+        expect(shiftColor('#d63384', 0)).toBe('#D63384');
+        expect(shiftColor('#d63384', 0.2)).toBe('#AB296A');
+        expect(shiftColor('#d63384', 0.4)).toBe('#801F4F');
+        expect(shiftColor('#d63384', 0.6)).toBe('#561435');
+        expect(shiftColor('#d63384', 0.8)).toBe('#2B0A1A');
+
+        // Purple color palette (#6f42c1)
+        expect(shiftColor('#6f42c1', -0.8)).toBe('#E2D9F3');
+        expect(shiftColor('#6f42c1', -0.6)).toBe('#C5B3E6');
+        expect(shiftColor('#6f42c1', -0.4)).toBe('#A98EDA');
+        expect(shiftColor('#6f42c1', -0.2)).toBe('#8C68CD');
+        expect(shiftColor('#6f42c1', 0)).toBe('#6F42C1');
+        expect(shiftColor('#6f42c1', 0.2)).toBe('#59359A');
+        expect(shiftColor('#6f42c1', 0.4)).toBe('#432874');
+        expect(shiftColor('#6f42c1', 0.6)).toBe('#2C1A4D');
+        expect(shiftColor('#6f42c1', 0.8)).toBe('#160D27');
+
+        // Red color palette (#dc3545)
+        expect(shiftColor('#dc3545', -0.8)).toBe('#F8D7DA');
+        expect(shiftColor('#dc3545', -0.6)).toBe('#F1AEB5');
+        expect(shiftColor('#dc3545', -0.4)).toBe('#EA868F');
+        expect(shiftColor('#dc3545', -0.2)).toBe('#E35D6A');
+        expect(shiftColor('#dc3545', 0)).toBe('#DC3545');
+        expect(shiftColor('#dc3545', 0.2)).toBe('#B02A37');
+        expect(shiftColor('#dc3545', 0.4)).toBe('#842029');
+        expect(shiftColor('#dc3545', 0.6)).toBe('#58151C');
+        expect(shiftColor('#dc3545', 0.8)).toBe('#2C0B0E');
+
+        // Teal color palette (#20c997)
+        expect(shiftColor('#20c997', -0.8)).toBe('#D2F4EA');
+        expect(shiftColor('#20c997', -0.6)).toBe('#A6E9D5');
+        expect(shiftColor('#20c997', -0.4)).toBe('#79DFC1');
+        expect(shiftColor('#20c997', -0.2)).toBe('#4DD4AC');
+        expect(shiftColor('#20c997', 0)).toBe('#20C997');
+        expect(shiftColor('#20c997', 0.2)).toBe('#1AA179');
+        expect(shiftColor('#20c997', 0.4)).toBe('#13795B');
+        expect(shiftColor('#20c997', 0.6)).toBe('#0D503C');
+        expect(shiftColor('#20c997', 0.8)).toBe('#06281E');
+
+        // Yellow color palette (#ffc107)
+        expect(shiftColor('#ffc107', -0.8)).toBe('#FFF3CD');
+        expect(shiftColor('#ffc107', -0.6)).toBe('#FFE69C');
+        expect(shiftColor('#ffc107', -0.4)).toBe('#FFDA6A');
+        expect(shiftColor('#ffc107', -0.2)).toBe('#FFCD39');
+        expect(shiftColor('#ffc107', 0)).toBe('#FFC107');
+        expect(shiftColor('#ffc107', 0.2)).toBe('#CC9A06');
+        expect(shiftColor('#ffc107', 0.4)).toBe('#997404');
+        expect(shiftColor('#ffc107', 0.6)).toBe('#664D03');
+        expect(shiftColor('#ffc107', 0.8)).toBe('#332701');
+      });
     });
   });
 
