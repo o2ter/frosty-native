@@ -9,6 +9,7 @@ import dts from 'rollup-plugin-dts';
 const rollupConfig = {
   input: {
     index: 'src/index',
+    color: 'src/internal/color',
   },
   external: [
     /node_modules/
