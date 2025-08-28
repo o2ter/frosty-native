@@ -698,4 +698,88 @@ describe('Color Utilities', () => {
       });
     });
   });
+
+  describe('Case sensitivity support', () => {
+    describe('hex colors', () => {
+      it('should handle mixed case hex colors', () => {
+        expect(normalizeColor('#ff0000')).toBe(0xFF0000FF);
+        expect(normalizeColor('#FF0000')).toBe(0xFF0000FF);
+        expect(normalizeColor('#Ff0000')).toBe(0xFF0000FF);
+        expect(normalizeColor('#fF0000')).toBe(0xFF0000FF);
+      });
+
+      it('should handle mixed case 3-digit hex colors', () => {
+        expect(normalizeColor('#f00')).toBe(0xFF0000FF);
+        expect(normalizeColor('#F00')).toBe(0xFF0000FF);
+        expect(normalizeColor('#f0A')).toBe(0xFF00AAFF);
+        expect(normalizeColor('#F0a')).toBe(0xFF00AAFF);
+      });
+
+      it('should handle mixed case 8-digit hex colors with alpha', () => {
+        expect(normalizeColor('#ff000080')).toBe(0xFF000080);
+        expect(normalizeColor('#FF000080')).toBe(0xFF000080);
+        expect(normalizeColor('#Ff000080')).toBe(0xFF000080);
+        expect(normalizeColor('#fF000080')).toBe(0xFF000080);
+      });
+    });
+
+    describe('named colors', () => {
+      it('should handle various case combinations for named colors', () => {
+        expect(normalizeColor('red')).toBe(0xFF0000FF);
+        expect(normalizeColor('RED')).toBe(0xFF0000FF);
+        expect(normalizeColor('Red')).toBe(0xFF0000FF);
+        expect(normalizeColor('rEd')).toBe(0xFF0000FF);
+        expect(normalizeColor('ReD')).toBe(0xFF0000FF);
+
+        expect(normalizeColor('blue')).toBe(0x0000FFFF);
+        expect(normalizeColor('BLUE')).toBe(0x0000FFFF);
+        expect(normalizeColor('Blue')).toBe(0x0000FFFF);
+
+        expect(normalizeColor('cornflowerblue')).toBe(0x6495EDFF);
+        expect(normalizeColor('CORNFLOWERBLUE')).toBe(0x6495EDFF);
+        expect(normalizeColor('CornflowerBlue')).toBe(0x6495EDFF);
+        expect(normalizeColor('cornFlowerBlue')).toBe(0x6495EDFF);
+      });
+    });
+
+    describe('color functions with mixed case inputs', () => {
+      it('should work with mixed case hex inputs in color manipulation functions', () => {
+        expect(mixColor('#ff0000', '#0000ff', 0.5)).toBe('#800080');
+        expect(mixColor('#FF0000', '#0000FF', 0.5)).toBe('#800080');
+        expect(mixColor('#Ff0000', '#0000Ff', 0.5)).toBe('#800080');
+        expect(mixColor('#fF0000', '#0000fF', 0.5)).toBe('#800080');
+      });
+
+      it('should work with mixed case named colors in color manipulation functions', () => {
+        expect(mixColor('red', 'blue', 0.5)).toBe('#800080');
+        expect(mixColor('RED', 'BLUE', 0.5)).toBe('#800080');
+        expect(mixColor('Red', 'Blue', 0.5)).toBe('#800080');
+        expect(mixColor('rEd', 'bLuE', 0.5)).toBe('#800080');
+      });
+
+      it('should work with mixed case colors in tint/shade functions', () => {
+        expect(tintColor('red', 0.5)).toBe('#FF8080');
+        expect(tintColor('RED', 0.5)).toBe('#FF8080');
+        expect(tintColor('#ff0000', 0.5)).toBe('#FF8080');
+        expect(tintColor('#FF0000', 0.5)).toBe('#FF8080');
+
+        expect(shadeColor('red', 0.5)).toBe('#800000');
+        expect(shadeColor('RED', 0.5)).toBe('#800000');
+        expect(shadeColor('#ff0000', 0.5)).toBe('#800000');
+        expect(shadeColor('#FF0000', 0.5)).toBe('#800000');
+      });
+
+      it('should work with mixed case colors in accessibility functions', () => {
+        const redLum = luminance('red');
+        expect(luminance('RED')).toBe(redLum);
+        expect(luminance('#ff0000')).toBe(redLum);
+        expect(luminance('#FF0000')).toBe(redLum);
+
+        const contrast = contrastRatio('white', 'black');
+        expect(contrastRatio('WHITE', 'BLACK')).toBe(contrast);
+        expect(contrastRatio('#ffffff', '#000000')).toBe(contrast);
+        expect(contrastRatio('#FFFFFF', '#000000')).toBe(contrast);
+      });
+    });
+  });
 });
