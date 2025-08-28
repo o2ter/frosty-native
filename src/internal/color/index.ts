@@ -186,22 +186,12 @@ const WEB_COLORS = {
  * @returns RGB component value (0-1)
  */
 const hue2rgb = (p: number, q: number, t: number): number => {
-  let normalizedT = t;
-  if (normalizedT < 0) {
-    normalizedT += 1;
-  }
-  if (normalizedT > 1) {
-    normalizedT -= 1;
-  }
-  if (normalizedT < 1 / 6) {
-    return p + (q - p) * 6 * normalizedT;
-  }
-  if (normalizedT < 1 / 2) {
-    return q;
-  }
-  if (normalizedT < 2 / 3) {
-    return p + (q - p) * (2 / 3 - normalizedT) * 6;
-  }
+  // Normalize hue to 0-1 range
+  let normalizedT = t < 0 ? t + 1 : t > 1 ? t - 1 : t;
+
+  if (normalizedT < 1 / 6) return p + (q - p) * 6 * normalizedT;
+  if (normalizedT < 1 / 2) return q;
+  if (normalizedT < 2 / 3) return p + (q - p) * (2 / 3 - normalizedT) * 6;
   return p;
 };
 
@@ -219,6 +209,7 @@ export const hslToRgb = (h: number, s: number, l: number): ColorValue => {
   
   const q = l < 0.5 ? l * (1 + s) : l + s - l * s;
   const p = 2 * l - q;
+
   const r = hue2rgb(p, q, h + 1 / 3);
   const g = hue2rgb(p, q, h);
   const b = hue2rgb(p, q, h - 1 / 3);
@@ -242,14 +233,16 @@ export const hwbToRgb = (h: number, w: number, b: number): ColorValue => {
     throw new Error('HWB whiteness and blackness values must be between 0 and 1');
   }
   
+  // If whiteness + blackness >= 1, return grayscale
   if (w + b >= 1) {
     const gray = Math.round((w * 255) / (w + b));
     return (gray << 24) | (gray << 16) | (gray << 8);
   }
   
-  const red = hue2rgb(0, 1, h + 1 / 3) * (1 - w - b) + w;
-  const green = hue2rgb(0, 1, h) * (1 - w - b) + w;
-  const blue = hue2rgb(0, 1, h - 1 / 3) * (1 - w - b) + w;
+  const factor = 1 - w - b;
+  const red = hue2rgb(0, 1, h + 1 / 3) * factor + w;
+  const green = hue2rgb(0, 1, h) * factor + w;
+  const blue = hue2rgb(0, 1, h - 1 / 3) * factor + w;
   
   return (
     (Math.round(red * 255) << 24) |
@@ -270,6 +263,37 @@ interface ColorMatchers {
   hex8: RegExp;
 }
 
+/** Helper functions for regex pattern building */
+const regexHelpers = {
+  NUMBER: '[-+]?\\d*\\.?\\d+',
+  get PERCENTAGE() { return this.NUMBER + '%'; },
+
+  call: (...args: string[]): string =>
+    '\\(\\s*(' + args.join(')\\s*,?\\s*(') + ')\\s*\\)',
+
+  callWithSlashSeparator: (...args: string[]): string => {
+    const allButLast = args.slice(0, -1).join(')\\s*,?\\s*(');
+    const last = args[args.length - 1];
+    return `\\(\\s*(${allButLast})\\s*/\\s*(${last})\\s*\\)`;
+  },
+
+  commaSeparatedCall: (...args: string[]): string =>
+    '\\(\\s*(' + args.join(')\\s*,\\s*(') + ')\\s*\\)',
+};
+
+/** Parsing utilities for color components */
+const parsers = {
+  to255: (str: string): number => Math.max(0, Math.min(255, parseInt(str, 10))),
+  to360: (str: string): number => (((parseFloat(str) % 360) + 360) % 360) / 360,
+  to1: (str: string): number => {
+    const num = parseFloat(str);
+    if (num < 0) return 0;
+    if (num > 1) return 255;
+    return Math.round(num * 255);
+  },
+  percentage: (str: string): number => Math.max(0, Math.min(100, parseFloat(str))) / 100,
+};
+
 /**
  * Normalizes a color string or number to a 32-bit RGBA color value
  * Supports various color formats including hex, rgb, hsl, hwb, and named colors
@@ -277,31 +301,12 @@ interface ColorMatchers {
  * @returns 32-bit RGBA color value or null if invalid
  */
 export const normalizeColor = (() => {
-  const NUMBER = '[-+]?\\d*\\.?\\d+';
-  const PERCENTAGE = NUMBER + '%';
-
-  const call = (...args: string[]): string => {
-    return '\\(\\s*(' + args.join(')\\s*,?\\s*(') + ')\\s*\\)';
-  };
-
-  const callWithSlashSeparator = (...args: string[]): string => {
-    return (
-      '\\(\\s*(' +
-      args.slice(0, args.length - 1).join(')\\s*,?\\s*(') +
-      ')\\s*/\\s*(' +
-      args[args.length - 1] +
-      ')\\s*\\)'
-    );
-  };
-
-  const commaSeparatedCall = (...args: string[]): string => {
-    return '\\(\\s*(' + args.join(')\\s*,\\s*(') + ')\\s*\\)';
-  };
-
   let cachedMatchers: ColorMatchers | undefined;
 
   const getMatchers = (): ColorMatchers => {
     if (cachedMatchers === undefined) {
+      const { NUMBER, PERCENTAGE, call, callWithSlashSeparator, commaSeparatedCall } = regexHelpers;
+
       cachedMatchers = {
         rgb: new RegExp('rgb' + call(NUMBER, NUMBER, NUMBER)),
         rgba: new RegExp(
@@ -329,173 +334,124 @@ export const normalizeColor = (() => {
     return cachedMatchers;
   };
 
-  const parse255 = (str: string): number => {
-    const int = parseInt(str, 10);
-    return Math.max(0, Math.min(255, int));
-  };
-
-  const parse360 = (str: string): number => {
-    const int = parseFloat(str);
-    return (((int % 360) + 360) % 360) / 360;
-  };
-
-  const parse1 = (str: string): number => {
-    const num = parseFloat(str);
-    if (num < 0) return 0;
-    if (num > 1) return 255;
-    return Math.round(num * 255);
-  };
-
-  const parsePercentage = (str: string): number => {
-    const int = parseFloat(str);
-    return Math.max(0, Math.min(100, int)) / 100;
-  };
-
   const normalizeKeyword = (name: string): ColorValue | null => {
     const lowercaseName = name.toLowerCase() as keyof typeof WEB_COLORS;
     return WEB_COLORS[lowercaseName] ?? null;
   };
 
   return function normalizeColor(color: string | number): ColorValue | null {
+    // Handle numeric input
     if (typeof color === 'number') {
-      if (color >>> 0 === color && color >= 0 && color <= 0xffffffff) {
-        return color;
-      }
-      return null;
+      return (color >>> 0 === color && color >= 0 && color <= 0xffffffff) ? color : null;
     }
 
-    if (typeof color !== 'string') {
-      return null;
-    }
+    if (typeof color !== 'string') return null;
 
     const matchers = getMatchers();
     let match: RegExpExecArray | null;
 
-    // Ordered based on occurrences on Facebook codebase
+    // Hex6 (most common, check first)
     if ((match = matchers.hex6.exec(color))) {
       return parseInt(match[1] + 'ff', 16) >>> 0;
     }
 
+    // Named colors
     const colorFromKeyword = normalizeKeyword(color);
-    if (colorFromKeyword != null) {
-      return colorFromKeyword;
-    }
+    if (colorFromKeyword != null) return colorFromKeyword;
 
+    // RGB format
     if ((match = matchers.rgb.exec(color))) {
       return (
-        ((parse255(match[1]) << 24) | // r
-          (parse255(match[2]) << 16) | // g
-          (parse255(match[3]) << 8) | // b
-          0x000000ff) >>> // a
-        0
+        ((parsers.to255(match[1]) << 24) | // r
+          (parsers.to255(match[2]) << 16) | // g
+          (parsers.to255(match[3]) << 8) |  // b
+          0x000000ff) >>> 0                  // a
       );
     }
 
+    // RGBA format (two notations supported)
     if ((match = matchers.rgba.exec(color))) {
-      // rgba(R G B / A) notation
       if (match[6] !== undefined) {
+        // rgba(R G B / A) notation
         return (
-          ((parse255(match[6]) << 24) | // r
-            (parse255(match[7]) << 16) | // g
-            (parse255(match[8]) << 8) | // b
-            parse1(match[9])) >>> // a
-          0
+          ((parsers.to255(match[6]) << 24) | // r
+            (parsers.to255(match[7]) << 16) | // g
+            (parsers.to255(match[8]) << 8) |  // b
+            parsers.to1(match[9])) >>> 0       // a
         );
       }
-
       // rgba(R, G, B, A) notation
       return (
-        ((parse255(match[2]) << 24) | // r
-          (parse255(match[3]) << 16) | // g
-          (parse255(match[4]) << 8) | // b
-          parse1(match[5])) >>> // a
-        0
+        ((parsers.to255(match[2]) << 24) | // r
+          (parsers.to255(match[3]) << 16) | // g
+          (parsers.to255(match[4]) << 8) |  // b
+          parsers.to1(match[5])) >>> 0       // a
       );
     }
 
+    // Hex3 format
     if ((match = matchers.hex3.exec(color))) {
-      return (
-        parseInt(
-          match[1] +
-          match[1] + // r
-          match[2] +
-          match[2] + // g
-          match[3] +
-          match[3] + // b
-          'ff', // a
-          16,
-        ) >>> 0
-      );
+      const r = match[1] + match[1];
+      const g = match[2] + match[2];
+      const b = match[3] + match[3];
+      return parseInt(r + g + b + 'ff', 16) >>> 0;
     }
 
-    // https://drafts.csswg.org/css-color-4/#hex-notation
+    // Hex8 format
     if ((match = matchers.hex8.exec(color))) {
       return parseInt(match[1], 16) >>> 0;
     }
 
+    // Hex4 format
     if ((match = matchers.hex4.exec(color))) {
-      return (
-        parseInt(
-          match[1] +
-          match[1] + // r
-          match[2] +
-          match[2] + // g
-          match[3] +
-          match[3] + // b
-          match[4] +
-          match[4], // a
-          16,
-        ) >>> 0
-      );
+      const r = match[1] + match[1];
+      const g = match[2] + match[2];
+      const b = match[3] + match[3];
+      const a = match[4] + match[4];
+      return parseInt(r + g + b + a, 16) >>> 0;
     }
 
+    // HSL format
     if ((match = matchers.hsl.exec(color))) {
       return (
         (hslToRgb(
-          parse360(match[1]), // h
-          parsePercentage(match[2]), // s
-          parsePercentage(match[3]), // l
-        ) |
-          0x000000ff) >>> // a
-        0
+          parsers.to360(match[1]),      // h
+          parsers.percentage(match[2]), // s
+          parsers.percentage(match[3])  // l
+        ) | 0x000000ff) >>> 0           // a
       );
     }
 
+    // HSLA format (two notations supported)
     if ((match = matchers.hsla.exec(color))) {
-      // hsla(H S L / A) notation
       if (match[6] !== undefined) {
+        // hsla(H S L / A) notation
         return (
           (hslToRgb(
-            parse360(match[6]), // h
-            parsePercentage(match[7]), // s
-            parsePercentage(match[8]), // l
-          ) |
-            parse1(match[9])) >>> // a
-          0
+            parsers.to360(match[6]),      // h
+            parsers.percentage(match[7]), // s
+            parsers.percentage(match[8])  // l
+          ) | parsers.to1(match[9])) >>> 0 // a
         );
       }
-
       // hsla(H, S, L, A) notation
       return (
         (hslToRgb(
-          parse360(match[2]), // h
-          parsePercentage(match[3]), // s
-          parsePercentage(match[4]), // l
-        ) |
-          parse1(match[5])) >>> // a
-        0
+          parsers.to360(match[2]),      // h
+          parsers.percentage(match[3]), // s
+          parsers.percentage(match[4])  // l
+        ) | parsers.to1(match[5])) >>> 0 // a
       );
     }
 
+    // HWB format
     if ((match = matchers.hwb.exec(color))) {
       return (
         (hwbToRgb(
-          parse360(match[1]), // h
-          parsePercentage(match[2]), // w
-          parsePercentage(match[3]), // b
-        ) |
-          0x000000ff) >>> // a
-        0
+          parsers.to360(match[1]),      // h
+          parsers.percentage(match[2]), // w
+          parsers.percentage(match[3])  // b
+        ) | 0x000000ff) >>> 0           // a
       );
     }
 
@@ -503,41 +459,11 @@ export const normalizeColor = (() => {
   };
 })();
 
-/**
- * Extracts the red component from a color value
- * @param color - 32-bit RGBA color value
- * @returns Red component (0-255)
- */
-export const getRed = (color: ColorValue): number => {
-  return (color >>> 24) & 0xff;
-};
-
-/**
- * Extracts the green component from a color value
- * @param color - 32-bit RGBA color value
- * @returns Green component (0-255)
- */
-export const getGreen = (color: ColorValue): number => {
-  return (color >>> 16) & 0xff;
-};
-
-/**
- * Extracts the blue component from a color value
- * @param color - 32-bit RGBA color value
- * @returns Blue component (0-255)
- */
-export const getBlue = (color: ColorValue): number => {
-  return (color >>> 8) & 0xff;
-};
-
-/**
- * Extracts the alpha component from a color value
- * @param color - 32-bit RGBA color value
- * @returns Alpha component (0-255)
- */
-export const getAlpha = (color: ColorValue): number => {
-  return color & 0xff;
-};
+/** Color component extraction functions */
+export const getRed = (color: ColorValue): number => (color >>> 24) & 0xff;
+export const getGreen = (color: ColorValue): number => (color >>> 16) & 0xff;
+export const getBlue = (color: ColorValue): number => (color >>> 8) & 0xff;
+export const getAlpha = (color: ColorValue): number => color & 0xff;
 
 /**
  * Creates a color value from RGBA components
@@ -548,12 +474,13 @@ export const getAlpha = (color: ColorValue): number => {
  * @returns 32-bit RGBA color value
  */
 export const rgba = (r: number, g: number, b: number, a: number = 255): ColorValue => {
+  const clamp = (value: number) => Math.round(Math.max(0, Math.min(255, value)));
   return (
-    ((Math.round(Math.max(0, Math.min(255, r))) << 24) |
-     (Math.round(Math.max(0, Math.min(255, g))) << 16) |
-     (Math.round(Math.max(0, Math.min(255, b))) << 8) |
-     Math.round(Math.max(0, Math.min(255, a)))) >>> 0
-  );
+    (clamp(r) << 24) |
+    (clamp(g) << 16) |
+    (clamp(b) << 8) |
+    clamp(a)
+  ) >>> 0;
 };
 
 /**
@@ -563,15 +490,26 @@ export const rgba = (r: number, g: number, b: number, a: number = 255): ColorVal
  * @returns Hex string representation (e.g., "#FF0000" or "#FF0000FF")
  */
 export const toHexString = (color: ColorValue, includeAlpha: boolean = false): string => {
+  const toHex = (value: number): string => value.toString(16).padStart(2, '0').toUpperCase();
+
   const r = getRed(color);
   const g = getGreen(color);
   const b = getBlue(color);
   const a = getAlpha(color);
-  
-  const toHex = (value: number): string => value.toString(16).padStart(2, '0').toUpperCase();
-  
+
   const hex = `#${toHex(r)}${toHex(g)}${toHex(b)}`;
   return includeAlpha || a !== 255 ? `${hex}${toHex(a)}` : hex;
+};
+
+/**
+ * Utility function to normalize color input to ColorValue
+ */
+const toColorValue = (color: string | ColorValue): ColorValue => {
+  const normalized = typeof color === 'string' ? normalizeColor(color) : color;
+  if (normalized === null) {
+    throw new Error('Invalid color input');
+  }
+  return normalized;
 };
 
 /**
@@ -586,36 +524,17 @@ export const mixColor = (
   color2: string | ColorValue,
   weight: number
 ): string => {
-  // Normalize inputs to ColorValue
-  const c1 = typeof color1 === 'string' ? normalizeColor(color1) : color1;
-  const c2 = typeof color2 === 'string' ? normalizeColor(color2) : color2;
-
-  if (c1 === null || c2 === null) {
-    throw new Error('Invalid color input');
-  }
-
-  // Clamp weight to 0-1 range
+  const c1 = toColorValue(color1);
+  const c2 = toColorValue(color2);
   const w = Math.max(0, Math.min(1, weight));
 
-  // Extract RGB components
-  const r1 = getRed(c1);
-  const g1 = getGreen(c1);
-  const b1 = getBlue(c1);
-  const a1 = getAlpha(c1);
+  // Extract and interpolate components
+  const r = Math.round(getRed(c2) + (getRed(c1) - getRed(c2)) * w);
+  const g = Math.round(getGreen(c2) + (getGreen(c1) - getGreen(c2)) * w);
+  const b = Math.round(getBlue(c2) + (getBlue(c1) - getBlue(c2)) * w);
+  const a = Math.round(getAlpha(c2) + (getAlpha(c1) - getAlpha(c2)) * w);
 
-  const r2 = getRed(c2);
-  const g2 = getGreen(c2);
-  const b2 = getBlue(c2);
-  const a2 = getAlpha(c2);
-
-  // Interpolate components
-  const r = Math.round(r2 + (r1 - r2) * w);
-  const g = Math.round(g2 + (g1 - g2) * w);
-  const b = Math.round(b2 + (b1 - b2) * w);
-  const a = Math.round(a2 + (a1 - a2) * w);
-
-  const mixedColor = rgba(r, g, b, a);
-  return toHexString(mixedColor);
+  return toHexString(rgba(r, g, b, a));
 };
 
 /**
@@ -624,12 +543,8 @@ export const mixColor = (
  * @param weight - Amount of tinting (0-1, where 0 = no change, 1 = white)
  * @returns Hex string of the tinted color
  */
-export const tintColor = (
-  color: string | ColorValue,
-  weight: number
-): string => {
-  return mixColor('#ffffff', color, weight);
-};
+export const tintColor = (color: string | ColorValue, weight: number): string =>
+  mixColor('#ffffff', color, weight);
 
 /**
  * Shades a color by mixing it with black
@@ -637,12 +552,8 @@ export const tintColor = (
  * @param weight - Amount of shading (0-1, where 0 = no change, 1 = black)
  * @returns Hex string of the shaded color
  */
-export const shadeColor = (
-  color: string | ColorValue,
-  weight: number
-): string => {
-  return mixColor('#000000', color, weight);
-};
+export const shadeColor = (color: string | ColorValue, weight: number): string =>
+  mixColor('#000000', color, weight);
 
 /**
  * Shifts a color lighter or darker based on weight
@@ -650,12 +561,8 @@ export const shadeColor = (
  * @param weight - Shift amount (-1 to 1, negative = tint, positive = shade)
  * @returns Hex string of the shifted color
  */
-export const shiftColor = (
-  color: string | ColorValue,
-  weight: number
-): string => {
-  return weight > 0 ? shadeColor(color, weight) : tintColor(color, -weight);
-};
+export const shiftColor = (color: string | ColorValue, weight: number): string =>
+  weight > 0 ? shadeColor(color, weight) : tintColor(color, -weight);
 
 /**
  * Calculates the relative luminance of a color according to WCAG 2.1
@@ -663,24 +570,22 @@ export const shiftColor = (
  * @returns Luminance value (0-1, where 0 = black, 1 = white)
  */
 export const luminance = (color: string | ColorValue): number => {
-  const c = typeof color === 'string' ? normalizeColor(color) : color;
-
-  if (c === null) {
-    throw new Error('Invalid color input');
-  }
+  const c = toColorValue(color);
 
   // Extract and normalize RGB components to 0-1 range
-  const r = getRed(c) / 255;
-  const g = getGreen(c) / 255;
-  const b = getBlue(c) / 255;
+  const normalize = (component: number): number => {
+    const normalized = component / 255;
+    return normalized <= 0.03928
+      ? normalized / 12.92
+      : Math.pow((normalized + 0.055) / 1.055, 2.4);
+  };
 
-  // Apply gamma correction
-  const _r = r <= 0.03928 ? r / 12.92 : Math.pow((r + 0.055) / 1.055, 2.4);
-  const _g = g <= 0.03928 ? g / 12.92 : Math.pow((g + 0.055) / 1.055, 2.4);
-  const _b = b <= 0.03928 ? b / 12.92 : Math.pow((b + 0.055) / 1.055, 2.4);
+  const r = normalize(getRed(c));
+  const g = normalize(getGreen(c));
+  const b = normalize(getBlue(c));
 
   // Calculate relative luminance using ITU-R BT.709 coefficients
-  return 0.2126 * _r + 0.7152 * _g + 0.0722 * _b;
+  return 0.2126 * r + 0.7152 * g + 0.0722 * b;
 };
 
 /**
@@ -712,24 +617,20 @@ export const colorContrast = (
   colorContrastLight: string | ColorValue,
   minContrastRatio: number = 4.5
 ): string => {
-  let maxRatio = 0;
-  let maxRatioColor: string | ColorValue = background;
-
   const foregrounds = [colorContrastLight, colorContrastDark, '#ffffff', '#000000'];
+  let maxRatio = 0;
+  let bestColor: string | ColorValue = background;
 
   for (const color of foregrounds) {
     const ratio = contrastRatio(background, color);
     if (ratio >= minContrastRatio) {
-      // Convert to hex string and return
-      const normalized = typeof color === 'string' ? normalizeColor(color) : color;
-      return normalized !== null ? toHexString(normalized) : toHexString(normalizeColor(background) || 0);
-    } else if (ratio > maxRatio) {
+      return toHexString(toColorValue(color));
+    }
+    if (ratio > maxRatio) {
       maxRatio = ratio;
-      maxRatioColor = color;
+      bestColor = color;
     }
   }
 
-  // Convert the best option to hex string
-  const normalized = typeof maxRatioColor === 'string' ? normalizeColor(maxRatioColor) : maxRatioColor;
-  return normalized !== null ? toHexString(normalized) : toHexString(normalizeColor(background) || 0);
+  return toHexString(toColorValue(bestColor));
 };
