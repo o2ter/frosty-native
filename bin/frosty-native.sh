@@ -26,6 +26,9 @@
 
 set -e
 
+# Get current working directory
+export INIT_CWD="$( realpath "${INIT_CWD:-$(pwd)}" )"
+
 SCRIPT_DIR="$( dirname $( realpath "${BASH_SOURCE[0]}" ) )"
 cd "$SCRIPT_DIR"
 

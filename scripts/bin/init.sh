@@ -28,6 +28,7 @@ set -e
 
 # Get the directory where this script is located
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+
 # Get the frosty-native root directory (two levels up from scripts/bin)
 FROSTY_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
 TEMPLATE_DIR="$FROSTY_ROOT/template"
@@ -62,9 +63,7 @@ if ! echo "$PROJECT_NAME" | grep -q '^[a-zA-Z0-9_-]*$'; then
     fi
 fi
 
-# Get current working directory
-TARGET_DIR="$(pwd)"
-PROJECT_PATH="$TARGET_DIR/$PROJECT_NAME"
+PROJECT_PATH="$INIT_CWD/$PROJECT_NAME"
 
 # Check if target directory already exists
 if [ -d "$PROJECT_PATH" ]; then
