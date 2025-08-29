@@ -194,3 +194,6 @@ fastlane/test_output
 
 # Template
 /template/yarn.lock
+
+# Temp
+.temp
