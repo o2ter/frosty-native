@@ -48,6 +48,10 @@ frosty-native <command>  # Entry point routes to scripts/bin/<command>.sh
 
 ## Project-Specific Conventions
 
+### Import Aliases
+- Use `~/` for tests (configured in Jest) but not code under `src/`
+- External imports use standard module resolution
+
 ### Framework Independence
 - **Never mention React or React Native directly** in documentation or code comments
 - **Never import from React or React Native** - use Frosty and Frosty Native's own APIs instead
