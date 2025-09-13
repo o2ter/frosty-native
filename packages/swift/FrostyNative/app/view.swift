@@ -23,6 +23,10 @@
 //  THE SOFTWARE.
 //
 
+struct LayoutInfo {
+    let parentSize: CGSize
+}
+
 protocol FTViewProtocol: View {
     
     var props: [String: any Sendable] { get }
@@ -41,7 +45,7 @@ protocol FTLayoutViewProtocol: FTViewProtocol {
     
     associatedtype Content: View
     
-    @ViewBuilder @MainActor @preconcurrency var content: Self.Content { get }
+    func content(_ info: LayoutInfo) -> Self.Content
 }
 
 struct Layout: Equatable {
@@ -51,8 +55,43 @@ struct Layout: Equatable {
     var local: CGRect
 }
 
-extension FTLayoutViewProtocol {
+// DimensionValue used for parsing string-based dimensions coming from JS.
+enum DimensionValue {
+    case auto
+    case px(CGFloat)
+    case percent(Double)  // numeric percent, e.g. 50.0 for "50%"
+}
+
+extension DimensionValue {
+
+    init?(_ s: String) {
+        let trimmed = s.trimmingCharacters(in: .whitespacesAndNewlines).lowercased()
+        if trimmed == "auto" { self = .auto; return }
+        if trimmed.hasSuffix("%") {
+            let num = trimmed.dropLast().trimmingCharacters(in: .whitespacesAndNewlines)
+            if let d = Double(num) { self = .percent(d); return }
+            return nil
+        }
+        if let d = Double(trimmed) { self = .px(CGFloat(d)); return }
+        return nil
+    }
     
+    // Resolve a DimensionValue into a concrete CGFloat when needed.
+    // Keeps percent semantics as fraction (50% -> 0.5). Caller decides defaulting.
+    func resolve(relativeBase: CGFloat) -> CGFloat? {
+        switch self {
+        case .auto:
+            return nil
+        case .px(let v):
+            return v
+        case .percent(let p):
+            return CGFloat(p) / 100.0 * relativeBase
+        }
+    }
+}
+
+extension FTLayoutViewProtocol {
+
     var style: [String: any Sendable] {
         return props["style"] as? [String: any Sendable] ?? [:]
     }
@@ -60,34 +99,7 @@ extension FTLayoutViewProtocol {
 
 extension FTLayoutViewProtocol {
 
-    // MARK: - Helpers
-    func cgFloat(_ key: String) -> CGFloat? {
-        guard let v = style[key] else { return nil }
-        if let f = v as? CGFloat { return f }
-        if let d = v as? Double { return CGFloat(d) }
-        if let i = v as? Int { return CGFloat(i) }
-        if let s = v as? String {
-            if s == "auto" { return nil }
-            if s.hasSuffix("%") { return nil }
-            if let d = Double(s) { return CGFloat(d) }
-        }
-        return nil
-    }
-
-    func optionalCGFloat(_ key: String) -> CGFloat? {
-        guard let v = style[key] else { return nil }
-        if let f = v as? CGFloat { return f }
-        if let d = v as? Double { return CGFloat(d) }
-        if let i = v as? Int { return CGFloat(i) }
-        if let s = v as? String {
-            if s == "auto" { return nil }
-            if s.hasSuffix("%") { return nil }
-            if let d = Double(s) { return CGFloat(d) }
-        }
-        return nil
-    }
-
-    func stringVal(_ key: String) -> String? {
+    func string(_ key: String) -> String? {
         guard let v = style[key] else { return nil }
         if let s = v as? String { return s }
         if let i = v as? Int { return String(i) }
@@ -95,42 +107,44 @@ extension FTLayoutViewProtocol {
         return nil
     }
 
-    func boolVal(_ key: String) -> Bool? {
+    func dimension(_ key: String) -> DimensionValue? {
         guard let v = style[key] else { return nil }
-        if let b = v as? Bool { return b }
-        if let i = v as? Int { return i != 0 }
-        if let s = v as? String {
-            return ["true", "1", "yes", "on"].contains(s.lowercased())
-        }
+        if let f = v as? CGFloat { return .px(f) }
+        if let d = v as? Double { return .px(CGFloat(d)) }
+        if let i = v as? Int { return .px(CGFloat(i)) }
+        if let s = v as? String { return DimensionValue(s) }
         return nil
     }
-
-    func dictVal(_ key: String) -> [String: any Sendable]? {
-        return style[key] as? [String: any Sendable]
+    
+    func cgFloat(_ key: String) -> CGFloat? {
+        guard let dim = dimension(key) else { return nil }
+        switch dim {
+        case .auto: return nil
+        case .px(let val): return val
+        case .percent(let pct): return CGFloat(pct) / 100.0
+        }
     }
 
-    func anyArray(_ key: String) -> [Any]? {
-        return style[key] as? [Any]
-    }
+
 
     // MARK: - Layout / Box
-    var display: String? { stringVal("display") }
+    var display: String? { string("display") }
 
-    var width: CGFloat? { optionalCGFloat("width") }
-    var height: CGFloat? { optionalCGFloat("height") }
-    var minWidth: CGFloat? { optionalCGFloat("minWidth") }
-    var minHeight: CGFloat? { optionalCGFloat("minHeight") }
-    var maxWidth: CGFloat? { optionalCGFloat("maxWidth") }
-    var maxHeight: CGFloat? { optionalCGFloat("maxHeight") }
+    var width: DimensionValue? { dimension("width") }
+    var height: DimensionValue? { dimension("height") }
+    var minWidth: DimensionValue? { dimension("minWidth") }
+    var minHeight: DimensionValue? { dimension("minHeight") }
+    var maxWidth: DimensionValue? { dimension("maxWidth") }
+    var maxHeight: DimensionValue? { dimension("maxHeight") }
 
-    var left: CGFloat? { optionalCGFloat("left") }
-    var right: CGFloat? { optionalCGFloat("right") }
-    var top: CGFloat? { optionalCGFloat("top") }
-    var bottomValue: CGFloat? { optionalCGFloat("bottom") }
-    var start: CGFloat? { optionalCGFloat("start") }
-    var end: CGFloat? { optionalCGFloat("end") }
+    var left: DimensionValue? { dimension("left") }
+    var right: DimensionValue? { dimension("right") }
+    var top: DimensionValue? { dimension("top") }
+    var bottomValue: DimensionValue? { dimension("bottom") }
+    var start: DimensionValue? { dimension("start") }
+    var end: DimensionValue? { dimension("end") }
 
-    var inset: String? { stringVal("inset") }
+    var inset: String? { string("inset") }
 
     var aspectRatioValue: CGFloat? {
         if let s = style["aspectRatio"] as? String, let d = Double(s) { return CGFloat(d) }
@@ -146,109 +160,102 @@ extension FTLayoutViewProtocol {
         return nil
     }
 
-    var flexBasis: String? { stringVal("flexBasis") }
+    var flexBasis: String? { string("flexBasis") }
     var flexGrow: CGFloat { cgFloat("flexGrow") ?? 0 }
     var flexShrink: CGFloat { cgFloat("flexShrink") ?? 0 }
-    var flexWrap: String? { stringVal("flexWrap") }
+    var flexWrap: String? { string("flexWrap") }
     var order: Int { (style["order"] as? Int) ?? 0 }
 
-    var gap: CGFloat { cgFloat("gap") ?? 0 }
+    var gap: DimensionValue? { dimension("gap") }
 
     // layout alignments and gaps
 
-    var position: String { stringVal("position") ?? "static" }
+    var position: String { string("position") ?? "static" }
+    var flexDirection: String { string("flexDirection") ?? "column" }
+    var alignContent: String { string("alignContent") ?? "flex-start" }
+    var alignItems: String { string("alignItems") ?? "stretch" }
+    var alignSelf: String { string("alignSelf") ?? "auto" }
+    var justifyContent: String { string("justifyContent") ?? "stretch" }
+    var justifyItems: String { string("justifyItems") ?? "stretch" }
+    var justifySelf: String { string("justifySelf") ?? "auto" }
 
-    var flexDirection: String { stringVal("flexDirection") ?? "column" }
+    var columnGap: DimensionValue? { dimension("columnGap") }
 
-    var alignContent: String { stringVal("alignContent") ?? "flex-start" }
+    var rowGap: DimensionValue? { dimension("rowGap") }
 
-    var alignItems: String { stringVal("alignItems") ?? "stretch" }
-
-    var alignSelf: String { stringVal("alignSelf") ?? "auto" }
-
-    var justifyContent: String { stringVal("justifyContent") ?? "stretch" }
-
-    var justifyItems: String { stringVal("justifyItems") ?? "stretch" }
-
-    var justifySelf: String { stringVal("justifySelf") ?? "auto" }
-
-    var columnGap: CGFloat { cgFloat("columnGap") ?? 0 }
-
-    var rowGap: CGFloat { cgFloat("rowGap") ?? 0 }
-
-    var overflow: String { stringVal("overflow") ?? "visible" }
+    var overflow: String { string("overflow") ?? "visible" }
 
     // per-side padding and margin
-    var paddingTop: CGFloat { cgFloat("paddingTop") ?? 0 }
-    var paddingLeft: CGFloat { cgFloat("paddingLeft") ?? 0 }
-    var paddingRight: CGFloat { cgFloat("paddingRight") ?? 0 }
-    var paddingBottom: CGFloat { cgFloat("paddingBottom") ?? 0 }
+    var paddingTop: DimensionValue? { dimension("paddingTop") }
+    var paddingLeft: DimensionValue? { dimension("paddingLeft") }
+    var paddingRight: DimensionValue? { dimension("paddingRight") }
+    var paddingBottom: DimensionValue? { dimension("paddingBottom") }
 
-    var marginTop: CGFloat { cgFloat("marginTop") ?? 0 }
-    var marginLeft: CGFloat { cgFloat("marginLeft") ?? 0 }
-    var marginRight: CGFloat { cgFloat("marginRight") ?? 0 }
-    var marginBottom: CGFloat { cgFloat("marginBottom") ?? 0 }
+    var marginTop: DimensionValue? { dimension("marginTop") }
+    var marginLeft: DimensionValue? { dimension("marginLeft") }
+    var marginRight: DimensionValue? { dimension("marginRight") }
+    var marginBottom: DimensionValue? { dimension("marginBottom") }
 
     // MARK: - Padding / Margin (extras)
-    var padding: CGFloat { cgFloat("padding") ?? 0 }
-    var paddingHorizontal: CGFloat { cgFloat("paddingHorizontal") ?? 0 }
-    var paddingVertical: CGFloat { cgFloat("paddingVertical") ?? 0 }
-    var paddingStart: CGFloat { cgFloat("paddingStart") ?? 0 }
-    var paddingEnd: CGFloat { cgFloat("paddingEnd") ?? 0 }
+    var padding: DimensionValue? { dimension("padding") }
+    var paddingHorizontal: DimensionValue? { dimension("paddingHorizontal") }
+    var paddingVertical: DimensionValue? { dimension("paddingVertical") }
+    var paddingStart: DimensionValue? { dimension("paddingStart") }
+    var paddingEnd: DimensionValue? { dimension("paddingEnd") }
 
-    var margin: CGFloat { cgFloat("margin") ?? 0 }
-    var marginHorizontal: CGFloat { cgFloat("marginHorizontal") ?? 0 }
-    var marginVertical: CGFloat { cgFloat("marginVertical") ?? 0 }
-    var marginStart: CGFloat { cgFloat("marginStart") ?? 0 }
-    var marginEnd: CGFloat { cgFloat("marginEnd") ?? 0 }
+    var margin: DimensionValue? { dimension("margin") }
+    var marginHorizontal: DimensionValue? { dimension("marginHorizontal") }
+    var marginVertical: DimensionValue? { dimension("marginVertical") }
+    var marginStart: DimensionValue? { dimension("marginStart") }
+    var marginEnd: DimensionValue? { dimension("marginEnd") }
 
     // MARK: - Border
-    var borderWidth: CGFloat { cgFloat("borderWidth") ?? 0 }
-    var borderTopWidth: CGFloat { cgFloat("borderTopWidth") ?? 0 }
-    var borderBottomWidth: CGFloat { cgFloat("borderBottomWidth") ?? 0 }
-    var borderLeftWidth: CGFloat { cgFloat("borderLeftWidth") ?? 0 }
-    var borderRightWidth: CGFloat { cgFloat("borderRightWidth") ?? 0 }
-    var borderStartWidth: CGFloat { cgFloat("borderStartWidth") ?? 0 }
-    var borderEndWidth: CGFloat { cgFloat("borderEndWidth") ?? 0 }
+    var borderWidth: DimensionValue? { dimension("borderWidth") }
+    var borderTopWidth: DimensionValue? { dimension("borderTopWidth") }
+    var borderBottomWidth: DimensionValue? { dimension("borderBottomWidth") }
+    var borderLeftWidth: DimensionValue? { dimension("borderLeftWidth") }
+    var borderRightWidth: DimensionValue? { dimension("borderRightWidth") }
+    var borderStartWidth: DimensionValue? { dimension("borderStartWidth") }
+    var borderEndWidth: DimensionValue? { dimension("borderEndWidth") }
 
-    var borderColor: String? { stringVal("borderColor") }
-    var borderTopColor: String? { stringVal("borderTopColor") }
-    var borderBottomColor: String? { stringVal("borderBottomColor") }
-    var borderLeftColor: String? { stringVal("borderLeftColor") }
-    var borderRightColor: String? { stringVal("borderRightColor") }
-    var borderStartColor: String? { stringVal("borderStartColor") }
-    var borderEndColor: String? { stringVal("borderEndColor") }
+    var borderColor: String? { string("borderColor") }
+    var borderTopColor: String? { string("borderTopColor") }
+    var borderBottomColor: String? { string("borderBottomColor") }
+    var borderLeftColor: String? { string("borderLeftColor") }
+    var borderRightColor: String? { string("borderRightColor") }
+    var borderStartColor: String? { string("borderStartColor") }
+    var borderEndColor: String? { string("borderEndColor") }
 
-    var borderRadius: CGFloat { cgFloat("borderRadius") ?? 0 }
-    var borderTopLeftRadius: CGFloat { cgFloat("borderTopLeftRadius") ?? 0 }
-    var borderTopRightRadius: CGFloat { cgFloat("borderTopRightRadius") ?? 0 }
-    var borderBottomLeftRadius: CGFloat { cgFloat("borderBottomLeftRadius") ?? 0 }
-    var borderBottomRightRadius: CGFloat { cgFloat("borderBottomRightRadius") ?? 0 }
-    var borderTopStartRadius: CGFloat { cgFloat("borderTopStartRadius") ?? 0 }
-    var borderTopEndRadius: CGFloat { cgFloat("borderTopEndRadius") ?? 0 }
-    var borderBottomStartRadius: CGFloat { cgFloat("borderBottomStartRadius") ?? 0 }
-    var borderBottomEndRadius: CGFloat { cgFloat("borderBottomEndRadius") ?? 0 }
+    var borderRadius: DimensionValue? { dimension("borderRadius") }
+    var borderTopLeftRadius: DimensionValue? { dimension("borderTopLeftRadius") }
+    var borderTopRightRadius: DimensionValue? { dimension("borderTopRightRadius") }
+    var borderBottomLeftRadius: DimensionValue? { dimension("borderBottomLeftRadius") }
+    var borderBottomRightRadius: DimensionValue? { dimension("borderBottomRightRadius") }
+    var borderTopStartRadius: DimensionValue? { dimension("borderTopStartRadius") }
+    var borderTopEndRadius: DimensionValue? { dimension("borderTopEndRadius") }
+    var borderBottomStartRadius: DimensionValue? { dimension("borderBottomStartRadius") }
+    var borderBottomEndRadius: DimensionValue? { dimension("borderBottomEndRadius") }
 
     // MARK: - Visual
-    var backgroundColor: String? { stringVal("backgroundColor") }
+    var backgroundColor: String? { string("backgroundColor") }
     var opacityValue: CGFloat { cgFloat("opacity") ?? 1 }
-    var outlineColor: String? { stringVal("outlineColor") }
-    var outlineStyle: String? { stringVal("outlineStyle") }
-    var outlineWidth: CGFloat { cgFloat("outlineWidth") ?? 0 }
-    var outlineOffset: CGFloat { cgFloat("outlineOffset") ?? 0 }
-    var borderStyleProp: String? { stringVal("borderStyle") }
-    var borderCurve: String? { stringVal("borderCurve") }
+    var outlineColor: String? { string("outlineColor") }
+    var outlineStyle: String? { string("outlineStyle") }
+    var outlineWidth: DimensionValue? { dimension("outlineWidth") }
+    var outlineOffset: DimensionValue? { dimension("outlineOffset") }
+    var borderStyleProp: String? { string("borderStyle") }
+    var borderCurve: String? { string("borderCurve") }
 
     var boxShadow: Any? { style["boxShadow"] }
     var filter: Any? { style["filter"] }
 
-    var mixBlendMode: String? { stringVal("mixBlendMode") }
+    var mixBlendMode: String? { string("mixBlendMode") }
 
     // MARK: - Interaction / Misc
-    var pointerEvents: String? { stringVal("pointerEvents") }
-    var cursor: String? { stringVal("cursor") }
-    var userSelect: String? { stringVal("userSelect") }
-    var boxSizing: String? { stringVal("boxSizing") }
+    var pointerEvents: String? { string("pointerEvents") }
+    var cursor: String? { string("cursor") }
+    var userSelect: String? { string("userSelect") }
+    var boxSizing: String? { string("boxSizing") }
 
     // MARK: - Transforms
     var transform: Any? { style["transform"] }
@@ -266,39 +273,38 @@ extension FTLayoutViewProtocol {
 extension FTLayoutViewProtocol {
     
     var body: some View {
-        
-        var view: any View = self.content
-        
-        if paddingTop != 0 || paddingLeft != 0 || paddingBottom != 0 || paddingRight != 0 {
-            view = view.padding(
-                EdgeInsets(
-                    top: paddingTop,
-                    leading: paddingLeft,
-                    bottom: paddingBottom,
-                    trailing: paddingRight
-                ))
+        GeometryReader { geo in
+            let info = LayoutInfo(parentSize: geo.size)
+            let paddingInsets = EdgeInsets(
+                top: paddingTop?.resolve(relativeBase: geo.size.width) ?? 0,
+                leading: paddingLeft?.resolve(relativeBase: geo.size.width) ?? 0,
+                bottom: paddingBottom?.resolve(relativeBase: geo.size.width) ?? 0,
+                trailing: paddingRight?.resolve(relativeBase: geo.size.width) ?? 0
+            )
+            let marginInsets = EdgeInsets(
+                top: marginTop?.resolve(relativeBase: geo.size.width) ?? 0,
+                leading: marginLeft?.resolve(relativeBase: geo.size.width) ?? 0,
+                bottom: marginBottom?.resolve(relativeBase: geo.size.width) ?? 0,
+                trailing: marginRight?.resolve(relativeBase: geo.size.width) ?? 0
+            )
+            if let onLayout = onLayout {
+                self.content(info)
+                    .padding(paddingInsets)
+                    .onGeometryChange(for: Layout.self) {
+                        Layout(
+                            global: $0.frame(in: .global),
+                            local: $0.frame(in: .local)
+                        )
+                    } action: {
+                        onLayout($0)
+                    }
+                    .padding(marginInsets)
+            } else {
+                self.content(info)
+                    .padding(paddingInsets)
+                    .padding(marginInsets)
+            }
         }
-        
-        if let onLayout = onLayout {
-            view = view.onGeometryChange(for: Layout.self) {
-                Layout(
-                    global: $0.frame(in: .global),
-                    local: $0.frame(in: .local)
-                )
-            } action: { onLayout($0) }
-        }
-        
-        if marginTop != 0 || marginLeft != 0 || marginBottom != 0 || marginRight != 0 {
-            view = view.padding(
-                EdgeInsets(
-                    top: marginTop,
-                    leading: marginLeft,
-                    bottom: marginBottom,
-                    trailing: marginRight
-                ))
-        }
-        
-        return AnyView(view)
     }
 }
 
@@ -320,34 +326,24 @@ struct FTView: FTLayoutViewProtocol {
         self._children = children
     }
     
-    var content: some View {
-        switch flexDirection {
-        case "row":
-            HStackLayout(spacing: rowGap) {
-                ForEach(children.indexed(), id: \.index) {
-                    $0.element
+    func content(_ info: LayoutInfo) -> some View {
+        let isRow = flexDirection.hasPrefix("row")
+        let isReverse = flexDirection.hasSuffix("-reverse")
+        let spacing =
+            (isRow ? rowGap : columnGap)?.resolve(relativeBase: info.parentSize.width) ?? 0
+
+        let items = isReverse ? children.reversed() : children
+
+        return Group {
+            if isRow {
+                HStackLayout(spacing: spacing) {
+                    ForEach(items.indexed(), id: \.index) { $0.element }
+                }
+            } else {
+                VStackLayout(spacing: spacing) {
+                    ForEach(items.indexed(), id: \.index) { $0.element }
                 }
             }
-        case "row-reverse":
-            HStackLayout(spacing: rowGap) {
-                ForEach(children.reversed().indexed(), id: \.index) {
-                    $0.element
-                }
-            }
-        case "column":
-            VStackLayout(spacing: columnGap) {
-                ForEach(children.indexed(), id: \.index) {
-                    $0.element
-                }
-            }
-        case "column-reverse":
-            VStackLayout(spacing: columnGap) {
-                ForEach(children.reversed().indexed(), id: \.index) {
-                    $0.element
-                }
-            }
-        default:
-            EmptyView()
         }
     }
 }
@@ -370,7 +366,7 @@ struct FTImageView: FTLayoutViewProtocol {
         self._children = children
     }
     
-    var content: some View {
+    func content(_ info: LayoutInfo) -> some View {
         Image("")
     }
 }
@@ -393,12 +389,8 @@ struct FTTextView: FTLayoutViewProtocol {
         self._children = children
     }
     
-    var text: String {
-        return props["text"] as? String ?? ""
-    }
-    
-    var content: some View {
-        Text(self.text)
+    func content(_ info: LayoutInfo) -> some View {
+        Text(props["text"] as? String ?? "")
     }
 }
 
@@ -420,12 +412,8 @@ struct FTTextInput: FTLayoutViewProtocol {
         self._children = children
     }
     
-    var text: String {
-        return props["text"] as? String ?? ""
-    }
-    
-    var content: some View {
-        TextField("", text: .constant(self.text))
+    func content(_ info: LayoutInfo) -> some View {
+        TextField("", text: .constant(props["text"] as? String ?? ""))
     }
 }
 
@@ -437,23 +425,6 @@ struct FTScrollView: FTLayoutViewProtocol {
     @Binding
     var children: [AnyView]
     
-    var horizontal: Bool {
-        return props["horizontal"] as? Bool ?? false
-    }
-    
-    var vertical: Bool {
-        return props["vertical"] as? Bool ?? false
-    }
-    
-    var axes: Axis.Set {
-        switch (horizontal, vertical) {
-        case (false, false): return []
-        case (true, false): return [.horizontal]
-        case (false, true): return [.vertical]
-        case (true, true): return [.horizontal, .vertical]
-        }
-    }
-    
     init(
         nodeId: ObjectIdentifier,
         props: Binding<[String: any Sendable]>,
@@ -464,7 +435,14 @@ struct FTScrollView: FTLayoutViewProtocol {
         self._children = children
     }
     
-    var content: some View {
-        ScrollView(axes) { children.first }
+    func content(_ info: LayoutInfo) -> some View {
+        let horizontal = props["horizontal"] as? Bool ?? false
+        let vertical = props["vertical"] as? Bool ?? false
+
+        var axes: Axis.Set = []
+        if horizontal { axes.insert(.horizontal) }
+        if vertical { axes.insert(.vertical) }
+
+        return ScrollView(axes) { children.first }
     }
 }
