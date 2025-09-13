@@ -557,7 +557,7 @@ extension FTLayoutViewProtocol {
 
     // MARK: - Visual
     var backgroundColor: String? { stringValue("backgroundColor") }
-    var opacityValue: CGFloat { numericValue("opacity") ?? 1 }
+    var opacity: CGFloat { numericValue("opacity") ?? 1 }
     var outlineColor: String? { stringValue("outlineColor") }
     var outlineStyle: String? { stringValue("outlineStyle") }
     var outlineWidth: CGFloat? { numericValue("outlineWidth") }
@@ -662,8 +662,8 @@ extension FTLayoutViewProtocol {
             }
             
             // Apply opacity
-            if opacityValue != 1 {
-                view = AnyView(view.opacity(opacityValue))
+            if opacity != 1 {
+                view = AnyView(view.opacity(opacity))
             }
             
             // Apply background color
