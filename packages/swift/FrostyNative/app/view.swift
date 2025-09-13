@@ -28,12 +28,14 @@ protocol FTViewProtocol: View {
     var props: [String: any Sendable] { get }
     
     var children: [AnyView] { get }
+
+    var handler: (@escaping FTContext.ViewHandler) -> Void { get }
     
     init(
         nodeId: ObjectIdentifier,
         props: Binding<[String: any Sendable]>,
-        handler: (@escaping FTContext.ViewHandler) -> Void,
-        children: Binding<[AnyView]>
+        children: Binding<[AnyView]>,
+        handler: @escaping (@escaping FTContext.ViewHandler) -> Void
     )
 }
 
@@ -633,18 +635,21 @@ struct FTView: FTLayoutViewProtocol {
     
     @Binding
     var props: [String: any Sendable]
-    
+
+    var handler: (@escaping FTContext.ViewHandler) -> Void
+
     @Binding
     var children: [AnyView]
     
     init(
         nodeId: ObjectIdentifier,
         props: Binding<[String: any Sendable]>,
-        handler: (@escaping FTContext.ViewHandler) -> Void,
-        children: Binding<[AnyView]>
+        children: Binding<[AnyView]>,
+        handler: @escaping (@escaping FTContext.ViewHandler) -> Void
     ) {
         self._props = props
         self._children = children
+        self.handler = handler
     }
     
     func content(_ info: FTLayoutInfo) -> some View {
@@ -673,18 +678,21 @@ struct FTImageView: FTLayoutViewProtocol {
     
     @Binding
     var props: [String: any Sendable]
-    
+
     @Binding
     var children: [AnyView]
+    
+    var handler: (@escaping FTContext.ViewHandler) -> Void
     
     init(
         nodeId: ObjectIdentifier,
         props: Binding<[String: any Sendable]>,
-        handler: (@escaping FTContext.ViewHandler) -> Void,
-        children: Binding<[AnyView]>
+        children: Binding<[AnyView]>,
+        handler: @escaping (@escaping FTContext.ViewHandler) -> Void
     ) {
         self._props = props
         self._children = children
+        self.handler = handler
     }
     
     func content(_ info: FTLayoutInfo) -> some View {
@@ -696,18 +704,21 @@ struct FTTextView: FTLayoutViewProtocol {
     
     @Binding
     var props: [String: any Sendable]
-    
+
     @Binding
     var children: [AnyView]
+    
+    var handler: (@escaping FTContext.ViewHandler) -> Void
     
     init(
         nodeId: ObjectIdentifier,
         props: Binding<[String: any Sendable]>,
-        handler: (@escaping FTContext.ViewHandler) -> Void,
-        children: Binding<[AnyView]>
+        children: Binding<[AnyView]>,
+        handler: @escaping (@escaping FTContext.ViewHandler) -> Void
     ) {
         self._props = props
         self._children = children
+        self.handler = handler
     }
     
     func content(_ info: FTLayoutInfo) -> some View {
@@ -719,18 +730,21 @@ struct FTTextInput: FTLayoutViewProtocol {
     
     @Binding
     var props: [String: any Sendable]
-    
+
     @Binding
     var children: [AnyView]
+    
+    var handler: (@escaping FTContext.ViewHandler) -> Void
     
     init(
         nodeId: ObjectIdentifier,
         props: Binding<[String: any Sendable]>,
-        handler: (@escaping FTContext.ViewHandler) -> Void,
-        children: Binding<[AnyView]>
+        children: Binding<[AnyView]>,
+        handler: @escaping (@escaping FTContext.ViewHandler) -> Void
     ) {
         self._props = props
         self._children = children
+        self.handler = handler
     }
     
     func content(_ info: FTLayoutInfo) -> some View {
@@ -742,18 +756,21 @@ struct FTScrollView: FTLayoutViewProtocol {
     
     @Binding
     var props: [String: any Sendable]
-    
+
     @Binding
     var children: [AnyView]
+    
+    var handler: (@escaping FTContext.ViewHandler) -> Void
     
     init(
         nodeId: ObjectIdentifier,
         props: Binding<[String: any Sendable]>,
-        handler: (@escaping FTContext.ViewHandler) -> Void,
-        children: Binding<[AnyView]>
+        children: Binding<[AnyView]>,
+        handler: @escaping (@escaping FTContext.ViewHandler) -> Void
     ) {
         self._props = props
         self._children = children
+        self.handler = handler
     }
     
     func content(_ info: FTLayoutInfo) -> some View {

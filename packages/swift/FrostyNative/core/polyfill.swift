@@ -30,11 +30,11 @@ extension FTContext {
             "NativeModules": [:]
         ]
         self.register(name: "localStorage", NativeLocalStorage())
-        self.register(name: "FTView", FTView.init(nodeId:props:handler:children:))
-        self.register(name: "FTImageView", FTImageView.init(nodeId:props:handler:children:))
-        self.register(name: "FTTextView", FTTextView.init(nodeId:props:handler:children:))
-        self.register(name: "FTTextInput", FTTextInput.init(nodeId:props:handler:children:))
-        self.register(name: "FTScrollView", FTScrollView.init(nodeId:props:handler:children:))
+        self.register(name: "FTView", FTView.init(nodeId:props:children:handler:))
+        self.register(name: "FTImageView", FTImageView.init(nodeId:props:children:handler:))
+        self.register(name: "FTTextView", FTTextView.init(nodeId:props:children:handler:))
+        self.register(name: "FTTextInput", FTTextInput.init(nodeId:props:children:handler:))
+        self.register(name: "FTScrollView", FTScrollView.init(nodeId:props:children:handler:))
     }
 }
 
@@ -66,8 +66,8 @@ extension FTContext {
     public typealias ViewProvider = @MainActor @Sendable (
         _ nodeId: ObjectIdentifier,
         _ props: Binding<[String: any Sendable]>,
-        _ handler: (@escaping ViewHandler) -> Void,
-        _ children: Binding<[AnyView]>
+        _ children: Binding<[AnyView]>,
+        _ handler: @escaping (@escaping ViewHandler) -> Void
     ) -> any View
 
     public func register(name: String, _ provider: @escaping ViewProvider) {
