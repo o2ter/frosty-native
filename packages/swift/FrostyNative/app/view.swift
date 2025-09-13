@@ -75,6 +75,199 @@ enum FontSizeValue {
     case percent(Double)
 }
 
+// BoxShadowValue for box-shadow property
+struct BoxShadowValue {
+    let offsetX: DimensionValue
+    let offsetY: DimensionValue
+    let color: String?
+    let blurRadius: DimensionValue?
+    let spreadDistance: DimensionValue?
+    let inset: Bool?
+
+    init?(_ value: [String: Any]) {
+        guard let offsetX = value["offsetX"],
+            let offsetY = value["offsetY"]
+        else { return nil }
+
+        // Parse dimension values
+        if let offsetXStr = offsetX as? String {
+            self.offsetX = DimensionValue(offsetXStr) ?? .point(0)
+        } else if let offsetXNum = offsetX as? Double {
+            self.offsetX = .point(CGFloat(offsetXNum))
+        } else {
+            self.offsetX = .point(0)
+        }
+
+        if let offsetYStr = offsetY as? String {
+            self.offsetY = DimensionValue(offsetYStr) ?? .point(0)
+        } else if let offsetYNum = offsetY as? Double {
+            self.offsetY = .point(CGFloat(offsetYNum))
+        } else {
+            self.offsetY = .point(0)
+        }
+
+        self.color = value["color"] as? String
+        self.blurRadius = (value["blurRadius"] as? String).flatMap { DimensionValue($0) }
+        self.spreadDistance = (value["spreadDistance"] as? String).flatMap { DimensionValue($0) }
+        self.inset = value["inset"] as? Bool
+    }
+}
+
+// TransformFunction for transform property
+enum TransformFunction {
+    case perspective(CGFloat)
+    case rotate(String)
+    case rotateX(String)
+    case rotateY(String)
+    case rotateZ(String)
+    case scale(CGFloat)
+    case scaleX(CGFloat)
+    case scaleY(CGFloat)
+    case translateX(DimensionValue)
+    case translateY(DimensionValue)
+    case skewX(String)
+    case skewY(String)
+    case matrix([CGFloat])
+
+    init?(_ value: [String: Any]) {
+        if let perspective = value["perspective"] as? Double {
+            self = .perspective(CGFloat(perspective))
+        } else if let rotate = value["rotate"] as? String {
+            self = .rotate(rotate)
+        } else if let rotateX = value["rotateX"] as? String {
+            self = .rotateX(rotateX)
+        } else if let rotateY = value["rotateY"] as? String {
+            self = .rotateY(rotateY)
+        } else if let rotateZ = value["rotateZ"] as? String {
+            self = .rotateZ(rotateZ)
+        } else if let scale = value["scale"] as? Double {
+            self = .scale(CGFloat(scale))
+        } else if let scaleX = value["scaleX"] as? Double {
+            self = .scaleX(CGFloat(scaleX))
+        } else if let scaleY = value["scaleY"] as? Double {
+            self = .scaleY(CGFloat(scaleY))
+        } else if let translateX = value["translateX"] {
+            if let str = translateX as? String {
+                self = .translateX(DimensionValue(str) ?? .point(0))
+            } else if let num = translateX as? Double {
+                self = .translateX(.point(CGFloat(num)))
+            } else {
+                return nil
+            }
+        } else if let translateY = value["translateY"] {
+            if let str = translateY as? String {
+                self = .translateY(DimensionValue(str) ?? .point(0))
+            } else if let num = translateY as? Double {
+                self = .translateY(.point(CGFloat(num)))
+            } else {
+                return nil
+            }
+        } else if let skewX = value["skewX"] as? String {
+            self = .skewX(skewX)
+        } else if let skewY = value["skewY"] as? String {
+            self = .skewY(skewY)
+        } else if let matrix = value["matrix"] as? [Double] {
+            self = .matrix(matrix.map { CGFloat($0) })
+        } else {
+            return nil
+        }
+    }
+}
+
+// FilterFunction for filter property
+enum FilterFunction {
+    case brightness(DimensionValue)
+    case blur(DimensionValue)
+    case contrast(DimensionValue)
+    case grayscale(DimensionValue)
+    case hueRotate(DimensionValue)
+    case invert(DimensionValue)
+    case opacity(DimensionValue)
+    case saturate(DimensionValue)
+    case sepia(DimensionValue)
+    case dropShadow(String)
+
+    init?(_ value: [String: Any]) {
+        if let brightness = value["brightness"] {
+            if let str = brightness as? String {
+                self = .brightness(DimensionValue(str) ?? .point(1))
+            } else if let num = brightness as? Double {
+                self = .brightness(.point(CGFloat(num)))
+            } else {
+                return nil
+            }
+        } else if let blur = value["blur"] {
+            if let str = blur as? String {
+                self = .blur(DimensionValue(str) ?? .point(0))
+            } else if let num = blur as? Double {
+                self = .blur(.point(CGFloat(num)))
+            } else {
+                return nil
+            }
+        } else if let contrast = value["contrast"] {
+            if let str = contrast as? String {
+                self = .contrast(DimensionValue(str) ?? .point(1))
+            } else if let num = contrast as? Double {
+                self = .contrast(.point(CGFloat(num)))
+            } else {
+                return nil
+            }
+        } else if let grayscale = value["grayscale"] {
+            if let str = grayscale as? String {
+                self = .grayscale(DimensionValue(str) ?? .point(0))
+            } else if let num = grayscale as? Double {
+                self = .grayscale(.point(CGFloat(num)))
+            } else {
+                return nil
+            }
+        } else if let hueRotate = value["hueRotate"] {
+            if let str = hueRotate as? String {
+                self = .hueRotate(DimensionValue(str) ?? .point(0))
+            } else if let num = hueRotate as? Double {
+                self = .hueRotate(.point(CGFloat(num)))
+            } else {
+                return nil
+            }
+        } else if let invert = value["invert"] {
+            if let str = invert as? String {
+                self = .invert(DimensionValue(str) ?? .point(0))
+            } else if let num = invert as? Double {
+                self = .invert(.point(CGFloat(num)))
+            } else {
+                return nil
+            }
+        } else if let opacity = value["opacity"] {
+            if let str = opacity as? String {
+                self = .opacity(DimensionValue(str) ?? .point(1))
+            } else if let num = opacity as? Double {
+                self = .opacity(.point(CGFloat(num)))
+            } else {
+                return nil
+            }
+        } else if let saturate = value["saturate"] {
+            if let str = saturate as? String {
+                self = .saturate(DimensionValue(str) ?? .point(1))
+            } else if let num = saturate as? Double {
+                self = .saturate(.point(CGFloat(num)))
+            } else {
+                return nil
+            }
+        } else if let sepia = value["sepia"] {
+            if let str = sepia as? String {
+                self = .sepia(DimensionValue(str) ?? .point(0))
+            } else if let num = sepia as? Double {
+                self = .sepia(.point(CGFloat(num)))
+            } else {
+                return nil
+            }
+        } else if let dropShadow = value["dropShadow"] as? String {
+            self = .dropShadow(dropShadow)
+        } else {
+            return nil
+        }
+    }
+}
+
 extension DimensionValue {
     
     init?(_ s: String) {
@@ -210,6 +403,45 @@ extension FTLayoutViewProtocol {
         return FontSizeValue(v)
     }
 
+    func boxShadowValue(_ key: String) -> [BoxShadowValue]? {
+        guard let v = style[key] else { return nil }
+        if let single = v as? [String: Any], let boxShadow = BoxShadowValue(single) {
+            return [boxShadow]
+        } else if let array = v as? [[String: Any]] {
+            return array.compactMap { BoxShadowValue($0) }
+        }
+        return nil
+    }
+
+    func filterValue(_ key: String) -> [FilterFunction]? {
+        guard let v = style[key] else { return nil }
+        if let single = v as? [String: Any], let filter = FilterFunction(single) {
+            return [filter]
+        } else if let array = v as? [[String: Any]] {
+            return array.compactMap { FilterFunction($0) }
+        }
+        return nil
+    }
+
+    func transformValue(_ key: String) -> [TransformFunction]? {
+        guard let v = style[key] else { return nil }
+        if let single = v as? [String: Any], let transform = TransformFunction(single) {
+            return [transform]
+        } else if let array = v as? [[String: Any]] {
+            return array.compactMap { TransformFunction($0) }
+        }
+        return nil
+    }
+
+    func transformOriginValue(_ key: String) -> [Any]? {
+        guard let v = style[key] else { return nil }
+        if let array = v as? [Any] {
+            return array
+        } else {
+            return [v]
+        }
+    }
+
     func cgFloat(_ key: String) -> CGFloat? {
         guard let dim = dimension(key) else { return nil }
         switch dim {
@@ -335,8 +567,8 @@ extension FTLayoutViewProtocol {
     var borderStyleProp: String? { string("borderStyle") }
     var borderCurve: String? { string("borderCurve") }
 
-    var boxShadow: Any? { style["boxShadow"] }
-    var filter: Any? { style["filter"] }
+    var boxShadow: [BoxShadowValue]? { boxShadowValue("boxShadow") }
+    var filter: [FilterFunction]? { filterValue("filter") }
 
     var mixBlendMode: String? { string("mixBlendMode") }
 
@@ -347,8 +579,8 @@ extension FTLayoutViewProtocol {
     var boxSizing: String? { string("boxSizing") }
 
     // MARK: - Transforms
-    var transform: Any? { style["transform"] }
-    var transformOrigin: Any? { style["transformOrigin"] }
+    var transform: [TransformFunction]? { transformValue("transform") }
+    var transformOrigin: [Any]? { transformOriginValue("transformOrigin") }
 }
 
 
