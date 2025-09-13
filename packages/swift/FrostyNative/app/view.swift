@@ -469,7 +469,7 @@ extension FTLayoutViewProtocol {
     var start: DimensionValue? { dimensionValue("start") }
     var end: DimensionValue? { dimensionValue("end") }
 
-    var inset: String? { stringValue("inset") }
+    var inset: DimensionValue? { dimensionValue("inset") }
 
     var aspectRatioValue: CGFloat? {
         if let s = style["aspectRatio"] as? String, let d = Double(s) { return CGFloat(d) }
@@ -480,13 +480,13 @@ extension FTLayoutViewProtocol {
 
     var flex: FlexValue? { flexValue("flex") }
 
-    var flexBasis: String? { stringValue("flexBasis") }
+    var flexBasis: DimensionValue? { dimensionValue("flexBasis") }
     var flexGrow: CGFloat { numericValue("flexGrow") }
     var flexShrink: CGFloat { numericValue("flexShrink") }
     var flexWrap: String? { stringValue("flexWrap") }
     var order: Int { (style["order"] as? Int) ?? 0 }
 
-    var gap: DimensionValue? { dimensionValue("gap") }
+    var gap: CGFloat? { numericValue("gap") }
 
     // layout alignments and gaps
 
@@ -499,11 +499,13 @@ extension FTLayoutViewProtocol {
     var justifyItems: String { stringValue("justifyItems") ?? "stretch" }
     var justifySelf: String { stringValue("justifySelf") ?? "auto" }
 
-    var columnGap: DimensionValue? { dimensionValue("columnGap") }
+    var columnGap: CGFloat? { numericValue("columnGap") }
 
-    var rowGap: DimensionValue? { dimensionValue("rowGap") }
+    var rowGap: CGFloat? { numericValue("rowGap") }
 
     var overflow: String { stringValue("overflow") ?? "visible" }
+
+    var zIndex: Int? { (style["zIndex"] as? Int) }
 
     // per-side padding and margin
     var paddingTop: DimensionValue? { dimensionValue("paddingTop") }
@@ -530,13 +532,13 @@ extension FTLayoutViewProtocol {
     var marginEnd: DimensionValue? { dimensionValue("marginEnd") }
 
     // MARK: - Border
-    var borderWidth: DimensionValue? { dimensionValue("borderWidth") }
-    var borderTopWidth: DimensionValue? { dimensionValue("borderTopWidth") }
-    var borderBottomWidth: DimensionValue? { dimensionValue("borderBottomWidth") }
-    var borderLeftWidth: DimensionValue? { dimensionValue("borderLeftWidth") }
-    var borderRightWidth: DimensionValue? { dimensionValue("borderRightWidth") }
-    var borderStartWidth: DimensionValue? { dimensionValue("borderStartWidth") }
-    var borderEndWidth: DimensionValue? { dimensionValue("borderEndWidth") }
+    var borderWidth: CGFloat? { numericValue("borderWidth") }
+    var borderTopWidth: CGFloat? { numericValue("borderTopWidth") }
+    var borderBottomWidth: CGFloat? { numericValue("borderBottomWidth") }
+    var borderLeftWidth: CGFloat? { numericValue("borderLeftWidth") }
+    var borderRightWidth: CGFloat? { numericValue("borderRightWidth") }
+    var borderStartWidth: CGFloat? { numericValue("borderStartWidth") }
+    var borderEndWidth: CGFloat? { numericValue("borderEndWidth") }
 
     var borderColor: String? { stringValue("borderColor") }
     var borderTopColor: String? { stringValue("borderTopColor") }
@@ -546,23 +548,23 @@ extension FTLayoutViewProtocol {
     var borderStartColor: String? { stringValue("borderStartColor") }
     var borderEndColor: String? { stringValue("borderEndColor") }
 
-    var borderRadius: DimensionValue? { dimensionValue("borderRadius") }
-    var borderTopLeftRadius: DimensionValue? { dimensionValue("borderTopLeftRadius") }
-    var borderTopRightRadius: DimensionValue? { dimensionValue("borderTopRightRadius") }
-    var borderBottomLeftRadius: DimensionValue? { dimensionValue("borderBottomLeftRadius") }
-    var borderBottomRightRadius: DimensionValue? { dimensionValue("borderBottomRightRadius") }
-    var borderTopStartRadius: DimensionValue? { dimensionValue("borderTopStartRadius") }
-    var borderTopEndRadius: DimensionValue? { dimensionValue("borderTopEndRadius") }
-    var borderBottomStartRadius: DimensionValue? { dimensionValue("borderBottomStartRadius") }
-    var borderBottomEndRadius: DimensionValue? { dimensionValue("borderBottomEndRadius") }
+    var borderRadius: CGFloat? { numericValue("borderRadius") }
+    var borderTopLeftRadius: CGFloat? { numericValue("borderTopLeftRadius") }
+    var borderTopRightRadius: CGFloat? { numericValue("borderTopRightRadius") }
+    var borderBottomLeftRadius: CGFloat? { numericValue("borderBottomLeftRadius") }
+    var borderBottomRightRadius: CGFloat? { numericValue("borderBottomRightRadius") }
+    var borderTopStartRadius: CGFloat? { numericValue("borderTopStartRadius") }
+    var borderTopEndRadius: CGFloat? { numericValue("borderTopEndRadius") }
+    var borderBottomStartRadius: CGFloat? { numericValue("borderBottomStartRadius") }
+    var borderBottomEndRadius: CGFloat? { numericValue("borderBottomEndRadius") }
 
     // MARK: - Visual
     var backgroundColor: String? { stringValue("backgroundColor") }
     var opacityValue: CGFloat { numericValue("opacity", defaultValue: 1) }
     var outlineColor: String? { stringValue("outlineColor") }
     var outlineStyle: String? { stringValue("outlineStyle") }
-    var outlineWidth: DimensionValue? { dimensionValue("outlineWidth") }
-    var outlineOffset: DimensionValue? { dimensionValue("outlineOffset") }
+    var outlineWidth: CGFloat? { numericValue("outlineWidth") }
+    var outlineOffset: CGFloat? { numericValue("outlineOffset") }
     var borderStyle: String? { stringValue("borderStyle") }
     var borderCurve: String? { stringValue("borderCurve") }
 
@@ -652,8 +654,7 @@ struct FTView: FTLayoutViewProtocol {
     func content(_ info: FTLayoutInfo) -> some View {
         let isRow = flexDirection.hasPrefix("row")
         let isReverse = flexDirection.hasSuffix("-reverse")
-        let spacing =
-            (isRow ? rowGap : columnGap)?.resolve(relativeBase: info.parentSize.width) ?? 0
+        let spacing = (isRow ? rowGap : columnGap) ?? 0
 
         let items = isReverse ? children.reversed() : children
 
