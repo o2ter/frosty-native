@@ -23,10 +23,6 @@
 //  THE SOFTWARE.
 //
 
-struct LayoutInfo {
-    let parentSize: CGSize
-}
-
 protocol FTViewProtocol: View {
     
     var props: [String: any Sendable] { get }
@@ -41,11 +37,15 @@ protocol FTViewProtocol: View {
     )
 }
 
+struct FTLayoutInfo {
+    let parentSize: CGSize
+}
+
 protocol FTLayoutViewProtocol: FTViewProtocol {
     
     associatedtype Content: View
     
-    func content(_ info: LayoutInfo) -> Self.Content
+    func content(_ info: FTLayoutInfo) -> Self.Content
 }
 
 struct Layout: Equatable {
@@ -595,7 +595,7 @@ extension FTLayoutViewProtocol {
     
     var body: some View {
         GeometryReader { geo in
-            let info = LayoutInfo(parentSize: geo.size)
+            let info = FTLayoutInfo(parentSize: geo.size)
             let paddingInsets = EdgeInsets(
                 top: paddingTop?.resolve(relativeBase: geo.size.width) ?? 0,
                 leading: paddingLeft?.resolve(relativeBase: geo.size.width) ?? 0,
@@ -647,7 +647,7 @@ struct FTView: FTLayoutViewProtocol {
         self._children = children
     }
     
-    func content(_ info: LayoutInfo) -> some View {
+    func content(_ info: FTLayoutInfo) -> some View {
         let isRow = flexDirection.hasPrefix("row")
         let isReverse = flexDirection.hasSuffix("-reverse")
         let spacing =
@@ -687,7 +687,7 @@ struct FTImageView: FTLayoutViewProtocol {
         self._children = children
     }
     
-    func content(_ info: LayoutInfo) -> some View {
+    func content(_ info: FTLayoutInfo) -> some View {
         Image("")
     }
 }
@@ -710,7 +710,7 @@ struct FTTextView: FTLayoutViewProtocol {
         self._children = children
     }
     
-    func content(_ info: LayoutInfo) -> some View {
+    func content(_ info: FTLayoutInfo) -> some View {
         Text(props["text"] as? String ?? "")
     }
 }
@@ -733,7 +733,7 @@ struct FTTextInput: FTLayoutViewProtocol {
         self._children = children
     }
     
-    func content(_ info: LayoutInfo) -> some View {
+    func content(_ info: FTLayoutInfo) -> some View {
         TextField("", text: .constant(props["text"] as? String ?? ""))
     }
 }
@@ -756,7 +756,7 @@ struct FTScrollView: FTLayoutViewProtocol {
         self._children = children
     }
     
-    func content(_ info: LayoutInfo) -> some View {
+    func content(_ info: FTLayoutInfo) -> some View {
         let horizontal = props["horizontal"] as? Bool ?? false
         let vertical = props["vertical"] as? Bool ?? false
 
