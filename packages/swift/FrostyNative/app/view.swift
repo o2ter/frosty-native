@@ -58,12 +58,25 @@ struct Layout: Equatable {
 // DimensionValue used for parsing string-based dimensions coming from JS.
 enum DimensionValue {
     case auto
-    case px(CGFloat)
+    case point(CGFloat)
     case percent(Double)  // numeric percent, e.g. 50.0 for "50%"
 }
 
-extension DimensionValue {
+// FlexValue used for flex property which can be number, 'auto', or 'none'
+enum FlexValue {
+    case none
+    case auto
+    case value(CGFloat)
+}
 
+// FontSizeValue used for fontSize property which can be number or percentage
+enum FontSizeValue {
+    case point(CGFloat)
+    case percent(Double)
+}
+
+extension DimensionValue {
+    
     init?(_ s: String) {
         let trimmed = s.trimmingCharacters(in: .whitespacesAndNewlines).lowercased()
         if trimmed == "auto" { self = .auto; return }
@@ -72,7 +85,7 @@ extension DimensionValue {
             if let d = Double(num) { self = .percent(d); return }
             return nil
         }
-        if let d = Double(trimmed) { self = .px(CGFloat(d)); return }
+        if let d = Double(trimmed) { self = .point(CGFloat(d)); return }
         return nil
     }
     
@@ -82,10 +95,81 @@ extension DimensionValue {
         switch self {
         case .auto:
             return nil
-        case .px(let v):
+        case .point(let v):
             return v
         case .percent(let p):
             return CGFloat(p) / 100.0 * relativeBase
+        }
+    }
+}
+
+extension FlexValue {
+
+    init?(_ value: Any) {
+        if let s = value as? String {
+            switch s.lowercased() {
+            case "none": self = .none
+            case "auto": self = .auto
+            default: return nil
+            }
+        } else if let n = value as? Double {
+            self = .value(CGFloat(n))
+        } else if let i = value as? Int {
+            self = .value(CGFloat(i))
+        } else if let f = value as? CGFloat {
+            self = .value(f)
+        } else {
+            return nil
+        }
+    }
+
+    // Convert FlexValue to a string representation for SwiftUI
+    var stringValue: String? {
+        switch self {
+        case .none: return "0"
+        case .auto: return nil  // SwiftUI doesn't have direct auto equivalent
+        case .value(let v): return String(describing: v)
+        }
+    }
+
+    // Get the numeric value if it's a number
+    var numericValue: CGFloat? {
+        switch self {
+        case .none: return 0
+        case .auto: return nil
+        case .value(let v): return v
+        }
+    }
+}
+
+extension FontSizeValue {
+
+    init?(_ value: Any) {
+        if let s = value as? String {
+            let trimmed = s.trimmingCharacters(in: .whitespacesAndNewlines)
+            if trimmed.hasSuffix("%") {
+                let num = trimmed.dropLast().trimmingCharacters(in: .whitespacesAndNewlines)
+                if let d = Double(num) { self = .percent(d); return }
+                return nil
+            }
+            if let d = Double(trimmed) { self = .point(CGFloat(d)); return }
+            return nil
+        } else if let n = value as? Double {
+            self = .point(CGFloat(n))
+        } else if let i = value as? Int {
+            self = .point(CGFloat(i))
+        } else if let f = value as? CGFloat {
+            self = .point(f)
+        } else {
+            return nil
+        }
+    }
+
+    // Resolve FontSizeValue to a concrete CGFloat
+    func resolve(relativeBase: CGFloat) -> CGFloat? {
+        switch self {
+        case .point(let v): return v
+        case .percent(let p): return CGFloat(p) / 100.0 * relativeBase
         }
     }
 }
@@ -109,18 +193,28 @@ extension FTLayoutViewProtocol {
 
     func dimension(_ key: String) -> DimensionValue? {
         guard let v = style[key] else { return nil }
-        if let f = v as? CGFloat { return .px(f) }
-        if let d = v as? Double { return .px(CGFloat(d)) }
-        if let i = v as? Int { return .px(CGFloat(i)) }
+        if let f = v as? CGFloat { return .point(f) }
+        if let d = v as? Double { return .point(CGFloat(d)) }
+        if let i = v as? Int { return .point(CGFloat(i)) }
         if let s = v as? String { return DimensionValue(s) }
         return nil
     }
     
+    func flexValue(_ key: String) -> FlexValue? {
+        guard let v = style[key] else { return nil }
+        return FlexValue(v)
+    }
+
+    func fontSizeValue(_ key: String) -> FontSizeValue? {
+        guard let v = style[key] else { return nil }
+        return FontSizeValue(v)
+    }
+
     func cgFloat(_ key: String) -> CGFloat? {
         guard let dim = dimension(key) else { return nil }
         switch dim {
         case .auto: return nil
-        case .px(let val): return val
+        case .point(let val): return val
         case .percent(let pct): return CGFloat(pct) / 100.0
         }
     }
@@ -153,12 +247,7 @@ extension FTLayoutViewProtocol {
         return nil
     }
 
-    var flex: String? {
-        if let s = style["flex"] as? String { return s }
-        if let n = style["flex"] as? Double { return String(n) }
-        if let i = style["flex"] as? Int { return String(i) }
-        return nil
-    }
+    var flex: FlexValue? { flexValue("flex") }
 
     var flexBasis: String? { string("flexBasis") }
     var flexGrow: CGFloat { cgFloat("flexGrow") ?? 0 }
