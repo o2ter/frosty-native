@@ -61,17 +61,17 @@ extension FTLayoutViewProtocol {
 extension FTLayoutViewProtocol {
 
     // MARK: - Helpers
-    func cgFloat(_ key: String, default def: CGFloat = 0) -> CGFloat {
-        guard let v = style[key] else { return def }
+    func cgFloat(_ key: String) -> CGFloat? {
+        guard let v = style[key] else { return nil }
         if let f = v as? CGFloat { return f }
         if let d = v as? Double { return CGFloat(d) }
         if let i = v as? Int { return CGFloat(i) }
         if let s = v as? String {
-            if s == "auto" { return def }
-            if s.hasSuffix("%") { return def }
+            if s == "auto" { return nil }
+            if s.hasSuffix("%") { return nil }
             if let d = Double(s) { return CGFloat(d) }
         }
-        return def
+        return nil
     }
 
     func optionalCGFloat(_ key: String) -> CGFloat? {
@@ -87,22 +87,22 @@ extension FTLayoutViewProtocol {
         return nil
     }
 
-    func stringVal(_ key: String, default def: String? = nil) -> String? {
-        guard let v = style[key] else { return def }
+    func stringVal(_ key: String) -> String? {
+        guard let v = style[key] else { return nil }
         if let s = v as? String { return s }
         if let i = v as? Int { return String(i) }
         if let d = v as? Double { return String(d) }
-        return def
+        return nil
     }
 
-    func boolVal(_ key: String, default def: Bool = false) -> Bool {
-        guard let v = style[key] else { return def }
+    func boolVal(_ key: String) -> Bool? {
+        guard let v = style[key] else { return nil }
         if let b = v as? Bool { return b }
         if let i = v as? Int { return i != 0 }
         if let s = v as? String {
             return ["true", "1", "yes", "on"].contains(s.lowercased())
         }
-        return def
+        return nil
     }
 
     func dictVal(_ key: String) -> [String: any Sendable]? {
@@ -147,68 +147,69 @@ extension FTLayoutViewProtocol {
     }
 
     var flexBasis: String? { stringVal("flexBasis") }
-    var flexGrow: CGFloat { cgFloat("flexGrow") }
-    var flexShrink: CGFloat { cgFloat("flexShrink") }
+    var flexGrow: CGFloat { cgFloat("flexGrow") ?? 0 }
+    var flexShrink: CGFloat { cgFloat("flexShrink") ?? 0 }
     var flexWrap: String? { stringVal("flexWrap") }
     var order: Int { (style["order"] as? Int) ?? 0 }
 
-    var gap: CGFloat { cgFloat("gap") }
+    var gap: CGFloat { cgFloat("gap") ?? 0 }
 
     // layout alignments and gaps
-    var position: String { stringVal("position", default: "static") ?? "static" }
 
-    var flexDirection: String { stringVal("flexDirection", default: "column") ?? "column" }
+    var position: String { stringVal("position") ?? "static" }
 
-    var alignContent: String { stringVal("alignContent", default: "flex-start") ?? "flex-start" }
+    var flexDirection: String { stringVal("flexDirection") ?? "column" }
 
-    var alignItems: String { stringVal("alignItems", default: "stretch") ?? "stretch" }
+    var alignContent: String { stringVal("alignContent") ?? "flex-start" }
 
-    var alignSelf: String { stringVal("alignSelf", default: "auto") ?? "auto" }
+    var alignItems: String { stringVal("alignItems") ?? "stretch" }
 
-    var justifyContent: String { stringVal("justifyContent", default: "stretch") ?? "stretch" }
+    var alignSelf: String { stringVal("alignSelf") ?? "auto" }
 
-    var justifyItems: String { stringVal("justifyItems", default: "stretch") ?? "stretch" }
+    var justifyContent: String { stringVal("justifyContent") ?? "stretch" }
 
-    var justifySelf: String { stringVal("justifySelf", default: "auto") ?? "auto" }
+    var justifyItems: String { stringVal("justifyItems") ?? "stretch" }
 
-    var columnGap: CGFloat { cgFloat("columnGap") }
+    var justifySelf: String { stringVal("justifySelf") ?? "auto" }
 
-    var rowGap: CGFloat { cgFloat("rowGap") }
+    var columnGap: CGFloat { cgFloat("columnGap") ?? 0 }
 
-    var overflow: String { stringVal("overflow", default: "visible") ?? "visible" }
+    var rowGap: CGFloat { cgFloat("rowGap") ?? 0 }
+
+    var overflow: String { stringVal("overflow") ?? "visible" }
 
     // per-side padding and margin
-    var paddingTop: CGFloat { cgFloat("paddingTop") }
-    var paddingLeft: CGFloat { cgFloat("paddingLeft") }
-    var paddingRight: CGFloat { cgFloat("paddingRight") }
-    var paddingBottom: CGFloat { cgFloat("paddingBottom") }
+    var paddingTop: CGFloat { cgFloat("paddingTop") ?? 0 }
+    var paddingLeft: CGFloat { cgFloat("paddingLeft") ?? 0 }
+    var paddingRight: CGFloat { cgFloat("paddingRight") ?? 0 }
+    var paddingBottom: CGFloat { cgFloat("paddingBottom") ?? 0 }
 
-    var marginTop: CGFloat { cgFloat("marginTop") }
-    var marginLeft: CGFloat { cgFloat("marginLeft") }
-    var marginRight: CGFloat { cgFloat("marginRight") }
-    var marginBottom: CGFloat { cgFloat("marginBottom") }
+    var marginTop: CGFloat { cgFloat("marginTop") ?? 0 }
+    var marginLeft: CGFloat { cgFloat("marginLeft") ?? 0 }
+    var marginRight: CGFloat { cgFloat("marginRight") ?? 0 }
+    var marginBottom: CGFloat { cgFloat("marginBottom") ?? 0 }
 
     // MARK: - Padding / Margin (extras)
-    var padding: CGFloat { cgFloat("padding") }
-    var paddingHorizontal: CGFloat { cgFloat("paddingHorizontal") }
-    var paddingVertical: CGFloat { cgFloat("paddingVertical") }
-    var paddingStart: CGFloat { cgFloat("paddingStart") }
-    var paddingEnd: CGFloat { cgFloat("paddingEnd") }
+    var padding: CGFloat { cgFloat("padding") ?? 0 }
+    var paddingHorizontal: CGFloat { cgFloat("paddingHorizontal") ?? 0 }
+    var paddingVertical: CGFloat { cgFloat("paddingVertical") ?? 0 }
+    var paddingStart: CGFloat { cgFloat("paddingStart") ?? 0 }
+    var paddingEnd: CGFloat { cgFloat("paddingEnd") ?? 0 }
 
-    var margin: CGFloat { cgFloat("margin") }
-    var marginHorizontal: CGFloat { cgFloat("marginHorizontal") }
-    var marginVertical: CGFloat { cgFloat("marginVertical") }
-    var marginStart: CGFloat { cgFloat("marginStart") }
-    var marginEnd: CGFloat { cgFloat("marginEnd") }
+    var margin: CGFloat { cgFloat("margin") ?? 0 }
+    var marginHorizontal: CGFloat { cgFloat("marginHorizontal") ?? 0 }
+    var marginVertical: CGFloat { cgFloat("marginVertical") ?? 0 }
+    var marginStart: CGFloat { cgFloat("marginStart") ?? 0 }
+    var marginEnd: CGFloat { cgFloat("marginEnd") ?? 0 }
 
     // MARK: - Border
-    var borderWidth: CGFloat { cgFloat("borderWidth") }
-    var borderTopWidth: CGFloat { cgFloat("borderTopWidth") }
-    var borderBottomWidth: CGFloat { cgFloat("borderBottomWidth") }
-    var borderLeftWidth: CGFloat { cgFloat("borderLeftWidth") }
-    var borderRightWidth: CGFloat { cgFloat("borderRightWidth") }
-    var borderStartWidth: CGFloat { cgFloat("borderStartWidth") }
-    var borderEndWidth: CGFloat { cgFloat("borderEndWidth") }
+    var borderWidth: CGFloat { cgFloat("borderWidth") ?? 0 }
+    var borderTopWidth: CGFloat { cgFloat("borderTopWidth") ?? 0 }
+    var borderBottomWidth: CGFloat { cgFloat("borderBottomWidth") ?? 0 }
+    var borderLeftWidth: CGFloat { cgFloat("borderLeftWidth") ?? 0 }
+    var borderRightWidth: CGFloat { cgFloat("borderRightWidth") ?? 0 }
+    var borderStartWidth: CGFloat { cgFloat("borderStartWidth") ?? 0 }
+    var borderEndWidth: CGFloat { cgFloat("borderEndWidth") ?? 0 }
 
     var borderColor: String? { stringVal("borderColor") }
     var borderTopColor: String? { stringVal("borderTopColor") }
@@ -218,23 +219,23 @@ extension FTLayoutViewProtocol {
     var borderStartColor: String? { stringVal("borderStartColor") }
     var borderEndColor: String? { stringVal("borderEndColor") }
 
-    var borderRadius: CGFloat { cgFloat("borderRadius") }
-    var borderTopLeftRadius: CGFloat { cgFloat("borderTopLeftRadius") }
-    var borderTopRightRadius: CGFloat { cgFloat("borderTopRightRadius") }
-    var borderBottomLeftRadius: CGFloat { cgFloat("borderBottomLeftRadius") }
-    var borderBottomRightRadius: CGFloat { cgFloat("borderBottomRightRadius") }
-    var borderTopStartRadius: CGFloat { cgFloat("borderTopStartRadius") }
-    var borderTopEndRadius: CGFloat { cgFloat("borderTopEndRadius") }
-    var borderBottomStartRadius: CGFloat { cgFloat("borderBottomStartRadius") }
-    var borderBottomEndRadius: CGFloat { cgFloat("borderBottomEndRadius") }
+    var borderRadius: CGFloat { cgFloat("borderRadius") ?? 0 }
+    var borderTopLeftRadius: CGFloat { cgFloat("borderTopLeftRadius") ?? 0 }
+    var borderTopRightRadius: CGFloat { cgFloat("borderTopRightRadius") ?? 0 }
+    var borderBottomLeftRadius: CGFloat { cgFloat("borderBottomLeftRadius") ?? 0 }
+    var borderBottomRightRadius: CGFloat { cgFloat("borderBottomRightRadius") ?? 0 }
+    var borderTopStartRadius: CGFloat { cgFloat("borderTopStartRadius") ?? 0 }
+    var borderTopEndRadius: CGFloat { cgFloat("borderTopEndRadius") ?? 0 }
+    var borderBottomStartRadius: CGFloat { cgFloat("borderBottomStartRadius") ?? 0 }
+    var borderBottomEndRadius: CGFloat { cgFloat("borderBottomEndRadius") ?? 0 }
 
     // MARK: - Visual
     var backgroundColor: String? { stringVal("backgroundColor") }
-    var opacityValue: CGFloat { cgFloat("opacity", default: 1) }
+    var opacityValue: CGFloat { cgFloat("opacity") ?? 1 }
     var outlineColor: String? { stringVal("outlineColor") }
     var outlineStyle: String? { stringVal("outlineStyle") }
-    var outlineWidth: CGFloat { cgFloat("outlineWidth") }
-    var outlineOffset: CGFloat { cgFloat("outlineOffset") }
+    var outlineWidth: CGFloat { cgFloat("outlineWidth") ?? 0 }
+    var outlineOffset: CGFloat { cgFloat("outlineOffset") ?? 0 }
     var borderStyleProp: String? { stringVal("borderStyle") }
     var borderCurve: String? { stringVal("borderCurve") }
 
