@@ -481,8 +481,8 @@ extension FTLayoutViewProtocol {
     var flex: FlexValue? { flexValue("flex") }
 
     var flexBasis: DimensionValue? { dimensionValue("flexBasis") }
-    var flexGrow: CGFloat { numericValue("flexGrow") }
-    var flexShrink: CGFloat { numericValue("flexShrink") }
+    var flexGrow: CGFloat { numericValue("flexGrow") ?? 0 }
+    var flexShrink: CGFloat { numericValue("flexShrink") ?? 1 }
     var flexWrap: String? { stringValue("flexWrap") }
     var order: Int { (style["order"] as? Int) ?? 0 }
 
