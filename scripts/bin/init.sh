@@ -31,11 +31,11 @@ SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
 # Get the frosty-native root directory (two levels up from scripts/bin)
 FROSTY_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
-TEMPLATE_DIR="$FROSTY_ROOT/template"
+TEMPLATE_APP_DIR="$FROSTY_ROOT/template/TemplateApp"
 
 # Check if template directory exists
-if [ ! -d "$TEMPLATE_DIR" ]; then
-    echo "Error: Template directory not found at $TEMPLATE_DIR"
+if [ ! -d "$TEMPLATE_APP_DIR" ]; then
+    echo "Error: Template directory not found at $TEMPLATE_APP_DIR"
     exit 1
 fi
 
@@ -76,7 +76,7 @@ echo "📂 Creating project at: $PROJECT_PATH"
 
 # Copy template directory to target location
 echo "📋 Copying template files..."
-cp -R "$TEMPLATE_DIR" "$PROJECT_PATH"
+cp -R "$TEMPLATE_APP_DIR" "$PROJECT_PATH"
 
 # Navigate to project directory
 cd "$PROJECT_PATH"
