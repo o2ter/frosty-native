@@ -671,12 +671,51 @@ extension FTLayoutViewProtocol {
                 view = AnyView(view.background(Color(hexString: backgroundColor)))
             }
             
-            // Apply border styles
-            if let borderWidth = borderTopWidth ?? borderBottomWidth ?? borderLeftWidth ?? borderRightWidth {
-                let borderColor = borderTopColor ?? borderBottomColor ?? borderLeftColor ?? borderRightColor ?? "#000000"
-                view = AnyView(view.border(Color(hexString: borderColor), width: borderWidth))
+            // Apply border styles using overlays for per-side control
+            var borderedView = view
+
+            if let topWidth = borderTopWidth, topWidth > 0 {
+                borderedView = AnyView(
+                    borderedView.overlay(
+                        Rectangle()
+                            .frame(height: topWidth)
+                            .foregroundColor(Color(hexString: borderTopColor ?? "#000000")),
+                        alignment: .top
+                    ))
+            }
+
+            if let bottomWidth = borderBottomWidth, bottomWidth > 0 {
+                borderedView = AnyView(
+                    borderedView.overlay(
+                        Rectangle()
+                            .frame(height: bottomWidth)
+                            .foregroundColor(Color(hexString: borderBottomColor ?? "#000000")),
+                        alignment: .bottom
+                    ))
+            }
+
+            if let leftWidth = borderLeftWidth, leftWidth > 0 {
+                borderedView = AnyView(
+                    borderedView.overlay(
+                        Rectangle()
+                            .frame(width: leftWidth)
+                            .foregroundColor(Color(hexString: borderLeftColor ?? "#000000")),
+                        alignment: .leading
+                    ))
+            }
+
+            if let rightWidth = borderRightWidth, rightWidth > 0 {
+                borderedView = AnyView(
+                    borderedView.overlay(
+                        Rectangle()
+                            .frame(width: rightWidth)
+                            .foregroundColor(Color(hexString: borderRightColor ?? "#000000")),
+                        alignment: .trailing
+                    ))
             }
             
+            view = borderedView
+
             // Apply border radius
             if let radius = borderTopLeftRadius ?? borderTopRightRadius ?? borderBottomLeftRadius ?? borderBottomRightRadius {
                 view = AnyView(view.cornerRadius(radius))
