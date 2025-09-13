@@ -193,7 +193,7 @@ fastlane/test_output
 *.jsbundle
 
 # Template
-/template/yarn.lock
+/template/*/yarn.lock
 
 # Temp
 .temp
