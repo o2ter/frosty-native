@@ -465,28 +465,22 @@ extension FTLayoutViewProtocol {
     var left: DimensionValue? { dimensionValue("left") }
     var right: DimensionValue? { dimensionValue("right") }
     var top: DimensionValue? { dimensionValue("top") }
-    var bottomValue: DimensionValue? { dimensionValue("bottom") }
-    var start: DimensionValue? { dimensionValue("start") }
-    var end: DimensionValue? { dimensionValue("end") }
+    var bottom: DimensionValue? { dimensionValue("bottom") }
 
     var inset: DimensionValue? { dimensionValue("inset") }
 
-    var aspectRatioValue: CGFloat? {
+    var aspectRatio: CGFloat? {
         if let s = style["aspectRatio"] as? String, let d = Double(s) { return CGFloat(d) }
         if let d = style["aspectRatio"] as? Double { return CGFloat(d) }
         if let i = style["aspectRatio"] as? Int { return CGFloat(i) }
         return nil
     }
 
-    var flex: FlexValue? { flexValue("flex") }
-
     var flexBasis: DimensionValue { dimensionValue("flexBasis") ?? .auto }
     var flexGrow: CGFloat { numericValue("flexGrow") ?? 0 }
     var flexShrink: CGFloat { numericValue("flexShrink") ?? 1 }
     var flexWrap: String? { stringValue("flexWrap") }
     var order: Int { (style["order"] as? Int) ?? 0 }
-
-    var gap: CGFloat? { numericValue("gap") }
 
     // layout alignments and gaps
 
@@ -500,7 +494,6 @@ extension FTLayoutViewProtocol {
     var justifySelf: String { stringValue("justifySelf") ?? "auto" }
 
     var columnGap: CGFloat? { numericValue("columnGap") }
-
     var rowGap: CGFloat? { numericValue("rowGap") }
 
     var overflow: String { stringValue("overflow") ?? "visible" }
@@ -518,45 +511,22 @@ extension FTLayoutViewProtocol {
     var marginRight: DimensionValue? { dimensionValue("marginRight") }
     var marginBottom: DimensionValue? { dimensionValue("marginBottom") }
 
-    // MARK: - Padding / Margin (extras)
-    var padding: DimensionValue? { dimensionValue("padding") }
-    var paddingHorizontal: DimensionValue? { dimensionValue("paddingHorizontal") }
-    var paddingVertical: DimensionValue? { dimensionValue("paddingVertical") }
-    var paddingStart: DimensionValue? { dimensionValue("paddingStart") }
-    var paddingEnd: DimensionValue? { dimensionValue("paddingEnd") }
-
-    var margin: DimensionValue? { dimensionValue("margin") }
-    var marginHorizontal: DimensionValue? { dimensionValue("marginHorizontal") }
-    var marginVertical: DimensionValue? { dimensionValue("marginVertical") }
-    var marginStart: DimensionValue? { dimensionValue("marginStart") }
-    var marginEnd: DimensionValue? { dimensionValue("marginEnd") }
-
     // MARK: - Border
-    var borderWidth: CGFloat? { numericValue("borderWidth") }
     var borderTopWidth: CGFloat? { numericValue("borderTopWidth") }
     var borderBottomWidth: CGFloat? { numericValue("borderBottomWidth") }
     var borderLeftWidth: CGFloat? { numericValue("borderLeftWidth") }
     var borderRightWidth: CGFloat? { numericValue("borderRightWidth") }
-    var borderStartWidth: CGFloat? { numericValue("borderStartWidth") }
-    var borderEndWidth: CGFloat? { numericValue("borderEndWidth") }
 
-    var borderColor: String? { stringValue("borderColor") }
     var borderTopColor: String? { stringValue("borderTopColor") }
     var borderBottomColor: String? { stringValue("borderBottomColor") }
     var borderLeftColor: String? { stringValue("borderLeftColor") }
     var borderRightColor: String? { stringValue("borderRightColor") }
-    var borderStartColor: String? { stringValue("borderStartColor") }
-    var borderEndColor: String? { stringValue("borderEndColor") }
 
     var borderRadius: CGFloat? { numericValue("borderRadius") }
     var borderTopLeftRadius: CGFloat? { numericValue("borderTopLeftRadius") }
     var borderTopRightRadius: CGFloat? { numericValue("borderTopRightRadius") }
     var borderBottomLeftRadius: CGFloat? { numericValue("borderBottomLeftRadius") }
     var borderBottomRightRadius: CGFloat? { numericValue("borderBottomRightRadius") }
-    var borderTopStartRadius: CGFloat? { numericValue("borderTopStartRadius") }
-    var borderTopEndRadius: CGFloat? { numericValue("borderTopEndRadius") }
-    var borderBottomStartRadius: CGFloat? { numericValue("borderBottomStartRadius") }
-    var borderBottomEndRadius: CGFloat? { numericValue("borderBottomEndRadius") }
 
     // MARK: - Visual
     var backgroundColor: String? { stringValue("backgroundColor") }
