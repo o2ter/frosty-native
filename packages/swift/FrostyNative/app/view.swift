@@ -501,40 +501,39 @@ extension FTLayoutViewProtocol {
     var zIndex: Int? { (style["zIndex"] as? Int) }
 
     // per-side padding and margin
-    var paddingTop: DimensionValue? { dimensionValue("paddingTop") }
-    var paddingLeft: DimensionValue? { dimensionValue("paddingLeft") }
-    var paddingRight: DimensionValue? { dimensionValue("paddingRight") }
-    var paddingBottom: DimensionValue? { dimensionValue("paddingBottom") }
+    var paddingTop: DimensionValue { dimensionValue("paddingTop") ?? .point(0) }
+    var paddingLeft: DimensionValue { dimensionValue("paddingLeft") ?? .point(0) }
+    var paddingRight: DimensionValue { dimensionValue("paddingRight") ?? .point(0) }
+    var paddingBottom: DimensionValue { dimensionValue("paddingBottom") ?? .point(0) }
 
-    var marginTop: DimensionValue? { dimensionValue("marginTop") }
-    var marginLeft: DimensionValue? { dimensionValue("marginLeft") }
-    var marginRight: DimensionValue? { dimensionValue("marginRight") }
-    var marginBottom: DimensionValue? { dimensionValue("marginBottom") }
+    var marginTop: DimensionValue { dimensionValue("marginTop") ?? .point(0) }
+    var marginLeft: DimensionValue { dimensionValue("marginLeft") ?? .point(0) }
+    var marginRight: DimensionValue { dimensionValue("marginRight") ?? .point(0) }
+    var marginBottom: DimensionValue { dimensionValue("marginBottom") ?? .point(0) }
 
     // MARK: - Border
-    var borderTopWidth: CGFloat? { numericValue("borderTopWidth") }
-    var borderBottomWidth: CGFloat? { numericValue("borderBottomWidth") }
-    var borderLeftWidth: CGFloat? { numericValue("borderLeftWidth") }
-    var borderRightWidth: CGFloat? { numericValue("borderRightWidth") }
+    var borderTopWidth: CGFloat { numericValue("borderTopWidth") ?? 0 }
+    var borderBottomWidth: CGFloat { numericValue("borderBottomWidth") ?? 0 }
+    var borderLeftWidth: CGFloat { numericValue("borderLeftWidth") ?? 0 }
+    var borderRightWidth: CGFloat { numericValue("borderRightWidth") ?? 0 }
 
     var borderTopColor: String? { stringValue("borderTopColor") }
     var borderBottomColor: String? { stringValue("borderBottomColor") }
     var borderLeftColor: String? { stringValue("borderLeftColor") }
     var borderRightColor: String? { stringValue("borderRightColor") }
 
-    var borderRadius: CGFloat? { numericValue("borderRadius") }
-    var borderTopLeftRadius: CGFloat? { numericValue("borderTopLeftRadius") }
-    var borderTopRightRadius: CGFloat? { numericValue("borderTopRightRadius") }
-    var borderBottomLeftRadius: CGFloat? { numericValue("borderBottomLeftRadius") }
-    var borderBottomRightRadius: CGFloat? { numericValue("borderBottomRightRadius") }
+    var borderTopLeftRadius: CGFloat { numericValue("borderTopLeftRadius") ?? 0 }
+    var borderTopRightRadius: CGFloat { numericValue("borderTopRightRadius") ?? 0 }
+    var borderBottomLeftRadius: CGFloat { numericValue("borderBottomLeftRadius") ?? 0 }
+    var borderBottomRightRadius: CGFloat { numericValue("borderBottomRightRadius") ?? 0 }
 
     // MARK: - Visual
     var backgroundColor: String? { stringValue("backgroundColor") }
-    var opacityValue: CGFloat { numericValue("opacity") ?? 1 }
+    var opacity: CGFloat { numericValue("opacity") ?? 1 }
     var outlineColor: String? { stringValue("outlineColor") }
     var outlineStyle: String? { stringValue("outlineStyle") }
-    var outlineWidth: CGFloat? { numericValue("outlineWidth") }
-    var outlineOffset: CGFloat? { numericValue("outlineOffset") }
+    var outlineWidth: CGFloat { numericValue("outlineWidth") ?? 0 }
+    var outlineOffset: CGFloat { numericValue("outlineOffset") ?? 0 }
     var borderStyle: String? { stringValue("borderStyle") }
     var borderCurve: String? { stringValue("borderCurve") }
 
