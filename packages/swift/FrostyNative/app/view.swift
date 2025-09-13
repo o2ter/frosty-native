@@ -435,10 +435,10 @@ extension FTLayoutViewProtocol {
         return nil
     }
 
-    func numericValue(_ key: String, defaultValue: CGFloat = 0) -> CGFloat {
+    func numericValue(_ key: String) -> CGFloat? {
         if let d = style[key] as? Double { return CGFloat(d) }
         if let i = style[key] as? Int { return CGFloat(i) }
-        return defaultValue
+        return nil
     }
 
     func transformOriginValue(_ key: String) -> [Any]? {
@@ -560,7 +560,7 @@ extension FTLayoutViewProtocol {
 
     // MARK: - Visual
     var backgroundColor: String? { stringValue("backgroundColor") }
-    var opacityValue: CGFloat { numericValue("opacity", defaultValue: 1) }
+    var opacityValue: CGFloat { numericValue("opacity") ?? 1 }
     var outlineColor: String? { stringValue("outlineColor") }
     var outlineStyle: String? { stringValue("outlineStyle") }
     var outlineWidth: CGFloat? { numericValue("outlineWidth") }
