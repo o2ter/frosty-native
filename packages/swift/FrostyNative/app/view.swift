@@ -378,7 +378,7 @@ extension FTLayoutViewProtocol {
 
 extension FTLayoutViewProtocol {
 
-    func string(_ key: String) -> String? {
+    func stringValue(_ key: String) -> String? {
         guard let v = style[key] else { return nil }
         if let s = v as? String { return s }
         if let i = v as? Int { return String(i) }
@@ -386,7 +386,7 @@ extension FTLayoutViewProtocol {
         return nil
     }
 
-    func dimension(_ key: String) -> DimensionValue? {
+    func dimensionValue(_ key: String) -> DimensionValue? {
         guard let v = style[key] else { return nil }
         if let f = v as? CGFloat { return .point(f) }
         if let d = v as? Double { return .point(CGFloat(d)) }
@@ -435,6 +435,12 @@ extension FTLayoutViewProtocol {
         return nil
     }
 
+    func numericValue(_ key: String, defaultValue: CGFloat = 0) -> CGFloat {
+        if let d = style[key] as? Double { return CGFloat(d) }
+        if let i = style[key] as? Int { return CGFloat(i) }
+        return defaultValue
+    }
+
     func transformOriginValue(_ key: String) -> [Any]? {
         guard let v = style[key] else { return nil }
         if let array = v as? [Any] {
@@ -444,35 +450,26 @@ extension FTLayoutViewProtocol {
         }
     }
 
-    func cgFloat(_ key: String) -> CGFloat? {
-        guard let dim = dimension(key) else { return nil }
-        switch dim {
-        case .auto: return nil
-        case .point(let val): return val
-        case .percent(let pct): return CGFloat(pct) / 100.0
-        }
-    }
-
 
 
     // MARK: - Layout / Box
-    var display: String? { string("display") }
+    var display: String? { stringValue("display") }
 
-    var width: DimensionValue? { dimension("width") }
-    var height: DimensionValue? { dimension("height") }
-    var minWidth: DimensionValue? { dimension("minWidth") }
-    var minHeight: DimensionValue? { dimension("minHeight") }
-    var maxWidth: DimensionValue? { dimension("maxWidth") }
-    var maxHeight: DimensionValue? { dimension("maxHeight") }
+    var width: DimensionValue? { dimensionValue("width") }
+    var height: DimensionValue? { dimensionValue("height") }
+    var minWidth: DimensionValue? { dimensionValue("minWidth") }
+    var minHeight: DimensionValue? { dimensionValue("minHeight") }
+    var maxWidth: DimensionValue? { dimensionValue("maxWidth") }
+    var maxHeight: DimensionValue? { dimensionValue("maxHeight") }
 
-    var left: DimensionValue? { dimension("left") }
-    var right: DimensionValue? { dimension("right") }
-    var top: DimensionValue? { dimension("top") }
-    var bottomValue: DimensionValue? { dimension("bottom") }
-    var start: DimensionValue? { dimension("start") }
-    var end: DimensionValue? { dimension("end") }
+    var left: DimensionValue? { dimensionValue("left") }
+    var right: DimensionValue? { dimensionValue("right") }
+    var top: DimensionValue? { dimensionValue("top") }
+    var bottomValue: DimensionValue? { dimensionValue("bottom") }
+    var start: DimensionValue? { dimensionValue("start") }
+    var end: DimensionValue? { dimensionValue("end") }
 
-    var inset: String? { string("inset") }
+    var inset: String? { stringValue("inset") }
 
     var aspectRatioValue: CGFloat? {
         if let s = style["aspectRatio"] as? String, let d = Double(s) { return CGFloat(d) }
@@ -483,102 +480,102 @@ extension FTLayoutViewProtocol {
 
     var flex: FlexValue? { flexValue("flex") }
 
-    var flexBasis: String? { string("flexBasis") }
-    var flexGrow: CGFloat { cgFloat("flexGrow") ?? 0 }
-    var flexShrink: CGFloat { cgFloat("flexShrink") ?? 0 }
-    var flexWrap: String? { string("flexWrap") }
+    var flexBasis: String? { stringValue("flexBasis") }
+    var flexGrow: CGFloat { numericValue("flexGrow") }
+    var flexShrink: CGFloat { numericValue("flexShrink") }
+    var flexWrap: String? { stringValue("flexWrap") }
     var order: Int { (style["order"] as? Int) ?? 0 }
 
-    var gap: DimensionValue? { dimension("gap") }
+    var gap: DimensionValue? { dimensionValue("gap") }
 
     // layout alignments and gaps
 
-    var position: String { string("position") ?? "static" }
-    var flexDirection: String { string("flexDirection") ?? "column" }
-    var alignContent: String { string("alignContent") ?? "flex-start" }
-    var alignItems: String { string("alignItems") ?? "stretch" }
-    var alignSelf: String { string("alignSelf") ?? "auto" }
-    var justifyContent: String { string("justifyContent") ?? "stretch" }
-    var justifyItems: String { string("justifyItems") ?? "stretch" }
-    var justifySelf: String { string("justifySelf") ?? "auto" }
+    var position: String { stringValue("position") ?? "static" }
+    var flexDirection: String { stringValue("flexDirection") ?? "column" }
+    var alignContent: String { stringValue("alignContent") ?? "flex-start" }
+    var alignItems: String { stringValue("alignItems") ?? "stretch" }
+    var alignSelf: String { stringValue("alignSelf") ?? "auto" }
+    var justifyContent: String { stringValue("justifyContent") ?? "stretch" }
+    var justifyItems: String { stringValue("justifyItems") ?? "stretch" }
+    var justifySelf: String { stringValue("justifySelf") ?? "auto" }
 
-    var columnGap: DimensionValue? { dimension("columnGap") }
+    var columnGap: DimensionValue? { dimensionValue("columnGap") }
 
-    var rowGap: DimensionValue? { dimension("rowGap") }
+    var rowGap: DimensionValue? { dimensionValue("rowGap") }
 
-    var overflow: String { string("overflow") ?? "visible" }
+    var overflow: String { stringValue("overflow") ?? "visible" }
 
     // per-side padding and margin
-    var paddingTop: DimensionValue? { dimension("paddingTop") }
-    var paddingLeft: DimensionValue? { dimension("paddingLeft") }
-    var paddingRight: DimensionValue? { dimension("paddingRight") }
-    var paddingBottom: DimensionValue? { dimension("paddingBottom") }
+    var paddingTop: DimensionValue? { dimensionValue("paddingTop") }
+    var paddingLeft: DimensionValue? { dimensionValue("paddingLeft") }
+    var paddingRight: DimensionValue? { dimensionValue("paddingRight") }
+    var paddingBottom: DimensionValue? { dimensionValue("paddingBottom") }
 
-    var marginTop: DimensionValue? { dimension("marginTop") }
-    var marginLeft: DimensionValue? { dimension("marginLeft") }
-    var marginRight: DimensionValue? { dimension("marginRight") }
-    var marginBottom: DimensionValue? { dimension("marginBottom") }
+    var marginTop: DimensionValue? { dimensionValue("marginTop") }
+    var marginLeft: DimensionValue? { dimensionValue("marginLeft") }
+    var marginRight: DimensionValue? { dimensionValue("marginRight") }
+    var marginBottom: DimensionValue? { dimensionValue("marginBottom") }
 
     // MARK: - Padding / Margin (extras)
-    var padding: DimensionValue? { dimension("padding") }
-    var paddingHorizontal: DimensionValue? { dimension("paddingHorizontal") }
-    var paddingVertical: DimensionValue? { dimension("paddingVertical") }
-    var paddingStart: DimensionValue? { dimension("paddingStart") }
-    var paddingEnd: DimensionValue? { dimension("paddingEnd") }
+    var padding: DimensionValue? { dimensionValue("padding") }
+    var paddingHorizontal: DimensionValue? { dimensionValue("paddingHorizontal") }
+    var paddingVertical: DimensionValue? { dimensionValue("paddingVertical") }
+    var paddingStart: DimensionValue? { dimensionValue("paddingStart") }
+    var paddingEnd: DimensionValue? { dimensionValue("paddingEnd") }
 
-    var margin: DimensionValue? { dimension("margin") }
-    var marginHorizontal: DimensionValue? { dimension("marginHorizontal") }
-    var marginVertical: DimensionValue? { dimension("marginVertical") }
-    var marginStart: DimensionValue? { dimension("marginStart") }
-    var marginEnd: DimensionValue? { dimension("marginEnd") }
+    var margin: DimensionValue? { dimensionValue("margin") }
+    var marginHorizontal: DimensionValue? { dimensionValue("marginHorizontal") }
+    var marginVertical: DimensionValue? { dimensionValue("marginVertical") }
+    var marginStart: DimensionValue? { dimensionValue("marginStart") }
+    var marginEnd: DimensionValue? { dimensionValue("marginEnd") }
 
     // MARK: - Border
-    var borderWidth: DimensionValue? { dimension("borderWidth") }
-    var borderTopWidth: DimensionValue? { dimension("borderTopWidth") }
-    var borderBottomWidth: DimensionValue? { dimension("borderBottomWidth") }
-    var borderLeftWidth: DimensionValue? { dimension("borderLeftWidth") }
-    var borderRightWidth: DimensionValue? { dimension("borderRightWidth") }
-    var borderStartWidth: DimensionValue? { dimension("borderStartWidth") }
-    var borderEndWidth: DimensionValue? { dimension("borderEndWidth") }
+    var borderWidth: DimensionValue? { dimensionValue("borderWidth") }
+    var borderTopWidth: DimensionValue? { dimensionValue("borderTopWidth") }
+    var borderBottomWidth: DimensionValue? { dimensionValue("borderBottomWidth") }
+    var borderLeftWidth: DimensionValue? { dimensionValue("borderLeftWidth") }
+    var borderRightWidth: DimensionValue? { dimensionValue("borderRightWidth") }
+    var borderStartWidth: DimensionValue? { dimensionValue("borderStartWidth") }
+    var borderEndWidth: DimensionValue? { dimensionValue("borderEndWidth") }
 
-    var borderColor: String? { string("borderColor") }
-    var borderTopColor: String? { string("borderTopColor") }
-    var borderBottomColor: String? { string("borderBottomColor") }
-    var borderLeftColor: String? { string("borderLeftColor") }
-    var borderRightColor: String? { string("borderRightColor") }
-    var borderStartColor: String? { string("borderStartColor") }
-    var borderEndColor: String? { string("borderEndColor") }
+    var borderColor: String? { stringValue("borderColor") }
+    var borderTopColor: String? { stringValue("borderTopColor") }
+    var borderBottomColor: String? { stringValue("borderBottomColor") }
+    var borderLeftColor: String? { stringValue("borderLeftColor") }
+    var borderRightColor: String? { stringValue("borderRightColor") }
+    var borderStartColor: String? { stringValue("borderStartColor") }
+    var borderEndColor: String? { stringValue("borderEndColor") }
 
-    var borderRadius: DimensionValue? { dimension("borderRadius") }
-    var borderTopLeftRadius: DimensionValue? { dimension("borderTopLeftRadius") }
-    var borderTopRightRadius: DimensionValue? { dimension("borderTopRightRadius") }
-    var borderBottomLeftRadius: DimensionValue? { dimension("borderBottomLeftRadius") }
-    var borderBottomRightRadius: DimensionValue? { dimension("borderBottomRightRadius") }
-    var borderTopStartRadius: DimensionValue? { dimension("borderTopStartRadius") }
-    var borderTopEndRadius: DimensionValue? { dimension("borderTopEndRadius") }
-    var borderBottomStartRadius: DimensionValue? { dimension("borderBottomStartRadius") }
-    var borderBottomEndRadius: DimensionValue? { dimension("borderBottomEndRadius") }
+    var borderRadius: DimensionValue? { dimensionValue("borderRadius") }
+    var borderTopLeftRadius: DimensionValue? { dimensionValue("borderTopLeftRadius") }
+    var borderTopRightRadius: DimensionValue? { dimensionValue("borderTopRightRadius") }
+    var borderBottomLeftRadius: DimensionValue? { dimensionValue("borderBottomLeftRadius") }
+    var borderBottomRightRadius: DimensionValue? { dimensionValue("borderBottomRightRadius") }
+    var borderTopStartRadius: DimensionValue? { dimensionValue("borderTopStartRadius") }
+    var borderTopEndRadius: DimensionValue? { dimensionValue("borderTopEndRadius") }
+    var borderBottomStartRadius: DimensionValue? { dimensionValue("borderBottomStartRadius") }
+    var borderBottomEndRadius: DimensionValue? { dimensionValue("borderBottomEndRadius") }
 
     // MARK: - Visual
-    var backgroundColor: String? { string("backgroundColor") }
-    var opacityValue: CGFloat { cgFloat("opacity") ?? 1 }
-    var outlineColor: String? { string("outlineColor") }
-    var outlineStyle: String? { string("outlineStyle") }
-    var outlineWidth: DimensionValue? { dimension("outlineWidth") }
-    var outlineOffset: DimensionValue? { dimension("outlineOffset") }
-    var borderStyleProp: String? { string("borderStyle") }
-    var borderCurve: String? { string("borderCurve") }
+    var backgroundColor: String? { stringValue("backgroundColor") }
+    var opacityValue: CGFloat { numericValue("opacity", defaultValue: 1) }
+    var outlineColor: String? { stringValue("outlineColor") }
+    var outlineStyle: String? { stringValue("outlineStyle") }
+    var outlineWidth: DimensionValue? { dimensionValue("outlineWidth") }
+    var outlineOffset: DimensionValue? { dimensionValue("outlineOffset") }
+    var borderStyle: String? { stringValue("borderStyle") }
+    var borderCurve: String? { stringValue("borderCurve") }
 
     var boxShadow: [BoxShadowValue]? { boxShadowValue("boxShadow") }
     var filter: [FilterFunction]? { filterValue("filter") }
 
-    var mixBlendMode: String? { string("mixBlendMode") }
+    var mixBlendMode: String? { stringValue("mixBlendMode") }
 
     // MARK: - Interaction / Misc
-    var pointerEvents: String? { string("pointerEvents") }
-    var cursor: String? { string("cursor") }
-    var userSelect: String? { string("userSelect") }
-    var boxSizing: String? { string("boxSizing") }
+    var pointerEvents: String? { stringValue("pointerEvents") }
+    var cursor: String? { stringValue("cursor") }
+    var userSelect: String? { stringValue("userSelect") }
+    var boxSizing: String? { stringValue("boxSizing") }
 
     // MARK: - Transforms
     var transform: [TransformFunction]? { transformValue("transform") }
