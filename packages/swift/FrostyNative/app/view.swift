@@ -23,6 +23,34 @@
 //  THE SOFTWARE.
 //
 
+// Color extension for hex string support
+extension Color {
+    init(hexString: String) {
+        let hex = hexString.trimmingCharacters(in: CharacterSet.alphanumerics.inverted)
+        var int: UInt64 = 0
+        Scanner(string: hex).scanHexInt64(&int)
+        let a, r, g, b: UInt64
+        switch hex.count {
+        case 3: // RGB (12-bit)
+            (a, r, g, b) = (255, (int >> 8) * 17, (int >> 4 & 0xF) * 17, (int & 0xF) * 17)
+        case 6: // RGB (24-bit)
+            (a, r, g, b) = (255, int >> 16, int >> 8 & 0xFF, int & 0xFF)
+        case 8: // ARGB (32-bit)
+            (a, r, g, b) = (int >> 24, int >> 16 & 0xFF, int >> 8 & 0xFF, int & 0xFF)
+        default:
+            (a, r, g, b) = (1, 1, 1, 0)
+        }
+
+        self.init(
+            .sRGB,
+            red: Double(r) / 255,
+            green: Double(g) / 255,
+            blue:  Double(b) / 255,
+            opacity: Double(a) / 255
+        )
+    }
+}
+
 protocol FTViewProtocol: View {
     
     var props: [String: any Sendable] { get }
@@ -566,6 +594,8 @@ extension FTLayoutViewProtocol {
     var body: some View {
         GeometryReader { geo in
             let info = FTLayoutInfo(parentSize: geo.size)
+            
+            // Resolve padding and margin with relative base
             let paddingInsets = EdgeInsets(
                 top: paddingTop?.resolve(relativeBase: geo.size.width) ?? 0,
                 leading: paddingLeft?.resolve(relativeBase: geo.size.width) ?? 0,
@@ -578,23 +608,125 @@ extension FTLayoutViewProtocol {
                 bottom: marginBottom?.resolve(relativeBase: geo.size.width) ?? 0,
                 trailing: marginRight?.resolve(relativeBase: geo.size.width) ?? 0
             )
-            if let onLayout = onLayout {
-                self.content(info)
-                    .padding(paddingInsets)
-                    .onGeometryChange(for: Layout.self) {
-                        Layout(
-                            global: $0.frame(in: .global),
-                            local: $0.frame(in: .local)
-                        )
-                    } action: {
-                        onLayout($0)
-                    }
-                    .padding(marginInsets)
-            } else {
-                self.content(info)
-                    .padding(paddingInsets)
-                    .padding(marginInsets)
+            
+            // Start with the base content wrapped in AnyView to allow modifier chaining
+            var view = AnyView(self.content(info))
+            
+            // Apply size constraints
+            if let width = width?.resolve(relativeBase: geo.size.width),
+               let height = height?.resolve(relativeBase: geo.size.height) {
+                view = AnyView(view.frame(width: width, height: height, alignment: .topLeading))
+            } else if let width = width?.resolve(relativeBase: geo.size.width) {
+                view = AnyView(view.frame(width: width, alignment: .topLeading))
+            } else if let height = height?.resolve(relativeBase: geo.size.height) {
+                view = AnyView(view.frame(height: height, alignment: .topLeading))
             }
+            
+            // Apply min/max constraints
+            let minW: CGFloat? = minWidth?.resolve(relativeBase: geo.size.width)
+            let maxW: CGFloat? = maxWidth?.resolve(relativeBase: geo.size.width)
+            let minH: CGFloat? = minHeight?.resolve(relativeBase: geo.size.height)
+            let maxH: CGFloat? = maxHeight?.resolve(relativeBase: geo.size.height)
+            
+            if minW != nil || maxW != nil || minH != nil || maxH != nil {
+                view = AnyView(view.frame(
+                    minWidth: minW, idealWidth: nil, maxWidth: maxW,
+                    minHeight: minH, idealHeight: nil, maxHeight: maxH,
+                    alignment: .topLeading
+                ))
+            }
+            
+            // Apply aspect ratio
+            if let aspectRatio = aspectRatio {
+                view = AnyView(view.aspectRatio(aspectRatio, contentMode: .fit))
+            }
+            
+            // Apply positioning
+            if position == "absolute" {
+                let x = left?.resolve(relativeBase: geo.size.width) ?? 
+                       right.map { geo.size.width - ($0.resolve(relativeBase: geo.size.width) ?? 0) } ?? 0
+                let y = top?.resolve(relativeBase: geo.size.height) ?? 
+                       bottom.map { geo.size.height - ($0.resolve(relativeBase: geo.size.height) ?? 0) } ?? 0
+                view = AnyView(view.position(x: x, y: y))
+            } else if position == "relative" {
+                let x = left?.resolve(relativeBase: geo.size.width) ?? 
+                       right.map { -($0.resolve(relativeBase: geo.size.width) ?? 0) } ?? 0
+                let y = top?.resolve(relativeBase: geo.size.height) ?? 
+                       bottom.map { -($0.resolve(relativeBase: geo.size.height) ?? 0) } ?? 0
+                view = AnyView(view.offset(x: x, y: y))
+            }
+            
+            // Apply z-index
+            if let zIndex = zIndex {
+                view = AnyView(view.zIndex(Double(zIndex)))
+            }
+            
+            // Apply opacity
+            if opacityValue != 1 {
+                view = AnyView(view.opacity(opacityValue))
+            }
+            
+            // Apply background color
+            if let backgroundColor = backgroundColor {
+                view = AnyView(view.background(Color(hexString: backgroundColor)))
+            }
+            
+            // Apply border styles
+            if let borderWidth = borderTopWidth ?? borderBottomWidth ?? borderLeftWidth ?? borderRightWidth {
+                let borderColor = borderTopColor ?? borderBottomColor ?? borderLeftColor ?? borderRightColor ?? "#000000"
+                view = AnyView(view.border(Color(hexString: borderColor), width: borderWidth))
+            }
+            
+            // Apply border radius
+            if let radius = borderTopLeftRadius ?? borderTopRightRadius ?? borderBottomLeftRadius ?? borderBottomRightRadius {
+                view = AnyView(view.cornerRadius(radius))
+            }
+            
+            // Apply transforms
+            if let transforms = transform {
+                for transform in transforms {
+                    switch transform {
+                    case .scale(let scale):
+                        view = AnyView(view.scaleEffect(scale))
+                    case .scaleX(let scaleX):
+                        view = AnyView(view.scaleEffect(x: scaleX, y: 1))
+                    case .scaleY(let scaleY):
+                        view = AnyView(view.scaleEffect(x: 1, y: scaleY))
+                    case .rotate(let angle):
+                        if let degrees = Double(angle.replacingOccurrences(of: "deg", with: "")) {
+                            view = AnyView(view.rotationEffect(.degrees(degrees)))
+                        }
+                    case .translateX(let x):
+                        if let offset = x.resolve(relativeBase: geo.size.width) {
+                            view = AnyView(view.offset(x: offset, y: 0))
+                        }
+                    case .translateY(let y):
+                        if let offset = y.resolve(relativeBase: geo.size.height) {
+                            view = AnyView(view.offset(x: 0, y: offset))
+                        }
+                    default:
+                        break // Handle other transforms as needed
+                    }
+                }
+            }
+            
+            // Apply padding
+            view = AnyView(view.padding(paddingInsets))
+            
+            // Apply onLayout if present
+            if let onLayout = onLayout {
+                view = AnyView(view.onGeometryChange(for: Layout.self) {
+                    Layout(
+                        global: $0.frame(in: .global),
+                        local: $0.frame(in: .local)
+                    )
+                } action: {
+                    onLayout($0)
+                })
+            }
+            
+            // Apply margin as outer padding
+            return AnyView(view.padding(marginInsets))
         }
     }
 }
