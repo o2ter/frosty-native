@@ -50,6 +50,7 @@ export const App = () => {
       gap: 8,
       padding: 8,
     }}>
+      <Text>Check Text: <Text style={{ color: 'red' }}>Inner Text</Text></Text>
       <TextInput value={value} onChangeValue={setValue} style={{ backgroundColor: 'lime' }} />
       <TextInput value={value} onChangeValue={setValue} style={{ backgroundColor: 'yellow' }} multiline />
       <TextInput value={value} onChangeValue={setValue} disabled style={{ backgroundColor: 'lime' }} />

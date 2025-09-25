@@ -67,7 +67,7 @@ export const TextInput: ComponentType<TextInputProps> = ({
     get _native() { return targetRef.current || undefined; },
     focus() { targetRef.current?.focus(); },
     blur() { targetRef.current?.blur(); },
-    flashScrollIndicators() {},
+    flashScrollIndicators() { },
     scrollTo(options) {
       const el = targetRef.current;
       if (!el) return;
@@ -169,66 +169,47 @@ export const TextInput: ComponentType<TextInputProps> = ({
 
   const { style: scrollStyle, ...scrollProps } = useScrollProps(nativeRef, targetRef, { horizontal, vertical, ...props });
 
+  const _props = {
+    id,
+    ref: mergeRefs(targetRef),
+    value: value?.toString(),
+    placeholder: placeholder?.toString(),
+    onInput: _onChange,
+    maxLength,
+    disabled,
+    readOnly,
+    autofocus,
+    tabIndex,
+    onBlur: _onBlur,
+    onFocus: _onFocus,
+    style: ([
+      {
+        listStyle: 'none',
+        whiteSpace: 'pre-wrap',
+        wordWrap: 'break-word',
+        resize: 'none',
+      },
+      cssStyle,
+      scrollStyle,
+    ] as any),
+    ...scrollProps,
+    ...responders,
+  };
+
   if (multiline) {
     return (
       <textarea
-        id={id}
-        ref={mergeRefs(targetRef)}
-        value={value?.toString()}
-        placeholder={placeholder?.toString()}
-        onInput={_onChange}
         rows={numberOfLines || 1}
-        maxLength={maxLength}
-        disabled={disabled}
-        readOnly={readOnly}
-        autofocus={autofocus}
-        tabIndex={tabIndex}
-        onBlur={_onBlur}
-        onFocus={_onFocus}
         onSelect={_onSelectionChange}
-        style={[
-          {
-            listStyle: 'none',
-            whiteSpace: 'pre-wrap',
-            wordWrap: 'break-word',
-            resize: 'none',
-          },
-          cssStyle,
-          scrollStyle,
-        ]}
-        {...scrollProps}
-        {...responders}
+        {..._props}
       />
     );
   }
 
   return (
     <input
-      id={id}
-      ref={mergeRefs(targetRef)}
       type={secureTextEntry ? 'password' : undefined}
-      value={value?.toString()}
-      placeholder={placeholder?.toString()}
-      onInput={_onChange}
-      disabled={disabled}
-      readOnly={readOnly}
-      maxLength={maxLength}
-      autofocus={autofocus}
-      tabIndex={tabIndex}
-      onBlur={_onBlur}
-      onFocus={_onFocus}
-      style={[
-        {
-          listStyle: 'none',
-          whiteSpace: 'pre-wrap',
-          wordWrap: 'break-word',
-          resize: 'none',
-        },
-        cssStyle,
-        scrollStyle,
-      ]}
-      {...scrollProps}
-      {...responders}
+      {..._props}
     />
   );
 };

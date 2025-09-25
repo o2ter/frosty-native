@@ -24,59 +24,15 @@
 //
 
 import _ from 'lodash';
-import { ComponentRef, ComponentType, mergeRefs, useRef, useRefHandle, useStack } from 'frosty';
+import { ComponentRef, ComponentType, createElement, createPairs, mergeRefs, useRef, useRefHandle, useStack } from 'frosty';
 import { TextViewProps } from '../types/text';
 import { useTextStyle } from '../../components/textStyle';
 import { encodeTextStyle } from './css';
 import { useFlattenStyle } from '../../../view/style/utils';
 import { TextStyle } from '../../../view/style/types';
-import { _DOMRenderer, DOMNativeNode } from 'frosty/web';
-import { _createNativeElement } from 'frosty/_native';
 import { useResponderEvents } from './events';
 
-class DOMTextBaseView extends DOMNativeNode {
-
-  #target: HTMLElement;
-
-  constructor(target: HTMLElement) {
-    super();
-    this.#target = target;
-  }
-
-  get target(): Element {
-    return this.#target;
-  }
-
-  update(props: Record<string, any> & {
-    className?: string;
-    style?: string;
-  }) {
-    DOMNativeNode.Utils.update(this.#target, props);
-  }
-
-  replaceChildren(children: (string | Element | DOMNativeNode)[]) {
-    const filtered = _.filter(children, x => _.isString(x) || x instanceof DOMInnerTextView);
-    DOMNativeNode.Utils.replaceChildren(this.#target, filtered);
-  }
-
-  destroy() {
-    DOMNativeNode.Utils.destroy(this.#target);
-  }
-}
-
-class DOMTextView extends DOMTextBaseView {
-
-  static createElement(doc: Document): DOMNativeNode {
-    return new DOMTextView(doc.createElement('div'));
-  }
-}
-
-class DOMInnerTextView extends DOMTextBaseView {
-
-  static createElement(doc: Document): DOMNativeNode {
-    return new DOMInnerTextView(doc.createElement('span'));
-  }
-}
+const Pairs = createPairs({ allowTextChildren: true });
 
 export const Text: ComponentType<TextViewProps> = ({ id, ref, style, maxFontSizeMultiplier, minimumFontScale, numberOfLines, tabIndex, children, ...props }) => {
 
@@ -109,19 +65,24 @@ export const Text: ComponentType<TextViewProps> = ({ id, ref, style, maxFontSize
     style,
   ]));
 
-  return _createNativeElement(isInnerText ? DOMInnerTextView : DOMTextView, {
-    id,
-    ref: targetRef,
-    style: [
-      !isInnerText && {
-        listStyle: 'none',
-        whiteSpace: 'pre-wrap',
-        wordWrap: 'break-word',
-      },
-      cssStyle,
-    ],
-    tabIndex,
-    children,
-    ...useResponderEvents(props, nativeRef, targetRef),
-  });
+  return (
+    <Pairs.Child>
+      {createElement(isInnerText ? 'span' : 'div', {
+        id,
+        ref: targetRef,
+        style: [
+          !isInnerText && {
+            listStyle: 'none',
+            whiteSpace: 'pre-wrap',
+            wordWrap: 'break-word',
+          },
+          cssStyle,
+        ],
+        tabIndex,
+        ...useResponderEvents(props, nativeRef, targetRef),
+      }, (
+        <Pairs.Parent>{children}</Pairs.Parent>
+      ))}
+    </Pairs.Child>
+  );
 };
