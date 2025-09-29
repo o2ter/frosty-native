@@ -26,13 +26,15 @@
 import { ComponentRef, ComponentType, mergeRefs, useRef, useRefHandle } from 'frosty';
 import { _createNativeElement } from 'frosty/_native';
 import { NativeModules } from '../../../global';
-import { NativeNode } from './node';
+import { NativeNode } from '../../../node';
 import { ImageProps } from '../types/image';
 import { useFlattenStyle } from '../../../view/style/utils';
 
 abstract class FTImageView extends NativeNode {
 
-  _native = NativeModules['FTImageView']();
+  static createElement(): NativeNode {
+    return NativeModules['FTImageView']();
+  }
 }
 
 export const Image: ComponentType<ImageProps> = ({ ref, style, source }) => {

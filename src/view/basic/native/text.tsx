@@ -27,7 +27,7 @@ import _ from 'lodash';
 import { ComponentRef, ComponentType, createPairs, mergeRefs, useRef, useRefHandle, useStack } from 'frosty';
 import { _createNativeElement } from 'frosty/_native';
 import { NativeModules } from '../../../global';
-import { NativeNode } from './node';
+import { NativeNode } from '../../../node';
 import { TextViewProps } from '../types/text';
 import { useTextStyle } from '../../components/textStyle';
 import { useFlattenStyle } from '../../../view/style/utils';
@@ -37,18 +37,30 @@ const Pairs = createPairs({ allowTextChildren: true });
 
 class FTTextView extends NativeNode {
 
-  _native = NativeModules['FTTextView']();
+  #native = NativeModules['FTTextView']();
   #props: Record<string, any> = {};
   #children: (string | FTTextView)[] = [];
 
+  static createElement(): NativeNode {
+    return new FTTextView();
+  }
+
+  invoke(method: string, args: any[]): void {
+    this.#native.invoke(method, args);
+  }
+
   update(props: Record<string, any>): void {
-    this._native.update(props);
+    this.#native.update(props);
     this.#props = props;
   }
 
   replaceChildren(children: (string | NativeNode)[]): void {
     const _children = _.filter(children, x => _.isNumber(x) || _.isString(x) || x instanceof FTTextView);
     this.#children = _children.map(x => _.isNumber(x) ? String(x) : x);
+  }
+
+  destroy(): void {
+    this.#native.destroy();
   }
 }
 

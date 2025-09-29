@@ -23,26 +23,18 @@
 //  THE SOFTWARE.
 //
 
-import _ from 'lodash';
 import { NativeElementType } from 'frosty/_native';
 
 export abstract class NativeNode extends NativeElementType {
 
-  protected abstract _native: any;
+  static createElement: () => NativeNode;
 
-  invoke(method: string, args: any[]) {
-    this._native.invoke(method, args);
-  }
+  abstract invoke(method: string, args: any[]): void;
 
-  update(props: Record<string, any>) {
-    this._native.update(props);
-  }
+  abstract update(props: Record<string, any>): void;
 
-  replaceChildren(children: (string | NativeNode)[]) {
-    this._native.replaceChildren(_.map(children, x => _.isString(x) ? x : x._native));
-  }
+  abstract replaceChildren(children: (string | NativeNode)[]): void;
 
-  destroy() {
-    this._native.destroy();
-  }
+  abstract destroy(): void;
+
 }
