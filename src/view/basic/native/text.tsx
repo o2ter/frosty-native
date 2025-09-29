@@ -24,7 +24,7 @@
 //
 
 import _ from 'lodash';
-import { ComponentRef, ComponentType, mergeRefs, useRef, useRefHandle, useStack } from 'frosty';
+import { ComponentRef, ComponentType, createPairs, mergeRefs, useRef, useRefHandle, useStack } from 'frosty';
 import { _createNativeElement } from 'frosty/_native';
 import { NativeModules } from '../../../global';
 import { NativeNode } from '../../../node';
@@ -33,10 +33,34 @@ import { useTextStyle } from '../../components/textStyle';
 import { useFlattenStyle } from '../../../view/style/utils';
 import { TextStyle } from '../../style/types';
 
-abstract class FTTextView extends NativeNode {
+const Pairs = createPairs({ allowTextChildren: true });
+
+class FTTextView extends NativeNode {
+
+  #native = NativeModules['FTTextView']();
+  #props: Record<string, any> = {};
+  #children: (string | FTTextView)[] = [];
 
   static createElement(): NativeNode {
-    return NativeModules['FTTextView']();
+    return new FTTextView();
+  }
+
+  invoke(method: string, args: any[]): void {
+    this.#native.invoke(method, args);
+  }
+
+  update(props: Record<string, any>): void {
+    this.#native.update(props);
+    this.#props = props;
+  }
+
+  replaceChildren(children: (string | NativeNode)[]): void {
+    const _children = _.filter(children, x => _.isNumber(x) || _.isString(x) || x instanceof FTTextView);
+    this.#children = _children.map(x => _.isNumber(x) ? String(x) : x);
+  }
+
+  destroy(): void {
+    this.#native.destroy();
   }
 }
 
@@ -48,12 +72,17 @@ export const Text: ComponentType<TextViewProps> = ({ ref, style, maxFontSizeMult
 
   const isInnerText = _.some(useStack(), (item) => item.type === Text);
 
-  const text = _.filter(_.castArray(children), x => _.isNumber(x) || _.isString(x)).join(' ');
-  return _createNativeElement(FTTextView, {
-    style: useFlattenStyle([
-      !isInnerText && useTextStyle() as TextStyle,
-      style,
-    ]),
-    text,
-  });
+  return (
+    <Pairs.Child>
+      {_createNativeElement(FTTextView, {
+        style: useFlattenStyle([
+          !isInnerText && useTextStyle() as TextStyle,
+          style,
+        ]),
+        children: (
+          <Pairs.Parent>{children}</Pairs.Parent>
+        ),
+      })}
+    </Pairs.Child>
+  );
 };
