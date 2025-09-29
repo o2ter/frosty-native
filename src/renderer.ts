@@ -25,7 +25,7 @@
 
 import _ from 'lodash';
 import { _Renderer, VNode } from 'frosty/_native';
-import { NativeNode } from './node';
+import { NativeNode } from './view/basic/native/node';
 
 export class NativeRenderer extends _Renderer<NativeNode> {
 
@@ -44,8 +44,8 @@ export class NativeRenderer extends _Renderer<NativeNode> {
   protected _createElement(node: VNode, stack: VNode[]): NativeNode {
     const { type } = node;
     if (_.isString(type) || !(type.prototype instanceof NativeNode)) throw Error('Invalid type');
-    const ElementType = type as typeof NativeNode;
-    const element = ElementType.createElement();
+    const ElementType = type as any;
+    const element = new ElementType();
     this._updateElement(node, element, stack);
     return element;
   }
@@ -62,7 +62,10 @@ export class NativeRenderer extends _Renderer<NativeNode> {
   }
 
   protected _replaceChildren(node: VNode, element: NativeNode, children: (string | NativeNode)[], stack: VNode[], force?: boolean) {
-    element.replaceChildren(children);
+    element.replaceChildren(element instanceof NativeNode
+      ? children
+      : _.map(children, x => x instanceof NativeNode ? x._native : x)
+    );
   }
 
   notifyNode(nodeId: string, method: string, ...args: any[]) {

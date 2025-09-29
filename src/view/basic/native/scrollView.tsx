@@ -26,16 +26,14 @@
 import { ComponentRef, ComponentType, mergeRefs, useRef, useRefHandle } from 'frosty';
 import { _createNativeElement } from 'frosty/_native';
 import { NativeModules } from '../../../global';
-import { NativeNode } from '../../../node';
+import { NativeNode } from './node';
 import { ScrollViewProps } from '../types/scrollView';
 import { useFlattenStyle } from '../../../view/style/utils';
 import { View } from './view';
 
 abstract class FTScrollView extends NativeNode {
 
-  static createElement(): NativeNode {
-    return NativeModules['FTScrollView']();
-  }
+  _native = NativeModules['FTScrollView']();
 }
 
 export const ScrollView: ComponentType<ScrollViewProps> = ({

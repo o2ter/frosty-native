@@ -26,7 +26,7 @@
 import _ from 'lodash';
 import { ComponentType, createElement, createStore, useStore } from 'frosty';
 import { NativeRenderer } from './renderer';
-import { NativeNode } from './node';
+import { NativeNode } from './view/basic/native/node';
 import { Environment } from './view';
 import { EnvironmentValues } from './view/components/environment/types';
 import { AppEventContext } from './view/components/appEvent';
