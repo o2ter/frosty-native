@@ -30,8 +30,8 @@ import { NativeModules } from '../../../global';
 import { NativeNode } from './node';
 import { TextViewProps } from '../types/text';
 import { useTextStyle } from '../../components/textStyle';
-import { useFlattenStyle } from '../../../view/style/utils';
 import { TextStyle } from '../../style/types';
+import { useNormalizedStyle } from './style';
 
 const Pairs = createPairs({ allowTextChildren: true });
 
@@ -63,7 +63,7 @@ export const Text: ComponentType<TextViewProps> = ({ ref, style, maxFontSizeMult
   return (
     <Pairs.Child>
       {_createNativeElement(FTTextView, {
-        style: useFlattenStyle([
+        style: useNormalizedStyle([
           !isInnerText && useTextStyle() as TextStyle,
           style,
         ]),

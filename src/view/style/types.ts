@@ -167,8 +167,8 @@ export type FilterFunction = OneOf<{
 export type DropShadowValue = {
   offsetX: number | string;
   offsetY: number | string;
-  standardDeviation?: number | string | undefined;
-  color?: ColorValue | number | undefined;
+  standardDeviation?: number | string;
+  color?: ColorValue;
 };
 
 export type BoxShadowValue = {

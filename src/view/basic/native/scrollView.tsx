@@ -28,8 +28,8 @@ import { _createNativeElement } from 'frosty/_native';
 import { NativeModules } from '../../../global';
 import { NativeNode } from './node';
 import { ScrollViewProps } from '../types/scrollView';
-import { useFlattenStyle } from '../../../view/style/utils';
 import { View } from './view';
+import { useNormalizedStyle } from './style';
 
 abstract class FTScrollView extends NativeNode {
 
@@ -60,7 +60,7 @@ export const ScrollView: ComponentType<ScrollViewProps> = ({
   }), null);
 
   return _createNativeElement(FTScrollView, {
-    style: useFlattenStyle(style),
+    style: useNormalizedStyle(style),
     horizontal,
     vertical,
     children: (

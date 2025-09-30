@@ -29,8 +29,8 @@ import { NativeModules } from '../../../global';
 import { NativeNode } from './node';
 import { TextInputProps } from '../types/textInput';
 import { useTextStyle } from '../../components/textStyle';
-import { useFlattenStyle } from '../../../view/style/utils';
 import { TextStyle } from '../../style/types';
+import { useNormalizedStyle } from './style';
 
 abstract class FTTextInput extends NativeNode {
 
@@ -77,7 +77,7 @@ export const TextInput: ComponentType<TextInputProps> = ({
   }), null);
 
   return _createNativeElement(FTTextInput, {
-    style: useFlattenStyle([
+    style: useNormalizedStyle([
       useTextStyle() as TextStyle,
       style,
     ]),
