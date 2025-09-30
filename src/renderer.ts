@@ -25,9 +25,9 @@
 
 import _ from 'lodash';
 import { _Renderer, VNode } from 'frosty/_native';
-import { NativeNode } from './view/basic/native/node';
+import { NativeNode, NativeNodeType } from './view/basic/native/node';
 
-export class NativeRenderer extends _Renderer<NativeNode> {
+export class NativeRenderer extends _Renderer<NativeNodeType> {
 
   private _callbacks = new Map<string, { [name: string]: (...args: any[]) => void; }>();
 
@@ -41,7 +41,7 @@ export class NativeRenderer extends _Renderer<NativeNode> {
   protected _afterUpdate() {
   }
 
-  protected _createElement(node: VNode, stack: VNode[]): NativeNode {
+  protected _createElement(node: VNode, stack: VNode[]): NativeNodeType {
     const { type } = node;
     if (_.isString(type) || !(type.prototype instanceof NativeNode)) throw Error('Invalid type');
     const ElementType = type as any;
@@ -50,18 +50,18 @@ export class NativeRenderer extends _Renderer<NativeNode> {
     return element;
   }
 
-  protected _updateElement(node: VNode, element: NativeNode, stack: VNode[]) {
+  protected _updateElement(node: VNode, element: NativeNodeType, stack: VNode[]) {
     const { props } = node;
     this._callbacks.set(node.id, _.pickBy(props, v => _.isFunction(v)));
     element.update(_.mapValues(props, v => _.isFunction(v) ? node.id : v));
   }
 
-  protected _destroyElement(node: VNode, element: NativeNode) {
+  protected _destroyElement(node: VNode, element: NativeNodeType) {
     this._callbacks.delete(node.id);
     element.destroy();
   }
 
-  protected _replaceChildren(node: VNode, element: NativeNode, children: (string | NativeNode)[], stack: VNode[], force?: boolean) {
+  protected _replaceChildren(node: VNode, element: NativeNodeType, children: (string | NativeNodeType)[], stack: VNode[], force?: boolean) {
     element.replaceChildren(element instanceof NativeNode
       ? children
       : _.map(children, x => x instanceof NativeNode ? x._native : x)

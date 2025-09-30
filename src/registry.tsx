@@ -26,7 +26,7 @@
 import _ from 'lodash';
 import { ComponentType, createElement, createStore, useStore } from 'frosty';
 import { NativeRenderer } from './renderer';
-import { NativeNode } from './view/basic/native/node';
+import { NativeNodeType } from './view/basic/native/node';
 import { Environment } from './view';
 import { EnvironmentValues } from './view/components/environment/types';
 import { AppEventContext } from './view/components/appEvent';
@@ -44,7 +44,7 @@ export const AppRegistry = (() => {
       return {
         component,
         run(options?: {
-          root?: NativeNode,
+          root?: NativeNodeType,
           props?: Record<string, any> | null,
           environment?: Partial<EnvironmentValues>,
         }) {

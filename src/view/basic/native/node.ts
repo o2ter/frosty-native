@@ -26,9 +26,20 @@
 import _ from 'lodash';
 import { NativeElementType } from 'frosty/_native';
 
-export abstract class NativeNode extends NativeElementType {
+export interface NativeNodeType extends NativeElementType {
 
-  abstract _native: any;
+  invoke(method: string, args: any[]): void;
+
+  update(props: Record<string, any>): void;
+
+  replaceChildren(children: (string | NativeNodeType)[]): void;
+
+  destroy(): void;
+}
+
+export abstract class NativeNode extends NativeElementType implements NativeNodeType {
+
+  abstract _native: NativeNodeType;
 
   invoke(method: string, args: any[]) {
     this._native.invoke(method, args);
@@ -39,7 +50,7 @@ export abstract class NativeNode extends NativeElementType {
   }
 
   replaceChildren(children: (string | NativeNode)[]) {
-    this._native.replaceChildren(_.map(children, x => _.isString(x) ? x : x._native));
+    this._native.replaceChildren(_.map(children, x => x instanceof NativeNode ? x._native : x));
   }
 
   destroy() {
