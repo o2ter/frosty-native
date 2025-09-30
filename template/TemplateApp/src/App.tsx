@@ -49,6 +49,7 @@ export default function App() {
   console.log(JSON.stringify(useEnvironment(), null, 4));
   return (
     <View style={{ padding: 64 }}>
+      <View style={{ height: 32, width: 32, backgroundColor: 'red' }} />
       <Text>Hello World!</Text>
       <Text>{counter}</Text>
     </View>

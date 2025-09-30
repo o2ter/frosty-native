@@ -26,7 +26,7 @@
 import _ from 'lodash';
 import { StyleProp } from 'frosty';
 import { ImageStyle, TextStyle, ViewStyle } from '../../style/types';
-import { useFlattenStyle } from './../../style/utils';
+import { compactValue, useFlattenStyle } from './../../style/utils';
 import { normalizeColor, toHexString } from '../../../internal/color';
 
 const _normalizeColor = (color: any): string | undefined => {
@@ -37,7 +37,7 @@ const _normalizeColor = (color: any): string | undefined => {
 
 export const useNormalizedStyle = <S extends ViewStyle | TextStyle | ImageStyle>(
   style: StyleProp<S>
-): S => {
+) => {
   const {
     boxShadow,
     filter,
@@ -50,16 +50,17 @@ export const useNormalizedStyle = <S extends ViewStyle | TextStyle | ImageStyle>
     tintColor,
     ..._style
   } = useFlattenStyle(style) as any;
-  return {
-    boxShadow: _.map(_.castArray(boxShadow), x => ({
+  return compactValue({
+    ..._style,
+    boxShadow: boxShadow && _.map(_.castArray(boxShadow), x => compactValue({
       ...x,
       color: _normalizeColor(x.color),
     })),
-    filter: _.map(_.castArray(filter), x => x.dropShadow ? {
-      dropShadow: {
+    filter: filter && _.map(_.castArray(filter), x => x.dropShadow ? {
+      dropShadow: compactValue({
         ...x.dropShadow,
         color: _normalizeColor(x.dropShadow.color),
-      },
+      }),
     } : x),
     backgroundColor: _normalizeColor(backgroundColor),
     outlineColor: _normalizeColor(outlineColor),
@@ -68,6 +69,5 @@ export const useNormalizedStyle = <S extends ViewStyle | TextStyle | ImageStyle>
     textShadowColor: _normalizeColor(textShadowColor),
     overlayColor: _normalizeColor(overlayColor),
     tintColor: _normalizeColor(tintColor),
-    ..._style,
-  };
+  }) as S;
 }

@@ -28,6 +28,8 @@ import { StyleProp } from 'frosty';
 import { ImageStyle, TextStyle, ViewStyle } from './types';
 import { useEnvironment } from '../components/environment';
 
+export const compactValue = <S extends Record<string, any>>(x: S) => _.pickBy(x, v => !_.isNil(v)) as S;
+
 const normalize = <S extends ViewStyle>(
   style: S,
   dir: 'ltr' | 'rtl'
@@ -90,39 +92,39 @@ const normalize = <S extends ViewStyle>(
     borderBottomRightRadius = dir === 'ltr' ? borderBottomEndRadius : borderBottomStartRadius,
     ..._style
   } = style;
-  return {
+  return compactValue({
     ..._style,
-    ..._.isNil(flexGrow) ? {} : { flexGrow },
-    ..._.isNil(flexShrink) ? {} : { flexShrink },
-    ..._.isNil(flexBasis) ? {} : { flexBasis },
-    ..._.isNil(rowGap) ? {} : { rowGap },
-    ..._.isNil(columnGap) ? {} : { columnGap },
-    ..._.isNil(top) ? {} : { top },
-    ..._.isNil(bottom) ? {} : { bottom },
-    ..._.isNil(left) ? {} : { left },
-    ..._.isNil(right) ? {} : { right },
-    ..._.isNil(marginTop) ? {} : { marginTop },
-    ..._.isNil(marginBottom) ? {} : { marginBottom },
-    ..._.isNil(marginLeft) ? {} : { marginLeft },
-    ..._.isNil(marginRight) ? {} : { marginRight },
-    ..._.isNil(paddingTop) ? {} : { paddingTop },
-    ..._.isNil(paddingBottom) ? {} : { paddingBottom },
-    ..._.isNil(paddingLeft) ? {} : { paddingLeft },
-    ..._.isNil(paddingRight) ? {} : { paddingRight },
-    ..._.isNil(borderTopColor) ? {} : { borderTopColor },
-    ..._.isNil(borderBottomColor) ? {} : { borderBottomColor },
-    ..._.isNil(borderLeftColor) ? {} : { borderLeftColor },
-    ..._.isNil(borderRightColor) ? {} : { borderRightColor },
-    ..._.isNil(borderTopWidth) ? {} : { borderTopWidth },
-    ..._.isNil(borderBottomWidth) ? {} : { borderBottomWidth },
-    ..._.isNil(borderLeftWidth) ? {} : { borderLeftWidth },
-    ..._.isNil(borderRightWidth) ? {} : { borderRightWidth },
-    ..._.isNil(borderTopLeftRadius) ? {} : { borderTopLeftRadius },
-    ..._.isNil(borderBottomLeftRadius) ? {} : { borderBottomLeftRadius },
-    ..._.isNil(borderTopRightRadius) ? {} : { borderTopRightRadius },
-    ..._.isNil(borderBottomRightRadius) ? {} : { borderBottomRightRadius },
-  };
-}
+    flexGrow,
+    flexShrink,
+    flexBasis,
+    rowGap,
+    columnGap,
+    top,
+    bottom,
+    left,
+    right,
+    marginTop,
+    marginBottom,
+    marginLeft,
+    marginRight,
+    paddingTop,
+    paddingBottom,
+    paddingLeft,
+    paddingRight,
+    borderTopColor,
+    borderBottomColor,
+    borderLeftColor,
+    borderRightColor,
+    borderTopWidth,
+    borderBottomWidth,
+    borderLeftWidth,
+    borderRightWidth,
+    borderTopLeftRadius,
+    borderBottomLeftRadius,
+    borderTopRightRadius,
+    borderBottomRightRadius,
+  });
+};
 
 const flattenStyle = <S extends ViewStyle>(
   style: StyleProp<S>,

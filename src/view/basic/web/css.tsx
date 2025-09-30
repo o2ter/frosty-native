@@ -26,7 +26,7 @@
 import _ from 'lodash';
 import { ExtendedCSSProperties } from 'frosty';
 import { BoxShadowValue, FilterFunction, ImageStyle, TextStyle, TransformFunction, ViewStyle } from '../../style/types';
-import { useFlattenStyle } from '../../style/utils';
+import { compactValue, useFlattenStyle } from '../../style/utils';
 
 const encodeTransform = (value: TransformFunction | TransformFunction[]): string | undefined => {
   if (_.isArray(value)) return _.compact(_.map(value, x => encodeTransform(x))).join(' ');
@@ -177,7 +177,7 @@ export const encodeViewStyle = <S extends ViewStyle>(
     zIndex,
   } = style;
 
-  return _.pickBy({
+  return compactValue({
     alignContent,
     alignItems,
     alignSelf,
@@ -244,7 +244,7 @@ export const encodeViewStyle = <S extends ViewStyle>(
     borderBottomRightRadius,
     userSelect,
     zIndex,
-  }, v => !_.isNil(v)) as ExtendedCSSProperties;
+  }) as ExtendedCSSProperties;
 }
 
 export const encodeImageStyle = <S extends ImageStyle>(
@@ -258,10 +258,10 @@ export const encodeImageStyle = <S extends ImageStyle>(
     objectFit,
   } = style;
 
-  return _.pickBy({
+  return compactValue({
     ...encodeViewStyle(style),
     objectFit,
-  }, v => !_.isNil(v)) as ExtendedCSSProperties;
+  }) as ExtendedCSSProperties;
 }
 
 export const encodeTextStyle = <S extends TextStyle>(
@@ -288,7 +288,7 @@ export const encodeTextStyle = <S extends TextStyle>(
     textTransform,
   } = style;
 
-  return _.pickBy({
+  return compactValue({
     ...encodeViewStyle(style),
     color,
     fontFamily: fontFamily ? encodeFontFamily(fontFamily) : undefined,
@@ -309,5 +309,5 @@ export const encodeTextStyle = <S extends TextStyle>(
       color: textShadowColor,
     }),
     textTransform,
-  }, v => !_.isNil(v)) as ExtendedCSSProperties;
+  }) as ExtendedCSSProperties;
 }
