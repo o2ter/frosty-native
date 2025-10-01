@@ -29,7 +29,7 @@ import { NativeModules } from '../../../global';
 import { NativeNode } from './node';
 import { ScrollViewProps } from '../types/scrollView';
 import { View } from './view';
-import { useNormalizedStyle } from './style';
+import { useNativeStyle } from './style';
 
 abstract class FTScrollView extends NativeNode {
 
@@ -60,7 +60,7 @@ export const ScrollView: ComponentType<ScrollViewProps> = ({
   }), null);
 
   return _createNativeElement(FTScrollView, {
-    style: useNormalizedStyle(style),
+    style: useNativeStyle(style),
     horizontal,
     vertical,
     children: (

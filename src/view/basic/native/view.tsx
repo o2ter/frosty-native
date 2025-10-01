@@ -28,7 +28,7 @@ import { _createNativeElement } from 'frosty/_native';
 import { NativeModules } from '../../../global';
 import { NativeNode } from './node';
 import { ViewProps } from '../types/view';
-import { useNormalizedStyle } from './style';
+import { useNativeStyle } from './style';
 
 abstract class FTView extends NativeNode {
 
@@ -42,7 +42,7 @@ export const View: ComponentType<ViewProps> = ({ ref, style, children }) => {
   }), null);
 
   return _createNativeElement(FTView, {
-    style: useNormalizedStyle(style),
+    style: useNativeStyle(style),
     children,
   });
 };

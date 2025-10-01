@@ -35,7 +35,7 @@ const _normalizeColor = (color: any): string | undefined => {
   return normalized ? toHexString(normalized) : undefined;
 }
 
-export const useNormalizedStyle = <S extends ViewStyle | TextStyle | ImageStyle>(
+export const useNativeStyle = <S extends ViewStyle | TextStyle | ImageStyle>(
   style: StyleProp<S>
 ) => {
   const {
