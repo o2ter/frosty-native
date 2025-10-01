@@ -41,7 +41,9 @@ export const Image: ComponentType<ImageProps> = ({ ref, style, source }) => {
   useRefHandle(mergeRefs(nativeRef, ref), () => ({
   }), null);
 
+  const _style = useNativeStyle(style);
+
   return _createNativeElement(FTImageView, {
-    style: useNativeStyle(style),
+    style: _style,
   });
 };

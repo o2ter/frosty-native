@@ -41,8 +41,10 @@ export const View: ComponentType<ViewProps> = ({ ref, style, children }) => {
   useRefHandle(mergeRefs(nativeRef, ref), () => ({
   }), null);
 
+  const _style = useNativeStyle(style);
+
   return _createNativeElement(FTView, {
-    style: useNativeStyle(style),
+    style: _style,
     children,
   });
 };

@@ -59,8 +59,10 @@ export const ScrollView: ComponentType<ScrollViewProps> = ({
     scrollToEnd() { },
   }), null);
 
+  const _style = useNativeStyle(style);
+
   return _createNativeElement(FTScrollView, {
-    style: useNativeStyle(style),
+    style: _style,
     horizontal,
     vertical,
     children: (

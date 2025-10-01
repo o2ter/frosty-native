@@ -76,10 +76,12 @@ export const TextInput: ComponentType<TextInputProps> = ({
     scrollToEnd() { },
   }), null);
 
+  const _style = useNativeStyle([
+    useTextStyle() as TextStyle,
+    style,
+  ]);
+
   return _createNativeElement(FTTextInput, {
-    style: useNativeStyle([
-      useTextStyle() as TextStyle,
-      style,
-    ]),
+    style: _style,
   });
 };

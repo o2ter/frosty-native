@@ -60,13 +60,15 @@ export const Text: ComponentType<TextViewProps> = ({ ref, style, maxFontSizeMult
 
   const isInnerText = _.some(useStack(), (item) => item.type === Text);
 
+  const _style = useNativeStyle([
+    !isInnerText && useTextStyle() as TextStyle,
+    style,
+  ]);
+
   return (
     <Pairs.Child>
       {_createNativeElement(FTTextView, {
-        style: useNativeStyle([
-          !isInnerText && useTextStyle() as TextStyle,
-          style,
-        ]),
+        style: _style,
         children: (
           <Pairs.Parent>{children}</Pairs.Parent>
         ),
