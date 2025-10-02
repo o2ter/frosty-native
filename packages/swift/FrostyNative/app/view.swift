@@ -60,13 +60,13 @@ protocol FTViewProtocol: View {
 
     var children: [AnyView] { get }
 
-    var handler: FTContext.ViewHandler { get }
+    var eventHandler: FTContext.ViewEventHandler { get }
 
     init(
         nodeId: ObjectIdentifier,
         props: Binding<[String: any Sendable]>,
         children: Binding<[AnyView]>,
-        handler: @escaping FTContext.ViewHandler
+        eventHandler: @escaping FTContext.ViewEventHandler
     )
 }
 
@@ -780,7 +780,7 @@ extension FTLayoutViewProtocol {
                         local: $0.frame(in: .local)
                     )
                 } action: { layout in
-                    self.handler(
+                    self.eventHandler(
                         nodeId, "onLayout",
                         [
                             [
@@ -810,17 +810,17 @@ struct FTView: FTLayoutViewProtocol {
     @Binding
     var children: [AnyView]
 
-    let handler: FTContext.ViewHandler
+    let eventHandler: FTContext.ViewEventHandler
 
     init(
         nodeId: ObjectIdentifier,
         props: Binding<[String: any Sendable]>,
         children: Binding<[AnyView]>,
-        handler: @escaping FTContext.ViewHandler
+        eventHandler: @escaping FTContext.ViewEventHandler
     ) {
         self._props = props
         self._children = children
-        self.handler = handler
+        self.eventHandler = eventHandler
     }
 
     func content(_ info: FTLayoutInfo) -> some View {
@@ -852,17 +852,17 @@ struct FTImageView: FTLayoutViewProtocol {
     @Binding
     var children: [AnyView]
 
-    let handler: FTContext.ViewHandler
+    let eventHandler: FTContext.ViewEventHandler
 
     init(
         nodeId: ObjectIdentifier,
         props: Binding<[String: any Sendable]>,
         children: Binding<[AnyView]>,
-        handler: @escaping FTContext.ViewHandler
+        eventHandler: @escaping FTContext.ViewEventHandler
     ) {
         self._props = props
         self._children = children
-        self.handler = handler
+        self.eventHandler = eventHandler
     }
 
     func content(_ info: FTLayoutInfo) -> some View {
@@ -878,17 +878,17 @@ struct FTTextView: FTLayoutViewProtocol {
     @Binding
     var children: [AnyView]
 
-    let handler: FTContext.ViewHandler
+    let eventHandler: FTContext.ViewEventHandler
 
     init(
         nodeId: ObjectIdentifier,
         props: Binding<[String: any Sendable]>,
         children: Binding<[AnyView]>,
-        handler: @escaping FTContext.ViewHandler
+        eventHandler: @escaping FTContext.ViewEventHandler
     ) {
         self._props = props
         self._children = children
-        self.handler = handler
+        self.eventHandler = eventHandler
     }
 
     func content(_ info: FTLayoutInfo) -> some View {
@@ -904,17 +904,17 @@ struct FTTextInput: FTLayoutViewProtocol {
     @Binding
     var children: [AnyView]
 
-    let handler: FTContext.ViewHandler
+    let eventHandler: FTContext.ViewEventHandler
 
     init(
         nodeId: ObjectIdentifier,
         props: Binding<[String: any Sendable]>,
         children: Binding<[AnyView]>,
-        handler: @escaping FTContext.ViewHandler
+        eventHandler: @escaping FTContext.ViewEventHandler
     ) {
         self._props = props
         self._children = children
-        self.handler = handler
+        self.eventHandler = eventHandler
     }
 
     func content(_ info: FTLayoutInfo) -> some View {
@@ -930,17 +930,17 @@ struct FTScrollView: FTLayoutViewProtocol {
     @Binding
     var children: [AnyView]
 
-    let handler: FTContext.ViewHandler
+    let eventHandler: FTContext.ViewEventHandler
 
     init(
         nodeId: ObjectIdentifier,
         props: Binding<[String: any Sendable]>,
         children: Binding<[AnyView]>,
-        handler: @escaping FTContext.ViewHandler
+        eventHandler: @escaping FTContext.ViewEventHandler
     ) {
         self._props = props
         self._children = children
-        self.handler = handler
+        self.eventHandler = eventHandler
     }
 
     func content(_ info: FTLayoutInfo) -> some View {

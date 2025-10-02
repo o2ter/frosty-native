@@ -30,11 +30,11 @@ extension FTContext {
             "NativeModules": [:]
         ]
         self.register(name: "localStorage", NativeLocalStorage())
-        self.register(name: "FTView", FTView.init(nodeId:props:children:handler:))
-        self.register(name: "FTImageView", FTImageView.init(nodeId:props:children:handler:))
-        self.register(name: "FTTextView", FTTextView.init(nodeId:props:children:handler:))
-        self.register(name: "FTTextInput", FTTextInput.init(nodeId:props:children:handler:))
-        self.register(name: "FTScrollView", FTScrollView.init(nodeId:props:children:handler:))
+        self.register(name: "FTView", FTView.init(nodeId:props:children:eventHandler:))
+        self.register(name: "FTImageView", FTImageView.init(nodeId:props:children:eventHandler:))
+        self.register(name: "FTTextView", FTTextView.init(nodeId:props:children:eventHandler:))
+        self.register(name: "FTTextInput", FTTextInput.init(nodeId:props:children:eventHandler:))
+        self.register(name: "FTScrollView", FTScrollView.init(nodeId:props:children:eventHandler:))
     }
 }
 
@@ -58,18 +58,20 @@ extension FTContext {
 
 extension FTContext {
 
-    public typealias ViewHandler = @MainActor @Sendable (
-        _ nodeId: String,
-        _ method: String,
-        _ args: [SwiftJS.Value]
-    ) -> Void
+    public typealias ViewEventHandler =
+        @MainActor @Sendable (
+            _ nodeId: String,
+            _ method: String,
+            _ args: [SwiftJS.Value]
+        ) -> Void
 
-    public typealias ViewProvider = @MainActor @Sendable (
-        _ nodeId: ObjectIdentifier,
-        _ props: Binding<[String: any Sendable]>,
-        _ children: Binding<[AnyView]>,
-        _ handler: @escaping ViewHandler
-    ) -> any View
+    public typealias ViewProvider =
+        @MainActor @Sendable (
+            _ nodeId: ObjectIdentifier,
+            _ props: Binding<[String: any Sendable]>,
+            _ children: Binding<[AnyView]>,
+            _ eventHandler: @escaping ViewEventHandler
+        ) -> any View
 
     public func register(name: String, _ provider: @escaping ViewProvider) {
         self.nativeModules[name] = .init(in: self.context) { _, _ in
