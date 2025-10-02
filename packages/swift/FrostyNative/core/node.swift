@@ -100,6 +100,10 @@ extension FTNode {
 
 extension FTNode.State {
 
+    func invoke(_ method: String, _ args: [any Sendable]) {
+
+    }
+
     func update(_ props: [String: any Sendable]) {
         self.props = props
     }
