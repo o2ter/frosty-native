@@ -26,7 +26,7 @@
 import { ComponentRef, ComponentType, mergeRefs, useRef, useRefHandle } from 'frosty';
 import { ViewProps } from '../types/view';
 import { encodeViewStyle } from './css';
-import { useFlattenStyle } from '../../../view/style/utils';
+import { useFlattenStyle } from '../utils';
 import { useResponderEvents } from './events';
 
 export const View: ComponentType<ViewProps> = ({ id, ref, style, children, tabIndex, ...props }) => {

@@ -29,7 +29,7 @@ import { NativeModules } from '../../../global';
 import { NativeNode } from './node';
 import { TextInputProps } from '../types/textInput';
 import { useTextStyle } from '../../components/textStyle';
-import { TextStyle } from '../../style/types';
+import { TextStyle } from '../types/styles';
 import { useNativeStyle } from './style';
 
 abstract class FTTextInput extends NativeNode {

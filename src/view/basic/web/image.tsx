@@ -27,7 +27,7 @@ import _ from 'lodash';
 import { ComponentRef, ComponentType, mergeRefs, useEffect, useRef, useRefHandle, useResource, useState } from 'frosty';
 import { ImageProps } from '../types/image';
 import { encodeImageStyle } from './css';
-import { useFlattenStyle } from '../../../view/style/utils';
+import { useFlattenStyle } from '../utils';
 import { useResponderEvents } from './events';
 
 const ImageBase: ComponentType<ImageProps & { source?: string; }> = ({ id, ref, style, source, tabIndex, ...props }) => {

@@ -28,8 +28,8 @@ import { ComponentRef, ComponentType, createElement, createPairs, mergeRefs, use
 import { TextViewProps } from '../types/text';
 import { useTextStyle } from '../../components/textStyle';
 import { encodeTextStyle } from './css';
-import { useFlattenStyle } from '../../../view/style/utils';
-import { TextStyle } from '../../../view/style/types';
+import { useFlattenStyle } from '../utils';
+import { TextStyle } from '../types/styles';
 import { useResponderEvents } from './events';
 
 const Pairs = createPairs({ allowTextChildren: true });

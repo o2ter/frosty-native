@@ -27,7 +27,7 @@ import _ from 'lodash';
 import { ComponentRef, ComponentType, ExtendedCSSProperties, mergeRefs, RefObject, useCallback, useEffect, useRef, useRefHandle, useState } from 'frosty';
 import { ScrollBaseProps, ScrollViewProps } from '../types/scrollView';
 import { encodeViewStyle } from './css';
-import { useFlattenStyle } from '../../../view/style/utils';
+import { useFlattenStyle } from '../utils';
 import { useResponderEvents } from './events';
 import { useResizeObserver, useWindow } from 'frosty/web';
 import { View } from './view';

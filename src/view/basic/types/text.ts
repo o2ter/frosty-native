@@ -24,7 +24,7 @@
 //
 
 import { PropsWithChildren, Ref, StyleProp } from 'frosty';
-import { TextStyle } from '../../style/types';
+import { TextStyle } from './styles';
 import { ViewEventProps } from './events';
 
 type TextViewRef = {

@@ -24,7 +24,7 @@
 //
 
 import { Ref, StyleProp } from 'frosty';
-import { TextStyle } from '../../style/types';
+import { TextStyle } from './styles';
 import { Event, ViewEventProps } from './events';
 import { ScrollBaseProps } from './scrollView';
 

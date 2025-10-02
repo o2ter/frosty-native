@@ -30,7 +30,7 @@ import { NativeModules } from '../../../global';
 import { NativeNode } from './node';
 import { TextViewProps } from '../types/text';
 import { useTextStyle } from '../../components/textStyle';
-import { TextStyle } from '../../style/types';
+import { TextStyle } from '../types/styles';
 import { useNativeStyle } from './style';
 
 const Pairs = createPairs({ allowTextChildren: true });

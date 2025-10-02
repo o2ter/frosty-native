@@ -25,8 +25,8 @@
 
 import _ from 'lodash';
 import { ExtendedCSSProperties } from 'frosty';
-import { BoxShadowValue, FilterFunction, ImageStyle, TextStyle, TransformFunction, ViewStyle } from '../../style/types';
-import { compactValue, useFlattenStyle } from '../../style/utils';
+import { BoxShadowValue, FilterFunction, ImageStyle, TextStyle, TransformFunction, ViewStyle } from '../types/styles';
+import { compactValue, useFlattenStyle } from '../utils';
 
 const encodeTransform = (value: TransformFunction | TransformFunction[]): string | undefined => {
   if (_.isArray(value)) return _.compact(_.map(value, x => encodeTransform(x))).join(' ');

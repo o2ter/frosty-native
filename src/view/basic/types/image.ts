@@ -24,7 +24,7 @@
 //
 
 import { Ref, StyleProp } from 'frosty';
-import { ImageStyle } from '../../style/types';
+import { ImageStyle } from './styles';
 import { ViewEventProps } from './events';
 
 interface ImageURISource extends RequestInit {

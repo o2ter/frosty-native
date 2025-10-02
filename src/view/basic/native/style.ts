@@ -25,8 +25,8 @@
 
 import _ from 'lodash';
 import { StyleProp } from 'frosty';
-import { ImageStyle, TextStyle, ViewStyle } from '../../style/types';
-import { compactValue, useFlattenStyle } from './../../style/utils';
+import { ImageStyle, TextStyle, ViewStyle } from '../types/styles';
+import { compactValue, useFlattenStyle } from '../utils';
 import { normalizeColor, toHexString } from '../../../internal/color';
 
 const _normalizeColor = (color: any): string | undefined => {

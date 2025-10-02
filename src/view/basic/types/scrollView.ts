@@ -24,7 +24,7 @@
 //
 
 import { PropsWithChildren, Ref, StyleProp } from 'frosty';
-import { ViewStyle } from '../../style/types';
+import { ViewStyle } from './styles';
 import { Event, ViewEventProps } from './events';
 
 type ScrollViewRef = {
