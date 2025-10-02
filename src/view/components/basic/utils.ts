@@ -26,7 +26,7 @@
 import _ from 'lodash';
 import { StyleProp } from 'frosty';
 import { ImageStyle, TextStyle, ViewStyle } from './types/styles';
-import { useEnvironment } from '../components/environment';
+import { useEnvironment } from '../environment';
 
 export const compactValue = <S extends Record<string, any>>(x: S) => _.pickBy(x, v => !_.isNil(v)) as S;
 

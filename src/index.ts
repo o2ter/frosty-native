@@ -28,7 +28,7 @@ import { AppRegistry } from './registry';
 
 export * from './view';
 export * from './platform';
-export { NativeNode } from './view/basic/native/node';
+export { NativeNode } from './view/components/basic/native/node';
 export { NativeRenderer } from './renderer';
 export { NativeModules } from './global';
 

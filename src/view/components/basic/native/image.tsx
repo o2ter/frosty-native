@@ -1,5 +1,5 @@
 //
-//  scrollView.tsx
+//  image.tsx
 //
 //  The MIT License
 //  Copyright (c) 2021 - 2025 O2ter Limited. All rights reserved.
@@ -25,48 +25,25 @@
 
 import { ComponentRef, ComponentType, mergeRefs, useRef, useRefHandle } from 'frosty';
 import { _createNativeElement } from 'frosty/_native';
-import { NativeModules } from '../../../global';
+import { NativeModules } from '../../../../global';
 import { NativeNode } from './node';
-import { ScrollViewProps } from '../types/scrollView';
-import { View } from './view';
+import { ImageProps } from '../types/image';
 import { useNativeStyle } from './style';
 
-abstract class FTScrollView extends NativeNode {
+abstract class FTImageView extends NativeNode {
 
-  _native = NativeModules['FTScrollView']();
+  _native = NativeModules['FTImageView']();
 }
 
-export const ScrollView: ComponentType<ScrollViewProps> = ({
-  ref,
-  style,
-  contentContainerStyle,
-  horizontal = false,
-  vertical = !horizontal,
-  children,
-  onContentSizeChange,
-  onMomentumScrollBegin,
-  onMomentumScrollEnd,
-  onScroll,
-  onScrollBeginDrag,
-  onScrollEndDrag,
-  onScrollToTop,
-}) => {
+export const Image: ComponentType<ImageProps> = ({ ref, style, source }) => {
 
-  const nativeRef = useRef<ComponentRef<typeof ScrollView>>();
+  const nativeRef = useRef<ComponentRef<typeof Image>>();
   useRefHandle(mergeRefs(nativeRef, ref), () => ({
-    flashScrollIndicators() { },
-    scrollTo() { },
-    scrollToEnd() { },
   }), null);
 
   const _style = useNativeStyle(style);
 
-  return _createNativeElement(FTScrollView, {
+  return _createNativeElement(FTImageView, {
     style: _style,
-    horizontal,
-    vertical,
-    children: (
-      <View style={contentContainerStyle}>{children}</View>
-    ),
   });
 };

@@ -1,5 +1,5 @@
 //
-//  textInput.tsx
+//  scrollView.tsx
 //
 //  The MIT License
 //  Copyright (c) 2021 - 2025 O2ter Limited. All rights reserved.
@@ -25,39 +25,24 @@
 
 import { ComponentRef, ComponentType, mergeRefs, useRef, useRefHandle } from 'frosty';
 import { _createNativeElement } from 'frosty/_native';
-import { NativeModules } from '../../../global';
+import { NativeModules } from '../../../../global';
 import { NativeNode } from './node';
-import { TextInputProps } from '../types/textInput';
-import { useTextStyle } from '../../components/textStyle';
-import { TextStyle } from '../types/styles';
+import { ScrollViewProps } from '../types/scrollView';
+import { View } from './view';
 import { useNativeStyle } from './style';
 
-abstract class FTTextInput extends NativeNode {
+abstract class FTScrollView extends NativeNode {
 
-  _native = NativeModules['FTTextInput']();
+  _native = NativeModules['FTScrollView']();
 }
 
-export const TextInput: ComponentType<TextInputProps> = ({
+export const ScrollView: ComponentType<ScrollViewProps> = ({
   ref,
   style,
-  value,
-  placeholder,
-  disabled,
-  readOnly,
-  multiline,
-  maxFontSizeMultiplier,
-  minimumFontScale,
-  maxLength,
-  numberOfLines,
-  secureTextEntry,
-  autofocus,
-  onChange,
-  onChangeValue,
-  onBlur,
-  onFocus,
-  onEndEditing,
-  onSubmitEditing,
-  onSelectionChange,
+  contentContainerStyle,
+  horizontal = false,
+  vertical = !horizontal,
+  children,
   onContentSizeChange,
   onMomentumScrollBegin,
   onMomentumScrollEnd,
@@ -67,21 +52,21 @@ export const TextInput: ComponentType<TextInputProps> = ({
   onScrollToTop,
 }) => {
 
-  const nativeRef = useRef<ComponentRef<typeof TextInput>>();
+  const nativeRef = useRef<ComponentRef<typeof ScrollView>>();
   useRefHandle(mergeRefs(nativeRef, ref), () => ({
-    focus() { },
-    blur() { },
     flashScrollIndicators() { },
     scrollTo() { },
     scrollToEnd() { },
   }), null);
 
-  const _style = useNativeStyle([
-    useTextStyle() as TextStyle,
-    style,
-  ]);
+  const _style = useNativeStyle(style);
 
-  return _createNativeElement(FTTextInput, {
+  return _createNativeElement(FTScrollView, {
     style: _style,
+    horizontal,
+    vertical,
+    children: (
+      <View style={contentContainerStyle}>{children}</View>
+    ),
   });
 };

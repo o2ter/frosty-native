@@ -1,5 +1,5 @@
 //
-//  view.tsx
+//  textInput.tsx
 //
 //  The MIT License
 //  Copyright (c) 2021 - 2025 O2ter Limited. All rights reserved.
@@ -25,26 +25,63 @@
 
 import { ComponentRef, ComponentType, mergeRefs, useRef, useRefHandle } from 'frosty';
 import { _createNativeElement } from 'frosty/_native';
-import { NativeModules } from '../../../global';
+import { NativeModules } from '../../../../global';
 import { NativeNode } from './node';
-import { ViewProps } from '../types/view';
+import { TextInputProps } from '../types/textInput';
+import { useTextStyle } from '../../textStyle';
+import { TextStyle } from '../types/styles';
 import { useNativeStyle } from './style';
 
-abstract class FTView extends NativeNode {
+abstract class FTTextInput extends NativeNode {
 
-  _native = NativeModules['FTView']();
+  _native = NativeModules['FTTextInput']();
 }
 
-export const View: ComponentType<ViewProps> = ({ ref, style, children }) => {
+export const TextInput: ComponentType<TextInputProps> = ({
+  ref,
+  style,
+  value,
+  placeholder,
+  disabled,
+  readOnly,
+  multiline,
+  maxFontSizeMultiplier,
+  minimumFontScale,
+  maxLength,
+  numberOfLines,
+  secureTextEntry,
+  autofocus,
+  onChange,
+  onChangeValue,
+  onBlur,
+  onFocus,
+  onEndEditing,
+  onSubmitEditing,
+  onSelectionChange,
+  onContentSizeChange,
+  onMomentumScrollBegin,
+  onMomentumScrollEnd,
+  onScroll,
+  onScrollBeginDrag,
+  onScrollEndDrag,
+  onScrollToTop,
+}) => {
 
-  const nativeRef = useRef<ComponentRef<typeof View>>();
+  const nativeRef = useRef<ComponentRef<typeof TextInput>>();
   useRefHandle(mergeRefs(nativeRef, ref), () => ({
+    focus() { },
+    blur() { },
+    flashScrollIndicators() { },
+    scrollTo() { },
+    scrollToEnd() { },
   }), null);
 
-  const _style = useNativeStyle(style);
+  const _style = useNativeStyle([
+    useTextStyle() as TextStyle,
+    style,
+  ]);
 
-  return _createNativeElement(FTView, {
+  return _createNativeElement(FTTextInput, {
     style: _style,
-    children,
   });
 };

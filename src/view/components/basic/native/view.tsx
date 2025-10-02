@@ -1,5 +1,5 @@
 //
-//  image.tsx
+//  view.tsx
 //
 //  The MIT License
 //  Copyright (c) 2021 - 2025 O2ter Limited. All rights reserved.
@@ -25,25 +25,26 @@
 
 import { ComponentRef, ComponentType, mergeRefs, useRef, useRefHandle } from 'frosty';
 import { _createNativeElement } from 'frosty/_native';
-import { NativeModules } from '../../../global';
+import { NativeModules } from '../../../../global';
 import { NativeNode } from './node';
-import { ImageProps } from '../types/image';
+import { ViewProps } from '../types/view';
 import { useNativeStyle } from './style';
 
-abstract class FTImageView extends NativeNode {
+abstract class FTView extends NativeNode {
 
-  _native = NativeModules['FTImageView']();
+  _native = NativeModules['FTView']();
 }
 
-export const Image: ComponentType<ImageProps> = ({ ref, style, source }) => {
+export const View: ComponentType<ViewProps> = ({ ref, style, children }) => {
 
-  const nativeRef = useRef<ComponentRef<typeof Image>>();
+  const nativeRef = useRef<ComponentRef<typeof View>>();
   useRefHandle(mergeRefs(nativeRef, ref), () => ({
   }), null);
 
   const _style = useNativeStyle(style);
 
-  return _createNativeElement(FTImageView, {
+  return _createNativeElement(FTView, {
     style: _style,
+    children,
   });
 };

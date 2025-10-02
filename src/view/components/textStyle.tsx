@@ -25,8 +25,8 @@
 
 import _ from 'lodash';
 import { createContext, PropsWithChildren, StyleProp, useContext } from 'frosty';
-import { TextStyle, textStyleKeys, ViewStyle } from '../basic/types/styles';
-import { useFlattenStyle } from '../basic/utils';
+import { TextStyle, textStyleKeys, ViewStyle } from './basic/types/styles';
+import { useFlattenStyle } from './basic/utils';
 
 type _TextStyle = Omit<TextStyle, keyof ViewStyle>;
 

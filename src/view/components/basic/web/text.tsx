@@ -26,7 +26,7 @@
 import _ from 'lodash';
 import { ComponentRef, ComponentType, createElement, createPairs, mergeRefs, useRef, useRefHandle, useStack } from 'frosty';
 import { TextViewProps } from '../types/text';
-import { useTextStyle } from '../../components/textStyle';
+import { useTextStyle } from '../../textStyle';
 import { encodeTextStyle } from './css';
 import { useFlattenStyle } from '../utils';
 import { TextStyle } from '../types/styles';

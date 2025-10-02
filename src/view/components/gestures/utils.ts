@@ -24,7 +24,7 @@
 //
 
 import _ from 'lodash';
-import { ViewEventProps } from '../../basic/types/events';
+import { ViewEventProps } from '../basic/types/events';
 
 // Helper function to merge multiple responder handlers
 export const mergeResponders = <Target>(...responders: ViewEventProps<Target>[]): ViewEventProps<Target> => {

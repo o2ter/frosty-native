@@ -25,7 +25,7 @@
 
 import _ from 'lodash';
 import { useMemo } from 'frosty';
-import { PressEvent, ViewEventProps } from '../../../basic/types/events';
+import { PressEvent, ViewEventProps } from '../../basic/types/events';
 import { uniqueId } from 'frosty/_native';
 import { _useCallbacks } from '../../../../internal/hooks/callbacks';
 
