@@ -59,15 +59,16 @@ extension FTContext {
 extension FTContext {
 
     public typealias ViewHandler = @MainActor @Sendable (
+        _ nodeId: String,
         _ method: String,
-        _ args: [any Sendable]
+        _ args: [SwiftJS.Value]
     ) -> Void
 
     public typealias ViewProvider = @MainActor @Sendable (
         _ nodeId: ObjectIdentifier,
         _ props: Binding<[String: any Sendable]>,
         _ children: Binding<[AnyView]>,
-        _ handler: @escaping (@escaping ViewHandler) -> Void
+        _ handler: @escaping ViewHandler
     ) -> any View
 
     public func register(name: String, _ provider: @escaping ViewProvider) {

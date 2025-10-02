@@ -234,7 +234,7 @@ public struct FTRoot: View {
     
     public var body: some View {
         AnyView(GeometryReader { geometry in
-            FTNode(state: self.$node)
+            FTNode(runner: self.runner, state: self.$node)
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
                 .ignoresSafeArea()
                 .onChange(of: WindowDimensions(geometry), initial: true) { _, newValue in

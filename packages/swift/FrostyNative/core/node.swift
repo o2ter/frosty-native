@@ -26,63 +26,70 @@
 import JavaScriptCore
 
 @objc protocol FTNodeExport: JSExport {
-    
-    func invoke(_ method: String, _ args: [any Sendable])
-    
+
     func update(_ props: [String: any Sendable])
-    
+
     func replaceChildren(_ children: [FTNode.State])
-    
+
     func destroy()
 }
 
 struct FTNode: View {
-    
+
+    let runner: SwiftJS.Value?
+
     @Binding var node: FTNode.State
-    
-    init(state: Binding<FTNode.State>) {
+
+    init(runner: SwiftJS.Value?, state: Binding<FTNode.State>) {
+        self.runner = runner
         self._node = state
     }
 }
 
 extension FTNode: @preconcurrency Identifiable {
-    
+
     var id: ObjectIdentifier {
         ObjectIdentifier(node)
     }
 }
 
 extension FTNode {
-    
+
     var provider: FTContext.ViewProvider {
         self.node.provider
     }
-    
+
     var body: some View {
         AnyView(
             self.provider(
                 self.id,
                 self.$node.props,
-                .constant(self.$node.children.map { AnyView(FTNode(state: $0)) }),
-                { self.node.handler = $0 }
+                .constant(
+                    self.$node.children.map {
+                        AnyView(FTNode(runner: runner, state: $0))
+                    }),
+                { nodeId, method, args in
+                    runner?.invokeMethod(
+                        "notifyNode",
+                        withArguments: [.init(nodeId), .init(method), .init(args)]
+                    )
+                }
             )
         )
     }
 }
 
 extension FTNode {
-    
+
     @Observable
     class State: NSObject, FTNodeExport {
-        
+
         let provider: FTContext.ViewProvider
-        
+
         var props: [String: any Sendable]
-        
+
         var children: [FTNode.State]
-        
-        var handler: ((_ method: String, _ args: [any Sendable]) -> Void)?
-        
+
         init(provider: @escaping FTContext.ViewProvider) {
             self.provider = provider
             self.props = [:]
@@ -92,25 +99,19 @@ extension FTNode {
 }
 
 extension FTNode.State {
-    
-    func invoke(_ method: String, _ args: [any Sendable]) {
-        guard let handler = self.handler else { return }
-        handler(method, args)
-    }
-    
+
     func update(_ props: [String: any Sendable]) {
         self.props = props
     }
-    
+
     func replaceChildren(_ children: [FTNode.State]) {
         if self.children != children {
             self.children = children
         }
     }
-    
+
     func destroy() {
         self.props = [:]
         self.children = []
-        self.handler = nil
     }
 }

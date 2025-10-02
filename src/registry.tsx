@@ -67,10 +67,10 @@ export const AppRegistry = (() => {
             unmount() {
               runner.unmount();
             },
-            notify(event: string, ...args: any[]) {
+            notify(event: string, args: any[]) {
               emitter.emit(event, ...args);
             },
-            notifyNode(nodeId: string, method: string, ...args: any[]) {
+            notifyNode(nodeId: string, method: string, args: any[]) {
               renderer.notifyNode(nodeId, method, ...args);
             },
             setEnvironment(...values: Partial<EnvironmentValues>[]) {
