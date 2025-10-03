@@ -417,7 +417,7 @@ extension FontSizeValue {
 
 extension FTLayoutViewProtocol {
 
-    func styleForKey(_ key: String) -> JSValue? {
+    fileprivate func styleForKey(_ key: String) -> JSValue? {
         guard let style = props["style"] else { return nil }
         guard let obj = style.objectForKeyedSubscript(key),
             !obj.isUndefined && !obj.isNull
