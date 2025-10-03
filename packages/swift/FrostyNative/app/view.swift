@@ -436,73 +436,141 @@ extension FTLayoutViewProtocol {
 
     func stringValue(_ key: String) -> String? {
         guard let v = style[key] else { return nil }
-        if let s = v as? String { return s }
-        if let i = v as? Int { return String(i) }
-        if let d = v as? Double { return String(d) }
+        if v.isString, let s = v.toString() { return s }
+        if v.isNumber {
+            let d = v.toDouble()
+            // Check if it's an integer
+            if d == floor(d) {
+                return String(Int(d))
+            } else {
+                return String(d)
+            }
+        }
         return nil
     }
 
     func dimensionValue(_ key: String) -> DimensionValue? {
         guard let v = style[key] else { return nil }
-        if let f = v as? CGFloat { return .point(f) }
-        if let d = v as? Double { return .point(CGFloat(d)) }
-        if let i = v as? Int { return .point(CGFloat(i)) }
-        if let s = v as? String { return DimensionValue(s) }
+        if v.isNumber {
+            return .point(CGFloat(v.toDouble()))
+        }
+        if v.isString, let s = v.toString() {
+            return DimensionValue(s)
+        }
         return nil
     }
 
     func flexValue(_ key: String) -> FlexValue? {
         guard let v = style[key] else { return nil }
-        return FlexValue(v)
+        if v.isString, let s = v.toString() {
+            return FlexValue(s)
+        }
+        if v.isNumber {
+            return FlexValue(v.toDouble())
+        }
+        return nil
     }
 
     func fontSizeValue(_ key: String) -> FontSizeValue? {
         guard let v = style[key] else { return nil }
-        return FontSizeValue(v)
+        if v.isString, let s = v.toString() {
+            return FontSizeValue(s)
+        }
+        if v.isNumber {
+            return FontSizeValue(v.toDouble())
+        }
+        return nil
     }
 
     func boxShadowValue(_ key: String) -> [BoxShadowValue]? {
         guard let v = style[key] else { return nil }
-        if let single = v as? [String: Any], let boxShadow = BoxShadowValue(single) {
-            return [boxShadow]
-        } else if let array = v as? [[String: Any]] {
-            return array.compactMap { BoxShadowValue($0) }
+        if v.isObject {
+            guard let dict = v.toDictionary() else { return nil }
+            let stringDict = dict.reduce(into: [String: Any]()) { result, pair in
+                if let key = pair.key as? String {
+                    result[key] = pair.value
+                }
+            }
+            if let boxShadow = BoxShadowValue(stringDict) {
+                return [boxShadow]
+            }
+        } else if v.isArray {
+            guard let array = v.toArray() else { return nil }
+            return array.compactMap { item -> BoxShadowValue? in
+                guard let dict = item as? [String: Any] else { return nil }
+                return BoxShadowValue(dict)
+            }
         }
         return nil
     }
 
     func filterValue(_ key: String) -> [FilterFunction]? {
         guard let v = style[key] else { return nil }
-        if let single = v as? [String: Any], let filter = FilterFunction(single) {
-            return [filter]
-        } else if let array = v as? [[String: Any]] {
-            return array.compactMap { FilterFunction($0) }
+        if v.isObject {
+            guard let dict = v.toDictionary() else { return nil }
+            let stringDict = dict.reduce(into: [String: Any]()) { result, pair in
+                if let key = pair.key as? String {
+                    result[key] = pair.value
+                }
+            }
+            if let filter = FilterFunction(stringDict) {
+                return [filter]
+            }
+        } else if v.isArray {
+            guard let array = v.toArray() else { return nil }
+            return array.compactMap { item -> FilterFunction? in
+                guard let dict = item as? [String: Any] else { return nil }
+                return FilterFunction(dict)
+            }
         }
         return nil
     }
 
     func transformValue(_ key: String) -> [TransformFunction]? {
         guard let v = style[key] else { return nil }
-        if let single = v as? [String: Any], let transform = TransformFunction(single) {
-            return [transform]
-        } else if let array = v as? [[String: Any]] {
-            return array.compactMap { TransformFunction($0) }
+        if v.isObject {
+            guard let dict = v.toDictionary() else { return nil }
+            let stringDict = dict.reduce(into: [String: Any]()) { result, pair in
+                if let key = pair.key as? String {
+                    result[key] = pair.value
+                }
+            }
+            if let transform = TransformFunction(stringDict) {
+                return [transform]
+            }
+        } else if v.isArray {
+            guard let array = v.toArray() else { return nil }
+            return array.compactMap { item -> TransformFunction? in
+                guard let dict = item as? [String: Any] else { return nil }
+                return TransformFunction(dict)
+            }
         }
         return nil
     }
 
     func numericValue(_ key: String) -> CGFloat? {
-        if let d = style[key]?.toDouble() { return CGFloat(d) }
+        guard let v = style[key] else { return nil }
+        if v.isNumber {
+            return CGFloat(v.toDouble())
+        }
         return nil
     }
 
     func transformOriginValue(_ key: String) -> [Any]? {
         guard let v = style[key] else { return nil }
-        if let array = v as? [Any] {
+        if v.isArray, let array = v.toArray() {
             return array
         } else {
-            return [v]
+            // Wrap single value in array
+            if v.isString, let s = v.toString() {
+                return [s]
+            } else if v.isNumber {
+                return [v.toDouble()]
+            } else if let obj = v.toObject() {
+                return [obj]
+            }
         }
+        return nil
     }
 
     // MARK: - Layout / Box
@@ -523,9 +591,13 @@ extension FTLayoutViewProtocol {
     var inset: DimensionValue? { dimensionValue("inset") }
 
     var aspectRatio: CGFloat? {
-        if let s = style["aspectRatio"] as? String, let d = Double(s) { return CGFloat(d) }
-        if let d = style["aspectRatio"] as? Double { return CGFloat(d) }
-        if let i = style["aspectRatio"] as? Int { return CGFloat(i) }
+        guard let v = style["aspectRatio"] else { return nil }
+        if v.isString, let s = v.toString(), let d = Double(s) {
+            return CGFloat(d)
+        }
+        if v.isNumber {
+            return CGFloat(v.toDouble())
+        }
         return nil
     }
 
@@ -533,7 +605,10 @@ extension FTLayoutViewProtocol {
     var flexGrow: CGFloat { numericValue("flexGrow") ?? 0 }
     var flexShrink: CGFloat { numericValue("flexShrink") ?? 1 }
     var flexWrap: String? { stringValue("flexWrap") }
-    var order: Int { (style["order"] as? Int) ?? 0 }
+    var order: Int {
+        guard let v = style["order"], v.isNumber else { return 0 }
+        return Int(v.toDouble())
+    }
 
     // layout alignments and gaps
 
@@ -551,7 +626,10 @@ extension FTLayoutViewProtocol {
 
     var overflow: String { stringValue("overflow") ?? "visible" }
 
-    var zIndex: Int? { (style["zIndex"] as? Int) }
+    var zIndex: Int? {
+        guard let v = style["zIndex"], v.isNumber else { return nil }
+        return Int(v.toDouble())
+    }
 
     // per-side padding and margin
     var paddingTop: DimensionValue? { dimensionValue("paddingTop") }
@@ -890,7 +968,7 @@ struct FTTextView: FTLayoutViewProtocol {
     }
 
     func content(_ info: FTLayoutInfo) -> some View {
-        Text(props["text"] as? String ?? "")
+        Text(props["text"]?.toString() ?? "")
     }
 }
 
@@ -913,7 +991,7 @@ struct FTTextInput: FTLayoutViewProtocol {
     }
 
     func content(_ info: FTLayoutInfo) -> some View {
-        TextField("", text: .constant(props["text"] as? String ?? ""))
+        TextField("", text: .constant(props["text"]?.toString() ?? ""))
     }
 }
 
@@ -936,8 +1014,8 @@ struct FTScrollView: FTLayoutViewProtocol {
     }
 
     func content(_ info: FTLayoutInfo) -> some View {
-        let horizontal = props["horizontal"] as? Bool ?? false
-        let vertical = props["vertical"] as? Bool ?? false
+        let horizontal = props["horizontal"]?.toBool() ?? false
+        let vertical = props["vertical"]?.toBool() ?? false
 
         var axes: Axis.Set = []
         if horizontal { axes.insert(.horizontal) }
