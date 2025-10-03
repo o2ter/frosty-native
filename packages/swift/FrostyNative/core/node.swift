@@ -107,7 +107,7 @@ extension FTNode.State {
     }
 
     func update(_ props: [String: JSValue]) {
-        self.props = props
+        self.props = props.filter { !$0.value.isUndefined && !$0.value.isNull }
     }
 
     func replaceChildren(_ children: [FTNode.State]) {
