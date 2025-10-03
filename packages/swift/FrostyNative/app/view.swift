@@ -56,6 +56,20 @@ extension Color {
     }
 }
 
+// JSValue helper extension for type conversions
+fileprivate extension JSValue {
+
+    /// Converts JSValue dictionary to [String: Any] by filtering out non-string keys
+    func toStringKeyedDictionary() -> [String: Any]? {
+        guard let dict = self.toDictionary() else { return nil }
+        return dict.reduce(into: [String: Any]()) { result, pair in
+            if let key = pair.key as? String {
+                result[key] = pair.value
+            }
+        }
+    }
+}
+
 protocol FTViewProtocol: View {
 
     var props: [String: JSValue] { get }
@@ -479,12 +493,7 @@ extension FTLayoutViewProtocol {
     func boxShadowValue(_ key: String) -> [BoxShadowValue]? {
         guard let v = styleForKey(key) else { return nil }
         if v.isObject {
-            guard let dict = v.toDictionary() else { return nil }
-            let stringDict = dict.reduce(into: [String: Any]()) { result, pair in
-                if let key = pair.key as? String {
-                    result[key] = pair.value
-                }
-            }
+            guard let stringDict = v.toStringKeyedDictionary() else { return nil }
             if let boxShadow = BoxShadowValue(stringDict) {
                 return [boxShadow]
             }
@@ -501,12 +510,7 @@ extension FTLayoutViewProtocol {
     func filterValue(_ key: String) -> [FilterFunction]? {
         guard let v = styleForKey(key) else { return nil }
         if v.isObject {
-            guard let dict = v.toDictionary() else { return nil }
-            let stringDict = dict.reduce(into: [String: Any]()) { result, pair in
-                if let key = pair.key as? String {
-                    result[key] = pair.value
-                }
-            }
+            guard let stringDict = v.toStringKeyedDictionary() else { return nil }
             if let filter = FilterFunction(stringDict) {
                 return [filter]
             }
@@ -523,12 +527,7 @@ extension FTLayoutViewProtocol {
     func transformValue(_ key: String) -> [TransformFunction]? {
         guard let v = styleForKey(key) else { return nil }
         if v.isObject {
-            guard let dict = v.toDictionary() else { return nil }
-            let stringDict = dict.reduce(into: [String: Any]()) { result, pair in
-                if let key = pair.key as? String {
-                    result[key] = pair.value
-                }
-            }
+            guard let stringDict = v.toStringKeyedDictionary() else { return nil }
             if let transform = TransformFunction(stringDict) {
                 return [transform]
             }
