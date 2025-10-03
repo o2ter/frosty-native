@@ -1,5 +1,5 @@
 //
-//  index.ts
+//  common.ts
 //
 //  The MIT License
 //  Copyright (c) 2021 - 2025 O2ter Limited. All rights reserved.
@@ -23,18 +23,28 @@
 //  THE SOFTWARE.
 //
 
-import _ from 'lodash';
-import { AppRegistry } from './registry';
+declare global {
 
-export * from './view';
-export * from './platform';
-export * from './global';
-export { NativeNode } from './view/components/basic/native/node';
-export { NativeRenderer } from './renderer';
+  namespace __NS_FROSTY_SPEC__ {
 
-export { AppRegistry };
+    interface LocalStorage {
+      keys(): string[];
+      setItem(key: string, value: string): void;
+      getItem(key: string): string | undefined;
+      removeItem(key: string): void;
+      clear(): void;
+    }
+  }
 
-Object.defineProperty(__FROSTY_SPEC__, 'AppRegistry', {
-  value: AppRegistry,
-  writable: false,
-});
+  const __FROSTY_SPEC__: {
+    get SOURCE_URL(): string | undefined;
+    get NativeModules(): {
+      get localStorage(): __NS_FROSTY_SPEC__.LocalStorage;
+      [key: string]: any;
+    };
+  };
+}
+
+export const NativeModules = {
+  ...__FROSTY_SPEC__.NativeModules,
+};

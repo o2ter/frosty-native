@@ -17,12 +17,6 @@ const rollupConfig = {
   makeAbsoluteExternalsRelative: true,
 };
 
-const resolvePlugin = resolve({
-  extensions: [
-    '.tsx', '.jsx', '.ts', '.mjs', '.js',
-  ]
-});
-
 const rollupPlugins = (exts) => [
   typescript({
     declaration: false,
@@ -41,9 +35,14 @@ const rollupPlugins = (exts) => [
 ];
 
 const moduleSuffixes = {
-  '.android': ['.android', ''],
-  '.apple': ['.apple', ''],
+  '.android': ['.android', '.native', ''],
+  '.apple': ['.apple', '.native', ''],
   '.web': ['.web', ''],
+};
+
+const moduleTypeSuffixes = {
+  '.native': ['.native', ''],
+  '': [''],
 };
 
 export default [
@@ -76,20 +75,29 @@ export default [
       ...rollupPlugins(exts),
     ],
   })),
-  {
+  ..._.map(moduleTypeSuffixes, (exts, suffix) => ({
     ...rollupConfig,
     output: [
       {
-        entryFileNames: '[name].d.ts',
-        chunkFileNames: 'internals/[name]-[hash].d.ts',
+        entryFileNames: `[name]${suffix}.d.ts`,
+        chunkFileNames: `internals/[name]-[hash]${suffix}.d.ts`,
         dir: './dist',
         format: 'es',
         sourcemap: true,
       },
     ],
     plugins: [
-      resolvePlugin,
-      dts()
+      resolve({
+        extensions: [
+          ...exts.flatMap(x => [`${x}.tsx`, `${x}.jsx`]),
+          ...exts.flatMap(x => [`${x}.ts`, `${x}.mjs`, `${x}.js`]),
+        ]
+      }),
+      dts({
+        compilerOptions: {
+          moduleSuffixes: exts,
+        },
+      }),
     ],
-  },
+  })),
 ];

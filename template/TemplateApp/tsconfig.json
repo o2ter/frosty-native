@@ -17,6 +17,10 @@
     "allowSyntheticDefaultImports": true,
     "downlevelIteration": true,
     "stripInternal": true,
+    "moduleSuffixes": [
+      ".native",
+      ""
+    ],
     "paths": {
       "~/*": [
         "./src/*"

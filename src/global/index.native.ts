@@ -1,5 +1,5 @@
 //
-//  global.ts
+//  index.native.ts
 //
 //  The MIT License
 //  Copyright (c) 2021 - 2025 O2ter Limited. All rights reserved.
@@ -23,28 +23,13 @@
 //  THE SOFTWARE.
 //
 
+export * from './common';
+
 declare global {
 
-  namespace __NS_FROSTY_SPEC__ {
-
-    interface LocalStorage {
-      keys(): string[];
-      setItem(key: string, value: string): void;
-      getItem(key: string): string | undefined;
-      removeItem(key: string): void;
-      clear(): void;
-    }
+  const _FileSystem: {
+    readonly home: string;
+    readonly temp: string;
+    readonly cwd: string;
   }
-
-  const __FROSTY_SPEC__: {
-    get SOURCE_URL(): string | undefined;
-    get NativeModules(): {
-      get localStorage(): __NS_FROSTY_SPEC__.LocalStorage;
-      [key: string]: any;
-    };
-  };
 }
-
-export const NativeModules = {
-  ...__FROSTY_SPEC__.NativeModules,
-};
