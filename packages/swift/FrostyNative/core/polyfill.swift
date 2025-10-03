@@ -23,6 +23,8 @@
 //  THE SOFTWARE.
 //
 
+import JavaScriptCore
+
 extension FTContext {
 
     func polyfill() {
@@ -30,11 +32,11 @@ extension FTContext {
             "NativeModules": [:]
         ]
         self.register(name: "localStorage", NativeLocalStorage())
-        self.register(name: "FTView", FTView.init(nodeId:props:children:eventHandler:))
-        self.register(name: "FTImageView", FTImageView.init(nodeId:props:children:eventHandler:))
-        self.register(name: "FTTextView", FTTextView.init(nodeId:props:children:eventHandler:))
-        self.register(name: "FTTextInput", FTTextInput.init(nodeId:props:children:eventHandler:))
-        self.register(name: "FTScrollView", FTScrollView.init(nodeId:props:children:eventHandler:))
+        self.register(name: "FTView", FTView.init(nodeId:props:children:handler:))
+        self.register(name: "FTImageView", FTImageView.init(nodeId:props:children:handler:))
+        self.register(name: "FTTextView", FTTextView.init(nodeId:props:children:handler:))
+        self.register(name: "FTTextInput", FTTextInput.init(nodeId:props:children:handler:))
+        self.register(name: "FTScrollView", FTScrollView.init(nodeId:props:children:handler:))
     }
 }
 
@@ -58,19 +60,18 @@ extension FTContext {
 
 extension FTContext {
 
-    public typealias ViewEventHandler =
+    public typealias ViewHandler =
         @MainActor @Sendable (
-            _ nodeId: String,
             _ method: String,
-            _ args: [SwiftJS.Value]
+            _ args: [JSValue]
         ) -> Void
 
     public typealias ViewProvider =
         @MainActor @Sendable (
             _ nodeId: ObjectIdentifier,
-            _ props: Binding<[String: any Sendable]>,
+            _ props: Binding<[String: JSValue]>,
             _ children: Binding<[AnyView]>,
-            _ eventHandler: @escaping ViewEventHandler
+            _ handler: @escaping (@escaping ViewHandler) -> Void
         ) -> any View
 
     public func register(name: String, _ provider: @escaping ViewProvider) {

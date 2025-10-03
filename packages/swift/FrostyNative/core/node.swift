@@ -27,9 +27,9 @@ import JavaScriptCore
 
 @objc protocol FTNodeExport: JSExport {
 
-    func invoke(_ method: String, _ args: [any Sendable])
+    func invoke(_ method: String, _ args: [JSValue])
 
-    func update(_ props: [String: any Sendable])
+    func update(_ props: [String: JSValue])
 
     func replaceChildren(_ children: [FTNode.State])
 
@@ -70,12 +70,7 @@ extension FTNode {
                     self.$node.children.map {
                         AnyView(FTNode(runner: runner, state: $0))
                     }),
-                { nodeId, method, args in
-                    runner?.invokeMethod(
-                        "notifyNode",
-                        withArguments: [.init(nodeId), .init(method), .init(args)]
-                    )
-                }
+                { self.node.handler = $0 }
             )
         )
     }
@@ -88,9 +83,11 @@ extension FTNode {
 
         let provider: FTContext.ViewProvider
 
-        var props: [String: any Sendable]
+        var props: [String: JSValue]
 
         var children: [FTNode.State]
+
+        var handler: FTContext.ViewHandler?
 
         init(provider: @escaping FTContext.ViewProvider) {
             self.provider = provider
@@ -102,11 +99,14 @@ extension FTNode {
 
 extension FTNode.State {
 
-    func invoke(_ method: String, _ args: [any Sendable]) {
-
+    func invoke(_ method: String, _ args: [JSValue]) {
+        guard let handler = self.handler else { return }
+        Task { @MainActor in
+            handler(method, args)
+        }
     }
 
-    func update(_ props: [String: any Sendable]) {
+    func update(_ props: [String: JSValue]) {
         self.props = props
     }
 

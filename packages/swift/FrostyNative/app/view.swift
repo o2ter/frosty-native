@@ -23,6 +23,8 @@
 //  THE SOFTWARE.
 //
 
+import JavaScriptCore
+
 // Color extension for hex string support
 extension Color {
     init(hexString: String) {
@@ -56,17 +58,15 @@ extension Color {
 
 protocol FTViewProtocol: View {
 
-    var props: [String: any Sendable] { get }
+    var props: [String: JSValue] { get }
 
     var children: [AnyView] { get }
 
-    var eventHandler: FTContext.ViewEventHandler { get }
-
     init(
         nodeId: ObjectIdentifier,
-        props: Binding<[String: any Sendable]>,
+        props: Binding<[String: JSValue]>,
         children: Binding<[AnyView]>,
-        eventHandler: @escaping FTContext.ViewEventHandler
+        handler: @escaping (@escaping FTContext.ViewHandler) -> Void
     )
 }
 
@@ -417,8 +417,18 @@ extension FontSizeValue {
 
 extension FTLayoutViewProtocol {
 
-    var style: [String: any Sendable] {
-        return props["style"] as? [String: any Sendable] ?? [:]
+    var style: [String: JSValue] {
+        guard let style = props["style"] else { return [:] }
+        guard let dict = style.toDictionary() else { return [:] }
+        var result: [String: JSValue] = [:]
+        for key in dict.keys {
+            guard let key = key as? String else { continue }
+            guard let obj = style.objectForKeyedSubscript(key),
+                !obj.isUndefined && !obj.isNull
+            else { continue }
+            result[key] = obj
+        }
+        return result
     }
 }
 
@@ -482,8 +492,7 @@ extension FTLayoutViewProtocol {
     }
 
     func numericValue(_ key: String) -> CGFloat? {
-        if let d = style[key] as? Double { return CGFloat(d) }
-        if let i = style[key] as? Int { return CGFloat(i) }
+        if let d = style[key]?.toDouble() { return CGFloat(d) }
         return nil
     }
 
@@ -772,7 +781,7 @@ extension FTLayoutViewProtocol {
         view = AnyView(view.padding(paddingInsets))
 
         // Apply onLayout if present
-        if let nodeId = props["onLayout"] as? String {
+        if let onLayout = props["onLayout"] {
             view = AnyView(
                 view.onGeometryChange(for: Layout.self) {
                     Layout(
@@ -780,14 +789,12 @@ extension FTLayoutViewProtocol {
                         local: $0.frame(in: .local)
                     )
                 } action: { layout in
-                    self.eventHandler(
-                        nodeId, "onLayout",
+                    onLayout.call(withArguments: [
                         [
-                            [
-                                "global": layout.global.toJSValue(),
-                                "local": layout.local.toJSValue(),
-                            ]
-                        ])
+                            "global": layout.global.toJSValue(),
+                            "local": layout.local.toJSValue(),
+                        ]
+                    ])
                 })
         }
 
@@ -805,22 +812,19 @@ extension FTLayoutViewProtocol {
 struct FTView: FTLayoutViewProtocol {
 
     @Binding
-    var props: [String: any Sendable]
+    var props: [String: JSValue]
 
     @Binding
     var children: [AnyView]
 
-    let eventHandler: FTContext.ViewEventHandler
-
     init(
         nodeId: ObjectIdentifier,
-        props: Binding<[String: any Sendable]>,
+        props: Binding<[String: JSValue]>,
         children: Binding<[AnyView]>,
-        eventHandler: @escaping FTContext.ViewEventHandler
+        handler: @escaping (@escaping FTContext.ViewHandler) -> Void
     ) {
         self._props = props
         self._children = children
-        self.eventHandler = eventHandler
     }
 
     func content(_ info: FTLayoutInfo) -> some View {
@@ -847,22 +851,19 @@ struct FTView: FTLayoutViewProtocol {
 struct FTImageView: FTLayoutViewProtocol {
 
     @Binding
-    var props: [String: any Sendable]
+    var props: [String: JSValue]
 
     @Binding
     var children: [AnyView]
 
-    let eventHandler: FTContext.ViewEventHandler
-
     init(
         nodeId: ObjectIdentifier,
-        props: Binding<[String: any Sendable]>,
+        props: Binding<[String: JSValue]>,
         children: Binding<[AnyView]>,
-        eventHandler: @escaping FTContext.ViewEventHandler
+        handler: @escaping (@escaping FTContext.ViewHandler) -> Void
     ) {
         self._props = props
         self._children = children
-        self.eventHandler = eventHandler
     }
 
     func content(_ info: FTLayoutInfo) -> some View {
@@ -873,22 +874,19 @@ struct FTImageView: FTLayoutViewProtocol {
 struct FTTextView: FTLayoutViewProtocol {
 
     @Binding
-    var props: [String: any Sendable]
+    var props: [String: JSValue]
 
     @Binding
     var children: [AnyView]
 
-    let eventHandler: FTContext.ViewEventHandler
-
     init(
         nodeId: ObjectIdentifier,
-        props: Binding<[String: any Sendable]>,
+        props: Binding<[String: JSValue]>,
         children: Binding<[AnyView]>,
-        eventHandler: @escaping FTContext.ViewEventHandler
+        handler: @escaping (@escaping FTContext.ViewHandler) -> Void
     ) {
         self._props = props
         self._children = children
-        self.eventHandler = eventHandler
     }
 
     func content(_ info: FTLayoutInfo) -> some View {
@@ -899,22 +897,19 @@ struct FTTextView: FTLayoutViewProtocol {
 struct FTTextInput: FTLayoutViewProtocol {
 
     @Binding
-    var props: [String: any Sendable]
+    var props: [String: JSValue]
 
     @Binding
     var children: [AnyView]
 
-    let eventHandler: FTContext.ViewEventHandler
-
     init(
         nodeId: ObjectIdentifier,
-        props: Binding<[String: any Sendable]>,
+        props: Binding<[String: JSValue]>,
         children: Binding<[AnyView]>,
-        eventHandler: @escaping FTContext.ViewEventHandler
+        handler: @escaping (@escaping FTContext.ViewHandler) -> Void
     ) {
         self._props = props
         self._children = children
-        self.eventHandler = eventHandler
     }
 
     func content(_ info: FTLayoutInfo) -> some View {
@@ -925,22 +920,19 @@ struct FTTextInput: FTLayoutViewProtocol {
 struct FTScrollView: FTLayoutViewProtocol {
 
     @Binding
-    var props: [String: any Sendable]
+    var props: [String: JSValue]
 
     @Binding
     var children: [AnyView]
 
-    let eventHandler: FTContext.ViewEventHandler
-
     init(
         nodeId: ObjectIdentifier,
-        props: Binding<[String: any Sendable]>,
+        props: Binding<[String: JSValue]>,
         children: Binding<[AnyView]>,
-        eventHandler: @escaping FTContext.ViewEventHandler
+        handler: @escaping (@escaping FTContext.ViewHandler) -> Void
     ) {
         self._props = props
         self._children = children
-        self.eventHandler = eventHandler
     }
 
     func content(_ info: FTLayoutInfo) -> some View {

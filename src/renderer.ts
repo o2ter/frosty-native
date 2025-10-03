@@ -29,8 +29,6 @@ import { NativeNode, NativeNodeType } from './view/components/basic/native/node'
 
 export class NativeRenderer extends _Renderer<NativeNodeType> {
 
-  private _callbacks = new Map<string, { [name: string]: (...args: any[]) => void; }>();
-
   get _server(): boolean {
     return false;
   }
@@ -52,12 +50,10 @@ export class NativeRenderer extends _Renderer<NativeNodeType> {
 
   protected _updateElement(node: VNode, element: NativeNodeType, stack: VNode[]) {
     const { props } = node;
-    this._callbacks.set(node.id, _.pickBy(props, v => _.isFunction(v)));
-    element.update(_.mapValues(props, v => _.isFunction(v) ? node.id : v));
+    element.update(props);
   }
 
   protected _destroyElement(node: VNode, element: NativeNodeType) {
-    this._callbacks.delete(node.id);
     element.destroy();
   }
 
@@ -66,10 +62,5 @@ export class NativeRenderer extends _Renderer<NativeNodeType> {
       ? children
       : _.map(children, x => x instanceof NativeNode ? x._native : x)
     );
-  }
-
-  notifyNode(nodeId: string, method: string, ...args: any[]) {
-    const props = this._callbacks.get(nodeId) ?? {};
-    if (_.isFunction(props[method])) props[method](...args);
   }
 }
