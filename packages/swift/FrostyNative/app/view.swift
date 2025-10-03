@@ -417,25 +417,19 @@ extension FontSizeValue {
 
 extension FTLayoutViewProtocol {
 
-    var style: [String: JSValue] {
-        guard let style = props["style"] else { return [:] }
-        guard let dict = style.toDictionary() else { return [:] }
-        var result: [String: JSValue] = [:]
-        for key in dict.keys {
-            guard let key = key as? String else { continue }
-            guard let obj = style.objectForKeyedSubscript(key),
-                !obj.isUndefined && !obj.isNull
-            else { continue }
-            result[key] = obj
-        }
-        return result
+    func styleForKey(_ key: String) -> JSValue? {
+        guard let style = props["style"] else { return nil }
+        guard let obj = style.objectForKeyedSubscript(key),
+            !obj.isUndefined && !obj.isNull
+        else { return nil }
+        return obj
     }
 }
 
 extension FTLayoutViewProtocol {
 
     func stringValue(_ key: String) -> String? {
-        guard let v = style[key] else { return nil }
+        guard let v = styleForKey(key) else { return nil }
         if v.isString, let s = v.toString() { return s }
         if v.isNumber {
             let d = v.toDouble()
@@ -450,7 +444,7 @@ extension FTLayoutViewProtocol {
     }
 
     func dimensionValue(_ key: String) -> DimensionValue? {
-        guard let v = style[key] else { return nil }
+        guard let v = styleForKey(key) else { return nil }
         if v.isNumber {
             return .point(CGFloat(v.toDouble()))
         }
@@ -461,7 +455,7 @@ extension FTLayoutViewProtocol {
     }
 
     func flexValue(_ key: String) -> FlexValue? {
-        guard let v = style[key] else { return nil }
+        guard let v = styleForKey(key) else { return nil }
         if v.isString, let s = v.toString() {
             return FlexValue(s)
         }
@@ -472,7 +466,7 @@ extension FTLayoutViewProtocol {
     }
 
     func fontSizeValue(_ key: String) -> FontSizeValue? {
-        guard let v = style[key] else { return nil }
+        guard let v = styleForKey(key) else { return nil }
         if v.isString, let s = v.toString() {
             return FontSizeValue(s)
         }
@@ -483,7 +477,7 @@ extension FTLayoutViewProtocol {
     }
 
     func boxShadowValue(_ key: String) -> [BoxShadowValue]? {
-        guard let v = style[key] else { return nil }
+        guard let v = styleForKey(key) else { return nil }
         if v.isObject {
             guard let dict = v.toDictionary() else { return nil }
             let stringDict = dict.reduce(into: [String: Any]()) { result, pair in
@@ -505,7 +499,7 @@ extension FTLayoutViewProtocol {
     }
 
     func filterValue(_ key: String) -> [FilterFunction]? {
-        guard let v = style[key] else { return nil }
+        guard let v = styleForKey(key) else { return nil }
         if v.isObject {
             guard let dict = v.toDictionary() else { return nil }
             let stringDict = dict.reduce(into: [String: Any]()) { result, pair in
@@ -527,7 +521,7 @@ extension FTLayoutViewProtocol {
     }
 
     func transformValue(_ key: String) -> [TransformFunction]? {
-        guard let v = style[key] else { return nil }
+        guard let v = styleForKey(key) else { return nil }
         if v.isObject {
             guard let dict = v.toDictionary() else { return nil }
             let stringDict = dict.reduce(into: [String: Any]()) { result, pair in
@@ -549,7 +543,7 @@ extension FTLayoutViewProtocol {
     }
 
     func numericValue(_ key: String) -> CGFloat? {
-        guard let v = style[key] else { return nil }
+        guard let v = styleForKey(key) else { return nil }
         if v.isNumber {
             return CGFloat(v.toDouble())
         }
@@ -557,7 +551,7 @@ extension FTLayoutViewProtocol {
     }
 
     func transformOriginValue(_ key: String) -> [Any]? {
-        guard let v = style[key] else { return nil }
+        guard let v = styleForKey(key) else { return nil }
         if v.isArray, let array = v.toArray() {
             return array
         } else {
@@ -591,7 +585,7 @@ extension FTLayoutViewProtocol {
     var inset: DimensionValue? { dimensionValue("inset") }
 
     var aspectRatio: CGFloat? {
-        guard let v = style["aspectRatio"] else { return nil }
+        guard let v = styleForKey("aspectRatio") else { return nil }
         if v.isString, let s = v.toString(), let d = Double(s) {
             return CGFloat(d)
         }
@@ -606,7 +600,7 @@ extension FTLayoutViewProtocol {
     var flexShrink: CGFloat { numericValue("flexShrink") ?? 1 }
     var flexWrap: String? { stringValue("flexWrap") }
     var order: Int {
-        guard let v = style["order"], v.isNumber else { return 0 }
+        guard let v = styleForKey("order"), v.isNumber else { return 0 }
         return Int(v.toDouble())
     }
 
@@ -627,7 +621,7 @@ extension FTLayoutViewProtocol {
     var overflow: String { stringValue("overflow") ?? "visible" }
 
     var zIndex: Int? {
-        guard let v = style["zIndex"], v.isNumber else { return nil }
+        guard let v = styleForKey("zIndex"), v.isNumber else { return nil }
         return Int(v.toDouble())
     }
 
