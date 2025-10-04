@@ -63,6 +63,7 @@ if ! echo "$PROJECT_NAME" | grep -q '^[a-zA-Z0-9_-]*$'; then
     fi
 fi
 
+INIT_CWD="${INIT_CWD:-$(pwd)}"
 PROJECT_PATH="$INIT_CWD/$PROJECT_NAME"
 
 # Check if target directory already exists
