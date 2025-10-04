@@ -24,7 +24,7 @@
 //
 
 import { useEffect, useState } from 'frosty';
-import { Platform, Text, useEnvironment, View } from '../../../src';
+import { Text, View } from '../../../src';
 
 export default function App() {
   const [counter, setCounter] = useState(0);
@@ -32,23 +32,8 @@ export default function App() {
     const handle = setInterval(() => { setCounter(v => v + 1); }, 1000);
     return () => clearTimeout(handle);
   }, []);
-  useEffect(async () => {
-    console.log(JSON.stringify({
-      type: Platform.type,
-      appVersion: Platform.appVersion,
-      buildVersion: Platform.buildVersion,
-      bundleIdentifier: Platform.bundleIdentifier,
-      infoDictionary: Platform.infoDictionary,
-      localizedInfoDictionary: Platform.localizedInfoDictionary,
-      isRealDevice: Platform.isRealDevice,
-      isiOSAppOnMac: Platform.isiOSAppOnMac,
-      isMacCatalystApp: Platform.isMacCatalystApp,
-      identifierForVendor: await Platform.identifierForVendor(),
-    }, null, 4));
-  }, []);
-  console.log(JSON.stringify(useEnvironment(), null, 4));
   return (
-    <View style={{ padding: 64 }}>
+    <View style={{ padding: 64 }} onLayout={e => console.log('Layout', e)}>
       <View style={{ height: 32, width: 32, backgroundColor: 'red' }} />
       <Text>Hello World!</Text>
       <Text>{counter}</Text>
