@@ -858,7 +858,7 @@ extension FTLayoutViewProtocol {
                         local: $0.frame(in: .local)
                     )
                 } action: { layout in
-                    onLayout.call(withArguments: [
+                    SwiftJS.Value(onLayout).call(withArguments: [
                         [
                             "global": layout.global.toJSValue(),
                             "local": layout.local.toJSValue(),
