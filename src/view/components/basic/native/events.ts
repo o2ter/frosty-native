@@ -59,7 +59,7 @@ export const useResponderEvents = <Target>(
         const target = targetRef.current;
         if (!target) return;
 
-      if (_.isFunction(onLayout)) onLayout.call(target, {
+        if (_.isFunction(onLayout)) onLayout.call(target, {
           _native: event,
           timeStamp: Date.now(),
           currentTarget: target,
