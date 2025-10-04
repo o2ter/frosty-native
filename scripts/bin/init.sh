@@ -107,8 +107,7 @@ replace_content_in_file() {
     esac
     
     # Replace TemplateApp with the new project name (case-sensitive)
-    # Use grep with /dev/null to avoid reading from stdin
-    if grep -q "TemplateApp" "$file" < /dev/null 2>/dev/null; then
+    if grep -q "TemplateApp" "$file" 2>/dev/null; then
         # Use different sed syntax for macOS vs Linux
         if command -v gsed >/dev/null 2>&1; then
             gsed -i "s/TemplateApp/$PROJECT_NAME/g" "$file"
@@ -122,7 +121,7 @@ replace_content_in_file() {
     local LOWERCASE_TEMPLATE=$(echo "templateapp" | tr '[:upper:]' '[:lower:]')
     local LOWERCASE_PROJECT=$(echo "$PROJECT_NAME" | tr '[:upper:]' '[:lower:]')
     
-    if grep -q "$LOWERCASE_TEMPLATE" "$file" < /dev/null 2>/dev/null; then
+    if grep -q "$LOWERCASE_TEMPLATE" "$file" 2>/dev/null; then
         if command -v gsed >/dev/null 2>&1; then
             gsed -i "s/$LOWERCASE_TEMPLATE/$LOWERCASE_PROJECT/g" "$file"
         else
@@ -161,10 +160,9 @@ rename_files_and_dirs() {
 rename_files_and_dirs
 
 # Then, update content in all files
-# Use process substitution to avoid stdin conflicts with grep/sed
-while IFS= read -r file; do
+find . -type f | while read -r file; do
     replace_content_in_file "$file"
-done < <(find . -type f)
+done
 
 # Clean up unwanted files and directories
 echo "🧹 Cleaning up..."
