@@ -30,9 +30,7 @@ export interface NativeNodeType extends NativeElementType {
 
   invoke(method: string, args: any[]): void;
 
-  update(props: Record<string, any>): void;
-
-  replaceChildren(children: (string | NativeNodeType)[]): void;
+  update(props: Record<string, any>, children: (string | NativeNodeType)[]): void;
 
   destroy(): void;
 }
@@ -45,12 +43,8 @@ export abstract class NativeNode extends NativeElementType implements NativeNode
     this._native.invoke(method, args);
   }
 
-  update(props: Record<string, any>) {
-    this._native.update(props);
-  }
-
-  replaceChildren(children: (string | NativeNode)[]) {
-    this._native.replaceChildren(_.map(children, x => x instanceof NativeNode ? x._native : x));
+  update(props: Record<string, any>, children: (string | NativeNode)[]) {
+    this._native.update(props, _.map(children, x => x instanceof NativeNode ? x._native : x));
   }
 
   destroy() {

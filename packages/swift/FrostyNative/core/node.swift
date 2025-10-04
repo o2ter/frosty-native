@@ -27,9 +27,7 @@
 
     func invoke(_ method: String, _ args: JSValue)
 
-    func update(_ props: JSValue)
-
-    func replaceChildren(_ children: [FTNode.State])
+    func update(_ props: JSValue, _ children: [FTNode.State])
 
     func destroy()
 }
@@ -109,7 +107,7 @@ extension FTNode.State {
         Task { @MainActor in handler(method, jsValues) }
     }
 
-    func update(_ props: JSValue) {
+    func update(_ props: JSValue, _ children: [FTNode.State]) {
         // Convert JSValue to [String: JSValue] dictionary without recursive conversion
         var convertedProps: [String: JSValue] = [:]
 
@@ -139,9 +137,7 @@ extension FTNode.State {
         }
 
         self.props = convertedProps
-    }
 
-    func replaceChildren(_ children: [FTNode.State]) {
         if self.children != children {
             self.children = children
         }

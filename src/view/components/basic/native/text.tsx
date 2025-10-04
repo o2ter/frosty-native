@@ -42,14 +42,11 @@ class FTTextView extends NativeNode {
   #props: Record<string, any> = {};
   #children: (string | FTTextView)[] = [];
 
-  update(props: Record<string, any>): void {
-    this._native.update(props);
-    this.#props = props;
-  }
-
-  replaceChildren(children: (string | NativeNode)[]): void {
+  update(props: Record<string, any>, children: (string | NativeNode)[]): void {
     const _children = _.filter(children, x => _.isNumber(x) || _.isString(x) || x instanceof FTTextView);
+    this.#props = props;
     this.#children = _children.map(x => _.isNumber(x) ? String(x) : x);
+    this._native.update(props, []);
   }
 }
 

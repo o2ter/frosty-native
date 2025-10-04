@@ -61,14 +61,6 @@ internal class FTNodeState(
 
     var handler: ComponentHandler? = null
 
-    fun update(props: Map<String, Any?>) {
-        this.props = props
-    }
-
-    fun replaceChildren(children: List<FTNodeState>) {
-        this.children = children
-    }
-
     fun destroy() {
         this.props = mapOf()
         this.children = listOf()
@@ -89,19 +81,16 @@ internal class FTNodeState(
         }, "invoke")
         obj.registerJavaMethod({ _, args ->
             val props = V8ObjectUtils.toMap(args.getObject(0))
+            val children = V8ObjectUtils.toList(args.getArray(1))
             if (props != null) {
-                this.update(props.toMap())
+                this.props = props.toMap()
             }
-        }, "update")
-        obj.registerJavaMethod({ _, args ->
-            val children = V8ObjectUtils.toList(args.getArray(0))
             if (children != null) {
-                val nodes = children
+                this.children = children
                     .mapNotNull { (it as? Map<*, *>)?.get("nodeId") }
                     .mapNotNull { id -> activity.nodes.find { it.nodeId == id } }
-                this.replaceChildren(nodes)
             }
-        }, "replaceChildren")
+        }, "update")
         obj.registerJavaMethod({ _, _ -> this.destroy() }, "destroy")
         return obj
     }
