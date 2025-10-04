@@ -26,7 +26,7 @@
 
 set -e
 
-FROSTY_NATIVE_DIR="${PROJECT_ROOT}/node_modules/frosty-native"
+FROSTY_NATIVE_DIR="${FROSTY_NATIVE_DIR:-"${PROJECT_ROOT}/node_modules/frosty-native"}"
 WEBPACK_CONFIG="${FROSTY_NATIVE_DIR}/packages/bundler/webpack.config.js"
 
 cd $PROJECT_ROOT
