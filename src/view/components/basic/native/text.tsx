@@ -32,6 +32,7 @@ import { TextViewProps } from '../types/text';
 import { useTextStyle } from '../../textStyle';
 import { TextStyle } from '../types/styles';
 import { useNativeStyle } from './style';
+import { useResponderEvents } from './events';
 
 const Pairs = createPairs({ allowTextChildren: true });
 
@@ -52,7 +53,7 @@ class FTTextView extends NativeNode {
   }
 }
 
-export const Text: ComponentType<TextViewProps> = ({ ref, style, maxFontSizeMultiplier, minimumFontScale, numberOfLines, children }) => {
+export const Text: ComponentType<TextViewProps> = ({ ref, style, maxFontSizeMultiplier, minimumFontScale, numberOfLines, children, ...props }) => {
 
   const nativeRef = useRef<ComponentRef<typeof Text>>();
   useRefHandle(mergeRefs(nativeRef, ref), () => ({
@@ -72,6 +73,7 @@ export const Text: ComponentType<TextViewProps> = ({ ref, style, maxFontSizeMult
         children: (
           <Pairs.Parent>{children}</Pairs.Parent>
         ),
+        ...useResponderEvents(props, nativeRef)
       })}
     </Pairs.Child>
   );

@@ -29,13 +29,14 @@ import { NativeModules } from '../../../../global';
 import { NativeNode } from './node';
 import { ViewProps } from '../types/view';
 import { useNativeStyle } from './style';
+import { useResponderEvents } from './events';
 
 abstract class FTView extends NativeNode {
 
   _native = NativeModules['FTView']();
 }
 
-export const View: ComponentType<ViewProps> = ({ ref, style, children }) => {
+export const View: ComponentType<ViewProps> = ({ ref, style, children, ...props }) => {
 
   const nativeRef = useRef<ComponentRef<typeof View>>();
   useRefHandle(mergeRefs(nativeRef, ref), () => ({
@@ -46,5 +47,6 @@ export const View: ComponentType<ViewProps> = ({ ref, style, children }) => {
   return _createNativeElement(FTView, {
     style: _style,
     children,
+    ...useResponderEvents(props, nativeRef)
   });
 };

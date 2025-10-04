@@ -105,6 +105,7 @@ extension FTNode.State {
     }
 
     func update(_ props: [String: any Sendable]) {
+        print(props)
         self.props = props
     }
 

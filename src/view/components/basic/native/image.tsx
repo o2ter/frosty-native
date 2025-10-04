@@ -29,13 +29,14 @@ import { NativeModules } from '../../../../global';
 import { NativeNode } from './node';
 import { ImageProps } from '../types/image';
 import { useNativeStyle } from './style';
+import { useResponderEvents } from './events';
 
 abstract class FTImageView extends NativeNode {
 
   _native = NativeModules['FTImageView']();
 }
 
-export const Image: ComponentType<ImageProps> = ({ ref, style, source }) => {
+export const Image: ComponentType<ImageProps> = ({ ref, style, source, ...props }) => {
 
   const nativeRef = useRef<ComponentRef<typeof Image>>();
   useRefHandle(mergeRefs(nativeRef, ref), () => ({
@@ -45,5 +46,6 @@ export const Image: ComponentType<ImageProps> = ({ ref, style, source }) => {
 
   return _createNativeElement(FTImageView, {
     style: _style,
+    ...useResponderEvents(props, nativeRef)
   });
 };

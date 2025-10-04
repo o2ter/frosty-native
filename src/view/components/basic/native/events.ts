@@ -1,5 +1,5 @@
 //
-//  scrollView.tsx
+//  events.ts
 //
 //  The MIT License
 //  Copyright (c) 2021 - 2025 O2ter Limited. All rights reserved.
@@ -23,46 +23,35 @@
 //  THE SOFTWARE.
 //
 
-import { ComponentRef, ComponentType, mergeRefs, useRef, useRefHandle } from 'frosty';
-import { _createNativeElement } from 'frosty/_native';
-import { NativeModules } from '../../../../global';
-import { NativeNode } from './node';
-import { ScrollViewProps } from '../types/scrollView';
-import { View } from './view';
-import { useNativeStyle } from './style';
-import { useResponderEvents } from './events';
+import _ from 'lodash';
+import { RefObject } from 'frosty';
+import { ViewEventProps } from '../types/events';
 
-abstract class FTScrollView extends NativeNode {
+export const useResponderEvents = <Target>(
+  props: ViewEventProps<Target>,
+  targetRef: RefObject<Target | null | undefined>
+) => {
 
-  _native = NativeModules['FTScrollView']();
-}
+  const {
+    disabled,
+    onLayout,
+    onHoverIn,
+    onHoverOut,
+    onMoveShouldSetResponder,
+    onMoveShouldSetResponderCapture,
+    onResponderGrant,
+    onResponderStart,
+    onResponderMove,
+    onResponderEnd,
+    onResponderReject,
+    onResponderRelease,
+    onResponderTerminate,
+    onResponderTerminationRequest,
+    onStartShouldSetResponder,
+    onStartShouldSetResponderCapture,
+  } = props;
 
-export const ScrollView: ComponentType<ScrollViewProps> = ({
-  ref,
-  style,
-  contentContainerStyle,
-  horizontal = false,
-  vertical = !horizontal,
-  children,
-  ...props
-}) => {
-
-  const nativeRef = useRef<ComponentRef<typeof ScrollView>>();
-  useRefHandle(mergeRefs(nativeRef, ref), () => ({
-    flashScrollIndicators() { },
-    scrollTo() { },
-    scrollToEnd() { },
-  }), null);
-
-  const _style = useNativeStyle(style);
-
-  return _createNativeElement(FTScrollView, {
-    style: _style,
-    horizontal,
-    vertical,
-    children: (
-      <View style={contentContainerStyle}>{children}</View>
-    ),
-    ...useResponderEvents(props, nativeRef)
-  });
+  return {
+    onLayout,
+  };
 };

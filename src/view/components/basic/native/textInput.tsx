@@ -31,6 +31,7 @@ import { TextInputProps } from '../types/textInput';
 import { useTextStyle } from '../../textStyle';
 import { TextStyle } from '../types/styles';
 import { useNativeStyle } from './style';
+import { useResponderEvents } from './events';
 
 abstract class FTTextInput extends NativeNode {
 
@@ -51,20 +52,7 @@ export const TextInput: ComponentType<TextInputProps> = ({
   numberOfLines,
   secureTextEntry,
   autofocus,
-  onChange,
-  onChangeValue,
-  onBlur,
-  onFocus,
-  onEndEditing,
-  onSubmitEditing,
-  onSelectionChange,
-  onContentSizeChange,
-  onMomentumScrollBegin,
-  onMomentumScrollEnd,
-  onScroll,
-  onScrollBeginDrag,
-  onScrollEndDrag,
-  onScrollToTop,
+  ...props
 }) => {
 
   const nativeRef = useRef<ComponentRef<typeof TextInput>>();
@@ -83,5 +71,6 @@ export const TextInput: ComponentType<TextInputProps> = ({
 
   return _createNativeElement(FTTextInput, {
     style: _style,
+    ...useResponderEvents(props, nativeRef)
   });
 };
