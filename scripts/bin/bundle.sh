@@ -39,6 +39,7 @@ fi
 
 yarn webpack -c $WEBPACK_CONFIG \
   --mode=$MODE \
+  --env PROJECT_ROOT=$PROJECT_ROOT \
   --env BUILD_PLATFORM=$BUILD_PLATFORM \
   --env ENTRY_FILE="${ENTRY_FILE:-$(ls -1 index.* | head -1)}" \
   --env OUTPUT_DIR=$OUTPUT_DIR \

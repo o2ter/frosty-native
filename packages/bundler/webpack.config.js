@@ -1,15 +1,20 @@
 
 const _ = require('lodash');
+const fs = require('fs');
 const path = require('path');
 const webpack = require('webpack');
 const TerserPlugin = require('terser-webpack-plugin');
 const CopyPlugin = require('copy-webpack-plugin');
 
-const appConfig = require(path.resolve(process.cwd(), 'app.config.js'));
-
 module.exports = (env, argv) => {
 
-  const { BUILD_PLATFORM, ENTRY_FILE, OUTPUT_DIR, OUTPUT_FILE } = env;
+  const { PROJECT_ROOT, BUILD_PLATFORM, ENTRY_FILE, OUTPUT_DIR, OUTPUT_FILE } = env;
+
+  const appConfig = (() => {
+    const configPath = path.resolve(PROJECT_ROOT, 'app.config.js');
+    if (!fs.existsSync(configPath)) return {};
+    return require(configPath);
+  })();
 
   const config = _.isFunction(appConfig) ? appConfig(env, argv) : appConfig;
   const IS_PRODUCTION = argv.mode !== 'development';
@@ -110,7 +115,7 @@ module.exports = (env, argv) => {
     ]),
     entry: [
       'core-js/full',
-      path.resolve(process.cwd(), ENTRY_FILE),
+      path.resolve(PROJECT_ROOT, ENTRY_FILE),
     ],
     output: {
       path: OUTPUT_DIR,
