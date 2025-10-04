@@ -141,7 +141,7 @@ replace_content_in_file() {
 # Function to rename files and directories
 rename_files_and_dirs() {
     # Find and rename directories first (deepest first to avoid path issues)
-    find . -type d -name "*TemplateApp*" | sort -r | while read -r dir; do
+    find . -type d -name "*TemplateApp*" -not -path "*/node_modules/*" | sort -r | while read -r dir; do
         if [ -d "$dir" ]; then
             new_dir=$(echo "$dir" | sed "s/TemplateApp/$PROJECT_NAME/g")
             if [ "$dir" != "$new_dir" ]; then
@@ -152,7 +152,7 @@ rename_files_and_dirs() {
     done
     
     # Find and rename files
-    find . -type f -name "*TemplateApp*" | while read -r file; do
+    find . -type f -name "*TemplateApp*" -not -path "*/node_modules/*" | while read -r file; do
         if [ -f "$file" ]; then
             new_file=$(echo "$file" | sed "s/TemplateApp/$PROJECT_NAME/g")
             if [ "$file" != "$new_file" ]; then
