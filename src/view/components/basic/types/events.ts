@@ -30,13 +30,15 @@ export type Event<Target> = {
   target: any;
 }
 
+export type LayoutRect = {
+  width: number;
+  height: number;
+  x: number;
+  y: number;
+};
+
 export type LayoutEvent<Target> = Event<Target> & {
-  layout: {
-    width: number;
-    height: number;
-    x: number;
-    y: number;
-  };
+  layout: LayoutRect;
 };
 
 export type MouseEvent<Target> = Event<Target> & {

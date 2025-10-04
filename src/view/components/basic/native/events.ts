@@ -25,7 +25,8 @@
 
 import _ from 'lodash';
 import { RefObject } from 'frosty';
-import { ViewEventProps } from '../types/events';
+import { LayoutRect, ViewEventProps } from '../types/events';
+import { _useCallbacks } from '../../../../internal/hooks/callbacks';
 
 export const useResponderEvents = <Target>(
   props: ViewEventProps<Target>,
@@ -52,6 +53,20 @@ export const useResponderEvents = <Target>(
   } = props;
 
   return {
-    onLayout,
+    ..._useCallbacks({
+      onLayout: (event: { local: LayoutRect; global: LayoutRect; }) => {
+
+        const target = targetRef.current;
+        if (!target) return;
+
+      if (_.isFunction(onLayout)) onLayout.call(target, {
+          _native: event,
+          timeStamp: Date.now(),
+          currentTarget: target,
+          target,
+          layout: event.local,
+        });
+      },
+    })
   };
 };
