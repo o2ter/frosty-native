@@ -85,6 +85,13 @@ export default [
         format: 'es',
         sourcemap: true,
       },
+      {
+        entryFileNames: `[name]${suffix}.d.mts`,
+        chunkFileNames: `internals/[name]-[hash]${suffix}.d.mts`,
+        dir: './dist',
+        format: 'es',
+        sourcemap: true,
+      },
     ],
     plugins: [
       resolve({
