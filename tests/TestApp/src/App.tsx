@@ -33,9 +33,9 @@ export default function App() {
     return () => clearTimeout(handle);
   }, []);
   return (
-    <View style={{ padding: 64 }} onLayout={e => console.log('Layout', e)}>
+    <View style={{ padding: 64 }}>
       <View style={{ height: 32, width: 32, backgroundColor: 'red' }} />
-      <Text>Hello World!</Text>
+      <Text onLayout={e => console.log('Layout', e)}>Hello World!</Text>
       <Text>{counter}</Text>
     </View>
   );

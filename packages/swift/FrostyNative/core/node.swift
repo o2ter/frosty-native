@@ -99,41 +99,43 @@ extension FTNode.State {
 
     func invoke(_ method: String, _ args: JSValue) {
         guard let handler = self.handler else { return }
-        Task { @MainActor in
-            // Convert single JSValue to array of JSValues as expected by ViewHandler
-            let argsArray: [JSValue]
-            if args.isArray {
-                // Manually extract array elements as JSValues to avoid recursive conversion
-                var jsValues: [JSValue] = []
-                if let length = args.forProperty("length").toNumber() {
-                    for i in 0..<Int(length.doubleValue) {
-                        jsValues.append(args.atIndex(i))
-                    }
-                }
-                argsArray = jsValues
-            } else {
-                argsArray = [args]
-            }
-            handler(method, argsArray)
+        guard args.isArray else { return }
+        guard let length = args.forProperty("length").toNumber() else { return }
+        // Manually extract array elements as JSValues to avoid recursive conversion
+        var jsValues: [JSValue] = []
+        for i in 0..<Int(length.doubleValue) {
+            jsValues.append(args.atIndex(i))
         }
+        Task { @MainActor in handler(method, jsValues) }
     }
 
     func update(_ props: JSValue) {
         // Convert JSValue to [String: JSValue] dictionary without recursive conversion
         var convertedProps: [String: JSValue] = [:]
 
-        if props.isObject && !props.isArray && !props.isNull && !props.isUndefined {
-            // Manually extract object properties as JSValues to avoid recursive conversion
-            if let propertyNames = props.context?.globalObject.forProperty("Object")
-                .forProperty("keys").call(withArguments: [props])?.toArray()
-            {
+        guard props.isObject && !props.isArray && !props.isNull && !props.isUndefined else {
+            return
+        }
 
-                for propertyName in propertyNames {
-                    if let key = propertyName as? String {
-                        convertedProps[key] = props.forProperty(key)
-                    }
-                }
+        guard
+            let propertyNames = props.context?.globalObject.forProperty("Object")
+                .forProperty("keys").call(withArguments: [props])?.toArray()
+        else { return }
+
+        // Manually extract object properties as JSValues to avoid recursive conversion
+        for propertyName in propertyNames {
+            guard let key = propertyName as? String,
+                let value = props.forProperty(key)
+            else {
+                continue
             }
+
+            // Filter out null and undefined values
+            guard !value.isNull && !value.isUndefined else {
+                continue
+            }
+
+            convertedProps[key] = value
         }
 
         self.props = convertedProps
