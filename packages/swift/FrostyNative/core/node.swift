@@ -23,13 +23,11 @@
 //  THE SOFTWARE.
 //
 
-import JavaScriptCore
-
 @objc protocol FTNodeExport: JSExport {
 
-    func invoke(_ method: String, _ args: [JSValue])
+    func invoke(_ method: String, _ args: [any Sendable])
 
-    func update(_ props: [String: JSValue])
+    func update(_ props: [String: any Sendable])
 
     func replaceChildren(_ children: [FTNode.State])
 
@@ -83,7 +81,7 @@ extension FTNode {
 
         let provider: FTContext.ViewProvider
 
-        var props: [String: JSValue]
+        var props: [String: any Sendable]
 
         var children: [FTNode.State]
 
@@ -99,15 +97,15 @@ extension FTNode {
 
 extension FTNode.State {
 
-    func invoke(_ method: String, _ args: [JSValue]) {
+    func invoke(_ method: String, _ args: [any Sendable]) {
         guard let handler = self.handler else { return }
         Task { @MainActor in
             handler(method, args)
         }
     }
 
-    func update(_ props: [String: JSValue]) {
-        self.props = props.filter { !$0.value.isUndefined && !$0.value.isNull }
+    func update(_ props: [String: any Sendable]) {
+        self.props = props
     }
 
     func replaceChildren(_ children: [FTNode.State]) {

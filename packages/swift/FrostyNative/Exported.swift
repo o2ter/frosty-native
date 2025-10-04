@@ -29,3 +29,4 @@
 @_exported import Combine
 @_exported import Algorithms
 @_exported import AsyncAlgorithms
+@_exported import JavaScriptCore

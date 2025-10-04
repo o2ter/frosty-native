@@ -23,8 +23,6 @@
 //  THE SOFTWARE.
 //
 
-import JavaScriptCore
-
 // Color extension for hex string support
 extension Color {
     init(hexString: String) {
@@ -72,13 +70,13 @@ fileprivate extension JSValue {
 
 protocol FTViewProtocol: View {
 
-    var props: [String: JSValue] { get }
+    var props: [String: any Sendable] { get }
 
     var children: [AnyView] { get }
 
     init(
         nodeId: ObjectIdentifier,
-        props: Binding<[String: JSValue]>,
+        props: Binding<[String: any Sendable]>,
         children: Binding<[AnyView]>,
         handler: @escaping (@escaping FTContext.ViewHandler) -> Void
     )
@@ -431,12 +429,11 @@ extension FontSizeValue {
 
 extension FTLayoutViewProtocol {
 
-    fileprivate func styleForKey(_ key: String) -> JSValue? {
+    fileprivate func styleForKey(_ key: String) -> Any? {
         guard let style = props["style"] else { return nil }
-        guard let obj = style.objectForKeyedSubscript(key),
-            !obj.isUndefined && !obj.isNull
-        else { return nil }
-        return obj
+        // Style could be a dictionary
+        guard let styleDict = style as? [String: Any] else { return nil }
+        return styleDict[key]
     }
 }
 
@@ -444,25 +441,30 @@ extension FTLayoutViewProtocol {
 
     func stringValue(_ key: String) -> String? {
         guard let v = styleForKey(key) else { return nil }
-        if v.isString, let s = v.toString() { return s }
-        if v.isNumber {
-            let d = v.toDouble()
+        if let s = v as? String { return s }
+        if let n = v as? Double {
             // Check if it's an integer
-            if d == floor(d) {
-                return String(Int(d))
+            if n == floor(n) {
+                return String(Int(n))
             } else {
-                return String(d)
+                return String(n)
             }
+        }
+        if let i = v as? Int {
+            return String(i)
         }
         return nil
     }
 
     func dimensionValue(_ key: String) -> DimensionValue? {
         guard let v = styleForKey(key) else { return nil }
-        if v.isNumber {
-            return .point(CGFloat(v.toDouble()))
+        if let n = v as? Double {
+            return .point(CGFloat(n))
         }
-        if v.isString, let s = v.toString() {
+        if let i = v as? Int {
+            return .point(CGFloat(i))
+        }
+        if let s = v as? String {
             return DimensionValue(s)
         }
         return nil
@@ -470,35 +472,39 @@ extension FTLayoutViewProtocol {
 
     func flexValue(_ key: String) -> FlexValue? {
         guard let v = styleForKey(key) else { return nil }
-        if v.isString, let s = v.toString() {
+        if let s = v as? String {
             return FlexValue(s)
         }
-        if v.isNumber {
-            return FlexValue(v.toDouble())
+        if let n = v as? Double {
+            return FlexValue(n)
+        }
+        if let i = v as? Int {
+            return FlexValue(Double(i))
         }
         return nil
     }
 
     func fontSizeValue(_ key: String) -> FontSizeValue? {
         guard let v = styleForKey(key) else { return nil }
-        if v.isString, let s = v.toString() {
+        if let s = v as? String {
             return FontSizeValue(s)
         }
-        if v.isNumber {
-            return FontSizeValue(v.toDouble())
+        if let n = v as? Double {
+            return FontSizeValue(n)
+        }
+        if let i = v as? Int {
+            return FontSizeValue(Double(i))
         }
         return nil
     }
 
     func boxShadowValue(_ key: String) -> [BoxShadowValue]? {
         guard let v = styleForKey(key) else { return nil }
-        if v.isObject {
-            guard let stringDict = v.toStringKeyedDictionary() else { return nil }
-            if let boxShadow = BoxShadowValue(stringDict) {
+        if let dict = v as? [String: Any] {
+            if let boxShadow = BoxShadowValue(dict) {
                 return [boxShadow]
             }
-        } else if v.isArray {
-            guard let array = v.toArray() else { return nil }
+        } else if let array = v as? [Any] {
             return array.compactMap { item -> BoxShadowValue? in
                 guard let dict = item as? [String: Any] else { return nil }
                 return BoxShadowValue(dict)
@@ -509,13 +515,11 @@ extension FTLayoutViewProtocol {
 
     func filterValue(_ key: String) -> [FilterFunction]? {
         guard let v = styleForKey(key) else { return nil }
-        if v.isObject {
-            guard let stringDict = v.toStringKeyedDictionary() else { return nil }
-            if let filter = FilterFunction(stringDict) {
+        if let dict = v as? [String: Any] {
+            if let filter = FilterFunction(dict) {
                 return [filter]
             }
-        } else if v.isArray {
-            guard let array = v.toArray() else { return nil }
+        } else if let array = v as? [Any] {
             return array.compactMap { item -> FilterFunction? in
                 guard let dict = item as? [String: Any] else { return nil }
                 return FilterFunction(dict)
@@ -526,13 +530,11 @@ extension FTLayoutViewProtocol {
 
     func transformValue(_ key: String) -> [TransformFunction]? {
         guard let v = styleForKey(key) else { return nil }
-        if v.isObject {
-            guard let stringDict = v.toStringKeyedDictionary() else { return nil }
-            if let transform = TransformFunction(stringDict) {
+        if let dict = v as? [String: Any] {
+            if let transform = TransformFunction(dict) {
                 return [transform]
             }
-        } else if v.isArray {
-            guard let array = v.toArray() else { return nil }
+        } else if let array = v as? [Any] {
             return array.compactMap { item -> TransformFunction? in
                 guard let dict = item as? [String: Any] else { return nil }
                 return TransformFunction(dict)
@@ -543,27 +545,23 @@ extension FTLayoutViewProtocol {
 
     func numericValue(_ key: String) -> CGFloat? {
         guard let v = styleForKey(key) else { return nil }
-        if v.isNumber {
-            return CGFloat(v.toDouble())
+        if let n = v as? Double {
+            return CGFloat(n)
+        }
+        if let i = v as? Int {
+            return CGFloat(i)
         }
         return nil
     }
 
     func transformOriginValue(_ key: String) -> [Any]? {
         guard let v = styleForKey(key) else { return nil }
-        if v.isArray, let array = v.toArray() {
+        if let array = v as? [Any] {
             return array
         } else {
             // Wrap single value in array
-            if v.isString, let s = v.toString() {
-                return [s]
-            } else if v.isNumber {
-                return [v.toDouble()]
-            } else if let obj = v.toObject() {
-                return [obj]
-            }
+            return [v]
         }
-        return nil
     }
 
     // MARK: - Layout / Box
@@ -585,11 +583,14 @@ extension FTLayoutViewProtocol {
 
     var aspectRatio: CGFloat? {
         guard let v = styleForKey("aspectRatio") else { return nil }
-        if v.isString, let s = v.toString(), let d = Double(s) {
+        if let s = v as? String, let d = Double(s) {
             return CGFloat(d)
         }
-        if v.isNumber {
-            return CGFloat(v.toDouble())
+        if let n = v as? Double {
+            return CGFloat(n)
+        }
+        if let i = v as? Int {
+            return CGFloat(i)
         }
         return nil
     }
@@ -599,8 +600,10 @@ extension FTLayoutViewProtocol {
     var flexShrink: CGFloat { numericValue("flexShrink") ?? 1 }
     var flexWrap: String? { stringValue("flexWrap") }
     var order: Int {
-        guard let v = styleForKey("order"), v.isNumber else { return 0 }
-        return Int(v.toDouble())
+        guard let v = styleForKey("order") else { return 0 }
+        if let i = v as? Int { return i }
+        if let n = v as? Double { return Int(n) }
+        return 0
     }
 
     // layout alignments and gaps
@@ -620,8 +623,10 @@ extension FTLayoutViewProtocol {
     var overflow: String { stringValue("overflow") ?? "visible" }
 
     var zIndex: Int? {
-        guard let v = styleForKey("zIndex"), v.isNumber else { return nil }
-        return Int(v.toDouble())
+        guard let v = styleForKey("zIndex") else { return nil }
+        if let i = v as? Int { return i }
+        if let n = v as? Double { return Int(n) }
+        return nil
     }
 
     // per-side padding and margin
@@ -852,7 +857,7 @@ extension FTLayoutViewProtocol {
         view = AnyView(view.padding(paddingInsets))
 
         // Apply onLayout if present
-        if let onLayout = props["onLayout"] {
+        if let onLayout = props["onLayout"] as? JSValue {
             view = AnyView(
                 view.onGeometryChange(for: Layout.self) {
                     Layout(
@@ -860,7 +865,7 @@ extension FTLayoutViewProtocol {
                         local: $0.frame(in: .local)
                     )
                 } action: { layout in
-                    onLayout.call(withArguments: [
+                    SwiftJS.Value(onLayout).call(withArguments: [
                         [
                             "global": layout.global.toJSValue(),
                             "local": layout.local.toJSValue(),
@@ -883,14 +888,14 @@ extension FTLayoutViewProtocol {
 struct FTView: FTLayoutViewProtocol {
 
     @Binding
-    var props: [String: JSValue]
+    var props: [String: any Sendable]
 
     @Binding
     var children: [AnyView]
 
     init(
         nodeId: ObjectIdentifier,
-        props: Binding<[String: JSValue]>,
+        props: Binding<[String: any Sendable]>,
         children: Binding<[AnyView]>,
         handler: @escaping (@escaping FTContext.ViewHandler) -> Void
     ) {
@@ -922,14 +927,14 @@ struct FTView: FTLayoutViewProtocol {
 struct FTImageView: FTLayoutViewProtocol {
 
     @Binding
-    var props: [String: JSValue]
+    var props: [String: any Sendable]
 
     @Binding
     var children: [AnyView]
 
     init(
         nodeId: ObjectIdentifier,
-        props: Binding<[String: JSValue]>,
+        props: Binding<[String: any Sendable]>,
         children: Binding<[AnyView]>,
         handler: @escaping (@escaping FTContext.ViewHandler) -> Void
     ) {
@@ -945,14 +950,14 @@ struct FTImageView: FTLayoutViewProtocol {
 struct FTTextView: FTLayoutViewProtocol {
 
     @Binding
-    var props: [String: JSValue]
+    var props: [String: any Sendable]
 
     @Binding
     var children: [AnyView]
 
     init(
         nodeId: ObjectIdentifier,
-        props: Binding<[String: JSValue]>,
+        props: Binding<[String: any Sendable]>,
         children: Binding<[AnyView]>,
         handler: @escaping (@escaping FTContext.ViewHandler) -> Void
     ) {
@@ -961,21 +966,22 @@ struct FTTextView: FTLayoutViewProtocol {
     }
 
     func content(_ info: FTLayoutInfo) -> some View {
-        Text(props["text"]?.toString() ?? "")
+        let text = props["text"] as? String ?? ""
+        return Text(text)
     }
 }
 
 struct FTTextInput: FTLayoutViewProtocol {
 
     @Binding
-    var props: [String: JSValue]
+    var props: [String: any Sendable]
 
     @Binding
     var children: [AnyView]
 
     init(
         nodeId: ObjectIdentifier,
-        props: Binding<[String: JSValue]>,
+        props: Binding<[String: any Sendable]>,
         children: Binding<[AnyView]>,
         handler: @escaping (@escaping FTContext.ViewHandler) -> Void
     ) {
@@ -984,21 +990,22 @@ struct FTTextInput: FTLayoutViewProtocol {
     }
 
     func content(_ info: FTLayoutInfo) -> some View {
-        TextField("", text: .constant(props["text"]?.toString() ?? ""))
+        let text = props["text"] as? String ?? ""
+        return TextField("", text: .constant(text))
     }
 }
 
 struct FTScrollView: FTLayoutViewProtocol {
 
     @Binding
-    var props: [String: JSValue]
+    var props: [String: any Sendable]
 
     @Binding
     var children: [AnyView]
 
     init(
         nodeId: ObjectIdentifier,
-        props: Binding<[String: JSValue]>,
+        props: Binding<[String: any Sendable]>,
         children: Binding<[AnyView]>,
         handler: @escaping (@escaping FTContext.ViewHandler) -> Void
     ) {
@@ -1007,8 +1014,8 @@ struct FTScrollView: FTLayoutViewProtocol {
     }
 
     func content(_ info: FTLayoutInfo) -> some View {
-        let horizontal = props["horizontal"]?.toBool() ?? false
-        let vertical = props["vertical"]?.toBool() ?? false
+        let horizontal = props["horizontal"] as? Bool ?? false
+        let vertical = props["vertical"] as? Bool ?? false
 
         var axes: Axis.Set = []
         if horizontal { axes.insert(.horizontal) }

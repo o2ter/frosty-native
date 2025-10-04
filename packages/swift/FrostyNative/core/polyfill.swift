@@ -23,8 +23,6 @@
 //  THE SOFTWARE.
 //
 
-import JavaScriptCore
-
 extension FTContext {
 
     func polyfill() {
@@ -63,13 +61,13 @@ extension FTContext {
     public typealias ViewHandler =
         @MainActor @Sendable (
             _ method: String,
-            _ args: [JSValue]
+            _ args: [any Sendable]
         ) -> Void
 
     public typealias ViewProvider =
         @MainActor @Sendable (
             _ nodeId: ObjectIdentifier,
-            _ props: Binding<[String: JSValue]>,
+            _ props: Binding<[String: any Sendable]>,
             _ children: Binding<[AnyView]>,
             _ handler: @escaping (@escaping ViewHandler) -> Void
         ) -> any View

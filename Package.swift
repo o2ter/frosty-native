@@ -37,7 +37,7 @@ let package = Package(
         .library(name: "FrostyNative", targets: ["FrostyNative"])
     ],
     dependencies: [
-        .package(url: "https://github.com/o2ter/SwiftJS.git", from: "0.0.1"),
+        .package(url: "https://github.com/o2ter/SwiftJS.git", from: "0.0.2"),
         .package(url: "https://github.com/apple/swift-algorithms", from: "1.2.1"),
         .package(url: "https://github.com/apple/swift-collections", from: "1.2.1"),
         .package(url: "https://github.com/apple/swift-async-algorithms", from: "1.0.0"),

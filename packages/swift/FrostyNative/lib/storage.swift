@@ -23,8 +23,6 @@
 //  THE SOFTWARE.
 //
 
-import JavaScriptCore
-
 @objc protocol NativeLocalStorageExport: JSExport {
     func keys() -> [String]
     func setItem(_ key: String, _ value: String)
