@@ -91,11 +91,6 @@ replace_content_in_file() {
         return
     fi
     
-    # Skip binary files by checking if they contain null bytes
-    if grep -q $'\0' "$file" 2>/dev/null; then
-        return
-    fi
-    
     # Skip certain file types that are likely binary or should not be modified
     case "$file" in
         *.png|*.jpg|*.jpeg|*.gif|*.ico|*.keystore|*.so|*.dylib|*.jar|*.zip|*.gradle-wrapper.jar)
@@ -105,6 +100,17 @@ replace_content_in_file() {
             return
             ;;
     esac
+    
+    # Use 'file' command for more reliable binary detection if available
+    # Otherwise fall back to checking file extension
+    if command -v file >/dev/null 2>&1; then
+        local file_type=$(file -b "$file" 2>/dev/null)
+        case "$file_type" in
+            *"executable"*|*"binary"*|*"archive"*|*"compressed"*)
+                return
+                ;;
+        esac
+    fi
     
     # Replace TemplateApp with the new project name (case-sensitive)
     if grep -q "TemplateApp" "$file" 2>/dev/null; then
