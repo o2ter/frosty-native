@@ -27,7 +27,7 @@ export * from './common';
 
 declare global {
 
-  const _FileSystem: {
+  const SystemFS: {
     readonly home: string;
     readonly temp: string;
     readonly cwd: string;
