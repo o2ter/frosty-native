@@ -12,8 +12,6 @@ The build system uses file suffixes for platform targeting:
 - `.web.ts/.tsx` - Web-specific implementations
 - No suffix - Universal/fallback implementation
 
-Example: `src/platform/spec/index.{android,apple,web}.ts` provides platform-specific `_Platform` implementations.
-
 ### Core Components
 - **AppRegistry** (`src/registry.tsx`) - Application registration and lifecycle management
 - **Platform API** (`src/platform/`) - Platform detection and device info access
@@ -22,7 +20,7 @@ Example: `src/platform/spec/index.{android,apple,web}.ts` provides platform-spec
 - **NativeModules** (`src/global.ts`) - Bridge to native platform capabilities
 
 ### Cross-Platform Bridge Pattern
-Global declarations (`__FROSTY_SPEC__`, `__APPLE_SPEC__`, `__ANDROID_SPEC__`) provide runtime bridges to native implementations. Native code registers these globals during app initialization.
+Object `__FROSTY_SPEC__` provide runtime bridges to native implementations. Native code registers this object during app initialization.
 
 ## Development Workflows
 

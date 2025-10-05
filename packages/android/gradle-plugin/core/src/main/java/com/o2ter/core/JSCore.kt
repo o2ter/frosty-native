@@ -154,7 +154,7 @@ internal class JSCore(val context: Context) {
             timerTasks[id]?.cancel()
             timerTasks.remove(id)
         }, "clearInterval")
-        runtime.addGlobalObject("__ANDROID_SPEC__") { spec ->
+        runtime.addGlobalObject("__NATIVE_BRIDGE__") { spec ->
             spec.addObject("crypto") {
                 it.registerJavaMethod(JavaCallback { _, _ -> UUID.randomUUID().toString() }, "randomUUID")
                 it.registerJavaMethod(JavaCallback { _, args ->

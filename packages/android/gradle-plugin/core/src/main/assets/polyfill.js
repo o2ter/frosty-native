@@ -98,13 +98,13 @@
 
   globalThis.crypto = new class Crypto {
     randomUUID() {
-      return __ANDROID_SPEC__.crypto.randomUUID();
+      return __NATIVE_BRIDGE__.crypto.randomUUID();
     }
     randomBytes(length) {
       if (!Number.isSafeInteger(length) || length < 0) {
         throw Error('Invalid length');
       }
-      return __ANDROID_SPEC__.crypto.randomBytes(length);
+      return __NATIVE_BRIDGE__.crypto.randomBytes(length);
     }
   }
 })();

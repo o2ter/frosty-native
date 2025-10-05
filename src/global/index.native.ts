@@ -1,3 +1,4 @@
+
 //
 //  index.native.ts
 //
@@ -23,8 +24,9 @@
 //  THE SOFTWARE.
 //
 
-export * from './common';
+import { _PlatformSpecType } from './common';
 
+export * from './common';
 declare global {
 
   const SystemFS: {

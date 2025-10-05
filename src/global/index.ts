@@ -24,3 +24,37 @@
 //
 
 export * from './common';
+
+Object.defineProperty(globalThis, '_PlatformSpec', {
+  value: {
+    spec: 'web',
+    get isRealDevice() {
+      return false;
+    },
+    get isMacCatalystApp() {
+      return false;
+    },
+    get isiOSAppOnMac() {
+      return false;
+    },
+    get appVersion() {
+      return undefined;
+    },
+    get buildVersion() {
+      return undefined;
+    },
+    get bundleIdentifier() {
+      return undefined;
+    },
+    get infoDictionary() {
+      return {};
+    },
+    get localizedInfoDictionary() {
+      return {};
+    },
+    identifierForVendor() {
+      return undefined;
+    }
+  },
+  writable: false,
+});

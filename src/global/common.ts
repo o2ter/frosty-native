@@ -23,6 +23,24 @@
 //  THE SOFTWARE.
 //
 
+import { Awaitable } from '@o2ter/utils-js';
+
+export type _PlatformSpecType = Readonly<{
+  spec: 'android' | 'apple' | 'web';
+  isRealDevice: boolean;
+  isMacCatalystApp: boolean;
+  isiOSAppOnMac: boolean;
+  appVersion: string | undefined;
+  buildVersion: string | undefined;
+  bundleIdentifier: string | undefined;
+  infoDictionary: {
+    [key: string]: string;
+  };
+  localizedInfoDictionary: {
+    [key: string]: string;
+  };
+  identifierForVendor(): Awaitable<string | undefined>;
+}>;
 declare global {
 
   namespace __NS_FROSTY_SPEC__ {
@@ -43,6 +61,8 @@ declare global {
       [key: string]: any;
     };
   };
+
+  const _PlatformSpec: _PlatformSpecType;
 }
 
 export const NativeModules = {
