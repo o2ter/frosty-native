@@ -1,5 +1,5 @@
 //
-//  common.ts
+//  index.ts
 //
 //  The MIT License
 //  Copyright (c) 2021 - 2025 O2ter Limited. All rights reserved.
@@ -23,49 +23,57 @@
 //  THE SOFTWARE.
 //
 
-import { Awaitable } from '@o2ter/utils-js';
+import { _PlatformSpecType } from '../global';
 
-export type _PlatformSpecType = Readonly<{
-  spec: 'android' | 'apple' | 'web';
-  isRealDevice: boolean;
-  isMacCatalystApp: boolean;
-  isiOSAppOnMac: boolean;
-  appVersion: string | undefined;
-  buildVersion: string | undefined;
-  bundleIdentifier: string | undefined;
-  infoDictionary: {
-    [key: string]: string;
-  };
-  localizedInfoDictionary: {
-    [key: string]: string;
-  };
-  identifierForVendor(): Awaitable<string | undefined>;
-}>;
+type PlatformSpec = _PlatformSpecType['spec'];
 
-declare global {
+export class Platform {
 
-  namespace __NS_FROSTY_SPEC__ {
-
-    interface LocalStorage {
-      keys(): string[];
-      setItem(key: string, value: string): void;
-      getItem(key: string): string | undefined;
-      removeItem(key: string): void;
-      clear(): void;
-    }
+  static get type() {
+    return _PlatformSpec.spec;
   }
 
-  const __FROSTY_SPEC__: {
-    get SOURCE_URL(): string | undefined;
-    get NativeModules(): {
-      get localStorage(): __NS_FROSTY_SPEC__.LocalStorage;
-      [key: string]: any;
-    };
-  };
+  static select<T>(config: {
+    [key in PlatformSpec | (string & {})]?: T;
+  } & {
+    default: T;
+  }): T {
+    return config[this.type] ?? config.default;
+  }
 
-  const _PlatformSpec: _PlatformSpecType;
+  static get isRealDevice() {
+    return _PlatformSpec.isRealDevice;
+  }
+
+  static get isMacCatalystApp() {
+    return _PlatformSpec.isMacCatalystApp;
+  }
+
+  static get isiOSAppOnMac() {
+    return _PlatformSpec.isiOSAppOnMac;
+  }
+
+  static get infoDictionary() {
+    return _PlatformSpec.infoDictionary;
+  }
+
+  static get localizedInfoDictionary() {
+    return _PlatformSpec.localizedInfoDictionary;
+  }
+
+  static get appVersion() {
+    return _PlatformSpec.appVersion;
+  }
+
+  static get buildVersion() {
+    return _PlatformSpec.buildVersion;
+  }
+
+  static get bundleIdentifier() {
+    return _PlatformSpec.bundleIdentifier;
+  }
+
+  static async identifierForVendor() {
+    return _PlatformSpec.identifierForVendor();
+  }
 }
-
-export const NativeModules = {
-  ...__FROSTY_SPEC__.NativeModules,
-};
