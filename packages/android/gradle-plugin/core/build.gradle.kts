@@ -31,6 +31,15 @@ plugins {
 
 group = "com.o2ter"
 
+android {
+    namespace = "com.o2ter"
+    compileSdk = 35
+
+    buildFeatures {
+        compose = true
+    }
+}
+
 java { targetCompatibility = JavaVersion.VERSION_11 }
 
 kotlin { jvmToolchain(17) }
