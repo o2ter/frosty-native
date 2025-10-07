@@ -33,7 +33,7 @@ group = "com.o2ter"
 
 android {
     namespace = "com.o2ter"
-    compileSdk = 35
+    compileSdk = 36
 
     buildFeatures {
         compose = true
