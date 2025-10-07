@@ -54,6 +54,7 @@ dependencyResolutionManagement {
 sourceControl {
     gitRepository(uri("https://github.com/o2ter/JSCore.git")) {
         producesModule("com.o2ter:jscore")
+        producesModule("com.o2ter:jscore-android")
     }
 }
 
