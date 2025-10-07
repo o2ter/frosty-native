@@ -63,7 +63,7 @@ dependencies {
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.lifecycle.runtime.compose)
     implementation(libs.androidx.lifecycle.viewmodel.savedstate)
-    implementation("com.o2ter:jscore-android")
+    implementation("com.o2ter:jscore")
 }
 
 tasks.preBuild {
