@@ -34,9 +34,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import com.eclipsesource.v8.V8
-import com.eclipsesource.v8.V8Object
-import com.eclipsesource.v8.utils.V8ObjectUtils
 import java.util.UUID
 
 internal typealias ComponentHandler = (method: String, args: List<Any?>) -> Unit

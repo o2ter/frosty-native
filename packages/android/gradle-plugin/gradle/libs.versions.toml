@@ -1,16 +1,16 @@
 [versions]
 collectionKtx = "1.5.0"
-concurrentFutures = "1.2.0"
-coreKtx = "1.16.0"
-fragmentKtx = "1.8.8"
-guava = "31.1-android"
-jscore = "0.0.1"
-kotlin = "2.0.0"
-androidGradlePlugin = "8.10.1"
-activityCompose = "1.10.1"
-composeBom = "2025.06.01"
-kotlinxCoroutinesGuava = "1.7.3"
-lifecycleVersion = "2.9.1"
+concurrentFutures = "1.3.0"
+coreKtx = "1.17.0"
+fragmentKtx = "1.8.9"
+guava = "33.5.0-android"
+jscore = "0.0.2"
+kotlin = "2.2.20"
+androidGradlePlugin = "8.12.3"
+activityCompose = "1.11.0"
+composeBom = "2025.09.01"
+kotlinxCoroutinesGuava = "1.10.2"
+lifecycleVersion = "2.9.4"
 
 [libraries]
 androidx-collection-ktx = { module = "androidx.collection:collection-ktx", version.ref = "collectionKtx" }
