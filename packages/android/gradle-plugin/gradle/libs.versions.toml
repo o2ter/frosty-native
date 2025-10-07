@@ -4,6 +4,7 @@ concurrentFutures = "1.2.0"
 coreKtx = "1.16.0"
 fragmentKtx = "1.8.8"
 guava = "31.1-android"
+jscore = "0.0.1"
 kotlin = "2.0.0"
 androidGradlePlugin = "8.10.1"
 activityCompose = "1.10.1"
@@ -32,6 +33,7 @@ androidx-ui-graphics = { group = "androidx.compose.ui", name = "ui-graphics" }
 androidx-ui-tooling-preview = { group = "androidx.compose.ui", name = "ui-tooling-preview" }
 androidx-material3 = { group = "androidx.compose.material3", name = "material3" }
 kotlinx-coroutines-guava = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-guava", version.ref = "kotlinxCoroutinesGuava" }
+o2ter-jscore = { module = "com.o2ter:JSCore", version.ref = "jscore" }
 
 [plugins]
 android-library = { id = "com.android.library", version.ref = "androidGradlePlugin" }

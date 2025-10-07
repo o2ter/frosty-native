@@ -31,15 +31,6 @@ plugins {
 
 group = "com.o2ter"
 
-android {
-    namespace = "com.o2ter"
-    compileSdk = 35
-
-    buildFeatures {
-        compose = true
-    }
-}
-
 java { targetCompatibility = JavaVersion.VERSION_11 }
 
 kotlin { jvmToolchain(17) }
@@ -63,7 +54,7 @@ dependencies {
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.lifecycle.runtime.compose)
     implementation(libs.androidx.lifecycle.viewmodel.savedstate)
-    implementation("com.eclipsesource.j2v8:j2v8:6.2.1@aar")
+    implementation(libs.o2ter.jscore)
 }
 
 tasks.preBuild {

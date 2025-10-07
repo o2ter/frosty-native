@@ -51,6 +51,12 @@ dependencyResolutionManagement {
     }
 }
 
+sourceControl {
+    gitRepository(uri("https://github.com/o2ter/JSCore.git")) {
+        producesModule("com.o2ter:JSCore")
+    }
+}
+
 rootProject.name = "frosty-native-gradle-plugin"
 include("core")
 include("plugin")
