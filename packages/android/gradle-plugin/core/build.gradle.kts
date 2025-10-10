@@ -79,5 +79,6 @@ tasks.preBuild {
             parentLocalPropertiesFile.copyTo(localPropertiesFile, true)
             break
         }
+        gradle = gradle?.parent
     } while (gradle != null)
 }
