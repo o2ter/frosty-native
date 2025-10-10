@@ -1,3 +1,5 @@
+import com.android.build.gradle.LibraryExtension
+
 //
 //  build.gradle.kts
 //
@@ -31,9 +33,19 @@ plugins {
 
 group = "com.o2ter"
 
+var rootAndroid: LibraryExtension? = null
+do {
+    var gradle = gradle.parent
+    if (gradle?.rootProject?.extensions?.findByName("android") != null) {
+        rootAndroid = gradle.rootProject.android
+        break
+    }
+    gradle = gradle?.parent
+} while (gradle != null)
+
 android {
     namespace = "com.o2ter"
-    compileSdk = 36
+    compileSdk = rootAndroid?.compileSdk ?: 36
 
     buildFeatures {
         compose = true
