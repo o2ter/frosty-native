@@ -34,14 +34,21 @@ plugins {
 group = "com.o2ter"
 
 var rootAndroid: LibraryExtension? = null
-do {
+{
+    println("Searching for root android project...")
     var gradle = gradle.parent
-    if (gradle?.rootProject?.extensions?.findByName("android") != null) {
-        rootAndroid = gradle.rootProject.android
-        break
+    do {
+        if (gradle?.rootProject?.extensions?.findByName("android") != null) {
+            rootAndroid = gradle.rootProject.android
+            println("✓ Found root android project: ${gradle.rootProject.name}")
+            break
+        }
+        gradle = gradle?.parent
+    } while (gradle != null)
+    if (rootAndroid == null) {
+        println("✗ Root android project not found, using default configuration.")
     }
-    gradle = gradle?.parent
-} while (gradle != null)
+}()
 
 android {
     namespace = "com.o2ter"
