@@ -75,6 +75,7 @@ tasks.preBuild {
             if (!localPropertiesFile.exists()) {
                 localPropertiesFile.createNewFile()
             }
+            println("Copying local.properties from $parentLocalPropertiesFile project to $localPropertiesFile")
             parentLocalPropertiesFile.copyTo(localPropertiesFile, true)
             break
         }
