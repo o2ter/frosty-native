@@ -54,7 +54,6 @@ import androidx.core.os.LocaleListCompat
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.currentStateAsState
 import com.o2ter.app.ui.theme.AppTheme
-import com.o2ter.core.discard
 import com.o2ter.runtime.FTContext
 import kotlinx.coroutines.Deferred
 import java.io.InputStream

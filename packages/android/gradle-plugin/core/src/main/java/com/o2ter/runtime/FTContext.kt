@@ -37,10 +37,8 @@ import com.o2ter.app.FTTextInput
 import com.o2ter.app.FTTextView
 import com.o2ter.app.FTView
 import com.o2ter.app.FrostyNativeActivity
-import com.o2ter.core.JSCore
-import com.o2ter.core.addGlobalObject
-import com.o2ter.core.addObject
-import com.o2ter.core.discard
+import com.o2ter.jscore.JavaScriptEngine
+import com.o2ter.jscore.android.AndroidPlatformContext
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Deferred
 import java.io.InputStream
@@ -48,11 +46,11 @@ import java.io.InputStream
 @RequiresApi(Build.VERSION_CODES.P)
 internal class FTContext(private val activity: FrostyNativeActivity, val context: Context) {
 
-    private val core: JSCore = JSCore(context)
+    private val engine = JavaScriptEngine(AndroidPlatformContext(context))
 
     init {
         val self = this
-        core.withRuntime {
+        engine.withRuntime {
             polyfill(it)
             self.register(it, "FTView") { nodeId, props, handler, content -> FTView(nodeId, props, handler, content) }
             self.register(it, "FTImageView") { nodeId, props, handler, content -> FTImageView(nodeId, props, handler, content) }
@@ -101,31 +99,31 @@ internal class FTContext(private val activity: FrostyNativeActivity, val context
     }
 
     fun <T> withRuntime(block: suspend CoroutineScope.(V8) -> T): Deferred<T> {
-        return core.withRuntime(block)
+        return engine.withRuntime(block)
     }
 
     fun executeScript(code: String): Deferred<Any> {
-        return core.executeScript(code)
+        return engine.executeScript(code)
     }
 
     fun executeScript(stream: InputStream): Deferred<Any> {
-        return core.executeScript(stream)
+        return engine.executeScript(stream)
     }
 
     fun executeObjectScript(code: String): Deferred<V8Object> {
-        return core.executeObjectScript(code)
+        return engine.executeObjectScript(code)
     }
 
     fun executeObjectScript(stream: InputStream): Deferred<V8Object> {
-        return core.executeObjectScript(stream)
+        return engine.executeObjectScript(stream)
     }
 
     fun executeVoidScript(code: String): Deferred<Unit> {
-        return core.executeVoidScript(code)
+        return engine.executeVoidScript(code)
     }
 
     fun executeVoidScript(stream: InputStream): Deferred<Unit> {
-        return core.executeVoidScript(stream)
+        return engine.executeVoidScript(stream)
     }
 
     fun register(runtime: V8, name: String, component: Component) {

@@ -66,6 +66,7 @@ java { targetCompatibility = JavaVersion.VERSION_11 }
 kotlin { jvmToolchain(17) }
 
 dependencies {
+    implementation(libs.jscore)
     implementation(libs.guava)
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.collection.ktx)
@@ -84,7 +85,8 @@ dependencies {
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.lifecycle.runtime.compose)
     implementation(libs.androidx.lifecycle.viewmodel.savedstate)
-    implementation(libs.jscore)
+    implementation(libs.androidx.runtime)
+    implementation(libs.androidx.annotation.jvm)
 }
 
 afterEvaluate {
