@@ -23,6 +23,8 @@
 //  THE SOFTWARE.
 //
 
+import me.champeau.gradle.igp.gitRepositories
+
 pluginManagement {
     repositories {
         google {
@@ -41,6 +43,7 @@ pluginManagement {
 }
 plugins {
     id("org.gradle.toolchains.foojay-resolver-convention") version "1.0.0"
+    id("me.champeau.includegit") version "0.3.1"
 }
 dependencyResolutionManagement {
     repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
@@ -51,10 +54,10 @@ dependencyResolutionManagement {
     }
 }
 
-sourceControl {
-    gitRepository(uri("https://github.com/o2ter/JSCore.git")) {
-        producesModule("com.o2ter.jscore:jscore")
-        producesModule("com.o2ter.jscore:jscore-android")
+gitRepositories {
+    include("jscore") {
+        uri.set("https://github.com/o2ter/JSCore.git")
+        tag.set("0.0.20")
     }
 }
 
