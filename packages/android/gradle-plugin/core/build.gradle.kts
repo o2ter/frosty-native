@@ -67,6 +67,7 @@ kotlin { jvmToolchain(17) }
 
 dependencies {
     implementation(libs.jscore)
+    implementation(libs.jscore.android)
     implementation(libs.guava)
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.collection.ktx)
