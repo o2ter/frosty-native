@@ -198,3 +198,4 @@ fastlane/test_output
 
 # Temp
 .temp
+.checkouts
