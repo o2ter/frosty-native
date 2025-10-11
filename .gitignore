@@ -166,6 +166,7 @@ Carthage/Build
 #
 build/
 .idea
+.kotlin/
 .gradle
 local.properties
 *.iml
