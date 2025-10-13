@@ -59,6 +59,10 @@ android {
     buildFeatures {
         compose = true
     }
+
+    defaultConfig {
+        minSdk = 24
+    }
 }
 
 java { targetCompatibility = JavaVersion.VERSION_11 }
