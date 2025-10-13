@@ -766,6 +766,9 @@ extension FTLayoutViewProtocol {
             view = AnyView(view.background(Color(hexString: backgroundColor)))
         }
 
+        // Apply padding
+        view = AnyView(view.padding(paddingInsets))
+
         // Apply border styles using overlays for per-side control
         var borderedView = view
 
@@ -845,9 +848,6 @@ extension FTLayoutViewProtocol {
                 }
             }
         }
-
-        // Apply padding
-        view = AnyView(view.padding(paddingInsets))
 
         // Apply onLayout if present
         if let onLayout = props["onLayout"] {
