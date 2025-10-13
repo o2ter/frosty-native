@@ -759,12 +759,28 @@ extension FTLayoutViewProtocol {
             view = AnyView(view.background(Color(hexString: backgroundColor)))
         }
 
-        // Apply border styles using overlays for per-side control
-        var borderedView = view
+        // Apply onLayout if present
+        if let onLayout = props["onLayout"] {
+            view = AnyView(
+                view.onGeometryChange(for: Layout.self) {
+                    Layout(
+                        global: $0.frame(in: .global),
+                        local: $0.frame(in: .local)
+                    )
+                } action: { layout in
+                    SwiftJS.Value(onLayout).call(withArguments: [
+                        [
+                            "global": layout.global.toJSValue(),
+                            "local": layout.local.toJSValue(),
+                        ]
+                    ])
+                })
+        }
 
+        // Apply border styles using overlays for per-side control
         if let topWidth = borderTopWidth, topWidth > 0 {
-            borderedView = AnyView(
-                borderedView.overlay(
+            view = AnyView(
+                view.overlay(
                     Rectangle()
                         .frame(height: topWidth)
                         .foregroundColor(Color(hexString: borderTopColor ?? "#000000")),
@@ -773,8 +789,8 @@ extension FTLayoutViewProtocol {
         }
 
         if let bottomWidth = borderBottomWidth, bottomWidth > 0 {
-            borderedView = AnyView(
-                borderedView.overlay(
+            view = AnyView(
+                view.overlay(
                     Rectangle()
                         .frame(height: bottomWidth)
                         .foregroundColor(Color(hexString: borderBottomColor ?? "#000000")),
@@ -783,8 +799,8 @@ extension FTLayoutViewProtocol {
         }
 
         if let leftWidth = borderLeftWidth, leftWidth > 0 {
-            borderedView = AnyView(
-                borderedView.overlay(
+            view = AnyView(
+                view.overlay(
                     Rectangle()
                         .frame(width: leftWidth)
                         .foregroundColor(Color(hexString: borderLeftColor ?? "#000000")),
@@ -793,16 +809,14 @@ extension FTLayoutViewProtocol {
         }
 
         if let rightWidth = borderRightWidth, rightWidth > 0 {
-            borderedView = AnyView(
-                borderedView.overlay(
+            view = AnyView(
+                view.overlay(
                     Rectangle()
                         .frame(width: rightWidth)
                         .foregroundColor(Color(hexString: borderRightColor ?? "#000000")),
                     alignment: .trailing
                 ))
         }
-
-        view = borderedView
 
         // Apply border radius
         if let radius = borderTopLeftRadius ?? borderTopRightRadius ?? borderBottomLeftRadius
@@ -837,24 +851,6 @@ extension FTLayoutViewProtocol {
                     break  // Handle other transforms as needed
                 }
             }
-        }
-
-        // Apply onLayout if present
-        if let onLayout = props["onLayout"] {
-            view = AnyView(
-                view.onGeometryChange(for: Layout.self) {
-                    Layout(
-                        global: $0.frame(in: .global),
-                        local: $0.frame(in: .local)
-                    )
-                } action: { layout in
-                    SwiftJS.Value(onLayout).call(withArguments: [
-                        [
-                            "global": layout.global.toJSValue(),
-                            "local": layout.local.toJSValue(),
-                        ]
-                    ])
-                })
         }
 
         // Apply margin as outer padding
