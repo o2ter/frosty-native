@@ -751,23 +751,13 @@ extension FTLayoutViewProtocol {
             view = AnyView(view.offset(x: x, y: y))
         }
 
-        // Apply z-index
-        if let zIndex = zIndex {
-            view = AnyView(view.zIndex(Double(zIndex)))
-        }
-
-        // Apply opacity
-        if opacity != 1 {
-            view = AnyView(view.opacity(opacity))
-        }
+        // Apply padding
+        view = AnyView(view.padding(paddingInsets))
 
         // Apply background color
         if let backgroundColor = backgroundColor {
             view = AnyView(view.background(Color(hexString: backgroundColor)))
         }
-
-        // Apply padding
-        view = AnyView(view.padding(paddingInsets))
 
         // Apply border styles using overlays for per-side control
         var borderedView = view
@@ -868,7 +858,19 @@ extension FTLayoutViewProtocol {
         }
 
         // Apply margin as outer padding
-        return AnyView(view.padding(marginInsets))
+        view = AnyView(view.padding(marginInsets))
+
+        // Apply opacity
+        if opacity != 1 {
+            view = AnyView(view.opacity(opacity))
+        }
+
+        // Apply z-index
+        if let zIndex = zIndex {
+            view = AnyView(view.zIndex(Double(zIndex)))
+        }
+
+        return view
     }
 
     var body: some View {
