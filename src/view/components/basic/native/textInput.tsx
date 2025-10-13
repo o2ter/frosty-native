@@ -71,6 +71,6 @@ export const TextInput: ComponentType<TextInputProps> = ({
 
   return _createNativeElement(FTTextInput, {
     style: _style,
-    ...useResponderEvents(props, nativeRef)
+    ...useResponderEvents({ disabled, ...props }, nativeRef)
   });
 };

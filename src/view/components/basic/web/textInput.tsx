@@ -165,7 +165,7 @@ export const TextInput: ComponentType<TextInputProps> = ({
     }
   } : undefined);
 
-  const responders = useResponderEvents(props, nativeRef, targetRef);
+  const responders = useResponderEvents({ disabled, ...props }, nativeRef, targetRef);
 
   const { style: scrollStyle, ...scrollProps } = useScrollProps(nativeRef, targetRef, { horizontal, vertical, ...props });
 
