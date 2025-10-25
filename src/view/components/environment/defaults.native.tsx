@@ -1,6 +1,5 @@
-
 //
-//  index.native.ts
+//  defaults.native.tsx
 //
 //  The MIT License
 //  Copyright (c) 2021 - 2025 O2ter Limited. All rights reserved.
@@ -24,34 +23,6 @@
 //  THE SOFTWARE.
 //
 
-import { _PlatformSpecType } from './common';
+import { defaultEnvironmentValues } from './types';
 
-export * from './common';
-
-declare global {
-
-  const SystemFS: {
-    readonly home: string;
-    readonly temp: string;
-    readonly cwd: string;
-  }
-
-  namespace __NS_FROSTY_SPEC__ {
-
-    interface LocalStorage {
-      keys(): string[];
-      setItem(key: string, value: string): void;
-      getItem(key: string): string | undefined;
-      removeItem(key: string): void;
-      clear(): void;
-    }
-  }
-
-  const __FROSTY_SPEC__: {
-    get SOURCE_URL(): string | undefined;
-    get NativeModules(): {
-      get localStorage(): __NS_FROSTY_SPEC__.LocalStorage;
-      [key: string]: any;
-    };
-  };
-}
+export const useDefault = () => defaultEnvironmentValues;

@@ -23,7 +23,7 @@
 //  THE SOFTWARE.
 //
 
-import { AppRegistry } from '../../src';
+import { AppRegistry } from '../../src/main/index.native';
 import App from './src/App';
 
 AppRegistry.registerComponent('main', App);

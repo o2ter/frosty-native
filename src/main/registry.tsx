@@ -26,10 +26,10 @@
 import _ from 'lodash';
 import { ComponentType, createElement, createStore, useStore } from 'frosty';
 import { NativeRenderer } from './renderer';
-import { NativeNodeType } from './view/components/basic/native/node';
-import { Environment } from './view';
-import { EnvironmentValues } from './view/components/environment/types';
-import { AppEventContext } from './view/components/appEvent';
+import { NativeNodeType } from '../view/components/basic/native/node';
+import { Environment } from '../view';
+import { EnvironmentValues } from '../view/components/environment/types';
+import { AppEventContext } from '../view/components/appEvent';
 import { EventEmitter } from 'frosty/_native';
 
 export const AppRegistry = (() => {

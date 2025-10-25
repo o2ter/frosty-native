@@ -25,7 +25,7 @@
 
 import { ComponentRef, ComponentType, mergeRefs, useRef, useRefHandle } from 'frosty';
 import { _createNativeElement } from 'frosty/_native';
-import { NativeModules } from '../../../../global';
+import { NativeModules } from './modules';
 import { NativeNode } from './node';
 import { TextInputProps } from '../types/textInput';
 import { useTextStyle } from '../../textStyle';

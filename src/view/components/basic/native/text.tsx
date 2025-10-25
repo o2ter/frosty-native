@@ -26,7 +26,7 @@
 import _ from 'lodash';
 import { ComponentRef, ComponentType, createPairs, mergeRefs, useRef, useRefHandle, useStack } from 'frosty';
 import { _createNativeElement } from 'frosty/_native';
-import { NativeModules } from '../../../../global';
+import { NativeModules } from './modules';
 import { NativeNode } from './node';
 import { TextViewProps } from '../types/text';
 import { useTextStyle } from '../../textStyle';

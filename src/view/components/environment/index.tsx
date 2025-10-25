@@ -26,7 +26,7 @@
 import _ from 'lodash';
 import { createContext, PropsWithChildren, useContext } from 'frosty';
 import { EnvironmentValues } from './types';
-import { useDefault } from './defaults';
+import { useDefault } from './defaults.native';
 
 const Context = createContext<EnvironmentValues | typeof useDefault>(useDefault);
 

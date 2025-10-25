@@ -24,7 +24,7 @@
 //
 
 import { useEffect, useState } from 'frosty';
-import { Text, View } from '../../../src';
+import { Text, View } from '../../../src/main/index.native';
 
 export default function App() {
   const [counter, setCounter] = useState(0);

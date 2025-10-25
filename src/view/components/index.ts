@@ -24,7 +24,7 @@
 //
 
 export { useAppEvent } from './appEvent';
-export * from './basic';
+export * from './basic/index';
 export * from './environment';
 export * from './gestures';
 export * from './pressable';

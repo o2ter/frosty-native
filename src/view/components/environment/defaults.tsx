@@ -23,6 +23,54 @@
 //  THE SOFTWARE.
 //
 
-import { defaultEnvironmentValues } from './types';
+import {
+  useColorScheme,
+  useOnline,
+  useVisibility,
+  useWindow,
+  useWindowMetrics,
+  useVisualViewportMetrics,
+} from 'frosty/web';
+import { defaultEnvironmentValues, EnvironmentValues } from './types';
 
-export const useDefault = () => defaultEnvironmentValues;
+export const useDefault = (): EnvironmentValues => {
+  const window = useWindow();
+  const { document } = window;
+  const {
+    devicePixelRatio,
+    safeAreaInsets,
+  } = useWindowMetrics();
+  const visualViewport = useVisualViewportMetrics();
+
+  const scenePhase = useVisibility();
+  const online = useOnline();
+
+  let height;
+  let width;
+  if (visualViewport) {
+    height = Math.round(visualViewport.height * visualViewport.scale);
+    width = Math.round(visualViewport.width * visualViewport.scale);
+  } else {
+    const docEl = document.documentElement;
+    height = docEl.clientHeight;
+    width = docEl.clientWidth;
+  }
+
+  return {
+    ...defaultEnvironmentValues,
+    scenePhase,
+    layoutDirection: document.dir === 'rtl' ? 'rtl' : 'ltr',
+    pixelDensity: devicePixelRatio,
+    pixelLength: 1 / devicePixelRatio,
+    colorScheme: useColorScheme(),
+    displayWidth: width,
+    displayHeight: height,
+    safeAreaInsets,
+    network: { online },
+    ...typeof navigator === 'undefined' ? {} : {
+      userLocale: navigator.language,
+      languages: navigator.languages ? [...navigator.languages] : [navigator.language],
+      timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+    },
+  };
+};

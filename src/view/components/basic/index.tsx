@@ -23,10 +23,10 @@
 //  THE SOFTWARE.
 //
 
-export type { useResponderEvents } from './web/events';
+export { useResponderEvents } from './web/events';
 
-export { ScrollView } from './native/scrollView';
-export { Text } from './native/text';
-export { TextInput } from './native/textInput';
-export { View } from './native/view';
-export { Image } from './native/image';
+export { ScrollView } from './web/scrollView';
+export { Text } from './web/text';
+export { TextInput } from './web/textInput';
+export { View } from './web/view';
+export { Image } from './web/image';

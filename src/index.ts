@@ -23,18 +23,4 @@
 //  THE SOFTWARE.
 //
 
-import _ from 'lodash';
-import { AppRegistry } from './registry';
-
-export * from './view';
-export * from './platform';
-export * from './global';
-export { NativeNode } from './view/components/basic/native/node';
-export { NativeRenderer } from './renderer';
-
-export { AppRegistry };
-
-Object.defineProperty(__FROSTY_SPEC__, 'AppRegistry', {
-  value: AppRegistry,
-  writable: false,
-});
+export * from './main/index.native';

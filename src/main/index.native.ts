@@ -1,5 +1,5 @@
 //
-//  renderer.ts
+//  index.ts
 //
 //  The MIT License
 //  Copyright (c) 2021 - 2025 O2ter Limited. All rights reserved.
@@ -23,39 +23,16 @@
 //  THE SOFTWARE.
 //
 
-import _ from 'lodash';
-import { _Renderer, VNode } from 'frosty/_native';
-import { NativeNode, NativeNodeType } from './view/components/basic/native/node';
+import { AppRegistry } from './registry';
 
-export class NativeRenderer extends _Renderer<NativeNodeType> {
+export * from './common';
+export * from '../global';
+export { NativeNode } from '../view/components/basic/native/node';
+export { NativeRenderer } from './renderer';
 
-  get _server(): boolean {
-    return false;
-  }
+export { AppRegistry };
 
-  protected _beforeUpdate() {
-  }
-
-  protected _afterUpdate() {
-  }
-
-  protected _createElement(node: VNode, stack: VNode[]): NativeNodeType {
-    const { type } = node;
-    if (_.isString(type) || !(type.prototype instanceof NativeNode)) throw Error('Invalid type');
-    const ElementType = type as any;
-    const element = new ElementType();
-    return element;
-  }
-
-  protected _updateElement(node: VNode, element: NativeNodeType, children: (string | NativeNodeType)[], stack: VNode[], force?: boolean) {
-    const { props } = node;
-    element.update(props, element instanceof NativeNode
-      ? children
-      : _.map(children, x => x instanceof NativeNode ? x._native : x)
-    );
-  }
-
-  protected _destroyElement(node: VNode, element: NativeNodeType) {
-    element.destroy();
-  }
-}
+Object.defineProperty(__FROSTY_SPEC__, 'AppRegistry', {
+  value: AppRegistry,
+  writable: false,
+});

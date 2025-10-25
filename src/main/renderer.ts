@@ -1,6 +1,5 @@
-
 //
-//  index.native.ts
+//  renderer.ts
 //
 //  The MIT License
 //  Copyright (c) 2021 - 2025 O2ter Limited. All rights reserved.
@@ -24,34 +23,39 @@
 //  THE SOFTWARE.
 //
 
-import { _PlatformSpecType } from './common';
+import _ from 'lodash';
+import { _Renderer, VNode } from 'frosty/_native';
+import { NativeNode, NativeNodeType } from '../view/components/basic/native/node';
 
-export * from './common';
+export class NativeRenderer extends _Renderer<NativeNodeType> {
 
-declare global {
-
-  const SystemFS: {
-    readonly home: string;
-    readonly temp: string;
-    readonly cwd: string;
+  get _server(): boolean {
+    return false;
   }
 
-  namespace __NS_FROSTY_SPEC__ {
-
-    interface LocalStorage {
-      keys(): string[];
-      setItem(key: string, value: string): void;
-      getItem(key: string): string | undefined;
-      removeItem(key: string): void;
-      clear(): void;
-    }
+  protected _beforeUpdate() {
   }
 
-  const __FROSTY_SPEC__: {
-    get SOURCE_URL(): string | undefined;
-    get NativeModules(): {
-      get localStorage(): __NS_FROSTY_SPEC__.LocalStorage;
-      [key: string]: any;
-    };
-  };
+  protected _afterUpdate() {
+  }
+
+  protected _createElement(node: VNode, stack: VNode[]): NativeNodeType {
+    const { type } = node;
+    if (_.isString(type) || !(type.prototype instanceof NativeNode)) throw Error('Invalid type');
+    const ElementType = type as any;
+    const element = new ElementType();
+    return element;
+  }
+
+  protected _updateElement(node: VNode, element: NativeNodeType, children: (string | NativeNodeType)[], stack: VNode[], force?: boolean) {
+    const { props } = node;
+    element.update(props, element instanceof NativeNode
+      ? children
+      : _.map(children, x => x instanceof NativeNode ? x._native : x)
+    );
+  }
+
+  protected _destroyElement(node: VNode, element: NativeNodeType) {
+    element.destroy();
+  }
 }
