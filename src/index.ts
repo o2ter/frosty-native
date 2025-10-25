@@ -23,4 +23,4 @@
 //  THE SOFTWARE.
 //
 
-export * from './main/index.native';
+export * from './main/index';
