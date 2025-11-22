@@ -77,7 +77,6 @@ internal fun FTContext.run(
     )
 }
 
-@RequiresApi(Build.VERSION_CODES.N)
 internal fun currentNetworkType(context: Context): State<String?> {
     val result = mutableStateOf<String?>(null)
     val connectivityManager = context.getSystemService(ConnectivityManager::class.java)

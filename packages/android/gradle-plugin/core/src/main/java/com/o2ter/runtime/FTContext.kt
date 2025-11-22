@@ -129,27 +129,16 @@ internal class FTContext(private val activity: FrostyNativeActivity, val context
         val factory = { _: Array<Any?> ->
             val node = FTNodeState(activity, component)
             // Return the node state object
-            node
+            node.toNodeObject()
         }
-
-        // Register the factory in __FROSTY_SPEC__.NativeModules
-        engine.execute("""
-            if (!globalThis.__FROSTY_SPEC__) {
-                globalThis.__FROSTY_SPEC__ = { NativeModules: {} };
-            }
-            if (!globalThis.__FROSTY_SPEC__.NativeModules) {
-                globalThis.__FROSTY_SPEC__.NativeModules = {};
-            }
-        """.trimIndent())
-
-        // Get current NativeModules
-        val nativeModules = engine.get("__FROSTY_SPEC__") as? Map<*, *>
-        val modules = (nativeModules?.get("NativeModules") as? Map<*, *>)?.toMutableMap() ?: mutableMapOf<Any?, Any?>()
-        modules[name] = factory
-
-        // Update NativeModules
-        engine.set("__FROSTY_SPEC__", mapOf(
-            "NativeModules" to modules
-        ))
+        engine.execute(
+            mapOf("module" to factory),
+            """
+            (function() {
+                const NativeModules = __FROSTY_SPEC__.NativeModules;
+                NativeModules['${name}'] = module;
+            })()
+            """.trimIndent()
+        )
     }
 }
