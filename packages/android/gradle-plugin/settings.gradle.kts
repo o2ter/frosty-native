@@ -58,7 +58,7 @@ gitRepositories {
     checkoutsDirectory.set(file(".checkouts"))
     include("jscore") {
         uri.set("https://github.com/o2ter/JSCore.git")
-        tag.set("0.0.21")
+        tag.set("0.0.22")
     }
 }
 
