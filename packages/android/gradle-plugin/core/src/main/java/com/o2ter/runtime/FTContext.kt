@@ -39,8 +39,6 @@ import com.o2ter.app.FTView
 import com.o2ter.app.FrostyNativeActivity
 import com.o2ter.jscore.JavaScriptEngine
 import com.o2ter.jscore.android.AndroidPlatformContext
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Deferred
 import java.io.InputStream
 
 @RequiresApi(Build.VERSION_CODES.P)
@@ -49,88 +47,109 @@ internal class FTContext(private val activity: FrostyNativeActivity, val context
     private val engine = JavaScriptEngine(AndroidPlatformContext(context))
 
     init {
-        val self = this
-        engine.withRuntime {
-            polyfill(it)
-            self.register(it, "FTView") { nodeId, props, handler, content -> FTView(nodeId, props, handler, content) }
-            self.register(it, "FTImageView") { nodeId, props, handler, content -> FTImageView(nodeId, props, handler, content) }
-            self.register(it, "FTTextView") { nodeId, props, handler, content -> FTTextView(nodeId, props, handler, content) }
-            self.register(it, "FTTextInput") { nodeId, props, handler, content -> FTTextInput(nodeId, props, handler, content) }
-            self.register(it, "FTScrollView") { nodeId, props, handler, content -> FTScrollView(nodeId, props, handler, content) }
-        }.discard()
+        polyfill()
+        register("FTView") { nodeId, props, handler, content -> FTView(nodeId, props, handler, content) }
+        register("FTImageView") { nodeId, props, handler, content -> FTImageView(nodeId, props, handler, content) }
+        register("FTTextView") { nodeId, props, handler, content -> FTTextView(nodeId, props, handler, content) }
+        register("FTTextInput") { nodeId, props, handler, content -> FTTextInput(nodeId, props, handler, content) }
+        register("FTScrollView") { nodeId, props, handler, content -> FTScrollView(nodeId, props, handler, content) }
     }
 
-    private fun polyfill(runtime: V8) {
+    private fun polyfill() {
         val preferences = activity.getPreferences(Context.MODE_PRIVATE)
-        runtime.addGlobalObject("__FROSTY_SPEC__") {
-            it.addObject("NativeModules") {
-                it.addObject("localStorage") {
-                    it.registerJavaMethod(JavaCallback { _, _ ->
-                        V8ObjectUtils.toV8Array(runtime, preferences.all.map { it.key })
-                    }, "keys")
-                    it.registerJavaMethod(JavaCallback { _, args ->
-                        if (args.length() != 1) throw IllegalArgumentException()
-                        val key = args.getString(0)
-                        preferences.getString(key, null)
-                    }, "getItem")
-                    it.registerJavaMethod({ _, args ->
-                        if (args.length() != 2) throw IllegalArgumentException()
-                        val key = args.getString(0)
-                        val value = args.getString(1)
-                        preferences.edit(commit = true) {
-                            putString(key, value)
-                        }
-                    }, "setItem")
-                    it.registerJavaMethod({ _, args ->
-                        if (args.length() != 1) throw IllegalArgumentException()
-                        val key = args.getString(0)
-                        preferences.edit(commit = true) {
-                            remove(key)
-                        }
-                    }, "removeItem")
-                    it.registerJavaMethod({ _, _ ->
-                        preferences.edit(commit = true) {
-                            clear()
-                        }
-                    }, "clear")
+
+        // Create localStorage API object
+        val localStorage = mapOf(
+            "keys" to { _: Array<Any?> ->
+                preferences.all.keys.toList()
+            },
+            "getItem" to { args: Array<Any?> ->
+                if (args.isEmpty()) throw IllegalArgumentException("getItem requires a key argument")
+                val key = args[0].toString()
+                preferences.getString(key, null)
+            },
+            "setItem" to { args: Array<Any?> ->
+                if (args.size < 2) throw IllegalArgumentException("setItem requires key and value arguments")
+                val key = args[0].toString()
+                val value = args[1].toString()
+                preferences.edit(commit = true) {
+                    putString(key, value)
                 }
+                null
+            },
+            "removeItem" to { args: Array<Any?> ->
+                if (args.isEmpty()) throw IllegalArgumentException("removeItem requires a key argument")
+                val key = args[0].toString()
+                preferences.edit(commit = true) {
+                    remove(key)
+                }
+                null
+            },
+            "clear" to { _: Array<Any?> ->
+                preferences.edit(commit = true) {
+                    clear()
+                }
+                null
             }
-        }
+        )
+
+        // Create NativeModules structure
+        val nativeModules = mapOf(
+            "localStorage" to localStorage
+        )
+
+        // Set up global __FROSTY_SPEC__ object
+        engine.set("__FROSTY_SPEC__", mapOf(
+            "NativeModules" to nativeModules
+        ))
     }
 
-    fun <T> withRuntime(block: suspend CoroutineScope.(V8) -> T): Deferred<T> {
-        return engine.withRuntime(block)
+    fun execute(code: String): Any? {
+        return engine.execute(code)
     }
 
-    fun executeScript(code: String): Deferred<Any> {
-        return engine.executeScript(code)
+    fun execute(stream: InputStream): Any? {
+        return engine.execute(stream.bufferedReader().use { it.readText() })
     }
 
-    fun executeScript(stream: InputStream): Deferred<Any> {
-        return engine.executeScript(stream)
+    fun execute(namedArgs: Map<String, Any?>, code: String): Any? {
+        return engine.execute(namedArgs, code)
     }
 
-    fun executeObjectScript(code: String): Deferred<V8Object> {
-        return engine.executeObjectScript(code)
+    fun executeVoid(code: String) {
+        engine.executeVoid(code)
     }
 
-    fun executeObjectScript(stream: InputStream): Deferred<V8Object> {
-        return engine.executeObjectScript(stream)
+    fun executeVoid(stream: InputStream) {
+        engine.executeVoid(stream.bufferedReader().use { it.readText() })
     }
 
-    fun executeVoidScript(code: String): Deferred<Unit> {
-        return engine.executeVoidScript(code)
-    }
-
-    fun executeVoidScript(stream: InputStream): Deferred<Unit> {
-        return engine.executeVoidScript(stream)
-    }
-
-    fun register(runtime: V8, name: String, component: Component) {
-        val nativeModules = runtime.getObject("__FROSTY_SPEC__").getObject("NativeModules")
-        nativeModules.registerJavaMethod(JavaCallback { _, _ ->
+    private fun register(name: String, component: Component) {
+        // Create a factory function that will be called from JavaScript
+        val factory = { _: Array<Any?> ->
             val node = FTNodeState(activity, component)
-            node.toV8Object(runtime)
-        }, name)
+            // Return the node state object
+            node
+        }
+
+        // Register the factory in __FROSTY_SPEC__.NativeModules
+        engine.execute("""
+            if (!globalThis.__FROSTY_SPEC__) {
+                globalThis.__FROSTY_SPEC__ = { NativeModules: {} };
+            }
+            if (!globalThis.__FROSTY_SPEC__.NativeModules) {
+                globalThis.__FROSTY_SPEC__.NativeModules = {};
+            }
+        """.trimIndent())
+
+        // Get current NativeModules
+        val nativeModules = engine.get("__FROSTY_SPEC__") as? Map<*, *>
+        val modules = (nativeModules?.get("NativeModules") as? Map<*, *>)?.toMutableMap() ?: mutableMapOf<Any?, Any?>()
+        modules[name] = factory
+
+        // Update NativeModules
+        engine.set("__FROSTY_SPEC__", mapOf(
+            "NativeModules" to modules
+        ))
     }
 }

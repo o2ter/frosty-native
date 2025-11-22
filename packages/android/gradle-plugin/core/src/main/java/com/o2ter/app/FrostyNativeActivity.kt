@@ -55,7 +55,6 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.currentStateAsState
 import com.o2ter.app.ui.theme.AppTheme
 import com.o2ter.runtime.FTContext
-import kotlinx.coroutines.Deferred
 import java.io.InputStream
 import java.util.Locale
 import java.util.TimeZone
@@ -64,17 +63,18 @@ import java.util.TimeZone
 internal fun FTContext.run(
     appKey: String,
     rootView: FTNodeState
-): Deferred<V8Object> {
-    val self = this
-    return this.withRuntime { runtime ->
-        val registry = self.executeObjectScript("__FROSTY_SPEC__.AppRegistry").await()
-        val runner = registry.executeObjectFunction("getRunnable", V8ObjectUtils.toV8Array(runtime, listOf(appKey)))
-        runner.executeObjectFunction("run", V8ObjectUtils.toV8Array(runtime, listOf(
-            V8ObjectUtils.toV8Object(runtime, mapOf(
-                "root" to rootView.toV8Object(runtime)
-            ))
-        )))
-    }
+): Any? {
+    // Execute the runner's run method with the root view
+    return this.execute(
+        mapOf("root" to rootView.toNodeObject()),
+        """
+        (function() {
+            const registry = __FROSTY_SPEC__.AppRegistry;
+            const runner = registry.getRunnable('${appKey}');
+            return runner.run(arguments[0]);
+        })
+        """.trimIndent()
+    )
 }
 
 @RequiresApi(Build.VERSION_CODES.N)
@@ -104,7 +104,7 @@ internal fun currentNetworkType(context: Context): State<String?> {
 open class FrostyNativeActivity(val appKey: String) : ComponentActivity() {
 
     internal lateinit var engine: FTContext
-    internal lateinit var runner: Deferred<V8Object>
+    internal var runnerNodeId: String? = null
 
     internal var nodes = mutableSetOf<FTNodeState>()
 
@@ -115,7 +115,9 @@ open class FrostyNativeActivity(val appKey: String) : ComponentActivity() {
             val rootView = FTNodeState(this) { nodeId, props, handler, content -> FTView(nodeId, props, handler, content) }
             val currentLifecycleState by lifecycle.currentStateAsState()
             engine = this.createEngine(LocalContext.current)
-            runner = engine.run(appKey, rootView)
+            val runner = engine.run(appKey, rootView)
+            // Extract nodeId from runner if it's a map
+            runnerNodeId = (runner as? Map<*, *>)?.get("nodeId") as? String
             FTRoot(this, rootView)
             this.setEnvironment(mapOf(
                 "scenePhase" to
@@ -139,31 +141,25 @@ open class FrostyNativeActivity(val appKey: String) : ComponentActivity() {
 
     override fun onDestroy() {
         super.onDestroy()
-        if (this::engine.isInitialized) {
-            engine.withRuntime { runtime ->
-                val runner = runner.await()
-                runner.executeVoidFunction("unmount", V8ObjectUtils.toV8Array(runtime, listOf()))
-                runner.close()
-            }.discard()
+        if (this::engine.isInitialized && runnerNodeId != null) {
+            // Find the runner node and call unmount
+            val runnerNode = nodes.find { it.nodeId == runnerNodeId }
+            runnerNode?.invoke("unmount", emptyList())
         }
         nodes.clear()
     }
 
     fun setEnvironment(values: Map<String, Any>) {
-        if (this::engine.isInitialized) {
-            engine.withRuntime { runtime ->
-                val runner = runner.await()
-                runner.executeVoidFunction(
-                    "setEnvironment",
-                    V8ObjectUtils.toV8Array(runtime, listOf(values))
-                )
-            }.discard()
+        if (this::engine.isInitialized && runnerNodeId != null) {
+            // Find the runner node and call setEnvironment
+            val runnerNode = nodes.find { it.nodeId == runnerNodeId }
+            runnerNode?.invoke("setEnvironment", listOf(values))
         }
     }
 
     private fun createEngine(context: Context): FTContext {
         val engine = FTContext(this, context)
-        engine.executeVoidScript(this.loadBundle()).discard()
+        engine.executeVoid(this.loadBundle())
         return engine
     }
 

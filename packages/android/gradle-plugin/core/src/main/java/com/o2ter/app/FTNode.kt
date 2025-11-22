@@ -65,31 +65,50 @@ internal class FTNodeState(
         activity.nodes.remove(this)
     }
 
-    fun toV8Object(runtime: V8): V8Object {
+    fun invoke(method: String, params: List<Any?>) {
+        this.handler?.invoke(method, params)
+    }
+
+    fun update(props: Map<String, Any?>, children: List<Map<String, Any?>>) {
+        this.props = props
+        this.children = children
+            .mapNotNull { it["nodeId"] as? String }
+            .mapNotNull { id -> activity.nodes.find { it.nodeId == id } }
+    }
+
+    fun toNodeObject(): Map<String, Any?> {
         activity.nodes.add(this)
-        val obj = V8Object(runtime)
-        obj.add("nodeId", nodeId)
-        obj.registerJavaMethod({ _, args ->
-            val method = args.getString(0)
-            val params = V8ObjectUtils.toList(args.getArray(1)).toList()
-            if (method != null) {
-                this.handler?.invoke(method, params)
+        return mapOf(
+            "nodeId" to nodeId,
+            "invoke" to { args: Array<Any?> ->
+                if (args.size >= 2) {
+                    val method = args[0] as? String
+                    val params = args[1] as? List<*>
+                    if (method != null) {
+                        invoke(method, params?.filterNotNull() ?: emptyList())
+                    }
+                }
+                null
+            },
+            "update" to { args: Array<Any?> ->
+                if (args.size >= 2) {
+                    val props = args[0] as? Map<*, *>
+                    val children = args[1] as? List<*>
+                    if (props != null) {
+                        @Suppress("UNCHECKED_CAST")
+                        update(
+                            props as Map<String, Any?>,
+                            (children as? List<Map<String, Any?>>)?.filterNotNull() ?: emptyList()
+                        )
+                    }
+                }
+                null
+            },
+            "destroy" to { _: Array<Any?> ->
+                destroy()
+                null
             }
-        }, "invoke")
-        obj.registerJavaMethod({ _, args ->
-            val props = V8ObjectUtils.toMap(args.getObject(0))
-            val children = V8ObjectUtils.toList(args.getArray(1))
-            if (props != null) {
-                this.props = props.toMap()
-            }
-            if (children != null) {
-                this.children = children
-                    .mapNotNull { (it as? Map<*, *>)?.get("nodeId") }
-                    .mapNotNull { id -> activity.nodes.find { it.nodeId == id } }
-            }
-        }, "update")
-        obj.registerJavaMethod({ _, _ -> this.destroy() }, "destroy")
-        return obj
+        )
     }
 }
 
