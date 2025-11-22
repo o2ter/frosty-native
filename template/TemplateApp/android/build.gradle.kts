@@ -10,7 +10,7 @@ buildscript {
         set("namespace", "com.o2ter.templateapp")
         set("applicationId", "com.o2ter.templateapp")
         set("minSdkVersion", 26)
-        set("compileSdkVersion", 35)
-        set("targetSdkVersion", 35)
+        set("compileSdkVersion", 36)
+        set("targetSdkVersion", 36)
     }
 }

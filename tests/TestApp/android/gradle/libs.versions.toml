@@ -1,7 +1,7 @@
 [versions]
-androidGradlePlugin = "8.12.3"
-kotlin = "2.0.0"
-activityCompose = "1.10.1"
+androidGradlePlugin = "8.13.1"
+kotlin = "2.2.21"
+activityCompose = "1.12.0"
 
 [libraries]
 frosty-core = { module = "com.o2ter:core" }
