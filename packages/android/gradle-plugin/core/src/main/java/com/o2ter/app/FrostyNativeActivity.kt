@@ -72,7 +72,7 @@ internal fun FTContext.run(
             const registry = __FROSTY_SPEC__.AppRegistry;
             const runner = registry.getRunnable('${appKey}');
             return runner.run(root);
-        })
+        })()
         """.trimIndent()
     )
 }
