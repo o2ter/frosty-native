@@ -56,6 +56,20 @@ tasks.withType<KotlinCompile>().configureEach {
 
 group = "com.o2ter"
 
+val currentPluginDir = rootProject.projectDir
+val generatePluginProperties = tasks.register("generatePluginProperties") {
+    val propertiesFile = file("src/main/resources/frosty-plugin.properties")
+    outputs.file(propertiesFile)
+    doLast {
+        propertiesFile.parentFile.mkdirs()
+        propertiesFile.writeText("pluginDir=${currentPluginDir.absolutePath}")
+    }
+}
+
+tasks.named("processResources") {
+    dependsOn(generatePluginProperties)
+}
+
 dependencies {
     implementation(gradleApi())
     implementation(libs.kotlin.gradle.plugin)

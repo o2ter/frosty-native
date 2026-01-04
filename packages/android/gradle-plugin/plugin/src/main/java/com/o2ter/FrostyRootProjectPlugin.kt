@@ -68,8 +68,15 @@ abstract class BundleTask @Inject constructor(
     fun run() {
         jsBundleDir.get().asFile.mkdirs()
 
-        val frostyNativeDir = root.dir("node_modules/frosty-native")
-        val bundleScript = File(frostyNativeDir.get().asFile, "scripts/bin/bundle.sh")
+        val currentPluginDir = run {
+            val props = java.util.Properties()
+            javaClass.getResourceAsStream("/frosty-plugin.properties")?.use {
+                props.load(it)
+            }
+            File(props.getProperty("pluginDir", "."))
+        }
+        val frostyNativeDir = currentPluginDir.parentFile.parentFile.parentFile
+        val bundleScript = File(frostyNativeDir, "scripts/bin/bundle.sh")
 
         println("Executing JS bundling task...")
         execOperations.exec {
