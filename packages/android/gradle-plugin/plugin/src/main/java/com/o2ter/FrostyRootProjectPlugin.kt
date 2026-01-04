@@ -82,6 +82,7 @@ abstract class BundleTask @Inject constructor(
         execOperations.exec {
             it.executable = bundleScript.path
             it.workingDir = root.get().asFile
+            it.environment("FROSTY_NATIVE_DIR", frostyNativeDir.absolutePath)
             it.environment("PROJECT_ROOT", root.get().asFile.absolutePath)
             it.environment("BUILD_PLATFORM", "android")
             it.environment("CONFIGURATION", buildType.get())
