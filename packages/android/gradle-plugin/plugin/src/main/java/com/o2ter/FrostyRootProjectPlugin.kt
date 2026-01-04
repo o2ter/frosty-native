@@ -33,14 +33,17 @@ import org.gradle.api.Project
 import org.gradle.api.file.ConfigurableFileTree
 import org.gradle.api.file.DirectoryProperty
 import org.gradle.api.provider.Property
-import org.gradle.api.tasks.Exec
 import org.gradle.api.tasks.InputFiles
 import org.gradle.api.tasks.Internal
 import org.gradle.api.tasks.OutputDirectory
 import org.gradle.api.tasks.TaskAction
+import org.gradle.process.ExecOperations
 import java.io.File
+import javax.inject.Inject
 
-abstract class BundleTask : DefaultTask() {
+abstract class BundleTask @Inject constructor(
+    private val execOperations: ExecOperations
+) : DefaultTask() {
 
     @get:InputFiles
     val sources: ConfigurableFileTree =
@@ -68,13 +71,14 @@ abstract class BundleTask : DefaultTask() {
         val frostyNativeDir = root.dir("node_modules/frosty-native")
         val bundleScript = File(frostyNativeDir.get().asFile, "scripts/bin/bundle.sh")
 
-        project.tasks.register("bundleJS", Exec::class.java) {
+        println("Executing JS bundling task...")
+        execOperations.exec {
             it.executable = bundleScript.path
             it.workingDir = root.get().asFile
-            it.environment("PROJECT_ROOT", root.get().asFile)
+            it.environment("PROJECT_ROOT", root.get().asFile.absolutePath)
             it.environment("BUILD_PLATFORM", "android")
             it.environment("CONFIGURATION", buildType.get())
-            it.environment("OUTPUT_DIR", jsBundleDir.get().asFile)
+            it.environment("OUTPUT_DIR", jsBundleDir.get().asFile.absolutePath)
             it.standardOutput = System.out
             it.errorOutput = System.err
             it.isIgnoreExitValue = false
