@@ -103,7 +103,7 @@ internal fun currentNetworkType(context: Context): State<String?> {
 open class FrostyNativeActivity(val appKey: String) : ComponentActivity() {
 
     internal lateinit var engine: FTContext
-    internal var runnerNodeId: String? = null
+    internal var runner: Any? = null
 
     internal var nodes = mutableSetOf<FTNodeState>()
 
@@ -114,9 +114,7 @@ open class FrostyNativeActivity(val appKey: String) : ComponentActivity() {
             val rootView = FTNodeState(this) { nodeId, props, handler, content -> FTView(nodeId, props, handler, content) }
             val currentLifecycleState by lifecycle.currentStateAsState()
             engine = this.createEngine(LocalContext.current)
-            val runner = engine.run(appKey, rootView)
-            // Extract nodeId from runner if it's a map
-            runnerNodeId = (runner as? Map<*, *>)?.get("nodeId") as? String
+            runner = engine.run(appKey, rootView)
             this.setEnvironment(mapOf(
                 "scenePhase" to
                         if (currentLifecycleState.isAtLeast(Lifecycle.State.RESUMED))
@@ -140,19 +138,15 @@ open class FrostyNativeActivity(val appKey: String) : ComponentActivity() {
 
     override fun onDestroy() {
         super.onDestroy()
-        if (this::engine.isInitialized && runnerNodeId != null) {
-            // Find the runner node and call unmount
-            val runnerNode = nodes.find { it.nodeId == runnerNodeId }
-            runnerNode?.invoke("unmount", emptyList())
+        if (this::engine.isInitialized) {
+            runner?.invoke("unmount", emptyList())
         }
         nodes.clear()
     }
 
     fun setEnvironment(values: Map<String, Any>) {
-        if (this::engine.isInitialized && runnerNodeId != null) {
-            // Find the runner node and call setEnvironment
-            val runnerNode = nodes.find { it.nodeId == runnerNodeId }
-            runnerNode?.invoke("setEnvironment", listOf(values))
+        if (this::engine.isInitialized) {
+            runner?.invoke("setEnvironment", listOf(values))
         }
     }
 
