@@ -117,7 +117,6 @@ open class FrostyNativeActivity(val appKey: String) : ComponentActivity() {
             val runner = engine.run(appKey, rootView)
             // Extract nodeId from runner if it's a map
             runnerNodeId = (runner as? Map<*, *>)?.get("nodeId") as? String
-            FTRoot(this, rootView)
             this.setEnvironment(mapOf(
                 "scenePhase" to
                         if (currentLifecycleState.isAtLeast(Lifecycle.State.RESUMED))
@@ -125,6 +124,7 @@ open class FrostyNativeActivity(val appKey: String) : ComponentActivity() {
                         else
                             "background"
             ))
+            FTRoot(this, rootView)
         }
     }
 
