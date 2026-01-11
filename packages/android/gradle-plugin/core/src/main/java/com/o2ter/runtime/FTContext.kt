@@ -126,7 +126,7 @@ internal class FTContext(private val activity: FrostyNativeActivity, val context
 
     private fun register(name: String, component: Component) {
         // Create a factory function that will be called from JavaScript
-        val factory = { args: Array<Any?>? ->
+        val factory = {
             val node = FTNodeState(activity, component)
             // Return the node state object
             node.toNodeObject()
