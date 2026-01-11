@@ -103,7 +103,7 @@ internal fun currentNetworkType(context: Context): State<String?> {
 open class FrostyNativeActivity(val appKey: String) : ComponentActivity() {
 
     internal lateinit var engine: FTContext
-    internal var runner: Any? = null
+    internal var runner: Map<*, *>? = null
 
     internal var nodes = mutableSetOf<FTNodeState>()
 
@@ -114,7 +114,7 @@ open class FrostyNativeActivity(val appKey: String) : ComponentActivity() {
             val rootView = FTNodeState(this) { nodeId, props, handler, content -> FTView(nodeId, props, handler, content) }
             val currentLifecycleState by lifecycle.currentStateAsState()
             engine = this.createEngine(LocalContext.current)
-            runner = engine.run(appKey, rootView)
+            runner = engine.run(appKey, rootView) as? Map<*, *>
             this.setEnvironment(mapOf(
                 "scenePhase" to
                         if (currentLifecycleState.isAtLeast(Lifecycle.State.RESUMED))
@@ -146,7 +146,7 @@ open class FrostyNativeActivity(val appKey: String) : ComponentActivity() {
 
     fun setEnvironment(values: Map<String, Any>) {
         if (this::engine.isInitialized) {
-            runner?.invoke("setEnvironment", listOf(values))
+           runner?.invoke("setEnvironment", listOf(values))
         }
     }
 
