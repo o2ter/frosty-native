@@ -139,14 +139,16 @@ open class FrostyNativeActivity(val appKey: String) : ComponentActivity() {
     override fun onDestroy() {
         super.onDestroy()
         if (this::engine.isInitialized) {
-            runner?.invoke("unmount", emptyList())
+            val callback = runner?.get("unmount") as? (List<Any?>) -> Any?
+            callback?.invoke(emptyList())
         }
         nodes.clear()
     }
 
     fun setEnvironment(values: Map<String, Any>) {
         if (this::engine.isInitialized) {
-           runner?.invoke("setEnvironment", listOf(values))
+            val callback = runner?.get("setEnvironment") as? (List<Any?>) -> Any?
+            callback?.invoke(listOf(values))
         }
     }
 
