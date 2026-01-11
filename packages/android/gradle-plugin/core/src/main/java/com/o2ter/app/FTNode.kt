@@ -80,33 +80,18 @@ internal class FTNodeState(
         activity.nodes.add(this)
         return mapOf(
             "nodeId" to nodeId,
-            "invoke" to { args: Array<Any?> ->
-                if (args.size >= 2) {
-                    val method = args[0] as? String
-                    val params = args[1] as? List<*>
-                    if (method != null) {
-                        invoke(method, params?.filterNotNull() ?: emptyList())
-                    }
-                }
-                null
+            "invoke" to { method: String, params: List<*> ->
+                invoke(method, params.filterNotNull())
             },
-            "update" to { args: Array<Any?> ->
-                if (args.size >= 2) {
-                    val props = args[0] as? Map<*, *>
-                    val children = args[1] as? List<*>
-                    if (props != null) {
-                        @Suppress("UNCHECKED_CAST")
-                        update(
-                            props as Map<String, Any?>,
-                            (children as? List<Map<String, Any?>>)?.filterNotNull() ?: emptyList()
-                        )
-                    }
-                }
-                null
+            "update" to { props: Map<*, *>, children: List<*> ->
+                @Suppress("UNCHECKED_CAST")
+                update(
+                    props as Map<String, Any?>,
+                    (children as? List<Map<String, Any?>>)?.filterNotNull() ?: emptyList()
+                )
             },
             "destroy" to { _: Array<Any?> ->
                 destroy()
-                null
             }
         )
     }
