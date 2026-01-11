@@ -81,7 +81,7 @@ internal class FTNodeState(
         return mapOf(
             "nodeId" to nodeId,
             "invoke" to { method: String, params: List<*> ->
-                invoke(method, params.filterNotNull())
+                invoke(method, params)
             },
             "update" to { props: Map<*, *>, children: List<*> ->
                 @Suppress("UNCHECKED_CAST")
