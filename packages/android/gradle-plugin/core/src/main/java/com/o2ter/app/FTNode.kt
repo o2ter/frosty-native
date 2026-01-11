@@ -87,7 +87,7 @@ internal class FTNodeState(
                 @Suppress("UNCHECKED_CAST")
                 update(
                     props as Map<String, Any?>,
-                    (children as? List<Map<String, Any?>>)?.filterNotNull() ?: emptyList()
+                    (children as? List<Map<String, Any?>?>)?.filterNotNull() ?: emptyList()
                 )
             },
             "destroy" to { _: Array<Any?> ->
