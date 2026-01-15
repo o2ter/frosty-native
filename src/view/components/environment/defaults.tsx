@@ -62,6 +62,7 @@ export const useDefault = (): EnvironmentValues => {
     layoutDirection: document.dir === 'rtl' ? 'rtl' : 'ltr',
     pixelDensity: devicePixelRatio,
     pixelLength: 1 / devicePixelRatio,
+    pointsPerInch: 72,
     colorScheme: useColorScheme(),
     displayWidth: width,
     displayHeight: height,

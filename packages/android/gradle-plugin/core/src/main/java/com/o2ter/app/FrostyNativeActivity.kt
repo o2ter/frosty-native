@@ -48,6 +48,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.core.os.ConfigurationCompat.getLocales
 import androidx.core.os.LocaleListCompat
@@ -179,6 +180,8 @@ fun LocaleListCompat.toList(): List<Locale> {
 @RequiresApi(Build.VERSION_CODES.P)
 @Composable
 internal fun FTRoot(activity: FrostyNativeActivity, rootView: FTNodeState) {
+    val density = LocalDensity.current
+    val densityMultiplier = density.density
     val systemIsDarkTheme = isSystemInDarkTheme()
     var darkTheme by remember { mutableStateOf(systemIsDarkTheme) }
     val pixelDensity = activity.engine.context.resources.displayMetrics.density
@@ -190,6 +193,7 @@ internal fun FTRoot(activity: FrostyNativeActivity, rootView: FTNodeState) {
         "layoutDirection" to layoutDirection.name.lowercase(),
         "pixelDensity" to pixelDensity,
         "pixelLength" to 1 / pixelDensity,
+        "pointsPerInch" to densityMultiplier * 160,
         "colorScheme" to if (darkTheme) "dark" else "light",
         "userLocale" to locales[0]!!.toString(),
         "languages" to locales.toList().map { it.toString() },

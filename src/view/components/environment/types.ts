@@ -28,6 +28,7 @@ export const defaultEnvironmentValues: EnvironmentValues = {
   layoutDirection: 'ltr',
   pixelDensity: 1,
   pixelLength: 1,
+  pointsPerInch: 72,
   colorScheme: 'light',
   userLocale: 'en-US',
   languages: ['en-US'],
@@ -50,6 +51,7 @@ export type EnvironmentValues = {
   layoutDirection: 'ltr' | 'rtl';
   pixelDensity: number;
   pixelLength: number;
+  pointsPerInch: number;
   colorScheme: 'light' | 'dark' | (string & {});
   userLocale: string;
   languages: string[];

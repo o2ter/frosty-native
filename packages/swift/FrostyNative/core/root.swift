@@ -75,6 +75,7 @@ struct EnvironmentData: Equatable {
     var layoutDirection: LayoutDirection
     var pixelDensity: CGFloat
     var pixelLength: CGFloat
+    var pointsPerInch: CGFloat
     var colorScheme: ColorScheme
     var locale: Locale
     var timeZone: TimeZone
@@ -86,6 +87,7 @@ struct EnvironmentData: Equatable {
             "layoutDirection": SwiftJS.Value(layoutDirection.toString()),
             "pixelDensity": SwiftJS.Value(pixelDensity),
             "pixelLength": SwiftJS.Value(pixelLength),
+            "pointsPerInch": SwiftJS.Value(pointsPerInch),
             "colorScheme": SwiftJS.Value(colorScheme.toString()),
             "userLocale": SwiftJS.Value(locale.identifier),
             "languages": SwiftJS.Value(Locale.preferredLanguages.map { SwiftJS.Value($0) }),
@@ -225,6 +227,7 @@ public struct FTRoot: View {
             layoutDirection: layoutDirection,
             pixelDensity: pixelDensity,
             pixelLength: pixelLength,
+            pointsPerInch: 72,
             colorScheme: colorScheme,
             locale: locale,
             timeZone: timeZone,
