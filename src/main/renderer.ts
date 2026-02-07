@@ -39,7 +39,7 @@ export class NativeRenderer extends _Renderer<NativeNodeType> {
   protected _afterUpdate() {
   }
 
-  protected _createElement(node: VNode, stack: VNode[]): NativeNodeType {
+  protected _createElement(node: VNode): NativeNodeType {
     const { type } = node;
     if (_.isString(type) || !(type.prototype instanceof NativeNode)) throw Error('Invalid type');
     const ElementType = type as any;
@@ -47,7 +47,7 @@ export class NativeRenderer extends _Renderer<NativeNodeType> {
     return element;
   }
 
-  protected _updateElement(node: VNode, element: NativeNodeType, children: (string | NativeNodeType)[], stack: VNode[], force?: boolean) {
+  protected _updateElement(node: VNode, element: NativeNodeType, children: (string | NativeNodeType)[], force?: boolean) {
     const { props } = node;
     element.update(props, element instanceof NativeNode
       ? children
