@@ -24,9 +24,8 @@
 //
 
 import _ from 'lodash';
-import { useMemo } from 'frosty';
+import { useMemo, _useCallbacks } from 'frosty';
 import { PressEvent, ViewEventProps } from '../../basic/types/events';
-import { _useCallbacks } from '../../../../internal/hooks/callbacks';
 
 export type PanGestureEvent<Target> = PressEvent<Target> & {
   translationX: number;

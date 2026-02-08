@@ -24,10 +24,9 @@
 //
 
 import _ from 'lodash';
-import { useMemo } from 'frosty';
+import { useMemo, _useCallbacks } from 'frosty';
 import { PressEvent, ViewEventProps } from '../../basic/types/events';
 import { uniqueId } from 'frosty/_native';
-import { _useCallbacks } from '../../../../internal/hooks/callbacks';
 
 export type PressGestureProps<Target> = {
   delayLongPress?: number;

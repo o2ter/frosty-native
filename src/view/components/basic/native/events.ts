@@ -24,9 +24,8 @@
 //
 
 import _ from 'lodash';
-import { RefObject } from 'frosty';
+import { RefObject, _useCallbacks } from 'frosty';
 import { LayoutRect, ViewEventProps } from '../types/events';
-import { _useCallbacks } from '../../../../internal/hooks/callbacks';
 
 export const useResponderEvents = <Target>(
   props: ViewEventProps<Target>,
