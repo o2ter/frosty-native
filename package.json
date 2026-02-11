@@ -39,7 +39,7 @@
     "@babel/preset-flow": "^7.25.9",
     "@babel/preset-react": "^7.26.3",
     "@babel/preset-typescript": "^7.27.0",
-    "@o2ter/colors.js": "^1.0.0",
+    "@o2ter/colors.js": "^1.0.1",
     "babel-loader": "^10.0.0",
     "copy-webpack-plugin": "^13.0.0",
     "core-js": "^3.41.0",
