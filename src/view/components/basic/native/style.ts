@@ -27,7 +27,7 @@ import _ from 'lodash';
 import { StyleProp } from 'frosty';
 import { ImageStyle, TextStyle, ViewStyle } from '../types/styles';
 import { compactValue, useFlattenStyle } from '../utils';
-import { normalizeColor, toHexString } from '../../../../internal/color';
+import { normalizeColor, toHexString } from '@o2ter/colors.js';
 
 const _normalizeColor = (color: any): string | undefined => {
   if (!_.isString(color)) return;

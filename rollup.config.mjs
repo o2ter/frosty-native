@@ -7,10 +7,7 @@ import json from '@rollup/plugin-json';
 import dts from 'rollup-plugin-dts';
 
 const rollupConfig = {
-  input: {
-    index: 'src/index',
-    color: 'src/internal/color',
-  },
+  input: 'src/index',
   external: [
     /node_modules/
   ],
