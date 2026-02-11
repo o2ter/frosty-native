@@ -44,7 +44,7 @@
     "copy-webpack-plugin": "^13.0.0",
     "core-js": "^3.41.0",
     "file-loader": "^6.2.0",
-    "frosty": "^0.0.132",
+    "frosty": "^0.0.133",
     "lodash": "^4.17.23",
     "terser-webpack-plugin": "^5.3.14",
     "ts-node": "^10.9.2",
