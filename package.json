@@ -63,7 +63,7 @@
     "@types/lodash": "^4.17.16",
     "dotenv-webpack": "^8.1.1",
     "jest": "^30.1.1",
-    "rollup": "^4.22.4",
+    "rollup": "^4.59.0",
     "rollup-plugin-dts": "^6.1.1",
     "ts-jest": "^29.4.1"
   }
