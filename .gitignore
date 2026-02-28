@@ -171,7 +171,6 @@ build/
 local.properties
 *.iml
 *.hprof
-packages/**/*.properties
 
 # BUCK
 buck-out/
