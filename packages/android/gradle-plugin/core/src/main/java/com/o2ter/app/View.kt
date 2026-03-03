@@ -89,10 +89,10 @@ fun FTTextInput(
     handler: (ComponentHandler) -> Unit,
     content: @Composable () -> Unit
 ) {
-    val text = props["text"] as? String
-    if (text != null) {
+    val value = props["value"] as? String
+    if (value != null) {
         BasicTextField(
-            value = text,
+            value = value,
             onValueChange = {  },
             modifier = Modifier.applyViewProps(props)
         )

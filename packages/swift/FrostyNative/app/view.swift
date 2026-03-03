@@ -980,7 +980,7 @@ struct FTTextInput: FTLayoutViewProtocol {
     }
 
     func content(_ info: FTLayoutInfo) -> some View {
-        TextField("", text: .constant(props["text"]?.toString() ?? ""))
+        TextField("", text: .constant(props["value"]?.toString() ?? ""))
     }
 }
 
