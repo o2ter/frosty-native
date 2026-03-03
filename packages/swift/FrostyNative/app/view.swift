@@ -66,6 +66,31 @@ fileprivate extension JSValue {
             }
         }
     }
+
+    func toJSValueArray() -> [JSValue]? {
+        guard self.isArray else { return nil }
+        var result: [JSValue] = []
+        let length = self.objectForKeyedSubscript("length").toInt32()
+        for i in 0..<length {
+            if let item = self.objectAtIndexedSubscript(Int(i)) {
+                result.append(item)
+            }
+        }
+        return result
+    }
+}
+
+extension AttributedString {
+
+    fileprivate static func decode(_ text: JSValue) -> AttributedString {
+        if text.isString {
+            return AttributedString(text.toString() ?? "")
+        }
+        let style = text.objectForKeyedSubscript("style")?.toStringKeyedDictionary() ?? [:]
+        let children = text.objectForKeyedSubscript("children")?.toJSValueArray()?.map(AttributedString.decode) ?? []
+        let concated = children.reduce("", +)
+        return concated
+    }
 }
 
 protocol FTViewProtocol: View {
@@ -957,7 +982,7 @@ struct FTTextView: FTLayoutViewProtocol {
     }
 
     func content(_ info: FTLayoutInfo) -> some View {
-        Text(props["text"]?.toString() ?? "")
+        Text(props["text"].map(AttributedString.decode) ?? "")
     }
 }
 
