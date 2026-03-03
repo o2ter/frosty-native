@@ -34,6 +34,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import kotlinx.coroutines.launch
 import java.util.UUID
 
 internal typealias ComponentHandler = (method: String, args: List<Any?>) -> Unit
@@ -81,17 +82,23 @@ internal class FTNodeState(
         return mapOf(
             "nodeId" to nodeId,
             "invoke" to { method: String, params: List<*> ->
-                invoke(method, params)
+                activity.scope.launch {
+                    invoke(method, params)
+                }
             },
             "update" to { props: Map<*, *>, children: List<*> ->
-                @Suppress("UNCHECKED_CAST")
-                update(
-                    props as Map<String, Any?>,
-                    (children as? List<Map<String, Any?>?>)?.filterNotNull() ?: emptyList()
-                )
+                activity.scope.launch {
+                    @Suppress("UNCHECKED_CAST")
+                    update(
+                        props as Map<String, Any?>,
+                        (children as? List<Map<String, Any?>?>)?.filterNotNull() ?: emptyList()
+                    )
+                }
             },
             "destroy" to { _: Array<Any?> ->
-                destroy()
+                activity.scope.launch {
+                    destroy()
+                }
             }
         )
     }

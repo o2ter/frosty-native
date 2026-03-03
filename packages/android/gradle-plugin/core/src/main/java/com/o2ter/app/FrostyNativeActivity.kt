@@ -56,6 +56,9 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.currentStateAsState
 import com.o2ter.app.ui.theme.AppTheme
 import com.o2ter.runtime.FTContext
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import java.io.InputStream
 import java.util.Locale
 import java.util.TimeZone
@@ -103,6 +106,7 @@ internal fun currentNetworkType(context: Context): State<String?> {
 @RequiresApi(Build.VERSION_CODES.P)
 open class FrostyNativeActivity(val appKey: String) : ComponentActivity() {
 
+    val scope = CoroutineScope(Job() + Dispatchers.Main)
     internal lateinit var engine: FTContext
     internal var runner: Map<*, *>? = null
 
