@@ -36,17 +36,40 @@ import { useResponderEvents } from './events';
 
 const Pairs = createPairs({ allowTextChildren: true });
 
+type StyledText = string | {
+  style: Record<string, any>;
+  children: StyledText[];
+};
+
+const createStyledText = (text: string | number | FTTextView): StyledText => {
+  if (_.isString(text)) return text;
+  if (_.isNumber(text)) return String(text);
+  if (text instanceof FTTextView) {
+    const { _props: props, _children: children } = text;
+    return {
+      style: props.style,
+      children: children.map(x => createStyledText(x)),
+    };
+  }
+  return '';
+};
+
 class FTTextView extends NativeNode {
 
   _native = NativeModules['FTTextView']();
-  #props: Record<string, any> = {};
-  #children: (string | FTTextView)[] = [];
+  _props: Record<string, any> = {};
+  _children: (string | FTTextView)[] = [];
 
   update(props: Record<string, any>, children: (string | NativeNode)[]): void {
     const _children = _.filter(children, x => _.isNumber(x) || _.isString(x) || x instanceof FTTextView);
-    this.#props = props;
-    this.#children = _children.map(x => _.isNumber(x) ? String(x) : x);
-    this._native.update(props, []);
+    this._props = props;
+    this._children = _children.map(x => _.isNumber(x) ? String(x) : x);
+    this._native.update({
+      text: {
+        style: props.style,
+        children: _children.map(x => createStyledText(x)),
+      }
+    }, []);
   }
 }
 
