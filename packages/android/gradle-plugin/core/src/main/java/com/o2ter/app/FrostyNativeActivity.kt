@@ -155,7 +155,7 @@ open class FrostyNativeActivity(val appKey: String) : ComponentActivity() {
         nodes.clear()
     }
 
-    fun setEnvironment(values: Map<String, Any>) {
+    internal fun setEnvironment(values: Map<String, Any>) {
         if (this::engine.isInitialized) {
             @Suppress("UNCHECKED_CAST")
             val callback = runner?.get("setEnvironment") as (List<Any?>) -> Any?
