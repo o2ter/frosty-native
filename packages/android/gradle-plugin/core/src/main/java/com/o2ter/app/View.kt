@@ -91,13 +91,10 @@ fun FTTextView(
     handler: (ComponentHandler) -> Unit,
     content: @Composable () -> Unit
 ) {
-    val text = props["text"] as? String
-    if (text != null) {
-        Text(
-            text = text,
-            modifier = Modifier.applyViewProps(props)
-        )
-    }
+    Text(
+        text = buildStyledText(props["text"]),
+        modifier = Modifier.applyViewProps(props)
+    )
 }
 
 @Composable
