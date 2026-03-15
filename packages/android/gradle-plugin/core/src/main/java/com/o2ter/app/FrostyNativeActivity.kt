@@ -70,11 +70,14 @@ internal fun FTContext.run(
 ): Any? {
     // Execute the runner's run method with the root view
     return this.execute(
-        mapOf("root" to rootView.toNodeObject()),
+        mapOf(
+            "appKey" to appKey,
+            "root" to rootView.toNodeObject()
+        ),
         """
         (function() {
             const registry = __FROSTY_SPEC__.AppRegistry;
-            const runner = registry.getRunnable('${appKey}');
+            const runner = registry.getRunnable(appKey);
             return runner.run(root);
         })()
         """.trimIndent()
