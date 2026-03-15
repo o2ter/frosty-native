@@ -249,6 +249,7 @@ private fun FTRootBody(activity: FrostyNativeActivity, rootView: FTNodeState) {
                                 "bottom" to safeAreaInset.calculateBottomPadding().value,
                             ),
                         )
+                    )
                 },
             activity,
             rootView
