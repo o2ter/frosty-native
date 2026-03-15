@@ -37,7 +37,7 @@ import androidx.activity.enableEdgeToEdge
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
@@ -191,6 +191,7 @@ internal fun FTRoot(activity: FrostyNativeActivity, rootView: FTNodeState) {
     val density = LocalDensity.current
     val densityMultiplier = density.density
     val fontScale = density.fontScale
+    val rootFontSize = LocalTextStyle.current.fontSize.value
     val systemIsDarkTheme = isSystemInDarkTheme()
     var darkTheme by remember { mutableStateOf(systemIsDarkTheme) }
     val pixelDensity = activity.engine.context.resources.displayMetrics.density
@@ -204,6 +205,7 @@ internal fun FTRoot(activity: FrostyNativeActivity, rootView: FTNodeState) {
         "pixelLength" to 1 / pixelDensity,
         "pointsPerInch" to densityMultiplier * 160,
         "fontScale" to fontScale,
+        "rootFontSize" to rootFontSize,
         "colorScheme" to if (darkTheme) "dark" else "light",
         "userLocale" to locales[0]!!.toString(),
         "languages" to locales.toList().map { it.toString() },
@@ -214,45 +216,36 @@ internal fun FTRoot(activity: FrostyNativeActivity, rootView: FTNodeState) {
         )
     ))
     AppTheme(darkTheme) {
-        FTRootBody(activity, rootView)
-    }
-}
-
-@RequiresApi(Build.VERSION_CODES.P)
-@Composable
-private fun FTRootBody(activity: FrostyNativeActivity, rootView: FTNodeState) {
-    val layoutDirection = LocalLayoutDirection.current
-    val typography = MaterialTheme.typography
-    Scaffold(
-        modifier = Modifier
-            .fillMaxSize()
-            .onSizeChanged { size ->
-                activity.setEnvironment(
-                    mapOf(
-                        "rootFontSize" to typography.bodyLarge.fontSize.value,
-                        "displayWidth" to size.width,
-                        "displayHeight" to size.height,
-                    )
-                )
-            }
-    ) { safeAreaInset ->
-        FTNode(
-            Modifier
+        Scaffold(
+            modifier = Modifier
                 .fillMaxSize()
-                .onSizeChanged {
+                .onSizeChanged { size ->
                     activity.setEnvironment(
                         mapOf(
-                            "safeAreaInsets" to mapOf(
-                                "top" to safeAreaInset.calculateTopPadding().value,
-                                "left" to safeAreaInset.calculateLeftPadding(layoutDirection).value,
-                                "right" to safeAreaInset.calculateRightPadding(layoutDirection).value,
-                                "bottom" to safeAreaInset.calculateBottomPadding().value,
-                            ),
+                            "displayWidth" to size.width,
+                            "displayHeight" to size.height,
                         )
                     )
-                },
-            activity,
-            rootView
-        )
+                }
+        ) { safeAreaInset ->
+            FTNode(
+                Modifier
+                    .fillMaxSize()
+                    .onSizeChanged {
+                        activity.setEnvironment(
+                            mapOf(
+                                "safeAreaInsets" to mapOf(
+                                    "top" to safeAreaInset.calculateTopPadding().value,
+                                    "left" to safeAreaInset.calculateLeftPadding(layoutDirection).value,
+                                    "right" to safeAreaInset.calculateRightPadding(layoutDirection).value,
+                                    "bottom" to safeAreaInset.calculateBottomPadding().value,
+                                ),
+                            )
+                        )
+                    },
+                activity,
+                rootView
+            )
+        }
     }
 }
