@@ -25,8 +25,17 @@
 
 @_exported import Foundation
 @_exported import SwiftJS
+@_exported import Network
 @_exported import SwiftUI
 @_exported import Combine
 @_exported import Algorithms
 @_exported import AsyncAlgorithms
 @_exported import JavaScriptCore
+
+#if canImport(AppKit)
+@_exported import AppKit
+#endif
+
+#if canImport(UIKit)
+@_exported import UIKit
+#endif

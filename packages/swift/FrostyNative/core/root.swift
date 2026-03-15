@@ -23,8 +23,6 @@
 //  THE SOFTWARE.
 //
 
-import Network
-
 extension CGRect {
     
     func toJSValue() -> SwiftJS.Value {
@@ -76,6 +74,7 @@ struct EnvironmentData: Equatable {
     var pixelDensity: CGFloat
     var pixelLength: CGFloat
     var pointsPerInch: CGFloat
+    var fontScale: CGFloat
     var colorScheme: ColorScheme
     var locale: Locale
     var timeZone: TimeZone
@@ -88,6 +87,7 @@ struct EnvironmentData: Equatable {
             "pixelDensity": SwiftJS.Value(pixelDensity),
             "pixelLength": SwiftJS.Value(pixelLength),
             "pointsPerInch": SwiftJS.Value(pointsPerInch),
+            "fontScale": SwiftJS.Value(fontScale),
             "colorScheme": SwiftJS.Value(colorScheme.toString()),
             "userLocale": SwiftJS.Value(locale.identifier),
             "languages": SwiftJS.Value(Locale.preferredLanguages.map { SwiftJS.Value($0) }),
@@ -209,6 +209,9 @@ public struct FTRoot: View {
     @Environment(\.layoutDirection)
     var layoutDirection
     
+    @ScaledMetric
+    var fontScale = 1
+    
     let appKey: String
     let runtime: FTContext
     
@@ -228,6 +231,7 @@ public struct FTRoot: View {
             pixelDensity: pixelDensity,
             pixelLength: pixelLength,
             pointsPerInch: 72,
+            fontScale: fontScale,
             colorScheme: colorScheme,
             locale: locale,
             timeZone: timeZone,

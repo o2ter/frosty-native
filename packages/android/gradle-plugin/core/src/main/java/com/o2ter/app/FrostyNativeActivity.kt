@@ -189,6 +189,7 @@ fun LocaleListCompat.toList(): List<Locale> {
 internal fun FTRoot(activity: FrostyNativeActivity, rootView: FTNodeState) {
     val density = LocalDensity.current
     val densityMultiplier = density.density
+    val fontScale = density.fontScale
     val systemIsDarkTheme = isSystemInDarkTheme()
     var darkTheme by remember { mutableStateOf(systemIsDarkTheme) }
     val pixelDensity = activity.engine.context.resources.displayMetrics.density
@@ -201,6 +202,7 @@ internal fun FTRoot(activity: FrostyNativeActivity, rootView: FTNodeState) {
         "pixelDensity" to pixelDensity,
         "pixelLength" to 1 / pixelDensity,
         "pointsPerInch" to densityMultiplier * 160,
+        "fontScale" to fontScale,
         "colorScheme" to if (darkTheme) "dark" else "light",
         "userLocale" to locales[0]!!.toString(),
         "languages" to locales.toList().map { it.toString() },

@@ -63,6 +63,7 @@ export const useDefault = (): EnvironmentValues => {
     pixelDensity: devicePixelRatio,
     pixelLength: 1 / devicePixelRatio,
     pointsPerInch: 72,
+    fontScale: 1,
     colorScheme: useColorScheme(),
     displayWidth: width,
     displayHeight: height,
