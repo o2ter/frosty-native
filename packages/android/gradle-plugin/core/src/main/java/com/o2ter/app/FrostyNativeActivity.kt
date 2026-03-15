@@ -115,12 +115,12 @@ open class FrostyNativeActivity(val appKey: String) : ComponentActivity() {
     internal var runner: Map<*, *>? = null
 
     internal var nodes = mutableSetOf<FTNodeState>()
+    internal val rootView = FTNodeState(this) { nodeId, props, handler, content -> FTView(nodeId, props, handler, content) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            val rootView = FTNodeState(this) { nodeId, props, handler, content -> FTView(nodeId, props, handler, content) }
             val currentLifecycleState by lifecycle.currentStateAsState()
             engine = this.createEngine(LocalContext.current)
             runner = engine.run(appKey, rootView) as? Map<*, *>
