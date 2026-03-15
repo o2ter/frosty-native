@@ -229,7 +229,7 @@ private fun FTRootBody(activity: FrostyNativeActivity, rootView: FTNodeState) {
             .onSizeChanged { size ->
                 activity.setEnvironment(
                     mapOf(
-                        "rootFontSize" to typography.bodyLarge.fontSize,
+                        "rootFontSize" to typography.bodyLarge.fontSize.value,
                         "displayWidth" to size.width,
                         "displayHeight" to size.height,
                     )
@@ -240,14 +240,15 @@ private fun FTRootBody(activity: FrostyNativeActivity, rootView: FTNodeState) {
             Modifier
                 .fillMaxSize()
                 .onSizeChanged {
-                    activity.setEnvironment(mapOf(
-                        "safeAreaInsets" to mapOf(
-                            "top" to safeAreaInset.calculateTopPadding().value,
-                            "left" to safeAreaInset.calculateLeftPadding(layoutDirection).value,
-                            "right" to safeAreaInset.calculateRightPadding(layoutDirection).value,
-                            "bottom" to safeAreaInset.calculateBottomPadding().value,
-                        ),
-                    ))
+                    activity.setEnvironment(
+                        mapOf(
+                            "safeAreaInsets" to mapOf(
+                                "top" to safeAreaInset.calculateTopPadding().value,
+                                "left" to safeAreaInset.calculateLeftPadding(layoutDirection).value,
+                                "right" to safeAreaInset.calculateRightPadding(layoutDirection).value,
+                                "bottom" to safeAreaInset.calculateBottomPadding().value,
+                            ),
+                        )
                 },
             activity,
             rootView
