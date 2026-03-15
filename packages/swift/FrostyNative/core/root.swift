@@ -75,6 +75,7 @@ struct EnvironmentData: Equatable {
     var pixelLength: CGFloat
     var pointsPerInch: CGFloat
     var fontScale: CGFloat
+    var rootFontSize: CGFloat
     var colorScheme: ColorScheme
     var locale: Locale
     var timeZone: TimeZone
@@ -88,6 +89,7 @@ struct EnvironmentData: Equatable {
             "pixelLength": SwiftJS.Value(pixelLength),
             "pointsPerInch": SwiftJS.Value(pointsPerInch),
             "fontScale": SwiftJS.Value(fontScale),
+            "rootFontSize": SwiftJS.Value(rootFontSize),
             "colorScheme": SwiftJS.Value(colorScheme.toString()),
             "userLocale": SwiftJS.Value(locale.identifier),
             "languages": SwiftJS.Value(Locale.preferredLanguages.map { SwiftJS.Value($0) }),
@@ -225,13 +227,20 @@ public struct FTRoot: View {
     }
     
     var environment: EnvironmentData {
-        EnvironmentData(
+#if canImport(UIKit)
+        let rootFontSize = UIFont.preferredFont(forTextStyle: .body).pointSize
+#endif
+#if canImport(AppKit)
+        let rootFontSize = NSFont.preferredFont(forTextStyle: .body).pointSize
+#endif
+        return EnvironmentData(
             scenePhase: scenePhase,
             layoutDirection: layoutDirection,
             pixelDensity: pixelDensity,
             pixelLength: pixelLength,
             pointsPerInch: 72,
             fontScale: fontScale / 1000,
+            rootFontSize: rootFontSize,
             colorScheme: colorScheme,
             locale: locale,
             timeZone: timeZone,

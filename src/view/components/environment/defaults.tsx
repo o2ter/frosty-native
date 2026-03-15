@@ -56,6 +56,8 @@ export const useDefault = (): EnvironmentValues => {
     width = docEl.clientWidth;
   }
 
+  const rootFontSize = parseFloat(window.getComputedStyle(document.documentElement).fontSize) || 16;
+
   return {
     ...defaultEnvironmentValues,
     scenePhase,
@@ -64,6 +66,7 @@ export const useDefault = (): EnvironmentValues => {
     pixelLength: 1 / devicePixelRatio,
     pointsPerInch: 72,
     fontScale: 1,
+    rootFontSize,
     colorScheme: useColorScheme(),
     displayWidth: width,
     displayHeight: height,

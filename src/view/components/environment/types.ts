@@ -30,6 +30,7 @@ export const defaultEnvironmentValues: EnvironmentValues = {
   pixelLength: 1,
   pointsPerInch: 72,
   fontScale: 1,
+  rootFontSize: 16,
   colorScheme: 'light',
   userLocale: 'en-US',
   languages: ['en-US'],
@@ -54,6 +55,7 @@ export type EnvironmentValues = {
   pixelLength: number;
   pointsPerInch: number;
   fontScale: number;
+  rootFontSize: number;
   colorScheme: 'light' | 'dark' | (string & {});
   userLocale: string;
   languages: string[];

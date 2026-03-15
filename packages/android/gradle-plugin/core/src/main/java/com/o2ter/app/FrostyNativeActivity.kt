@@ -37,6 +37,7 @@ import androidx.activity.enableEdgeToEdge
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
@@ -213,35 +214,43 @@ internal fun FTRoot(activity: FrostyNativeActivity, rootView: FTNodeState) {
         )
     ))
     AppTheme(darkTheme) {
-        Scaffold(
-            modifier = Modifier
-                .fillMaxSize()
-                .onSizeChanged { size ->
-                    activity.setEnvironment(
-                        mapOf(
-                            "displayWidth" to size.width,
-                            "displayHeight" to size.height,
-                        )
-                    )
-                }
-        ) { safeAreaInset ->
-            FTNode(
-                Modifier
-                    .fillMaxSize()
-                    .onSizeChanged {
-                        activity.setEnvironment(mapOf(
-                            "safeAreaInsets" to mapOf(
-                                "top" to safeAreaInset.calculateTopPadding().value,
-                                "left" to safeAreaInset.calculateLeftPadding(layoutDirection).value,
-                                "right" to safeAreaInset.calculateRightPadding(layoutDirection).value,
-                                "bottom" to safeAreaInset.calculateBottomPadding().value,
-                            ),
-                        ))
-                    },
-                activity,
-                rootView
-            )
-        }
+        FTRootBody(activity, rootView)
     }
 }
 
+@RequiresApi(Build.VERSION_CODES.P)
+@Composable
+private fun FTRootBody(activity: FrostyNativeActivity, rootView: FTNodeState) {
+    val layoutDirection = LocalLayoutDirection.current
+    val typography = MaterialTheme.typography
+    Scaffold(
+        modifier = Modifier
+            .fillMaxSize()
+            .onSizeChanged { size ->
+                activity.setEnvironment(
+                    mapOf(
+                        "rootFontSize" to typography.bodyLarge.fontSize,
+                        "displayWidth" to size.width,
+                        "displayHeight" to size.height,
+                    )
+                )
+            }
+    ) { safeAreaInset ->
+        FTNode(
+            Modifier
+                .fillMaxSize()
+                .onSizeChanged {
+                    activity.setEnvironment(mapOf(
+                        "safeAreaInsets" to mapOf(
+                            "top" to safeAreaInset.calculateTopPadding().value,
+                            "left" to safeAreaInset.calculateLeftPadding(layoutDirection).value,
+                            "right" to safeAreaInset.calculateRightPadding(layoutDirection).value,
+                            "bottom" to safeAreaInset.calculateBottomPadding().value,
+                        ),
+                    ))
+                },
+            activity,
+            rootView
+        )
+    }
+}
