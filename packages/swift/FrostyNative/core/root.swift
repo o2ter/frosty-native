@@ -210,7 +210,7 @@ public struct FTRoot: View {
     var layoutDirection
     
     @ScaledMetric
-    var fontScale = 1
+    var fontScale = 1000
     
     let appKey: String
     let runtime: FTContext
@@ -231,7 +231,7 @@ public struct FTRoot: View {
             pixelDensity: pixelDensity,
             pixelLength: pixelLength,
             pointsPerInch: 72,
-            fontScale: fontScale,
+            fontScale: fontScale / 1000,
             colorScheme: colorScheme,
             locale: locale,
             timeZone: timeZone,
