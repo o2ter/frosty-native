@@ -37,12 +37,30 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-
+import androidx.compose.ui.text.AnnotatedString
+import androidx.compose.ui.text.buildAnnotatedString
 
 private fun Modifier.applyViewProps(
     props: Map<String, Any?>
 ): Modifier {
     return this
+}
+
+private fun buildStyledText(text: Any?): AnnotatedString {
+    if (text == null || text is String) {
+        return AnnotatedString(text ?: "")
+    }
+    if (text is Map<*, *>) {
+        val style = text["style"] as? Map<*, *> ?: emptyMap<Any?, Any?>()
+        val children = text["children"] as? List<*> ?: emptyList<Any?>()
+        return buildAnnotatedString {
+            for (child in children) {
+                val childText = buildStyledText(child)
+                append(childText)
+            }
+        }
+    }
+    return AnnotatedString("")
 }
 
 @Composable
