@@ -62,7 +62,11 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.RoundRect
+import androidx.compose.ui.graphics.Path
+import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ImageBitmap
@@ -260,31 +264,73 @@ private fun Modifier.applyViewProps(
     // Per-side borders drawn behind content
     if (hasBorder) {
         m = m.drawBehind {
-            if (borderTopW > 0f) {
-                val sw = borderTopW.dp.toPx()
-                drawLine(borderTopC, Offset(0f, sw / 2f), Offset(size.width, sw / 2f), sw)
-            }
-            if (borderBottomW > 0f) {
-                val sw = borderBottomW.dp.toPx()
-                drawLine(
-                    borderBottomC,
-                    Offset(0f, size.height - sw / 2f),
-                    Offset(size.width, size.height - sw / 2f),
-                    sw
-                )
-            }
-            if (borderLeftW > 0f) {
-                val sw = borderLeftW.dp.toPx()
-                drawLine(borderLeftC, Offset(sw / 2f, 0f), Offset(sw / 2f, size.height), sw)
-            }
-            if (borderRightW > 0f) {
-                val sw = borderRightW.dp.toPx()
-                drawLine(
-                    borderRightC,
-                    Offset(size.width - sw / 2f, 0f),
-                    Offset(size.width - sw / 2f, size.height),
-                    sw
-                )
+            if (hasBorderRadius) {
+                // Rounded border: draw a stroked path following the rounded rectangle shape
+                val isUniformBorder = borderTopW == borderBottomW && borderBottomW == borderLeftW
+                    && borderLeftW == borderRightW && borderTopC == borderBottomC
+                    && borderBottomC == borderLeftC && borderLeftC == borderRightC
+                if (isUniformBorder && borderTopW > 0f) {
+                    val sw = borderTopW.dp.toPx()
+                    val path = Path().apply {
+                        addRoundRect(
+                            RoundRect(
+                                left = 0f, top = 0f,
+                                right = size.width, bottom = size.height,
+                                topLeftCornerRadius = CornerRadius(topLeftRadius.dp.toPx()),
+                                topRightCornerRadius = CornerRadius(topRightRadius.dp.toPx()),
+                                bottomRightCornerRadius = CornerRadius(bottomRightRadius.dp.toPx()),
+                                bottomLeftCornerRadius = CornerRadius(bottomLeftRadius.dp.toPx())
+                            )
+                        )
+                    }
+                    drawPath(path, borderTopC, style = Stroke(width = sw))
+                } else {
+                    // Per-side border on a rounded view: draw straight lines (approximate)
+                    if (borderTopW > 0f) {
+                        val sw = borderTopW.dp.toPx()
+                        drawLine(borderTopC, Offset(0f, sw / 2f), Offset(size.width, sw / 2f), sw)
+                    }
+                    if (borderBottomW > 0f) {
+                        val sw = borderBottomW.dp.toPx()
+                        drawLine(borderBottomC, Offset(0f, size.height - sw / 2f), Offset(size.width, size.height - sw / 2f), sw)
+                    }
+                    if (borderLeftW > 0f) {
+                        val sw = borderLeftW.dp.toPx()
+                        drawLine(borderLeftC, Offset(sw / 2f, 0f), Offset(sw / 2f, size.height), sw)
+                    }
+                    if (borderRightW > 0f) {
+                        val sw = borderRightW.dp.toPx()
+                        drawLine(borderRightC, Offset(size.width - sw / 2f, 0f), Offset(size.width - sw / 2f, size.height), sw)
+                    }
+                }
+            } else {
+                // No radius: draw straight line borders
+                if (borderTopW > 0f) {
+                    val sw = borderTopW.dp.toPx()
+                    drawLine(borderTopC, Offset(0f, sw / 2f), Offset(size.width, sw / 2f), sw)
+                }
+                if (borderBottomW > 0f) {
+                    val sw = borderBottomW.dp.toPx()
+                    drawLine(
+                        borderBottomC,
+                        Offset(0f, size.height - sw / 2f),
+                        Offset(size.width, size.height - sw / 2f),
+                        sw
+                    )
+                }
+                if (borderLeftW > 0f) {
+                    val sw = borderLeftW.dp.toPx()
+                    drawLine(borderLeftC, Offset(sw / 2f, 0f), Offset(sw / 2f, size.height), sw)
+                }
+                if (borderRightW > 0f) {
+                    val sw = borderRightW.dp.toPx()
+                    drawLine(
+                        borderRightC,
+                        Offset(size.width - sw / 2f, 0f),
+                        Offset(size.width - sw / 2f, size.height),
+                        sw
+                    )
+                }
             }
         }
     }

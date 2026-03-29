@@ -993,53 +993,13 @@ extension FTLayoutViewProtocol {
                 })
         }
 
-        // Apply border styles using overlays for per-side control
-        if let topWidth = borderTopWidth, topWidth > 0 {
-            view = AnyView(
-                view.overlay(
-                    Rectangle()
-                        .frame(height: topWidth)
-                        .foregroundColor(Color(hexString: borderTopColor ?? "#000000")),
-                    alignment: .top
-                ))
-        }
-
-        if let bottomWidth = borderBottomWidth, bottomWidth > 0 {
-            view = AnyView(
-                view.overlay(
-                    Rectangle()
-                        .frame(height: bottomWidth)
-                        .foregroundColor(Color(hexString: borderBottomColor ?? "#000000")),
-                    alignment: .bottom
-                ))
-        }
-
-        if let leftWidth = borderLeftWidth, leftWidth > 0 {
-            view = AnyView(
-                view.overlay(
-                    Rectangle()
-                        .frame(width: leftWidth)
-                        .foregroundColor(Color(hexString: borderLeftColor ?? "#000000")),
-                    alignment: .leading
-                ))
-        }
-
-        if let rightWidth = borderRightWidth, rightWidth > 0 {
-            view = AnyView(
-                view.overlay(
-                    Rectangle()
-                        .frame(width: rightWidth)
-                        .foregroundColor(Color(hexString: borderRightColor ?? "#000000")),
-                    alignment: .trailing
-                ))
-        }
-
-        // Apply border radius using per-corner values, and overflow clipping
+        // Apply border radius / overflow clip FIRST so borders can be drawn on top of the clipped shape
         let radiusTL = borderTopLeftRadius ?? 0
         let radiusTR = borderTopRightRadius ?? 0
         let radiusBL = borderBottomLeftRadius ?? 0
         let radiusBR = borderBottomRightRadius ?? 0
-        if radiusTL > 0 || radiusTR > 0 || radiusBL > 0 || radiusBR > 0 {
+        let hasRadius = radiusTL > 0 || radiusTR > 0 || radiusBL > 0 || radiusBR > 0
+        if hasRadius {
             view = AnyView(
                 view.clipShape(
                     UnevenRoundedRectangle(
@@ -1054,6 +1014,72 @@ extension FTLayoutViewProtocol {
             )
         } else if overflow == "hidden" {
             view = AnyView(view.clipped())
+        }
+
+        // Apply border styles on top of the clip shape
+        let bTopW = borderTopWidth ?? 0
+        let bBottomW = borderBottomWidth ?? 0
+        let bLeftW = borderLeftWidth ?? 0
+        let bRightW = borderRightWidth ?? 0
+        let bTopC = borderTopColor ?? "#000000"
+        let bBottomC = borderBottomColor ?? "#000000"
+        let bLeftC = borderLeftColor ?? "#000000"
+        let bRightC = borderRightColor ?? "#000000"
+        if hasRadius && bTopW > 0 && bTopW == bBottomW && bBottomW == bLeftW && bLeftW == bRightW
+            && bTopC == bBottomC && bBottomC == bLeftC && bLeftC == bRightC
+        {
+            // Uniform border on a rounded view: stroke the rounded shape so corners curve correctly
+            view = AnyView(
+                view.overlay(
+                    UnevenRoundedRectangle(
+                        cornerRadii: RectangleCornerRadii(
+                            topLeading: radiusTL,
+                            bottomLeading: radiusBL,
+                            bottomTrailing: radiusBR,
+                            topTrailing: radiusTR
+                        )
+                    )
+                    .strokeBorder(Color(hexString: bTopC), lineWidth: bTopW)
+                )
+            )
+        } else {
+            // Per-side borders (or no radius): draw straight rectangle overlays
+            if bTopW > 0 {
+                view = AnyView(
+                    view.overlay(
+                        Rectangle()
+                            .frame(height: bTopW)
+                            .foregroundColor(Color(hexString: bTopC)),
+                        alignment: .top
+                    ))
+            }
+            if bBottomW > 0 {
+                view = AnyView(
+                    view.overlay(
+                        Rectangle()
+                            .frame(height: bBottomW)
+                            .foregroundColor(Color(hexString: bBottomC)),
+                        alignment: .bottom
+                    ))
+            }
+            if bLeftW > 0 {
+                view = AnyView(
+                    view.overlay(
+                        Rectangle()
+                            .frame(width: bLeftW)
+                            .foregroundColor(Color(hexString: bLeftC)),
+                        alignment: .leading
+                    ))
+            }
+            if bRightW > 0 {
+                view = AnyView(
+                    view.overlay(
+                        Rectangle()
+                            .frame(width: bRightW)
+                            .foregroundColor(Color(hexString: bRightC)),
+                        alignment: .trailing
+                    ))
+            }
         }
 
         // Apply transforms
