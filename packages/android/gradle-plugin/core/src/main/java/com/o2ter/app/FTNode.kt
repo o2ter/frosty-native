@@ -27,13 +27,11 @@ package com.o2ter.app
 
 import android.os.Build
 import androidx.annotation.RequiresApi
-import androidx.compose.foundation.layout.Box
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Stable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Modifier
 import kotlinx.coroutines.launch
 import java.util.UUID
 
@@ -107,22 +105,19 @@ internal class FTNodeState(
 @RequiresApi(Build.VERSION_CODES.P)
 @Composable
 internal fun FTNode(
-    modifier: Modifier = Modifier,
     activity: FrostyNativeActivity,
     state: FTNodeState,
 ) {
-    Box(modifier) {
-        state.component(
-            state.nodeId,
-            state.props,
-            { state.handler = it }
-        ) {
-            state.children.forEach {
-                FTNode(
-                    activity = activity,
-                    state = it
-                )
-            }
+    state.component(
+        state.nodeId,
+        state.props,
+        { state.handler = it }
+    ) {
+        state.children.forEach {
+            FTNode(
+                activity = activity,
+                state = it
+            )
         }
     }
 }

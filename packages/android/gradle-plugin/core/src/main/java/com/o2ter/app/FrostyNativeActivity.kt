@@ -36,6 +36,7 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.Scaffold
@@ -228,8 +229,8 @@ internal fun FTRoot(activity: FrostyNativeActivity, rootView: FTNodeState) {
                     )
                 }
         ) { safeAreaInset ->
-            FTNode(
-                Modifier
+            Box(
+                modifier = Modifier
                     .fillMaxSize()
                     .onSizeChanged {
                         activity.setEnvironment(
@@ -242,10 +243,13 @@ internal fun FTRoot(activity: FrostyNativeActivity, rootView: FTNodeState) {
                                 ),
                             )
                         )
-                    },
-                activity,
-                rootView
-            )
+                    }
+            ) {
+                FTNode(
+                    activity,
+                    rootView
+                )
+            }
         }
     }
 }
