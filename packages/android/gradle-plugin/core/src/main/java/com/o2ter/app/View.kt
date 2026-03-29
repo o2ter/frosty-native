@@ -609,7 +609,7 @@ fun FTTextInput(
     BasicTextField(
         value = value,
         onValueChange = { },
-        modifier = Modifier.applyViewProps(props)
+        modifier = Modifier.applyViewProps(props, fillWidth = true)
     )
 }
 
