@@ -52,6 +52,37 @@ export const TextInput: ComponentType<TextInputProps> = ({
   numberOfLines,
   secureTextEntry,
   autofocus,
+
+  // text input specific events
+  onChange,
+  onChangeValue,
+  onBlur,
+  onFocus,
+  onEndEditing,
+  onSubmitEditing,
+  onSelectionChange,
+
+  // scroll props
+  horizontal = false,
+  vertical = !horizontal,
+  scrollEnabled = true,
+  directionalLockEnabled = false,
+  contentOffset,
+  zoomScale = 1,
+  maximumZoomScale = 1,
+  minimumZoomScale = 1,
+  bounces = true,
+  bouncesZoom,
+  decelerationRate,
+  onContentSizeChange,
+  onMomentumScrollBegin,
+  onMomentumScrollEnd,
+  onScroll,
+  onScrollBeginDrag,
+  onScrollEndDrag,
+  onScrollToTop,
+
+  // responder props
   ...props
 }) => {
 
