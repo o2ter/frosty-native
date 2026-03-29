@@ -76,8 +76,8 @@ class FTTextView extends NativeNode {
 
 export const Text: ComponentType<TextViewProps> = ({ ref, style, maxFontSizeMultiplier, minimumFontScale, numberOfLines, children, ...props }) => {
 
-  const nativeRef = useRef<ComponentRef<typeof Text>>();
-  useRefHandle(mergeRefs(nativeRef, ref), () => ({
+  const handleRef = useRef<ComponentRef<typeof Text>>();
+  useRefHandle(mergeRefs(handleRef, ref), () => ({
   }), null);
 
   const isInnerText = _.some(useStack(), (item) => item.type === Text);
@@ -94,7 +94,7 @@ export const Text: ComponentType<TextViewProps> = ({ ref, style, maxFontSizeMult
         children: (
           <Pairs.Parent>{children}</Pairs.Parent>
         ),
-        ...useResponderEvents(props, nativeRef)
+        ...useResponderEvents(props, handleRef)
       })}
     </Pairs.Child>
   );

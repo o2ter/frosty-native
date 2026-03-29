@@ -440,8 +440,8 @@ export const ScrollView: ComponentType<ScrollViewProps> = ({
 }) => {
 
   const targetRef = useRef<HTMLDivElement>();
-  const nativeRef = useRef<ComponentRef<typeof ScrollView>>();
-  useRefHandle(mergeRefs(nativeRef, ref), () => ({
+  const handleRef = useRef<ComponentRef<typeof ScrollView>>();
+  useRefHandle(mergeRefs(handleRef, ref), () => ({
     get _native() { return targetRef.current; },
     flashScrollIndicators() { },
     scrollTo(options) {
@@ -494,7 +494,7 @@ export const ScrollView: ComponentType<ScrollViewProps> = ({
     style,
   ]));
 
-  const { style: scrollStyle, ...scrollProps } = useScrollProps(nativeRef, targetRef, { horizontal, vertical, ...props });
+  const { style: scrollStyle, ...scrollProps } = useScrollProps(handleRef, targetRef, { horizontal, vertical, ...props });
 
   return (
     <div
@@ -506,7 +506,7 @@ export const ScrollView: ComponentType<ScrollViewProps> = ({
       ]}
       tabIndex={tabIndex}
       {...scrollProps}
-      {...useResponderEvents(props, nativeRef, targetRef)}>
+      {...useResponderEvents(props, handleRef, targetRef)}>
       <View style={[
         horizontal && !vertical ? { flexDirection: 'row' } : undefined,
         horizontal ? { alignSelf: 'flex-start' } : undefined,

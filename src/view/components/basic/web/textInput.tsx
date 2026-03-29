@@ -62,8 +62,8 @@ export const TextInput: ComponentType<TextInputProps> = ({
 }) => {
 
   const targetRef = useRef<HTMLElement | null>();
-  const nativeRef = useRef<ComponentRef<typeof TextInput>>();
-  useRefHandle(mergeRefs(nativeRef, ref), () => ({
+  const handleRef = useRef<ComponentRef<typeof TextInput>>();
+  useRefHandle(mergeRefs(handleRef, ref), () => ({
     get _native() { return targetRef.current || undefined; },
     focus() { targetRef.current?.focus(); },
     blur() { targetRef.current?.blur(); },
@@ -108,7 +108,7 @@ export const TextInput: ComponentType<TextInputProps> = ({
   ]));
 
   const _onBlur = useCallback(onBlur ? (e: Event & { currentTarget: HTMLTextAreaElement | HTMLInputElement }) => {
-    const target = nativeRef.current;
+    const target = handleRef.current;
     if (!target) return;
     if (_.isFunction(onBlur)) {
       onBlur.call(target, {
@@ -121,7 +121,7 @@ export const TextInput: ComponentType<TextInputProps> = ({
   } : undefined);
 
   const _onFocus = useCallback(onFocus ? (e: Event & { currentTarget: HTMLTextAreaElement | HTMLInputElement }) => {
-    const target = nativeRef.current;
+    const target = handleRef.current;
     if (!target) return;
     if (_.isFunction(onFocus)) {
       onFocus.call(target, {
@@ -134,7 +134,7 @@ export const TextInput: ComponentType<TextInputProps> = ({
   } : undefined);
 
   const _onChange = useCallback(onChange || onChangeValue ? (e: Event & { currentTarget: HTMLTextAreaElement | HTMLInputElement }) => {
-    const target = nativeRef.current;
+    const target = handleRef.current;
     if (!target) return;
     if (_.isFunction(onChange)) {
       onChange.call(target, {
@@ -151,7 +151,7 @@ export const TextInput: ComponentType<TextInputProps> = ({
   } : undefined);
 
   const _onSelectionChange = useCallback(onSelectionChange ? (e: Event & { currentTarget: HTMLTextAreaElement | HTMLInputElement }) => {
-    const target = nativeRef.current;
+    const target = handleRef.current;
     if (!target) return;
     if (_.isFunction(onSelectionChange)) {
       const { selectionStart: start, selectionEnd: end } = e.currentTarget
@@ -165,9 +165,9 @@ export const TextInput: ComponentType<TextInputProps> = ({
     }
   } : undefined);
 
-  const responders = useResponderEvents({ disabled, ...props }, nativeRef, targetRef);
+  const responders = useResponderEvents({ disabled, ...props }, handleRef, targetRef);
 
-  const { style: scrollStyle, ...scrollProps } = useScrollProps(nativeRef, targetRef, { horizontal, vertical, ...props });
+  const { style: scrollStyle, ...scrollProps } = useScrollProps(handleRef, targetRef, { horizontal, vertical, ...props });
 
   const _props = {
     id,

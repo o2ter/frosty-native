@@ -38,8 +38,8 @@ abstract class FTImageView extends NativeNode {
 
 export const Image: ComponentType<ImageProps> = ({ ref, style, source, ...props }) => {
 
-  const nativeRef = useRef<ComponentRef<typeof Image>>();
-  useRefHandle(mergeRefs(nativeRef, ref), () => ({
+  const handleRef = useRef<ComponentRef<typeof Image>>();
+  useRefHandle(mergeRefs(handleRef, ref), () => ({
   }), null);
 
   const _style = useNativeStyle(style);
@@ -48,6 +48,6 @@ export const Image: ComponentType<ImageProps> = ({ ref, style, source, ...props 
   return _createNativeElement(FTImageView, {
     style: _style,
     source: _source,
-    ...useResponderEvents(props, nativeRef)
+    ...useResponderEvents(props, handleRef)
   });
 };

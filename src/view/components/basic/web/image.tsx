@@ -35,8 +35,8 @@ const ImageBase: ComponentType<ImageProps & { source?: string; }> = ({ id, ref, 
   const [naturalSize, setNaturalSize] = useState<{ width: number; height: number; }>();
 
   const targetRef = useRef<HTMLImageElement>();
-  const nativeRef = useRef<ComponentRef<typeof ImageBase>>();
-  useRefHandle(mergeRefs(nativeRef, ref), () => ({
+  const handleRef = useRef<ComponentRef<typeof ImageBase>>();
+  useRefHandle(mergeRefs(handleRef, ref), () => ({
     get _native() { return targetRef.current; }
   }), null);
 
@@ -64,7 +64,7 @@ const ImageBase: ComponentType<ImageProps & { source?: string; }> = ({ id, ref, 
           height: e.currentTarget.naturalHeight,
         });
       }}
-      {...useResponderEvents(props, nativeRef, targetRef)}
+      {...useResponderEvents(props, handleRef, targetRef)}
     />
   );
 };

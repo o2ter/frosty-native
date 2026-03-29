@@ -32,8 +32,8 @@ import { useResponderEvents } from './events';
 export const View: ComponentType<ViewProps> = ({ id, ref, style, children, tabIndex, ...props }) => {
 
   const targetRef = useRef<HTMLDivElement>();
-  const nativeRef = useRef<ComponentRef<typeof View>>();
-  useRefHandle(mergeRefs(nativeRef, ref), () => ({
+  const handleRef = useRef<ComponentRef<typeof View>>();
+  useRefHandle(mergeRefs(handleRef, ref), () => ({
     get _native() { return targetRef.current; }
   }), null);
 
@@ -76,7 +76,7 @@ export const View: ComponentType<ViewProps> = ({ id, ref, style, children, tabIn
         cssStyle,
       ]}
       tabIndex={tabIndex}
-      {...useResponderEvents(props, nativeRef, targetRef)}>
+      {...useResponderEvents(props, handleRef, targetRef)}>
       {children}
     </div>
   );

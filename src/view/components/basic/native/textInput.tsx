@@ -55,8 +55,8 @@ export const TextInput: ComponentType<TextInputProps> = ({
   ...props
 }) => {
 
-  const nativeRef = useRef<ComponentRef<typeof TextInput>>();
-  useRefHandle(mergeRefs(nativeRef, ref), () => ({
+  const handleRef = useRef<ComponentRef<typeof TextInput>>();
+  useRefHandle(mergeRefs(handleRef, ref), () => ({
     focus() { },
     blur() { },
     flashScrollIndicators() { },
@@ -72,6 +72,6 @@ export const TextInput: ComponentType<TextInputProps> = ({
   return _createNativeElement(FTTextInput, {
     style: _style,
     value,
-    ...useResponderEvents({ disabled, ...props }, nativeRef)
+    ...useResponderEvents({ disabled, ...props }, handleRef)
   });
 };

@@ -37,8 +37,8 @@ const Pairs = createPairs({ allowTextChildren: true });
 export const Text: ComponentType<TextViewProps> = ({ id, ref, style, maxFontSizeMultiplier, minimumFontScale, numberOfLines, tabIndex, children, ...props }) => {
 
   const targetRef = useRef<HTMLElement | null>();
-  const nativeRef = useRef<ComponentRef<typeof Text>>();
-  useRefHandle(mergeRefs(nativeRef, ref), () => ({
+  const handleRef = useRef<ComponentRef<typeof Text>>();
+  useRefHandle(mergeRefs(handleRef, ref), () => ({
     get _native() { return targetRef.current || undefined; }
   }), null);
 
@@ -79,7 +79,7 @@ export const Text: ComponentType<TextViewProps> = ({ id, ref, style, maxFontSize
           cssStyle,
         ],
         tabIndex,
-        ...useResponderEvents(props, nativeRef, targetRef),
+        ...useResponderEvents(props, handleRef, targetRef),
       }, (
         <Pairs.Parent>{children}</Pairs.Parent>
       ))}

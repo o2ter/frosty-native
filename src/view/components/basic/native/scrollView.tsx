@@ -47,8 +47,8 @@ export const ScrollView: ComponentType<ScrollViewProps> = ({
   ...props
 }) => {
 
-  const nativeRef = useRef<ComponentRef<typeof ScrollView>>();
-  useRefHandle(mergeRefs(nativeRef, ref), () => ({
+  const handleRef = useRef<ComponentRef<typeof ScrollView>>();
+  useRefHandle(mergeRefs(handleRef, ref), () => ({
     flashScrollIndicators() { },
     scrollTo() { },
     scrollToEnd() { },
@@ -66,6 +66,6 @@ export const ScrollView: ComponentType<ScrollViewProps> = ({
         contentContainerStyle,
       ]}>{children}</View>
     ),
-    ...useResponderEvents(props, nativeRef)
+    ...useResponderEvents(props, handleRef)
   });
 };

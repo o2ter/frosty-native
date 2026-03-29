@@ -38,8 +38,8 @@ abstract class FTView extends NativeNode {
 
 export const View: ComponentType<ViewProps> = ({ ref, style, children, ...props }) => {
 
-  const nativeRef = useRef<ComponentRef<typeof View>>();
-  useRefHandle(mergeRefs(nativeRef, ref), () => ({
+  const handleRef = useRef<ComponentRef<typeof View>>();
+  useRefHandle(mergeRefs(handleRef, ref), () => ({
   }), null);
 
   const _style = useNativeStyle(style);
@@ -47,6 +47,6 @@ export const View: ComponentType<ViewProps> = ({ ref, style, children, ...props 
   return _createNativeElement(FTView, {
     style: _style,
     children,
-    ...useResponderEvents(props, nativeRef)
+    ...useResponderEvents(props, handleRef)
   });
 };
