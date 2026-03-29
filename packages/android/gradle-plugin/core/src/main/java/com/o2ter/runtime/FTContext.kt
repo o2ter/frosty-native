@@ -32,6 +32,7 @@ import androidx.core.content.edit
 import com.o2ter.app.Component
 import com.o2ter.app.FTImageView
 import com.o2ter.app.FTNodeState
+import com.o2ter.app.FTSafeAreaView
 import com.o2ter.app.FTScrollView
 import com.o2ter.app.FTTextInput
 import com.o2ter.app.FTTextView
