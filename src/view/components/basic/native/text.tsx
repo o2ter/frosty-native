@@ -65,6 +65,7 @@ class FTTextView extends NativeNode {
     this._props = props;
     this._children = _children.map(x => _.isNumber(x) ? String(x) : x);
     this._native.update({
+      style: props.style,
       text: {
         style: props.style,
         children: _children.map(x => createStyledText(x)),

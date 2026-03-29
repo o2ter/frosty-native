@@ -134,7 +134,16 @@ private fun parseHexColor(hex: String?): Color? {
                 blue = trimmed[2].digitToInt(16) * 0x11 / 255f
             )
             6 -> Color("#$trimmed".toColorInt())
-            8 -> Color("#$trimmed".toColorInt())
+            8 -> {
+                // Color normalizer outputs #RRGGBBAA format
+                val v = trimmed.toLong(16)
+                Color(
+                    red = ((v shr 24) and 0xFF).toInt() / 255f,
+                    green = ((v shr 16) and 0xFF).toInt() / 255f,
+                    blue = ((v shr 8) and 0xFF).toInt() / 255f,
+                    alpha = (v and 0xFF).toInt() / 255f
+                )
+            }
             else -> null
         }
     } catch (_: Exception) {

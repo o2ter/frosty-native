@@ -38,8 +38,8 @@ extension Color {
             (a, r, g, b) = (255, (int >> 8) * 17, (int >> 4 & 0xF) * 17, (int & 0xF) * 17)
         case 6:  // RGB (24-bit)
             (a, r, g, b) = (255, int >> 16, int >> 8 & 0xFF, int & 0xFF)
-        case 8:  // ARGB (32-bit)
-            (a, r, g, b) = (int >> 24, int >> 16 & 0xFF, int >> 8 & 0xFF, int & 0xFF)
+        case 8:  // RGBA (32-bit) — format matches CSS/JS color normalizer output: RRGGBBAA
+            (r, g, b, a) = (int >> 24, int >> 16 & 0xFF, int >> 8 & 0xFF, int & 0xFF)
         default:
             (a, r, g, b) = (1, 1, 1, 0)
         }
@@ -705,16 +705,17 @@ extension FTLayoutViewProtocol {
 
     func boxShadowValue(_ key: String) -> [BoxShadowValue]? {
         guard let v = styleForKey(key) else { return nil }
-        if v.isObject {
+        // Check isArray first — JS arrays are also objects, so isObject must come second
+        if v.isArray {
+            guard let jsArray = v.toJSValueArray() else { return nil }
+            return jsArray.compactMap { item -> BoxShadowValue? in
+                guard let dict = item.toStringKeyedDictionary() else { return nil }
+                return BoxShadowValue(dict)
+            }
+        } else if v.isObject {
             guard let stringDict = v.toStringKeyedDictionary() else { return nil }
             if let boxShadow = BoxShadowValue(stringDict) {
                 return [boxShadow]
-            }
-        } else if v.isArray {
-            guard let array = v.toArray() else { return nil }
-            return array.compactMap { item -> BoxShadowValue? in
-                guard let dict = item as? [String: Any] else { return nil }
-                return BoxShadowValue(dict)
             }
         }
         return nil
@@ -722,16 +723,17 @@ extension FTLayoutViewProtocol {
 
     func filterValue(_ key: String) -> [FilterFunction]? {
         guard let v = styleForKey(key) else { return nil }
-        if v.isObject {
+        // Check isArray first — JS arrays are also objects, so isObject must come second
+        if v.isArray {
+            guard let jsArray = v.toJSValueArray() else { return nil }
+            return jsArray.compactMap { item -> FilterFunction? in
+                guard let dict = item.toStringKeyedDictionary() else { return nil }
+                return FilterFunction(dict)
+            }
+        } else if v.isObject {
             guard let stringDict = v.toStringKeyedDictionary() else { return nil }
             if let filter = FilterFunction(stringDict) {
                 return [filter]
-            }
-        } else if v.isArray {
-            guard let array = v.toArray() else { return nil }
-            return array.compactMap { item -> FilterFunction? in
-                guard let dict = item as? [String: Any] else { return nil }
-                return FilterFunction(dict)
             }
         }
         return nil
@@ -739,16 +741,17 @@ extension FTLayoutViewProtocol {
 
     func transformValue(_ key: String) -> [TransformFunction]? {
         guard let v = styleForKey(key) else { return nil }
-        if v.isObject {
+        // Check isArray first — JS arrays are also objects, so isObject must come second
+        if v.isArray {
+            guard let jsArray = v.toJSValueArray() else { return nil }
+            return jsArray.compactMap { item -> TransformFunction? in
+                guard let dict = item.toStringKeyedDictionary() else { return nil }
+                return TransformFunction(dict)
+            }
+        } else if v.isObject {
             guard let stringDict = v.toStringKeyedDictionary() else { return nil }
             if let transform = TransformFunction(stringDict) {
                 return [transform]
-            }
-        } else if v.isArray {
-            guard let array = v.toArray() else { return nil }
-            return array.compactMap { item -> TransformFunction? in
-                guard let dict = item as? [String: Any] else { return nil }
-                return TransformFunction(dict)
             }
         }
         return nil
