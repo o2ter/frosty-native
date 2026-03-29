@@ -873,47 +873,47 @@ extension FTLayoutViewProtocol {
 
 extension FTLayoutViewProtocol {
 
-    private func _body(_ geo: GeometryProxy) -> some View {
+    private func _body(_ parentSize: CGSize) -> some View {
         // Handle display:none - collapse view completely
         if display == "none" {
             return AnyView(EmptyView())
         }
 
-        let info = FTLayoutInfo(parentSize: geo.size)
+        let info = FTLayoutInfo(parentSize: parentSize)
 
         // Resolve padding and margin with relative base
         let paddingInsets = EdgeInsets(
-            top: paddingTop?.resolve(relativeBase: geo.size.height) ?? 0,
-            leading: paddingLeft?.resolve(relativeBase: geo.size.width) ?? 0,
-            bottom: paddingBottom?.resolve(relativeBase: geo.size.height) ?? 0,
-            trailing: paddingRight?.resolve(relativeBase: geo.size.width) ?? 0
+            top: paddingTop?.resolve(relativeBase: parentSize.height) ?? 0,
+            leading: paddingLeft?.resolve(relativeBase: parentSize.width) ?? 0,
+            bottom: paddingBottom?.resolve(relativeBase: parentSize.height) ?? 0,
+            trailing: paddingRight?.resolve(relativeBase: parentSize.width) ?? 0
         )
         let marginInsets = EdgeInsets(
-            top: marginTop?.resolve(relativeBase: geo.size.height) ?? 0,
-            leading: marginLeft?.resolve(relativeBase: geo.size.width) ?? 0,
-            bottom: marginBottom?.resolve(relativeBase: geo.size.height) ?? 0,
-            trailing: marginRight?.resolve(relativeBase: geo.size.width) ?? 0
+            top: marginTop?.resolve(relativeBase: parentSize.height) ?? 0,
+            leading: marginLeft?.resolve(relativeBase: parentSize.width) ?? 0,
+            bottom: marginBottom?.resolve(relativeBase: parentSize.height) ?? 0,
+            trailing: marginRight?.resolve(relativeBase: parentSize.width) ?? 0
         )
 
         // Start with the base content wrapped in AnyView to allow modifier chaining
         var view = AnyView(self.content(info))
 
         // Apply size constraints
-        if let width = width?.resolve(relativeBase: geo.size.width),
-            let height = height?.resolve(relativeBase: geo.size.height)
+        if let width = width?.resolve(relativeBase: parentSize.width),
+            let height = height?.resolve(relativeBase: parentSize.height)
         {
             view = AnyView(view.frame(width: width, height: height, alignment: .topLeading))
-        } else if let width = width?.resolve(relativeBase: geo.size.width) {
+        } else if let width = width?.resolve(relativeBase: parentSize.width) {
             view = AnyView(view.frame(width: width, alignment: .topLeading))
-        } else if let height = height?.resolve(relativeBase: geo.size.height) {
+        } else if let height = height?.resolve(relativeBase: parentSize.height) {
             view = AnyView(view.frame(height: height, alignment: .topLeading))
         }
 
         // Apply min/max constraints
-        let minW: CGFloat? = minWidth?.resolve(relativeBase: geo.size.width)
-        let maxW: CGFloat? = maxWidth?.resolve(relativeBase: geo.size.width)
-        let minH: CGFloat? = minHeight?.resolve(relativeBase: geo.size.height)
-        let maxH: CGFloat? = maxHeight?.resolve(relativeBase: geo.size.height)
+        let minW: CGFloat? = minWidth?.resolve(relativeBase: parentSize.width)
+        let maxW: CGFloat? = maxWidth?.resolve(relativeBase: parentSize.width)
+        let minH: CGFloat? = minHeight?.resolve(relativeBase: parentSize.height)
+        let maxH: CGFloat? = maxHeight?.resolve(relativeBase: parentSize.height)
 
         if minW != nil || maxW != nil || minH != nil || maxH != nil {
             view = AnyView(
@@ -932,22 +932,22 @@ extension FTLayoutViewProtocol {
         // Apply positioning
         if position == "absolute" {
             let x =
-                left?.resolve(relativeBase: geo.size.width) ?? right.map {
-                    geo.size.width - ($0.resolve(relativeBase: geo.size.width) ?? 0)
+                left?.resolve(relativeBase: parentSize.width) ?? right.map {
+                    parentSize.width - ($0.resolve(relativeBase: parentSize.width) ?? 0)
                 } ?? 0
             let y =
-                top?.resolve(relativeBase: geo.size.height) ?? bottom.map {
-                    geo.size.height - ($0.resolve(relativeBase: geo.size.height) ?? 0)
+                top?.resolve(relativeBase: parentSize.height) ?? bottom.map {
+                    parentSize.height - ($0.resolve(relativeBase: parentSize.height) ?? 0)
                 } ?? 0
             view = AnyView(view.position(x: x, y: y))
         } else if position == "relative" {
             let x =
-                left?.resolve(relativeBase: geo.size.width) ?? right.map {
-                    -($0.resolve(relativeBase: geo.size.width) ?? 0)
+                left?.resolve(relativeBase: parentSize.width) ?? right.map {
+                    -($0.resolve(relativeBase: parentSize.width) ?? 0)
                 } ?? 0
             let y =
-                top?.resolve(relativeBase: geo.size.height) ?? bottom.map {
-                    -($0.resolve(relativeBase: geo.size.height) ?? 0)
+                top?.resolve(relativeBase: parentSize.height) ?? bottom.map {
+                    -($0.resolve(relativeBase: parentSize.height) ?? 0)
                 } ?? 0
             view = AnyView(view.offset(x: x, y: y))
         }
@@ -1056,11 +1056,11 @@ extension FTLayoutViewProtocol {
                         view = AnyView(view.rotationEffect(.degrees(degrees)))
                     }
                 case .translateX(let x):
-                    if let offset = x.resolve(relativeBase: geo.size.width) {
+                    if let offset = x.resolve(relativeBase: parentSize.width) {
                         view = AnyView(view.offset(x: offset, y: 0))
                     }
                 case .translateY(let y):
-                    if let offset = y.resolve(relativeBase: geo.size.height) {
+                    if let offset = y.resolve(relativeBase: parentSize.height) {
                         view = AnyView(view.offset(x: 0, y: offset))
                     }
                 default:
@@ -1085,9 +1085,31 @@ extension FTLayoutViewProtocol {
         return view
     }
 
+    private var needsParentSize: Bool {
+        func isPercent(_ v: DimensionValue?) -> Bool {
+            if case .percent = v { return true }
+            return false
+        }
+        return isPercent(width) || isPercent(height)
+            || isPercent(minWidth) || isPercent(maxWidth)
+            || isPercent(minHeight) || isPercent(maxHeight)
+            || isPercent(paddingTop) || isPercent(paddingBottom)
+            || isPercent(paddingLeft) || isPercent(paddingRight)
+            || isPercent(marginTop) || isPercent(marginBottom)
+            || isPercent(marginLeft) || isPercent(marginRight)
+            || isPercent(left) || isPercent(right)
+            || isPercent(top) || isPercent(bottom)
+            || position == "absolute"
+    }
+
+    @ViewBuilder
     var body: some View {
-        GeometryReader { geo in
-            self._body(geo)
+        if needsParentSize {
+            GeometryReader { geo in
+                self._body(geo.size)
+            }
+        } else {
+            self._body(.zero)
         }
     }
 }
