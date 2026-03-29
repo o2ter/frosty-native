@@ -462,7 +462,7 @@ private fun applyTextTransform(raw: String, transform: String?): String = when (
     else -> raw
 }
 
-private fun buildStyledText(text: Any?, parentTransform: String? = null): AnnotatedString {
+private fun buildStyledText(text: Any?, parentTransform: String? = null, isInline: Boolean = false): AnnotatedString {
     if (text == null || text is String) {
         return AnnotatedString(applyTextTransform(text ?: "", parentTransform))
     }
@@ -472,10 +472,18 @@ private fun buildStyledText(text: Any?, parentTransform: String? = null): Annota
         val children = text["children"] as? List<*> ?: emptyList<Any?>()
         val textTransform = (styleMap["textTransform"] as? String) ?: parentTransform
         return buildAnnotatedString {
-            withStyle(parseTextParagraphStyle(styleMap)) {
+            if (!isInline) {
+                withStyle(parseTextParagraphStyle(styleMap)) {
+                    withStyle(parseTextSpanStyle(styleMap)) {
+                        for (child in children) {
+                            append(buildStyledText(child, textTransform, isInline = true))
+                        }
+                    }
+                }
+            } else {
                 withStyle(parseTextSpanStyle(styleMap)) {
                     for (child in children) {
-                        append(buildStyledText(child, textTransform))
+                        append(buildStyledText(child, textTransform, isInline = true))
                     }
                 }
             }
