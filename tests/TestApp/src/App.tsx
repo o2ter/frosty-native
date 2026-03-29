@@ -277,7 +277,7 @@ export default function App() {
         {/* Section 14: Image */}
         <Section title="14. Image">
           <Image
-            source={require('./assets/sample.png')}
+            source={require('./assets/sample.png').default}
             style={{ width: 120, height: 90, backgroundColor: '#e0e0e0' }}
           />
           <Image
