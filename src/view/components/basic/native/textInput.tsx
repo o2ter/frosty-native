@@ -55,13 +55,20 @@ export const TextInput: ComponentType<TextInputProps> = ({
   ...props
 }) => {
 
+  const nativeRef = useRef<FTTextInput>();
   const handleRef = useRef<ComponentRef<typeof TextInput>>();
   useRefHandle(mergeRefs(handleRef, ref), () => ({
     focus() { },
     blur() { },
-    flashScrollIndicators() { },
-    scrollTo() { },
-    scrollToEnd() { },
+    flashScrollIndicators() {
+      nativeRef.current?.invoke('flashScrollIndicators', []);
+    },
+    scrollTo(options) {
+      nativeRef.current?.invoke('scrollTo', [options]);
+    },
+    scrollToEnd(options) {
+      nativeRef.current?.invoke('scrollToEnd', [options]);
+    },
   }), null);
 
   const _style = useNativeStyle([
@@ -70,6 +77,7 @@ export const TextInput: ComponentType<TextInputProps> = ({
   ]);
 
   return _createNativeElement(FTTextInput, {
+    ref: nativeRef,
     style: _style,
     value,
     ...useResponderEvents({ disabled, ...props }, handleRef)
