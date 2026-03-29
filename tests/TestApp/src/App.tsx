@@ -23,6 +23,7 @@
 //  THE SOFTWARE.
 //
 
+import _ from 'lodash';
 import { useState } from 'frosty';
 import { Image, ScrollView, Text, TextInput, View } from '../../../src/main/index.native';
 
@@ -236,6 +237,34 @@ export default function App() {
               </View>
             </View>
           </View>
+        </Section>
+
+        {/* Advanced: justifyContent variants */}
+        <Section title="Advanced: justifyContent variants">
+          {_.map(['flex-start', 'flex-end', 'center', 'stretch', 'space-between', 'space-around', 'space-evenly'] as const, (x) => (
+            <View key={x} style={{ marginBottom: 8 }}>
+              <Text style={{ fontSize: 11, color: '#888', marginBottom: 2 }}>{x}</Text>
+              <View style={{ gap: 4, padding: 4, backgroundColor: 'purple', flexDirection: 'row', justifyContent: x }}>
+                <View style={{ minWidth: 40, height: 32, backgroundColor: 'yellow' }} />
+                <View style={{ minWidth: 20, height: 20, backgroundColor: 'yellow' }} />
+                <View style={{ minWidth: 40, height: 32, backgroundColor: 'yellow' }} />
+              </View>
+            </View>
+          ))}
+        </Section>
+
+        {/* Advanced: alignItems variants (row) */}
+        <Section title="Advanced: alignItems variants (row)">
+          {_.map(['flex-start', 'flex-end', 'center', 'stretch', 'baseline'] as const, (x) => (
+            <View key={x} style={{ marginBottom: 8 }}>
+              <Text style={{ fontSize: 11, color: '#888', marginBottom: 2 }}>{x}</Text>
+              <View style={{ gap: 4, padding: 4, backgroundColor: 'purple', flexDirection: 'row', alignItems: x }}>
+                <View style={{ width: 40, height: 40, backgroundColor: 'yellow' }} />
+                <View style={{ width: 20, height: 20, backgroundColor: 'yellow' }} />
+                <View style={{ width: 40, height: 40, backgroundColor: 'yellow' }} />
+              </View>
+            </View>
+          ))}
         </Section>
 
       </View>
