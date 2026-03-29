@@ -297,6 +297,31 @@ export default function App() {
           </View>
         </Section>
 
+        {/* Section 16: boxShadow */}
+        <Section title="16. Box Shadow">
+          <View style={{ flexDirection: 'row', gap: 16, flexWrap: 'wrap' }}>
+            <View style={{ width: 80, height: 80, backgroundColor: 'white', boxShadow: { offsetX: 4, offsetY: 4, blurRadius: 8, color: 'rgba(0,0,0,0.3)' } }} />
+            <View style={{ width: 80, height: 80, backgroundColor: 'white', boxShadow: { offsetX: 0, offsetY: 0, blurRadius: 12, color: 'steelblue' } }} />
+            <View style={{ width: 80, height: 80, backgroundColor: 'white', borderRadius: 12, boxShadow: { offsetX: 6, offsetY: 6, blurRadius: 10, color: 'rgba(0,0,0,0.4)' } }} />
+            <View style={{ width: 80, height: 80, backgroundColor: 'white', boxShadow: [{ offsetX: 4, offsetY: 4, blurRadius: 6, color: 'rgba(255,0,0,0.4)' }, { offsetX: -4, offsetY: -4, blurRadius: 6, color: 'rgba(0,0,255,0.4)' }] }} />
+          </View>
+        </Section>
+
+        {/* Section 17: textShadow */}
+        <Section title="17. Text Shadow">
+          <Text style={{ fontSize: 24, fontWeight: 'bold', color: '#333', textShadowColor: 'rgba(0,0,0,0.4)', textShadowOffsetX: 2, textShadowOffsetY: 2, textShadowRadius: 4 }}>Shadow Text</Text>
+          <Text style={{ fontSize: 20, color: 'white', backgroundColor: '#333', padding: 4, textShadowColor: 'rgba(255,255,0,0.9)', textShadowOffsetX: 0, textShadowOffsetY: 0, textShadowRadius: 8 }}>Glow Effect</Text>
+          <Text style={{ fontSize: 20, color: '#333', textShadowColor: 'steelblue', textShadowOffsetX: 3, textShadowOffsetY: 3, textShadowRadius: 0 }}>Hard Shadow</Text>
+        </Section>
+
+        {/* Section 18: filter dropShadow */}
+        <Section title="18. Filter: dropShadow">
+          <View style={{ flexDirection: 'row', gap: 16, flexWrap: 'wrap' }}>
+            <View style={{ width: 80, height: 80, backgroundColor: 'coral', filter: { dropShadow: { offsetX: 4, offsetY: 4, standardDeviation: 4, color: 'rgba(0,0,0,0.5)' } } }} />
+            <View style={{ width: 80, height: 80, backgroundColor: 'mediumseagreen', borderRadius: 40, filter: { dropShadow: { offsetX: 0, offsetY: 4, standardDeviation: 8, color: 'rgba(0,128,0,0.5)' } } }} />
+          </View>
+        </Section>
+
         {/* Advanced: flexDirection × justifyContent (all combinations) */}
         {_.map(['row', 'row-reverse', 'column', 'column-reverse'] as const, dir => (
           <Section key={`jc-${dir}`} title={`Advanced: justifyContent (${dir})`}>

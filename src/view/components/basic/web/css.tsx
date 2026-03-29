@@ -38,9 +38,41 @@ const encodeTransformOrigin = (value: Array<string | number> | string | number):
   return value && _.isNumber(value) ? `${value}px` : `${value}`;
 }
 
+const encodeFilterDimension = (value: number | string): string =>
+  _.isNumber(value) ? `${value}` : value;
+
 const encodeFilter = (value: FilterFunction | FilterFunction[]): string | undefined => {
-  if (_.isArray(value)) return _.compact(_.map(value, x => encodeFilter(x))).join(' ');
-  return;
+  if (_.isArray(value)) return _.compact(_.map(value, x => encodeFilter(x))).join(' ') || undefined;
+  if ('brightness' in value) return `brightness(${encodeFilterDimension(value.brightness)})`;
+  if ('blur' in value) {
+    const v = value.blur;
+    return `blur(${_.isNumber(v) ? `${v}px` : v})`;
+  }
+  if ('contrast' in value) return `contrast(${encodeFilterDimension(value.contrast)})`;
+  if ('grayscale' in value) return `grayscale(${encodeFilterDimension(value.grayscale)})`;
+  if ('hueRotate' in value) {
+    const v = value.hueRotate;
+    return `hue-rotate(${_.isNumber(v) ? `${v}deg` : v})`;
+  }
+  if ('invert' in value) return `invert(${encodeFilterDimension(value.invert)})`;
+  if ('opacity' in value) return `opacity(${encodeFilterDimension(value.opacity)})`;
+  if ('saturate' in value) return `saturate(${encodeFilterDimension(value.saturate)})`;
+  if ('sepia' in value) return `sepia(${encodeFilterDimension(value.sepia)})`;
+  if ('dropShadow' in value) {
+    const ds = value.dropShadow;
+    if (_.isString(ds)) return `drop-shadow(${ds})`;
+    const { offsetX = 0, offsetY = 0, standardDeviation, color } = ds;
+    const parts = _.compact([
+      _.isNumber(offsetX) ? `${offsetX}px` : offsetX,
+      _.isNumber(offsetY) ? `${offsetY}px` : offsetY,
+      standardDeviation != null
+        ? _.isNumber(standardDeviation) ? `${standardDeviation}px` : standardDeviation
+        : undefined,
+      color,
+    ]);
+    return `drop-shadow(${parts.join(' ')})`;
+  }
+  return undefined;
 }
 
 const encodeBoxShadow = (value: BoxShadowValue | BoxShadowValue[]): string => {

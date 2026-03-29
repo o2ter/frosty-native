@@ -355,8 +355,20 @@ struct BoxShadowValue {
         }
 
         self.color = value["color"] as? String
-        self.blurRadius = (value["blurRadius"] as? String).flatMap { DimensionValue($0) }
-        self.spreadDistance = (value["spreadDistance"] as? String).flatMap { DimensionValue($0) }
+        if let blurStr = value["blurRadius"] as? String {
+            self.blurRadius = DimensionValue(blurStr)
+        } else if let blurNum = value["blurRadius"] as? Double {
+            self.blurRadius = .point(CGFloat(blurNum))
+        } else {
+            self.blurRadius = nil
+        }
+        if let spreadStr = value["spreadDistance"] as? String {
+            self.spreadDistance = DimensionValue(spreadStr)
+        } else if let spreadNum = value["spreadDistance"] as? Double {
+            self.spreadDistance = .point(CGFloat(spreadNum))
+        } else {
+            self.spreadDistance = nil
+        }
         self.inset = value["inset"] as? Bool
     }
 }
@@ -1082,6 +1094,18 @@ extension FTLayoutViewProtocol {
             }
         }
 
+        // Apply box shadows (outer only — SwiftUI .shadow does not support inset)
+        if let shadows = boxShadow {
+            for shadow in shadows {
+                guard shadow.inset != true else { continue }
+                let shadowColor = shadow.color.map { Color(hexString: $0) } ?? Color.black
+                let blurRadius = shadow.blurRadius?.resolve(relativeBase: 0) ?? 0
+                let x = shadow.offsetX.resolve(relativeBase: 0) ?? 0
+                let y = shadow.offsetY.resolve(relativeBase: 0) ?? 0
+                view = AnyView(view.shadow(color: shadowColor, radius: blurRadius / 2, x: x, y: y))
+            }
+        }
+
         // Apply transforms
         if let transforms = transform {
             for transform in transforms {
@@ -1565,8 +1589,15 @@ struct FTTextView: FTLayoutViewProtocol {
             default: return .leading
             }
         }()
+        let shadowColor: Color =
+            stringValue("textShadowColor").map { Color(hexString: $0) } ?? .clear
+        let shadowOffsetX: CGFloat = numericValue("textShadowOffsetX") ?? 0
+        let shadowOffsetY: CGFloat = numericValue("textShadowOffsetY") ?? 0
+        let shadowRadius: CGFloat = numericValue("textShadowRadius") ?? 0
         return Text(props["text"].map(AttributedString.decode) ?? "")
             .multilineTextAlignment(textAlignment)
+            .shadow(
+                color: shadowColor, radius: shadowRadius / 2, x: shadowOffsetX, y: shadowOffsetY)
     }
 }
 

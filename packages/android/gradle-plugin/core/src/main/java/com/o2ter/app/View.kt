@@ -65,8 +65,10 @@ import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.RoundRect
+import androidx.compose.ui.graphics.Paint
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ImageBitmap
@@ -233,6 +235,15 @@ private fun Modifier.applyViewProps(
         else -> emptyList()
     }
 
+    // Box shadows
+    val boxShadows: List<Map<String, Any?>> = when (val rawShadow = style["boxShadow"]) {
+        is List<*> -> rawShadow.mapNotNull { item ->
+            (item as? Map<*, *>)?.entries?.associate { (k, v) -> k.toString() to v }
+        }
+        is Map<*, *> -> listOf(rawShadow.entries.associate { (k, v) -> k.toString() to v })
+        else -> emptyList()
+    }
+
     // Build modifier chain
     var m: Modifier = this
 
@@ -247,6 +258,47 @@ private fun Modifier.applyViewProps(
     val mB = (marginBottom as? DimensionValue.Point)?.value ?: 0f
     if (mT > 0f || mL > 0f || mR > 0f || mB > 0f) {
         m = m.padding(start = mL.dp, top = mT.dp, end = mR.dp, bottom = mB.dp)
+    }
+
+    // Box shadows — drawn before clip so they appear behind the view content
+    if (boxShadows.isNotEmpty()) {
+        m = m.drawBehind {
+            for (shadow in boxShadows) {
+                val isInset = shadow["inset"] as? Boolean ?: false
+                if (isInset) continue
+                val shadowColor = parseHexColor((shadow["color"] as? String)) ?: Color.Black.copy(alpha = 0.3f)
+                val offsetX = (shadow["offsetX"] as? Number)?.toFloat() ?: 0f
+                val offsetY = (shadow["offsetY"] as? Number)?.toFloat() ?: 0f
+                val blurDp = (shadow["blurRadius"] as? Number)?.toFloat() ?: 0f
+                val offsetXPx = offsetX.dp.toPx()
+                val offsetYPx = offsetY.dp.toPx()
+                val blurPx = blurDp.dp.toPx().coerceAtLeast(0.01f)
+                val paint = Paint().also {
+                    it.asFrameworkPaint().apply {
+                        isAntiAlias = true
+                        color = android.graphics.Color.argb(
+                            (shadowColor.alpha * 255).toInt(),
+                            (shadowColor.red * 255).toInt(),
+                            (shadowColor.green * 255).toInt(),
+                            (shadowColor.blue * 255).toInt()
+                        )
+                        maskFilter = android.graphics.BlurMaskFilter(blurPx, android.graphics.BlurMaskFilter.Blur.NORMAL)
+                    }
+                }
+                drawIntoCanvas { canvas ->
+                    if (hasBorderRadius) {
+                        canvas.drawRoundRect(
+                            offsetXPx, offsetYPx,
+                            size.width + offsetXPx, size.height + offsetYPx,
+                            topLeftRadius.dp.toPx(), topLeftRadius.dp.toPx(),
+                            paint
+                        )
+                    } else {
+                        canvas.drawRect(offsetXPx, offsetYPx, size.width + offsetXPx, size.height + offsetYPx, paint)
+                    }
+                }
+            }
+        }
     }
 
     // Size constraints
