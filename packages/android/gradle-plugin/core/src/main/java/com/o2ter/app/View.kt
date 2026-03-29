@@ -25,9 +25,13 @@
 
 package com.o2ter.app
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.horizontalScroll
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -38,25 +42,38 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ImageBitmap
+import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import kotlin.math.PI
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import androidx.core.graphics.toColorInt
 import androidx.compose.ui.graphics.Shadow
 import androidx.compose.ui.text.ParagraphStyle
@@ -440,7 +457,7 @@ private fun applyTextTransform(raw: String, transform: String?): String = when (
 
 private fun buildStyledText(text: Any?, parentTransform: String? = null): AnnotatedString {
     if (text == null || text is String) {
-        return AnnotatedString(applyTextTransform(text ?: "", parentTransform))
+        return AnnotatedString(applyTextTransform((text as? String) ?: "", parentTransform))
     }
     if (text is Map<*, *>) {
         val style = text["style"] as? Map<*, *> ?: emptyMap<Any?, Any?>()
@@ -467,9 +484,79 @@ fun FTView(
     handler: (ComponentHandler) -> Unit,
     content: @Composable () -> Unit
 ) {
-    Column(modifier = Modifier.applyViewProps(props)) {
-        content()
+    val rawStyle = props["style"] as? Map<*, *>
+    val style: Map<String, Any?> = rawStyle?.entries?.associate { (k, v) -> k.toString() to v } ?: emptyMap()
+
+    val flexDirection = style["flexDirection"]?.toString() ?: "column"
+    val isRow = flexDirection.startsWith("row")
+    val justifyContent = style["justifyContent"]?.toString() ?: "flex-start"
+    val alignItems = style["alignItems"]?.toString() ?: "flex-start"
+    val columnGap = (style["columnGap"] as? Number)?.toFloat() ?: 0f
+    val rowGap = (style["rowGap"] as? Number)?.toFloat() ?: 0f
+
+    if (isRow) {
+        val horizontalArrangement: Arrangement.Horizontal = when (justifyContent) {
+            "flex-end" -> if (columnGap > 0f) Arrangement.spacedBy(columnGap.dp, Alignment.End) else Arrangement.End
+            "center" -> if (columnGap > 0f) Arrangement.spacedBy(columnGap.dp, Alignment.CenterHorizontally) else Arrangement.Center
+            "space-between" -> if (columnGap > 0f) Arrangement.spacedBy(columnGap.dp, Alignment.Start) else Arrangement.SpaceBetween
+            "space-around" -> if (columnGap > 0f) Arrangement.spacedBy(columnGap.dp, Alignment.Start) else Arrangement.SpaceAround
+            "space-evenly" -> if (columnGap > 0f) Arrangement.spacedBy(columnGap.dp, Alignment.Start) else Arrangement.SpaceEvenly
+            else -> if (columnGap > 0f) Arrangement.spacedBy(columnGap.dp) else Arrangement.Start
+        }
+        val verticalAlignment: Alignment.Vertical = when (alignItems) {
+            "flex-end" -> Alignment.Bottom
+            "center" -> Alignment.CenterVertically
+            else -> Alignment.Top
+        }
+        Row(
+            modifier = Modifier.applyViewProps(props),
+            horizontalArrangement = horizontalArrangement,
+            verticalAlignment = verticalAlignment
+        ) {
+            content()
+        }
+    } else {
+        val verticalArrangement: Arrangement.Vertical = when (justifyContent) {
+            "flex-end" -> if (rowGap > 0f) Arrangement.spacedBy(rowGap.dp, Alignment.Bottom) else Arrangement.Bottom
+            "center" -> if (rowGap > 0f) Arrangement.spacedBy(rowGap.dp, Alignment.CenterVertically) else Arrangement.Center
+            "space-between" -> if (rowGap > 0f) Arrangement.spacedBy(rowGap.dp, Alignment.Top) else Arrangement.SpaceBetween
+            "space-around" -> if (rowGap > 0f) Arrangement.spacedBy(rowGap.dp, Alignment.Top) else Arrangement.SpaceAround
+            "space-evenly" -> if (rowGap > 0f) Arrangement.spacedBy(rowGap.dp, Alignment.Top) else Arrangement.SpaceEvenly
+            else -> if (rowGap > 0f) Arrangement.spacedBy(rowGap.dp) else Arrangement.Top
+        }
+        val horizontalAlignment: Alignment.Horizontal = when (alignItems) {
+            "flex-end" -> Alignment.End
+            "center" -> Alignment.CenterHorizontally
+            else -> Alignment.Start
+        }
+        Column(
+            modifier = Modifier.applyViewProps(props),
+            verticalArrangement = verticalArrangement,
+            horizontalAlignment = horizontalAlignment
+        ) {
+            content()
+        }
     }
+}
+
+@Composable
+private fun rememberUrlBitmap(url: String): ImageBitmap? {
+    var bitmap by remember(url) { mutableStateOf<ImageBitmap?>(null) }
+    LaunchedEffect(url) {
+        withContext(Dispatchers.IO) {
+            try {
+                val connection = java.net.URL(url).openConnection() as java.net.HttpURLConnection
+                connection.connect()
+                val stream = connection.inputStream
+                val androidBitmap = android.graphics.BitmapFactory.decodeStream(stream)
+                stream.close()
+                bitmap = androidBitmap?.asImageBitmap()
+            } catch (_: Exception) {
+                // Fail silently, show placeholder
+            }
+        }
+    }
+    return bitmap
 }
 
 @Composable
@@ -479,6 +566,22 @@ fun FTImageView(
     handler: (ComponentHandler) -> Unit,
     content: @Composable () -> Unit
 ) {
+    val source = props["source"] as? String
+    val bitmap = if (source != null) rememberUrlBitmap(source) else null
+
+    Box(modifier = Modifier.applyViewProps(props)) {
+        if (bitmap != null) {
+            Image(
+                bitmap = bitmap,
+                contentDescription = null,
+                modifier = Modifier.fillMaxSize(),
+                contentScale = ContentScale.Fit
+            )
+        } else if (source != null) {
+            // Loading placeholder
+            Box(modifier = Modifier.fillMaxSize().background(Color(0xFFE0E0E0.toInt())))
+        }
+    }
 }
 
 @Composable
@@ -501,14 +604,12 @@ fun FTTextInput(
     handler: (ComponentHandler) -> Unit,
     content: @Composable () -> Unit
 ) {
-    val value = props["value"] as? String
-    if (value != null) {
-        BasicTextField(
-            value = value,
-            onValueChange = {  },
-            modifier = Modifier.applyViewProps(props)
-        )
-    }
+    val value = props["value"] as? String ?: ""
+    BasicTextField(
+        value = value,
+        onValueChange = { },
+        modifier = Modifier.applyViewProps(props)
+    )
 }
 
 @Composable
@@ -518,12 +619,35 @@ fun FTScrollView(
     handler: (ComponentHandler) -> Unit,
     content: @Composable () -> Unit
 ) {
-    DisposableEffect(nodeId) {
-        onDispose {
+    val rawStyle = props["style"] as? Map<*, *>
+    val style: Map<String, Any?> = rawStyle?.entries?.associate { (k, v) -> k.toString() to v } ?: emptyMap()
+
+    val horizontal = props["horizontal"] as? Boolean ?: false
+    val vertical = props["vertical"] as? Boolean ?: false
+    // Default to vertical scroll when neither or both are specified
+    val isHorizontalOnly = horizontal && !vertical
+
+    val columnGap = (style["columnGap"] as? Number)?.toFloat() ?: 0f
+    val rowGap = (style["rowGap"] as? Number)?.toFloat() ?: 0f
+
+    // The Box carries the outer size/style constraints and clips overflow.
+    // The inner Row/Column carries the scroll so it can measure unlimited content.
+    Box(modifier = Modifier.applyViewProps(props).clipToBounds()) {
+        if (isHorizontalOnly) {
+            Row(
+                modifier = Modifier.horizontalScroll(rememberScrollState()),
+                horizontalArrangement = if (columnGap > 0f) Arrangement.spacedBy(columnGap.dp) else Arrangement.Start
+            ) {
+                content()
+            }
+        } else {
+            Column(
+                modifier = Modifier.verticalScroll(rememberScrollState()),
+                verticalArrangement = if (rowGap > 0f) Arrangement.spacedBy(rowGap.dp) else Arrangement.Top
+            ) {
+                content()
+            }
         }
-    }
-    Column(modifier = Modifier.applyViewProps(props)) {
-        content()
     }
 }
 

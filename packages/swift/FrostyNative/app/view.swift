@@ -883,15 +883,15 @@ extension FTLayoutViewProtocol {
 
         // Resolve padding and margin with relative base
         let paddingInsets = EdgeInsets(
-            top: paddingTop?.resolve(relativeBase: geo.size.width) ?? 0,
+            top: paddingTop?.resolve(relativeBase: geo.size.height) ?? 0,
             leading: paddingLeft?.resolve(relativeBase: geo.size.width) ?? 0,
-            bottom: paddingBottom?.resolve(relativeBase: geo.size.width) ?? 0,
+            bottom: paddingBottom?.resolve(relativeBase: geo.size.height) ?? 0,
             trailing: paddingRight?.resolve(relativeBase: geo.size.width) ?? 0
         )
         let marginInsets = EdgeInsets(
-            top: marginTop?.resolve(relativeBase: geo.size.width) ?? 0,
+            top: marginTop?.resolve(relativeBase: geo.size.height) ?? 0,
             leading: marginLeft?.resolve(relativeBase: geo.size.width) ?? 0,
-            bottom: marginBottom?.resolve(relativeBase: geo.size.width) ?? 0,
+            bottom: marginBottom?.resolve(relativeBase: geo.size.height) ?? 0,
             trailing: marginRight?.resolve(relativeBase: geo.size.width) ?? 0
         )
 
@@ -1168,7 +1168,16 @@ struct FTImageView: FTLayoutViewProtocol {
     }
 
     func content(_ info: FTLayoutInfo) -> some View {
-        Image("")
+        let source = props["source"]?.toString() ?? ""
+        let resizeMode = props["resizeMode"]?.toString() ?? "contain"
+        let contentMode: ContentMode = resizeMode == "cover" ? .fill : .fit
+        return AsyncImage(url: URL(string: source)) { image in
+            image
+                .resizable()
+                .aspectRatio(contentMode: contentMode)
+        } placeholder: {
+            Color.gray.opacity(0.15)
+        }
     }
 }
 
