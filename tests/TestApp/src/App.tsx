@@ -34,10 +34,9 @@ export default function App() {
   }, []);
   return (
     <View style={{ padding: 64 }}>
-      <Text style={{color: 'red'}}>{counter}</Text>
       <View style={{ height: 32, width: 32, backgroundColor: 'red' }} />
       <Text onLayout={e => console.log('Layout', e)}>Hello World!</Text>
-      <Text>{counter}</Text>
+      <Text style={{ color: 'red' }}>{counter}</Text>
     </View>
   );
 }
