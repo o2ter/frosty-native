@@ -190,6 +190,7 @@ export const App = () => {
 
       {/* Section 11: Vertical ScrollView */}
       <Section title="11. Vertical ScrollView (height:120)">
+        <Text style={{ fontSize: 11, color: '#888', marginBottom: 4 }}>✓ scrolls vertically — rows clip at top/bottom edge</Text>
         <ScrollView style={{ height: 120, backgroundColor: '#e0e0e0' }}>
           {[0, 1, 2, 3, 4, 5, 6, 7].map((i) => (
             <View key={i} style={{ height: 40, backgroundColor: i % 2 === 0 ? 'steelblue' : 'coral', justifyContent: 'center', paddingLeft: 8 }}>
@@ -197,16 +198,32 @@ export const App = () => {
             </View>
           ))}
         </ScrollView>
+        <Text style={{ fontSize: 11, color: '#888', marginTop: 8, marginBottom: 4 }}>✓ wide content is clipped — no horizontal overflow</Text>
+        <ScrollView style={{ width: 200, height: 80, backgroundColor: '#e0e0e0' }}>
+          <View style={{ width: 500, height: 60, backgroundColor: 'tomato', justifyContent: 'center', paddingLeft: 8 }}>
+            <Text style={{ color: 'white' }}>Wide content (500px) — should be clipped at 200px</Text>
+          </View>
+        </ScrollView>
       </Section>
 
       {/* Section 12: Horizontal ScrollView */}
       <Section title="12. Horizontal ScrollView (width:200)">
-        <ScrollView horizontal style={{ width: 200, height: 64, backgroundColor: '#e0e0e0' }}>
+        <Text style={{ fontSize: 11, color: '#888', marginBottom: 4 }}>✓ scrolls horizontally — cols clip at left/right edge</Text>
+        <ScrollView horizontal style={{ width: 200, height: 64, backgroundColor: '#e0e0e0' }} contentContainerStyle={{ flexDirection: 'row' }}>
           {[0, 1, 2, 3, 4, 5, 6, 7].map((i) => (
             <View key={i} style={{ width: 60, height: 64, backgroundColor: i % 2 === 0 ? 'steelblue' : 'coral', justifyContent: 'center', alignItems: 'center' }}>
               <Text style={{ color: 'white' }}>Col {i}</Text>
             </View>
           ))}
+        </ScrollView>
+        <Text style={{ fontSize: 11, color: '#888', marginTop: 8, marginBottom: 4 }}>✓ tall content is clipped — no vertical overflow</Text>
+        <ScrollView horizontal style={{ width: 200, height: 64, backgroundColor: '#e0e0e0' }} contentContainerStyle={{ flexDirection: 'row' }}>
+          <View style={{ width: 180, height: 120, backgroundColor: 'mediumseagreen', justifyContent: 'center', alignItems: 'center' }}>
+            <Text style={{ color: 'white' }}>Tall (120px) — clips at 64px</Text>
+          </View>
+          <View style={{ width: 180, height: 120, backgroundColor: 'mediumpurple', justifyContent: 'center', alignItems: 'center' }}>
+            <Text style={{ color: 'white' }}>Tall (120px) — clips at 64px</Text>
+          </View>
         </ScrollView>
       </Section>
 
