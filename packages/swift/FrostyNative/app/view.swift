@@ -874,6 +874,11 @@ extension FTLayoutViewProtocol {
 extension FTLayoutViewProtocol {
 
     private func _body(_ geo: GeometryProxy) -> some View {
+        // Handle display:none - collapse view completely
+        if display == "none" {
+            return AnyView(EmptyView())
+        }
+
         let info = FTLayoutInfo(parentSize: geo.size)
 
         // Resolve padding and margin with relative base
@@ -1014,11 +1019,26 @@ extension FTLayoutViewProtocol {
                 ))
         }
 
-        // Apply border radius
-        if let radius = borderTopLeftRadius ?? borderTopRightRadius ?? borderBottomLeftRadius
-            ?? borderBottomRightRadius
-        {
-            view = AnyView(view.cornerRadius(radius))
+        // Apply border radius using per-corner values, and overflow clipping
+        let radiusTL = borderTopLeftRadius ?? 0
+        let radiusTR = borderTopRightRadius ?? 0
+        let radiusBL = borderBottomLeftRadius ?? 0
+        let radiusBR = borderBottomRightRadius ?? 0
+        if radiusTL > 0 || radiusTR > 0 || radiusBL > 0 || radiusBR > 0 {
+            view = AnyView(
+                view.clipShape(
+                    UnevenRoundedRectangle(
+                        cornerRadii: RectangleCornerRadii(
+                            topLeading: radiusTL,
+                            bottomLeading: radiusBL,
+                            bottomTrailing: radiusBR,
+                            topTrailing: radiusTR
+                        )
+                    )
+                )
+            )
+        } else if overflow == "hidden" {
+            view = AnyView(view.clipped())
         }
 
         // Apply transforms
@@ -1093,17 +1113,35 @@ struct FTView: FTLayoutViewProtocol {
     func content(_ info: FTLayoutInfo) -> some View {
         let isRow = flexDirection.hasPrefix("row")
         let isReverse = flexDirection.hasSuffix("-reverse")
-        let spacing = (isRow ? rowGap : columnGap) ?? 0
+        // For rows (HStack), spacing between items is columnGap; for columns (VStack), rowGap
+        let spacing = (isRow ? columnGap : rowGap) ?? 0
 
-        let items = isReverse ? children.reversed() : children
+        let items = isReverse ? Array(children.reversed()) : children
+
+        let vAlign: VerticalAlignment = {
+            switch alignItems {
+            case "flex-end": return .bottom
+            case "center": return .center
+            case "baseline": return .firstTextBaseline
+            default: return .top
+            }
+        }()
+
+        let hAlign: HorizontalAlignment = {
+            switch alignItems {
+            case "flex-end": return .trailing
+            case "center": return .center
+            default: return .leading
+            }
+        }()
 
         return Group {
             if isRow {
-                HStackLayout(spacing: spacing) {
+                HStack(alignment: vAlign, spacing: spacing) {
                     ForEach(items.indexed(), id: \.index) { $0.element }
                 }
             } else {
-                VStackLayout(spacing: spacing) {
+                VStack(alignment: hAlign, spacing: spacing) {
                     ForEach(items.indexed(), id: \.index) { $0.element }
                 }
             }
@@ -1153,7 +1191,15 @@ struct FTTextView: FTLayoutViewProtocol {
     }
 
     func content(_ info: FTLayoutInfo) -> some View {
-        Text(props["text"].map(AttributedString.decode) ?? "")
+        let textAlignment: TextAlignment = {
+            switch stringValue("textAlign") {
+            case "center": return .center
+            case "right", "end": return .trailing
+            default: return .leading
+            }
+        }()
+        return Text(props["text"].map(AttributedString.decode) ?? "")
+            .multilineTextAlignment(textAlignment)
     }
 }
 
@@ -1176,7 +1222,10 @@ struct FTTextInput: FTLayoutViewProtocol {
     }
 
     func content(_ info: FTLayoutInfo) -> some View {
-        TextField("", text: .constant(props["value"]?.toString() ?? ""))
+        TextField(
+            props["placeholder"]?.toString() ?? "",
+            text: .constant(props["value"]?.toString() ?? "")
+        )
     }
 }
 
@@ -1205,7 +1254,18 @@ struct FTScrollView: FTLayoutViewProtocol {
         var axes: Axis.Set = []
         if horizontal { axes.insert(.horizontal) }
         if vertical { axes.insert(.vertical) }
+        if axes.isEmpty { axes = .vertical }
 
-        return ScrollView(axes) { children.first }
+        return ScrollView(axes) {
+            if horizontal && !vertical {
+                HStack(alignment: .top, spacing: columnGap ?? 0) {
+                    ForEach(children.indexed(), id: \.index) { $0.element }
+                }
+            } else {
+                VStack(alignment: .leading, spacing: rowGap ?? 0) {
+                    ForEach(children.indexed(), id: \.index) { $0.element }
+                }
+            }
+        }
     }
 }
