@@ -53,10 +53,20 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import kotlin.math.PI
 import androidx.core.graphics.toColorInt
+import androidx.compose.ui.graphics.Shadow
+import androidx.compose.ui.text.ParagraphStyle
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.font.FontStyle
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextDecoration
+import androidx.compose.ui.unit.TextUnit
+import androidx.compose.ui.unit.sp
 
 // DimensionValue used for parsing string-based dimensions coming from JS.
 private sealed class DimensionValue {
@@ -327,17 +337,123 @@ private fun Modifier.applyViewProps(
     return m
 }
 
-private fun buildStyledText(text: Any?): AnnotatedString {
+private fun parseTextSpanStyle(style: Map<String, Any?>): SpanStyle {
+    val color = parseHexColor(style["color"]?.toString()) ?: Color.Unspecified
+
+    val fontSize: TextUnit = when (val fs = style["fontSize"]) {
+        is Number -> fs.toFloat().sp
+        is String -> fs.toFloatOrNull()?.sp ?: TextUnit.Unspecified
+        else -> TextUnit.Unspecified
+    }
+
+    val fontWeight: FontWeight? = when (val fw = style["fontWeight"]) {
+        is Number -> FontWeight(fw.toInt().coerceIn(1, 1000))
+        is String -> when (fw.lowercase()) {
+            "bold" -> FontWeight.Bold
+            "normal", "regular", "400" -> FontWeight.Normal
+            "ultralight", "100" -> FontWeight.Thin
+            "thin", "200" -> FontWeight.ExtraLight
+            "light", "300" -> FontWeight.Light
+            "medium", "500" -> FontWeight.Medium
+            "semibold", "600" -> FontWeight.SemiBold
+            "700" -> FontWeight.Bold
+            "extrabold", "heavy", "800" -> FontWeight.ExtraBold
+            "black", "condensedbold", "900" -> FontWeight.Black
+            else -> null
+        }
+        else -> null
+    }
+
+    val fontStyle: FontStyle? = when ((style["fontStyle"] as? String)?.lowercase()) {
+        "italic" -> FontStyle.Italic
+        "normal" -> FontStyle.Normal
+        else -> null
+    }
+
+    val letterSpacing: TextUnit = when (val ls = style["letterSpacing"]) {
+        is Number -> ls.toFloat().sp
+        is String -> if (ls == "normal") TextUnit.Unspecified
+                     else ls.toFloatOrNull()?.sp ?: TextUnit.Unspecified
+        else -> TextUnit.Unspecified
+    }
+
+    val decoLineValue = style["textDecorationLine"]
+    val decorations = mutableListOf<TextDecoration>()
+    when (decoLineValue) {
+        is String -> {
+            if (decoLineValue.contains("underline")) decorations += TextDecoration.Underline
+            if (decoLineValue.contains("line-through")) decorations += TextDecoration.LineThrough
+        }
+        is List<*> -> for (d in decoLineValue) when (d as? String) {
+            "underline" -> decorations += TextDecoration.Underline
+            "line-through" -> decorations += TextDecoration.LineThrough
+        }
+    }
+    val textDecoration = if (decorations.isNotEmpty()) TextDecoration.combine(decorations) else null
+
+    val shadowColor = parseHexColor(style["textShadowColor"]?.toString())
+    val shadow: Shadow? = if (shadowColor != null) {
+        val offsetX = (style["textShadowOffsetX"] as? Number)?.toFloat() ?: 0f
+        val offsetY = (style["textShadowOffsetY"] as? Number)?.toFloat() ?: 0f
+        val blurRadius = (style["textShadowRadius"] as? Number)?.toFloat() ?: 0f
+        Shadow(color = shadowColor, offset = Offset(offsetX, offsetY), blurRadius = blurRadius)
+    } else null
+
+    return SpanStyle(
+        color = color,
+        fontSize = fontSize,
+        fontWeight = fontWeight,
+        fontStyle = fontStyle,
+        letterSpacing = letterSpacing,
+        textDecoration = textDecoration,
+        shadow = shadow
+    )
+}
+
+private fun parseTextParagraphStyle(style: Map<String, Any?>): ParagraphStyle {
+    val textAlign: TextAlign = when ((style["textAlign"] as? String)?.lowercase()) {
+        "left" -> TextAlign.Left
+        "right" -> TextAlign.Right
+        "center" -> TextAlign.Center
+        "justify" -> TextAlign.Justify
+        "start" -> TextAlign.Start
+        "end" -> TextAlign.End
+        else -> TextAlign.Unspecified
+    }
+    val lineHeight: TextUnit = when (val lh = style["lineHeight"]) {
+        is Number -> lh.toFloat().sp
+        is String -> if (lh == "normal") TextUnit.Unspecified
+                     else lh.toFloatOrNull()?.sp ?: TextUnit.Unspecified
+        else -> TextUnit.Unspecified
+    }
+    return ParagraphStyle(textAlign = textAlign, lineHeight = lineHeight)
+}
+
+private fun applyTextTransform(raw: String, transform: String?): String = when (transform) {
+    "uppercase" -> raw.uppercase()
+    "lowercase" -> raw.lowercase()
+    "capitalize" -> raw.split(" ").joinToString(" ") { word ->
+        word.replaceFirstChar { if (it.isLowerCase()) it.titlecase() else it.toString() }
+    }
+    else -> raw
+}
+
+private fun buildStyledText(text: Any?, parentTransform: String? = null): AnnotatedString {
     if (text == null || text is String) {
-        return AnnotatedString(text ?: "")
+        return AnnotatedString(applyTextTransform(text as? String ?: "", parentTransform))
     }
     if (text is Map<*, *>) {
         val style = text["style"] as? Map<*, *> ?: emptyMap<Any?, Any?>()
+        val styleMap: Map<String, Any?> = style.entries.associate { (k, v) -> k.toString() to v }
         val children = text["children"] as? List<*> ?: emptyList<Any?>()
+        val textTransform = (styleMap["textTransform"] as? String) ?: parentTransform
         return buildAnnotatedString {
-            for (child in children) {
-                val childText = buildStyledText(child)
-                append(childText)
+            withStyle(parseTextParagraphStyle(styleMap)) {
+                withStyle(parseTextSpanStyle(styleMap)) {
+                    for (child in children) {
+                        append(buildStyledText(child, textTransform))
+                    }
+                }
             }
         }
     }

@@ -82,13 +82,184 @@ fileprivate extension JSValue {
 
 extension AttributedString {
 
+    fileprivate static func parseTextDecorationLines(_ value: Any?) -> [String] {
+        if let str = value as? String { return [str] }
+        if let arr = value as? [Any] { return arr.compactMap { $0 as? String } }
+        return []
+    }
+
+    fileprivate static func parseFontWeight(_ value: Any?) -> Font.Weight {
+        if let n = value as? Double {
+            switch Int(n) {
+            case ..<150: return .ultraLight
+            case ..<250: return .thin
+            case ..<350: return .light
+            case ..<450: return .regular
+            case ..<550: return .medium
+            case ..<650: return .semibold
+            case ..<750: return .bold
+            case ..<850: return .heavy
+            default: return .black
+            }
+        }
+        switch (value as? String ?? "").lowercased() {
+        case "bold": return .bold
+        case "ultralight", "100": return .ultraLight
+        case "thin", "200": return .thin
+        case "light", "300": return .light
+        case "medium", "500": return .medium
+        case "semibold", "600": return .semibold
+        case "700": return .bold
+        case "heavy", "extrabold", "800": return .heavy
+        case "black", "condensedbold", "900": return .black
+        default: return .regular
+        }
+    }
+
+    fileprivate static func applyTextStyle(_ style: [String: Any], to str: inout AttributedString) {
+        var container = AttributeContainer()
+
+        // Font: only build when at least one font property is specified
+        let fontFamilies: [String]
+        if let family = style["fontFamily"] as? String {
+            fontFamilies = [family]
+        } else if let families = style["fontFamily"] as? [String] {
+            fontFamilies = families
+        } else {
+            fontFamilies = []
+        }
+        let fontSizeProp = style["fontSize"]
+        let fontWeightProp = style["fontWeight"]
+        let fontStyleProp = style["fontStyle"]
+        let fontSize: CGFloat?
+        if let num = fontSizeProp as? Double {
+            fontSize = CGFloat(num)
+        } else if let s = fontSizeProp as? String, let dim = DimensionValue(s),
+            case .point(let p) = dim
+        {
+            fontSize = p
+        } else {
+            fontSize = nil
+        }
+        if !fontFamilies.isEmpty || fontSize != nil || fontWeightProp != nil || fontStyleProp != nil
+        {
+            var font: Font
+            if let family = fontFamilies.first, let size = fontSize {
+                font = Font.custom(family, size: size)
+            } else if let family = fontFamilies.first {
+                font = Font.custom(family, size: 17)
+            } else if let size = fontSize {
+                font = Font.system(size: size)
+            } else {
+                font = Font.body
+            }
+            if fontWeightProp != nil {
+                font = font.weight(parseFontWeight(fontWeightProp))
+            }
+            if (fontStyleProp as? String) == "italic" {
+                font = font.italic()
+            }
+            container.font = font
+        }
+
+        // Color
+        if let hex = style["color"] as? String {
+            container.foregroundColor = Color(hexString: hex)
+        }
+
+        // Letter spacing (kern)
+        if let kern = style["letterSpacing"] {
+            var kernValue: CGFloat = 0
+            if let num = kern as? Double {
+                kernValue = CGFloat(num)
+            } else if let s = kern as? String, s != "normal",
+                let dim = DimensionValue(s), case .point(let p) = dim
+            {
+                kernValue = p
+            }
+            container.kern = kernValue
+        }
+
+        // Text decoration
+        let decoLines = parseTextDecorationLines(style["textDecorationLine"])
+        let decoColor: Color? = (style["textDecorationColor"] as? String).map {
+            Color(hexString: $0)
+        }
+        let decoPattern: Text.LineStyle.Pattern
+        switch (style["textDecorationStyle"] as? String ?? "solid").lowercased() {
+        case "dotted": decoPattern = .dot
+        case "dashed": decoPattern = .dash
+        default: decoPattern = .solid
+        }
+        if decoLines.contains("underline") {
+            container.underlineStyle = Text.LineStyle(pattern: decoPattern, color: decoColor)
+        }
+        if decoLines.contains("line-through") {
+            container.strikethroughStyle = Text.LineStyle(pattern: decoPattern, color: decoColor)
+        }
+
+        // Baseline offset for verticalAlign
+        if let num = style["verticalAlign"] as? Double, num != 0 {
+            container.baselineOffset = CGFloat(num)
+        } else if let s = style["verticalAlign"] as? String {
+            switch s {
+            case "super": container.baselineOffset = 6
+            case "sub": container.baselineOffset = -6
+            default: break
+            }
+        }
+
+        // Children's explicitly set attributes take priority over parent's
+        str.mergeAttributes(container, mergePolicy: .keepCurrent)
+    }
+
+    fileprivate static func applyTextTransform(_ transform: String, to str: inout AttributedString)
+    {
+        var result = AttributedString()
+        for run in str.runs {
+            let chars = String(str[run.range].characters)
+            let transformed: String
+            switch transform {
+            case "uppercase":
+                transformed = chars.uppercased()
+            case "lowercase":
+                transformed = chars.lowercased()
+            case "capitalize":
+                var out = ""
+                var newWord = true
+                for c in chars {
+                    if c.isWhitespace {
+                        out.append(c)
+                        newWord = true
+                    } else if newWord {
+                        out += String(c).uppercased()
+                        newWord = false
+                    } else {
+                        out.append(c)
+                    }
+                }
+                transformed = out
+            default:
+                transformed = chars
+            }
+            var newRun = AttributedString(transformed)
+            newRun.mergeAttributes(run.attributes, mergePolicy: .keepNew)
+            result += newRun
+        }
+        str = result
+    }
+
     fileprivate static func decode(_ text: JSValue) -> AttributedString {
         if text.isString {
             return AttributedString(text.toString() ?? "")
         }
         let style = text.objectForKeyedSubscript("style")?.toStringKeyedDictionary() ?? [:]
         let children = text.objectForKeyedSubscript("children")?.toJSValueArray()?.map(AttributedString.decode) ?? []
-        let concated = children.reduce("", +)
+        var concated = children.reduce(AttributedString(""), +)
+        if let textTransform = style["textTransform"] as? String, textTransform != "none" {
+            applyTextTransform(textTransform, to: &concated)
+        }
+        applyTextStyle(style, to: &concated)
         return concated
     }
 }
