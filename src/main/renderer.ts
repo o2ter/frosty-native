@@ -26,6 +26,7 @@
 import _ from 'lodash';
 import { _Renderer, VNode } from 'frosty/_native';
 import { NativeNode, NativeNodeType } from '../view/components/basic/native/node';
+import { mergeRefs } from 'frosty';
 
 export class NativeRenderer extends _Renderer<NativeNodeType> {
 
@@ -48,7 +49,8 @@ export class NativeRenderer extends _Renderer<NativeNodeType> {
   }
 
   protected _updateElement(node: VNode, element: NativeNodeType, children: (string | NativeNodeType)[], force?: boolean) {
-    const { props } = node;
+    const { props: { ref, ...props } } = node;
+    if (ref) mergeRefs(ref)(element);
     element.update(props, element instanceof NativeNode
       ? children
       : _.map(children, x => x instanceof NativeNode ? x._native : x)
