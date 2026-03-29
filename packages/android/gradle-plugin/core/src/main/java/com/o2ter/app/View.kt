@@ -1135,6 +1135,17 @@ fun FTScrollView(
     val columnGap = (style["columnGap"] as? Number)?.toFloat() ?: 0f
     val rowGap = (style["rowGap"] as? Number)?.toFloat() ?: 0f
 
+    handler(object : ComponentHandler {
+        override fun invoke(method: String, params: List<Any?>) {
+            when (method) {
+                "scrollTo" -> {
+                }
+                "scrollToEnd" -> {
+                }
+            }
+        }
+    })
+
     // The Box carries the outer size/style constraints and clips overflow.
     // The inner Row/Column carries the scroll so it can measure unlimited content.
     Box(modifier = Modifier.applyViewProps(props, fillWidth = true).clipToBounds()) {
