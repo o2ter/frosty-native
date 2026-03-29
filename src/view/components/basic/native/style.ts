@@ -41,17 +41,13 @@ export const useNativeStyle = <S extends ViewStyle | TextStyle | ImageStyle>(
   const {
     boxShadow,
     filter,
-    backgroundColor,
-    outlineColor,
-    color,
-    textDecorationColor,
-    textShadowColor,
-    overlayColor,
-    tintColor,
     ..._style
   } = useFlattenStyle(style) as any;
+  const normalizedStyle = _.mapValues(_style, (v, k) =>
+    (k === 'color' || _.endsWith(k, 'Color')) ? _normalizeColor(v) : v
+  );
   return compactValue({
-    ..._style,
+    ...normalizedStyle,
     boxShadow: boxShadow && _.map(_.castArray(boxShadow), x => compactValue({
       ...x,
       color: _normalizeColor(x.color),
@@ -62,12 +58,5 @@ export const useNativeStyle = <S extends ViewStyle | TextStyle | ImageStyle>(
         color: _normalizeColor(x.dropShadow.color),
       }),
     } : x),
-    backgroundColor: _normalizeColor(backgroundColor),
-    outlineColor: _normalizeColor(outlineColor),
-    color: _normalizeColor(color),
-    textDecorationColor: _normalizeColor(textDecorationColor),
-    textShadowColor: _normalizeColor(textShadowColor),
-    overlayColor: _normalizeColor(overlayColor),
-    tintColor: _normalizeColor(tintColor),
   }) as S;
 }
