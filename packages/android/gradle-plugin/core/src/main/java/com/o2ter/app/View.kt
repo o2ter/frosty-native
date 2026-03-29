@@ -1088,10 +1088,12 @@ fun FTTextView(
     handler: (ComponentHandler) -> Unit,
     content: @Composable () -> Unit
 ) {
-    Text(
-        text = buildStyledText(props["text"]),
-        modifier = Modifier.applyViewProps(props, fillWidth = true)
-    )
+    Box(modifier = Modifier.applyViewProps(props, fillWidth = true)) {
+        Text(
+            text = buildStyledText(props["text"]),
+            modifier = Modifier.fillMaxWidth()
+        )
+    }
 }
 
 @Composable

@@ -1566,7 +1566,7 @@ struct FTImageView: FTLayoutViewProtocol {
 
 struct FTTextView: FTLayoutViewProtocol {
 
-    var defaultFillsWidth: Bool { false }
+    var defaultFillsWidth: Bool { true }
 
     @Binding
     var props: [String: JSValue]
