@@ -281,7 +281,7 @@ export const App = () => {
       {/* Section 14: Image */}
       <Section title="14. Image">
         <Image
-          source="https://upload.wikimedia.org/wikipedia/commons/thumb/4/47/PNG_transparency_demonstration_1.png/220px-PNG_transparency_demonstration_1.png"
+          source="https://upload.wikimedia.org/wikipedia/commons/1/14/Animated_PNG_example_bouncing_beach_ball.png"
           style={{ width: 120, height: 90, backgroundColor: '#e0e0e0' }}
         />
       </Section>
