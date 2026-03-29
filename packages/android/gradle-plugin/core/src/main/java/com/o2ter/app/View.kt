@@ -109,7 +109,6 @@ private fun parseAngleDeg(str: String): Float? {
     }
 }
 
-@Suppress("UNCHECKED_CAST")
 private fun Modifier.applyViewProps(
     props: Map<String, Any?>
 ): Modifier {
