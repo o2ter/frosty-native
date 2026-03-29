@@ -41,10 +41,11 @@ export class NativeRenderer extends _Renderer<NativeNodeType> {
   }
 
   protected _createElement(node: VNode): NativeNodeType {
-    const { type } = node;
+    const { type, props: { ref } } = node;
     if (_.isString(type) || !(type.prototype instanceof NativeNode)) throw Error('Invalid type');
     const ElementType = type as any;
     const element = new ElementType();
+    if (ref) mergeRefs(ref)(element);
     return element;
   }
 
