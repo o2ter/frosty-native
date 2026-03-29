@@ -35,6 +35,7 @@ extension FTContext {
         self.register(name: "FTTextView", FTTextView.init(nodeId:props:children:handler:))
         self.register(name: "FTTextInput", FTTextInput.init(nodeId:props:children:handler:))
         self.register(name: "FTScrollView", FTScrollView.init(nodeId:props:children:handler:))
+        self.register(name: "FTSafeAreaView", FTSafeAreaView.init(nodeId:props:children:handler:))
     }
 }
 

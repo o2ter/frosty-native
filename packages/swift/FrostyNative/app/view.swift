@@ -1530,6 +1530,38 @@ struct FTView: FTLayoutViewProtocol {
     }
 }
 
+struct FTSafeAreaView: FTLayoutViewProtocol {
+
+    var defaultFillsWidth: Bool { true }
+
+    var nodeId: ObjectIdentifier
+
+    @Binding
+    var props: [String: JSValue]
+
+    @Binding
+    var children: [AnyView]
+
+    init(
+        nodeId: ObjectIdentifier,
+        props: Binding<[String: JSValue]>,
+        children: Binding<[AnyView]>,
+        handler: @escaping (@escaping FTContext.ViewHandler) -> Void
+    ) {
+        self.nodeId = nodeId
+        self._props = props
+        self._children = children
+    }
+
+    func content(_ info: FTLayoutInfo) -> some View {
+        FTView(
+            nodeId: nodeId,
+            props: $props,
+            children: $children
+        ) { handler in }
+    }
+}
+
 struct FTImageView: FTLayoutViewProtocol {
 
     var defaultFillsWidth: Bool { false }

@@ -1029,6 +1029,16 @@ fun FTView(
     }
 }
 
+@Composable
+fun FTSafeAreaView(
+    nodeId: String,
+    props: Map<String, Any?>,
+    handler: (ComponentHandler) -> Unit,
+    content: @Composable () -> Unit
+) {
+    FTView(nodeId, props, handler, content)
+}
+
 /** Returns the horizontal offset for a child within a column based on alignItems. */
 private fun crossAlignOffset(childWidth: Int, colWidth: Int, alignItems: String): Int =
     when (alignItems) {
