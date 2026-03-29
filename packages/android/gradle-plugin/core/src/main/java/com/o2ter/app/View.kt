@@ -440,7 +440,7 @@ private fun applyTextTransform(raw: String, transform: String?): String = when (
 
 private fun buildStyledText(text: Any?, parentTransform: String? = null): AnnotatedString {
     if (text == null || text is String) {
-        return AnnotatedString(applyTextTransform(text as? String ?: "", parentTransform))
+        return AnnotatedString(applyTextTransform(text ?: "", parentTransform))
     }
     if (text is Map<*, *>) {
         val style = text["style"] as? Map<*, *> ?: emptyMap<Any?, Any?>()
