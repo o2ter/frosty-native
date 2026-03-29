@@ -1179,10 +1179,12 @@ struct FTView: FTLayoutViewProtocol {
                 HStack(alignment: vAlign, spacing: spacing) {
                     ForEach(items.indexed(), id: \.index) { $0.element }
                 }
+                .frame(maxWidth: .infinity, alignment: .topLeading)
             } else {
                 VStack(alignment: hAlign, spacing: spacing) {
                     ForEach(items.indexed(), id: \.index) { $0.element }
                 }
+                .frame(maxWidth: .infinity, alignment: .topLeading)
             }
         }
     }
@@ -1315,6 +1317,7 @@ struct FTScrollView: FTLayoutViewProtocol {
                 VStack(alignment: .leading, spacing: rowGap ?? 0) {
                     ForEach(children.indexed(), id: \.index) { $0.element }
                 }
+                .frame(maxWidth: .infinity, alignment: .topLeading)
             }
         }
     }
