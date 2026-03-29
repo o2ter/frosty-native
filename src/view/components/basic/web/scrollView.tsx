@@ -507,7 +507,11 @@ export const ScrollView: ComponentType<ScrollViewProps> = ({
       tabIndex={tabIndex}
       {...scrollProps}
       {...useResponderEvents(props, nativeRef, targetRef)}>
-      <View style={[horizontal ? { alignSelf: 'flex-start' } : undefined, contentContainerStyle]}>{children}</View>
+      <View style={[
+        horizontal && !vertical ? { flexDirection: 'row' } : undefined,
+        horizontal ? { alignSelf: 'flex-start' } : undefined,
+        contentContainerStyle,
+      ]}>{children}</View>
     </div>
   );
 };

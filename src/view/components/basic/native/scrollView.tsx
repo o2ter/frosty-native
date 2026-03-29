@@ -61,7 +61,10 @@ export const ScrollView: ComponentType<ScrollViewProps> = ({
     horizontal,
     vertical,
     children: (
-      <View style={contentContainerStyle}>{children}</View>
+      <View style={[
+        horizontal && !vertical ? { flexDirection: 'row' } : undefined,
+        contentContainerStyle,
+      ]}>{children}</View>
     ),
     ...useResponderEvents(props, nativeRef)
   });

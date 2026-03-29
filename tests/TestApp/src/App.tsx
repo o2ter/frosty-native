@@ -205,7 +205,7 @@ export default function App() {
         {/* Section 12: Horizontal ScrollView */}
         <Section title="12. Horizontal ScrollView (width:200)">
           <Text style={{ fontSize: 11, color: '#888', marginBottom: 4 }}>✓ scrolls horizontally — cols clip at left/right edge</Text>
-          <ScrollView horizontal style={{ width: 200, height: 64, backgroundColor: '#e0e0e0' }} contentContainerStyle={{ flexDirection: 'row' }}>
+          <ScrollView horizontal style={{ width: 200, height: 64, backgroundColor: '#e0e0e0' }}>
             {[0, 1, 2, 3, 4, 5, 6, 7].map((i) => (
               <View key={i} style={{ width: 60, height: 64, backgroundColor: i % 2 === 0 ? 'steelblue' : 'coral', justifyContent: 'center', alignItems: 'center' }}>
                 <Text style={{ color: 'white' }}>Col {i}</Text>
@@ -213,7 +213,7 @@ export default function App() {
             ))}
           </ScrollView>
           <Text style={{ fontSize: 11, color: '#888', marginTop: 8, marginBottom: 4 }}>✓ tall content is clipped — no vertical overflow</Text>
-          <ScrollView horizontal style={{ width: 200, height: 64, backgroundColor: '#e0e0e0' }} contentContainerStyle={{ flexDirection: 'row' }}>
+          <ScrollView horizontal style={{ width: 200, height: 64, backgroundColor: '#e0e0e0' }}>
             <View style={{ width: 180, height: 120, backgroundColor: 'mediumseagreen', justifyContent: 'center', alignItems: 'center' }}>
               <Text style={{ color: 'white' }}>Tall (120px) — clips at 64px</Text>
             </View>
