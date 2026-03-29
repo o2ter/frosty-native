@@ -255,6 +255,9 @@ private fun Modifier.applyViewProps(
     if (minHeight is DimensionValue.Point) m = m.heightIn(min = minHeight.value.dp)
     if (maxHeight is DimensionValue.Point) m = m.heightIn(max = maxHeight.value.dp)
 
+    // Opacity: applied before clip/background/borders so all visual layers are inside the graphics layer
+    if (opacity != 1f) m = m.graphicsLayer { alpha = opacity }
+
     // Clip to border radius shape (before background to get rounded corners)
     if (shape != null) m = m.clip(shape)
 
@@ -401,9 +404,6 @@ private fun Modifier.applyViewProps(
     if (mT > 0f || mL > 0f || mR > 0f || mB > 0f) {
         m = m.padding(start = mL.dp, top = mT.dp, end = mR.dp, bottom = mB.dp)
     }
-
-    // Opacity
-    if (opacity != 1f) m = m.alpha(opacity)
 
     // Z-index
     if (zIndexVal != null) m = m.zIndex(zIndexVal)
