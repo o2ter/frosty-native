@@ -25,6 +25,7 @@
 
 import _ from 'lodash';
 import { NativeElementType } from 'frosty/_native';
+import { mergeRefs } from 'frosty';
 
 export interface NativeNodeType extends NativeElementType {
 
@@ -44,6 +45,8 @@ export abstract class NativeNode extends NativeElementType implements NativeNode
   }
 
   update(props: Record<string, any>, children: (string | NativeNode)[]) {
+    const { ref } = props;
+    if (ref) mergeRefs(ref)(this);
     this._native.update(props, _.map(children, x => x instanceof NativeNode ? x._native : x));
   }
 

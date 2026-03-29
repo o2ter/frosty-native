@@ -23,7 +23,7 @@
 //  THE SOFTWARE.
 //
 
-import { ComponentRef, ComponentType, mergeRefs, useRef, useRefHandle } from 'frosty';
+import { ComponentRef, ComponentType, mergeRefs, useEffect, useRef, useRefHandle } from 'frosty';
 import { _createNativeElement } from 'frosty/_native';
 import { NativeModules } from './modules';
 import { NativeNode } from './node';
@@ -47,16 +47,24 @@ export const ScrollView: ComponentType<ScrollViewProps> = ({
   ...props
 }) => {
 
+  const nativeRef = useRef<FTScrollView>();
   const handleRef = useRef<ComponentRef<typeof ScrollView>>();
   useRefHandle(mergeRefs(handleRef, ref), () => ({
-    flashScrollIndicators() { },
-    scrollTo() { },
-    scrollToEnd() { },
+    flashScrollIndicators() {
+      nativeRef.current?.invoke('flashScrollIndicators', []);
+    },
+    scrollTo(options) {
+      nativeRef.current?.invoke('scrollTo', [options]);
+    },
+    scrollToEnd(options) {
+      nativeRef.current?.invoke('scrollToEnd', [options]);
+    },
   }), null);
 
   const _style = useNativeStyle(style);
 
   return _createNativeElement(FTScrollView, {
+    ref: nativeRef,
     style: _style,
     horizontal,
     vertical,
