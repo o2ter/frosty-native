@@ -594,7 +594,7 @@ fun FTTextView(
 ) {
     Text(
         text = buildStyledText(props["text"]),
-        modifier = Modifier.applyViewProps(props)
+        modifier = Modifier.applyViewProps(props, fillWidth = true)
     )
 }
 
