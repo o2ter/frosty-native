@@ -287,6 +287,10 @@ protocol FTLayoutViewProtocol: FTViewProtocol {
     associatedtype Content: View
 
     func content(_ info: FTLayoutInfo) -> Self.Content
+
+    /// When true and no explicit width is set, the view expands to fill available width,
+    /// matching the block-level default of a web <div>.
+    var defaultFillsWidth: Bool { get }
 }
 
 struct Layout: Equatable {
@@ -873,13 +877,6 @@ extension FTLayoutViewProtocol {
 
 extension FTLayoutViewProtocol {
 
-    /// When true and no explicit width is set, the view expands to fill available width,
-    /// matching the block-level default of a web <div>.
-    var defaultFillsWidth: Bool { false }
-}
-
-extension FTLayoutViewProtocol {
-
     private func _body(_ parentSize: CGSize) -> some View {
         // Handle display:none - collapse view completely
         if display == "none" {
@@ -1192,6 +1189,8 @@ struct FTView: FTLayoutViewProtocol {
 
 struct FTImageView: FTLayoutViewProtocol {
 
+    var defaultFillsWidth: Bool { false }
+
     @Binding
     var props: [String: JSValue]
 
@@ -1224,6 +1223,8 @@ struct FTImageView: FTLayoutViewProtocol {
 
 struct FTTextView: FTLayoutViewProtocol {
 
+    var defaultFillsWidth: Bool { false }
+
     @Binding
     var props: [String: JSValue]
 
@@ -1254,6 +1255,8 @@ struct FTTextView: FTLayoutViewProtocol {
 }
 
 struct FTTextInput: FTLayoutViewProtocol {
+
+    var defaultFillsWidth: Bool { true }
 
     @Binding
     var props: [String: JSValue]
@@ -1320,5 +1323,6 @@ struct FTScrollView: FTLayoutViewProtocol {
                 .frame(maxWidth: .infinity, alignment: .topLeading)
             }
         }
+        .clipped()
     }
 }
