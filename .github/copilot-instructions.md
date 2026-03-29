@@ -98,7 +98,13 @@ Platform.select({
 - **Platform Detection**: Module suffix resolution for cross-platform components
 
 ## Testing & Development
-- Test server at `tests/server/app.tsx` - minimal Frosty app for component testing
+
+### UI Testing Workflow
+- **Native platform UI testing**: Use `tests/TestApp/src/App.tsx` to test UI on native platforms (Android/iOS)
+- **Web platform UI testing**: Use `tests/server/app.tsx` to test UI on the web platform
+- **Visual verification**: The user verifies UI results visually by running the app or web server themselves — the agent does **not** run the app
+- **Cross-platform consistency**: All platforms must render the same UI with identical styling. When updating UI, ensure changes are consistent across native and web
+- **Agent responsibility for UI changes**: When making UI-related changes, update both test files (`tests/TestApp/src/App.tsx` and `tests/server/app.tsx`) as needed, then ask the user to run the app/web and verify the result visually
 - **Temporary Files for Testing**: When creating temporary files to test code, place all test scripts under `<project_root>/.temp/` to keep the workspace organized and avoid conflicts with the main codebase.
 - **Test Case Verification**: Always examine the actual content of test cases to ensure they're testing what they're supposed to test:
   - Read test files completely to understand test logic and assertions
