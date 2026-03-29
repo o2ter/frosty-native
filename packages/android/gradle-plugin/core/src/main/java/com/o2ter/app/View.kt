@@ -239,6 +239,16 @@ private fun Modifier.applyViewProps(
     // display:none → collapse to zero size
     if (display == "none") return m.size(0.dp)
 
+    // Margin as outer spacing — must be outermost in the chain (before size/background)
+    // so it creates space OUTSIDE the visual element, not inside it.
+    val mT = (marginTop as? DimensionValue.Point)?.value ?: 0f
+    val mL = (marginLeft as? DimensionValue.Point)?.value ?: 0f
+    val mR = (marginRight as? DimensionValue.Point)?.value ?: 0f
+    val mB = (marginBottom as? DimensionValue.Point)?.value ?: 0f
+    if (mT > 0f || mL > 0f || mR > 0f || mB > 0f) {
+        m = m.padding(start = mL.dp, top = mT.dp, end = mR.dp, bottom = mB.dp)
+    }
+
     // Size constraints
     when (width) {
         is DimensionValue.Point -> m = m.width(width.value.dp)
@@ -394,15 +404,6 @@ private fun Modifier.applyViewProps(
             }
         }
         if (offsetX != 0.dp || offsetY != 0.dp) m = m.offset(offsetX, offsetY)
-    }
-
-    // Margin as outer padding
-    val mT = (marginTop as? DimensionValue.Point)?.value ?: 0f
-    val mL = (marginLeft as? DimensionValue.Point)?.value ?: 0f
-    val mR = (marginRight as? DimensionValue.Point)?.value ?: 0f
-    val mB = (marginBottom as? DimensionValue.Point)?.value ?: 0f
-    if (mT > 0f || mL > 0f || mR > 0f || mB > 0f) {
-        m = m.padding(start = mL.dp, top = mT.dp, end = mR.dp, bottom = mB.dp)
     }
 
     // Z-index

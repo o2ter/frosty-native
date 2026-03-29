@@ -180,10 +180,51 @@ export const App = () => {
       </Section>
 
       {/* Section 10: Padding & Margin */}
-      <Section title="10. Padding and Margin">
+      <Section title="10. Padding and Margin — uniform">
         <View style={{ backgroundColor: '#ccc' }}>
           <View style={{ backgroundColor: 'steelblue', padding: 16, margin: 8 }}>
             <Text style={{ color: 'white' }}>padding:16, margin:8</Text>
+          </View>
+        </View>
+      </Section>
+
+      {/* Section 10b: Non-uniform padding */}
+      <Section title="10b. Non-uniform Padding">
+        <Text style={{ fontSize: 11, color: '#888', marginBottom: 4 }}>paddingTop:4 paddingRight:8 paddingBottom:16 paddingLeft:24</Text>
+        <View style={{ backgroundColor: '#ccc' }}>
+          <View style={{ backgroundColor: 'steelblue', paddingTop: 4, paddingRight: 8, paddingBottom: 16, paddingLeft: 24 }}>
+            <Text style={{ color: 'white' }}>non-uniform padding</Text>
+          </View>
+        </View>
+        <Text style={{ fontSize: 11, color: '#888', marginTop: 8, marginBottom: 4 }}>paddingHorizontal:20 paddingVertical:4</Text>
+        <View style={{ backgroundColor: '#ccc' }}>
+          <View style={{ backgroundColor: 'coral', paddingHorizontal: 20, paddingVertical: 4 }}>
+            <Text style={{ color: 'white' }}>paddingH:20 paddingV:4</Text>
+          </View>
+        </View>
+      </Section>
+
+      {/* Section 10c: Non-uniform margin */}
+      <Section title="10c. Non-uniform Margin">
+        <Text style={{ fontSize: 11, color: '#888', marginBottom: 4 }}>marginTop:4 marginRight:8 marginBottom:16 marginLeft:24</Text>
+        <View style={{ backgroundColor: '#ccc' }}>
+          <View style={{ backgroundColor: 'steelblue', marginTop: 4, marginRight: 8, marginBottom: 16, marginLeft: 24 }}>
+            <Text style={{ color: 'white' }}>non-uniform margin</Text>
+          </View>
+        </View>
+        <Text style={{ fontSize: 11, color: '#888', marginTop: 8, marginBottom: 4 }}>marginHorizontal:20 marginVertical:4</Text>
+        <View style={{ backgroundColor: '#ccc' }}>
+          <View style={{ backgroundColor: 'coral', marginHorizontal: 20, marginVertical: 4 }}>
+            <Text style={{ color: 'white' }}>marginH:20 marginV:4</Text>
+          </View>
+        </View>
+      </Section>
+
+      {/* Section 10d: Mixed non-uniform padding + margin */}
+      <Section title="10d. Mixed Non-uniform Padding + Margin">
+        <View style={{ backgroundColor: '#aee' }}>
+          <View style={{ backgroundColor: 'purple', paddingTop: 2, paddingBottom: 12, paddingLeft: 8, paddingRight: 24, marginTop: 8, marginBottom: 4, marginLeft: 16, marginRight: 4 }}>
+            <Text style={{ color: 'white' }}>pT:2 pB:12 pL:8 pR:24 mT:8 mB:4 mL:16 mR:4</Text>
           </View>
         </View>
       </Section>
