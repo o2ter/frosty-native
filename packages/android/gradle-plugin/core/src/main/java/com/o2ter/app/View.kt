@@ -183,8 +183,7 @@ private fun Modifier.applyViewProps(
     val hasBorder = borderTopW > 0f || borderBottomW > 0f || borderLeftW > 0f || borderRightW > 0f
 
     // Transforms
-    val rawTransform = style["transform"]
-    val transforms: List<Map<String, Any?>> = when (rawTransform) {
+    val transforms: List<Map<String, Any?>> = when (val rawTransform = style["transform"]) {
         is List<*> -> rawTransform.mapNotNull { item ->
             (item as? Map<*, *>)?.entries?.associate { (k, v) -> k.toString() to v }
         }
