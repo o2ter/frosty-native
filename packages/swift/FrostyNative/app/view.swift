@@ -1658,6 +1658,15 @@ struct FTScrollView: FTLayoutViewProtocol {
     ) {
         self._props = props
         self._children = children
+        handler { method, args in
+            switch method {
+            case "scrollTo":
+                break
+            case "scrollToEnd":
+                break
+            default: break
+            }
+        }
     }
 
     func content(_ info: FTLayoutInfo) -> some View {
