@@ -82,6 +82,18 @@ Platform.select({
 - `template/` - Project template showing standard app structure
 - `rollup.config.mjs` - Platform-specific build configuration
 
+### Basic Components Reference Files
+When editing any of the files in the table below — whether on the JS/TS side or the native side — always read and cross-reference **all four files** to ensure consistency across every layer:
+
+| File | Purpose |
+|------|---------|
+| `src/view/components/basic/types/styles.ts` | Canonical TypeScript style type definitions — source of truth for all style property names, value types, and accepted values |
+| `src/view/components/basic/native/style.ts` | Native style normalization (color conversion, flattening) applied before styles are passed to the native bridge |
+| `packages/swift/FrostyNative/app/view.swift` | iOS/macOS SwiftUI rendering — reads the style props sent from JS and applies them to SwiftUI views |
+| `packages/android/gradle-plugin/core/src/main/java/com/o2ter/app/View.kt` | Android Compose rendering — reads the same style props and applies them via Jetpack Compose modifiers |
+
+**Why this matters:** A style property only works end-to-end when it is defined in `styles.ts`, normalized in `native/style.ts`, and handled in both `view.swift` (iOS) and `View.kt` (Android). Adding or changing a style property requires updates to all four files to maintain cross-platform consistency.
+
 ## Frosty Framework Specifics
 - Import hooks from `'frosty'`, not `'react'`
 - Use `ElementNode` type instead of `ReactNode`
