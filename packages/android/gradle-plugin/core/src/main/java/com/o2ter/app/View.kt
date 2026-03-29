@@ -1076,7 +1076,7 @@ fun FTImageView(
             )
         } else if (source != null) {
             // Loading placeholder
-            Box(modifier = Modifier.fillMaxSize().background(Color(0xFFE0E0E0.toInt())))
+            Box(modifier = Modifier.fillMaxSize())
         }
     }
 }

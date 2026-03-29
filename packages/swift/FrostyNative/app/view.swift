@@ -1558,9 +1558,7 @@ struct FTImageView: FTLayoutViewProtocol {
             image
                 .resizable()
                 .aspectRatio(contentMode: contentMode)
-        } placeholder: {
-            Color.gray.opacity(0.15)
-        }
+        } placeholder: { }
     }
 }
 
