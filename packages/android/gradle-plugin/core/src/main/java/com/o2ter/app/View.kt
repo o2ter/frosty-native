@@ -78,12 +78,18 @@ import androidx.core.graphics.toColorInt
 import androidx.compose.ui.graphics.Shadow
 import androidx.compose.ui.text.ParagraphStyle
 import androidx.compose.ui.text.SpanStyle
+import androidx.compose.runtime.compositionLocalOf
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.sp
+
+// Provides a weight-modifier factory captured inside a RowScope or ColumnScope so that
+// child FTView nodes can apply Modifier.weight() correctly without needing scope access.
+private val LocalFlexModifierFactory = compositionLocalOf<((Float) -> Modifier)?> { null }
 
 // DimensionValue used for parsing string-based dimensions coming from JS.
 private sealed class DimensionValue {
@@ -495,6 +501,12 @@ fun FTView(
     val columnGap = (style["columnGap"] as? Number)?.toFloat() ?: 0f
     val rowGap = (style["rowGap"] as? Number)?.toFloat() ?: 0f
 
+    // Read flex weight provided by the parent container, then clear it for our own children.
+    // Note: JS normalizes `flex` → `flexGrow` before sending to native, so we read flexGrow here.
+    val parentFlexFactory = LocalFlexModifierFactory.current
+    val selfFlex = (style["flexGrow"] as? Number)?.toFloat() ?: 0f
+    val flexModifier = if (selfFlex > 0f && parentFlexFactory != null) parentFlexFactory(selfFlex) else Modifier
+
     if (isRow) {
         val horizontalArrangement: Arrangement.Horizontal = when (justifyContent) {
             "flex-end" -> if (columnGap > 0f) Arrangement.spacedBy(columnGap.dp, Alignment.End) else Arrangement.End
@@ -510,11 +522,14 @@ fun FTView(
             else -> Alignment.Top
         }
         Row(
-            modifier = Modifier.applyViewProps(props, fillWidth = true),
+            modifier = flexModifier.then(Modifier.applyViewProps(props, fillWidth = selfFlex <= 0f || parentFlexFactory == null)),
             horizontalArrangement = horizontalArrangement,
             verticalAlignment = verticalAlignment
         ) {
-            content()
+            // Provide weight factory to children so they can apply Modifier.weight() in this RowScope
+            CompositionLocalProvider(LocalFlexModifierFactory provides { flex -> Modifier.weight(flex) }) {
+                content()
+            }
         }
     } else {
         val verticalArrangement: Arrangement.Vertical = when (justifyContent) {
@@ -531,11 +546,14 @@ fun FTView(
             else -> Alignment.Start
         }
         Column(
-            modifier = Modifier.applyViewProps(props, fillWidth = true),
+            modifier = flexModifier.then(Modifier.applyViewProps(props, fillWidth = true)),
             verticalArrangement = verticalArrangement,
             horizontalAlignment = horizontalAlignment
         ) {
-            content()
+            // Provide weight factory to children so they can apply Modifier.weight() in this ColumnScope
+            CompositionLocalProvider(LocalFlexModifierFactory provides { flex -> Modifier.weight(flex) }) {
+                content()
+            }
         }
     }
 }
