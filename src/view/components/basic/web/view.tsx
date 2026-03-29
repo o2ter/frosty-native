@@ -58,7 +58,7 @@ export const View: ComponentType<ViewProps> = ({ id, ref, style, children, tabIn
       minHeight: 0,
       minWidth: 0,
       padding: 0,
-      position: 'relative',
+      position: 'static',
       textDecorationLine: 'none',
       zIndex: 0,
     },
