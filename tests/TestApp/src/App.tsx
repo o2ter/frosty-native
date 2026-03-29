@@ -284,6 +284,88 @@ export default function App() {
           ))}
         </Section>
 
+        {/* Advanced: column + flexWrap */}
+        <Section title="Advanced: column + flexWrap: nowrap">
+          <Text style={{ fontSize: 11, color: '#888', marginBottom: 4 }}>Children overflow the fixed height — no wrapping</Text>
+          <View style={{ flexDirection: 'column', flexWrap: 'nowrap', height: 80, backgroundColor: 'teal', gap: 4, padding: 4 }}>
+            <View style={{ width: 60, height: 32, backgroundColor: 'gold' }} />
+            <View style={{ width: 60, height: 32, backgroundColor: 'gold' }} />
+            <View style={{ width: 60, height: 32, backgroundColor: 'gold' }} />
+          </View>
+        </Section>
+
+        <Section title="Advanced: column + flexWrap: wrap">
+          <Text style={{ fontSize: 11, color: '#888', marginBottom: 4 }}>Children wrap into new columns when height is exceeded</Text>
+          <View style={{ flexDirection: 'column', flexWrap: 'wrap', height: 100, backgroundColor: 'teal', gap: 4, padding: 4 }}>
+            <View style={{ width: 60, height: 32, backgroundColor: 'gold' }} />
+            <View style={{ width: 60, height: 32, backgroundColor: 'orange' }} />
+            <View style={{ width: 60, height: 32, backgroundColor: 'gold' }} />
+            <View style={{ width: 60, height: 32, backgroundColor: 'orange' }} />
+            <View style={{ width: 60, height: 32, backgroundColor: 'gold' }} />
+          </View>
+        </Section>
+
+        <Section title="Advanced: column + flexWrap: wrap-reverse">
+          <Text style={{ fontSize: 11, color: '#888', marginBottom: 4 }}>Columns fill right-to-left when wrapping</Text>
+          <View style={{ flexDirection: 'column', flexWrap: 'wrap-reverse', height: 100, backgroundColor: 'teal', gap: 4, padding: 4 }}>
+            <View style={{ width: 60, height: 32, backgroundColor: 'gold' }} />
+            <View style={{ width: 60, height: 32, backgroundColor: 'orange' }} />
+            <View style={{ width: 60, height: 32, backgroundColor: 'gold' }} />
+            <View style={{ width: 60, height: 32, backgroundColor: 'orange' }} />
+            <View style={{ width: 60, height: 32, backgroundColor: 'gold' }} />
+          </View>
+        </Section>
+
+        {/* Advanced: column-reverse + flexWrap */}
+        <Section title="Advanced: column-reverse + flexWrap: nowrap">
+          <Text style={{ fontSize: 11, color: '#888', marginBottom: 4 }}>Items stack bottom-to-top, no wrapping</Text>
+          <View style={{ flexDirection: 'column-reverse', flexWrap: 'nowrap', height: 120, backgroundColor: 'indigo', gap: 4, padding: 4 }}>
+            <View style={{ width: 60, height: 32, backgroundColor: 'lime' }} />
+            <View style={{ width: 60, height: 32, backgroundColor: 'cyan' }} />
+            <View style={{ width: 60, height: 32, backgroundColor: 'lime' }} />
+          </View>
+        </Section>
+
+        <Section title="Advanced: column-reverse + flexWrap: wrap">
+          <Text style={{ fontSize: 11, color: '#888', marginBottom: 4 }}>Items stack bottom-to-top and wrap into new columns</Text>
+          <View style={{ flexDirection: 'column-reverse', flexWrap: 'wrap', height: 100, backgroundColor: 'indigo', gap: 4, padding: 4 }}>
+            <View style={{ width: 60, height: 32, backgroundColor: 'lime' }} />
+            <View style={{ width: 60, height: 32, backgroundColor: 'cyan' }} />
+            <View style={{ width: 60, height: 32, backgroundColor: 'lime' }} />
+            <View style={{ width: 60, height: 32, backgroundColor: 'cyan' }} />
+            <View style={{ width: 60, height: 32, backgroundColor: 'lime' }} />
+          </View>
+        </Section>
+
+        {/* Advanced: column + flexWrap + alignItems */}
+        <Section title="Advanced: column + wrap + alignItems">
+          {_.map(['flex-start', 'flex-end', 'center', 'stretch'] as const, (x) => (
+            <View key={x} style={{ marginBottom: 8 }}>
+              <Text style={{ fontSize: 11, color: '#888', marginBottom: 2 }}>{x}</Text>
+              <View style={{ flexDirection: 'column', flexWrap: 'wrap', height: 100, backgroundColor: 'darkslateblue', gap: 4, padding: 4, alignItems: x }}>
+                <View style={{ width: 50, height: 28, backgroundColor: 'aquamarine' }} />
+                <View style={{ width: 30, height: 28, backgroundColor: 'aquamarine' }} />
+                <View style={{ width: 50, height: 28, backgroundColor: 'aquamarine' }} />
+                <View style={{ width: 30, height: 28, backgroundColor: 'aquamarine' }} />
+              </View>
+            </View>
+          ))}
+        </Section>
+
+        {/* Advanced: column + flexWrap + justifyContent */}
+        <Section title="Advanced: column + wrap + justifyContent">
+          {_.map(['flex-start', 'flex-end', 'center', 'space-between', 'space-around', 'space-evenly'] as const, (x) => (
+            <View key={x} style={{ marginBottom: 8 }}>
+              <Text style={{ fontSize: 11, color: '#888', marginBottom: 2 }}>{x}</Text>
+              <View style={{ flexDirection: 'column', flexWrap: 'wrap', height: 120, backgroundColor: 'darkslateblue', padding: 4, justifyContent: x }}>
+                <View style={{ width: 60, height: 28, backgroundColor: 'tomato' }} />
+                <View style={{ width: 60, height: 28, backgroundColor: 'tomato' }} />
+                <View style={{ width: 60, height: 28, backgroundColor: 'tomato' }} />
+              </View>
+            </View>
+          ))}
+        </Section>
+
       </View>
     </ScrollView>
   );
