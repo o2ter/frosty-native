@@ -62,6 +62,7 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.RoundRect
@@ -1038,13 +1039,18 @@ private fun crossAlignOffset(childWidth: Int, colWidth: Int, alignItems: String)
 
 @Composable
 private fun rememberUrlBitmap(url: String): ImageBitmap? {
+    val context = LocalContext.current
     var bitmap by remember(url) { mutableStateOf<ImageBitmap?>(null) }
     LaunchedEffect(url) {
         withContext(Dispatchers.IO) {
             try {
-                val connection = java.net.URL(url).openConnection() as java.net.HttpURLConnection
-                connection.connect()
-                val stream = connection.inputStream
+                val stream = if (url.startsWith("assets:///")) {
+                    context.assets.open(url.removePrefix("assets:///"))
+                } else {
+                    val connection = java.net.URL(url).openConnection() as java.net.HttpURLConnection
+                    connection.connect()
+                    connection.inputStream
+                }
                 val androidBitmap = android.graphics.BitmapFactory.decodeStream(stream)
                 stream.close()
                 bitmap = androidBitmap?.asImageBitmap()

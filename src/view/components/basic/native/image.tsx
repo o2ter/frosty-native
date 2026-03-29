@@ -43,9 +43,11 @@ export const Image: ComponentType<ImageProps> = ({ ref, style, source, ...props 
   }), null);
 
   const _style = useNativeStyle(style);
+  const _source = typeof source === 'string' ? source : source?.uri;
 
   return _createNativeElement(FTImageView, {
     style: _style,
+    source: _source,
     ...useResponderEvents(props, nativeRef)
   });
 };

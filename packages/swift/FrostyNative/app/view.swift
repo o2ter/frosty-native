@@ -1554,7 +1554,14 @@ struct FTImageView: FTLayoutViewProtocol {
         let source = props["source"]?.toString() ?? ""
         let resizeMode = props["resizeMode"]?.toString() ?? "contain"
         let contentMode: ContentMode = resizeMode == "cover" ? .fill : .fit
-        return AsyncImage(url: URL(string: source)) { image in
+        let imageURL: URL? = {
+            if source.hasPrefix("assets:///") {
+                let assetPath = String(source.dropFirst("assets:///".count))
+                return Bundle.main.bundleURL.appendingPathComponent(assetPath)
+            }
+            return URL(string: source)
+        }()
+        return AsyncImage(url: imageURL) { image in
             image
                 .resizable()
                 .aspectRatio(contentMode: contentMode)
