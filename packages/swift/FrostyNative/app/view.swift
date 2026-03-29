@@ -1377,6 +1377,27 @@ struct FTView: FTLayoutViewProtocol {
             }
         }()
 
+        // Frame alignment for column: the VStack's intrinsic width equals its widest child,
+        // so we must also move the VStack itself within the .infinity-width frame to achieve
+        // flex-end (trailing) and center cross-axis alignment.
+        let colFrameAlignment: SwiftUI.Alignment = {
+            switch alignItems {
+            case "flex-end": return .topTrailing
+            case "center": return .top
+            default: return .topLeading
+            }
+        }()
+
+        // Frame alignment for row: the HStack's intrinsic height equals its tallest child,
+        // so we must move the HStack itself within the frame when a height is constrained.
+        let rowFrameAlignment: SwiftUI.Alignment = {
+            switch alignItems {
+            case "flex-end": return .bottomLeading
+            case "center": return Alignment(horizontal: .leading, vertical: .center)
+            default: return .topLeading
+            }
+        }()
+
         // Build view array with spacers inserted to implement justifyContent distribution.
         // Distributing variants (space-*) set effectiveSpacing to 0 and use Spacer() for
         // all gaps so that the available space is divided equally among the spacer slots.
@@ -1445,12 +1466,12 @@ struct FTView: FTLayoutViewProtocol {
                 HStack(alignment: vAlign, spacing: effectiveSpacing) {
                     ForEach(viewArray.indexed(), id: \.index) { $0.element }
                 }
-                .frame(maxWidth: .infinity, alignment: .topLeading)
+                .frame(maxWidth: .infinity, alignment: rowFrameAlignment)
             } else {
                 VStack(alignment: hAlign, spacing: effectiveSpacing) {
                     ForEach(viewArray.indexed(), id: \.index) { $0.element }
                 }
-                .frame(maxWidth: .infinity, alignment: .topLeading)
+                .frame(maxWidth: .infinity, alignment: colFrameAlignment)
             }
         }
     }
