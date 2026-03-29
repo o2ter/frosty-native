@@ -58,8 +58,12 @@ export const TextInput: ComponentType<TextInputProps> = ({
   const nativeRef = useRef<FTTextInput>();
   const handleRef = useRef<ComponentRef<typeof TextInput>>();
   useRefHandle(mergeRefs(handleRef, ref), () => ({
-    focus() { },
-    blur() { },
+    focus() {
+      nativeRef.current?.invoke('focus', []);
+    },
+    blur() {
+      nativeRef.current?.invoke('blur', []);
+    },
     flashScrollIndicators() {
       nativeRef.current?.invoke('flashScrollIndicators', []);
     },
