@@ -31,6 +31,9 @@ import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowColumn
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
@@ -66,6 +69,7 @@ import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.layout.Layout
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.withStyle
@@ -492,6 +496,7 @@ private fun buildStyledText(text: Any?, parentTransform: String? = null, isInlin
     return AnnotatedString("")
 }
 
+@OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun FTView(
     nodeId: String,
@@ -504,10 +509,20 @@ fun FTView(
 
     val flexDirection = style["flexDirection"]?.toString() ?: "column"
     val isRow = flexDirection.startsWith("row")
+    val isReverse = flexDirection.endsWith("-reverse")
+    val flexWrap = style["flexWrap"]?.toString() ?: "nowrap"
+    val isWrap = flexWrap == "wrap" || flexWrap == "wrap-reverse"
     val justifyContent = style["justifyContent"]?.toString() ?: "flex-start"
     val alignItems = style["alignItems"]?.toString() ?: "flex-start"
     val columnGap = (style["columnGap"] as? Number)?.toFloat() ?: 0f
     val rowGap = (style["rowGap"] as? Number)?.toFloat() ?: 0f
+
+    // In a reversed flex-direction flex-start and flex-end swap along the main axis.
+    val effectiveJustify = if (isReverse) when (justifyContent) {
+        "flex-start" -> "flex-end"
+        "flex-end" -> "flex-start"
+        else -> justifyContent
+    } else justifyContent
 
     // Read flex weight provided by the parent container, then clear it for our own children.
     // Note: JS normalizes `flex` → `flexGrow` before sending to native, so we read flexGrow here.
@@ -516,55 +531,264 @@ fun FTView(
     val flexModifier = if (selfFlex > 0f && parentFlexFactory != null) parentFlexFactory(selfFlex) else Modifier
 
     if (isRow) {
-        val horizontalArrangement: Arrangement.Horizontal = when (justifyContent) {
-            "flex-end" -> if (columnGap > 0f) Arrangement.spacedBy(columnGap.dp, Alignment.End) else Arrangement.End
-            "center" -> if (columnGap > 0f) Arrangement.spacedBy(columnGap.dp, Alignment.CenterHorizontally) else Arrangement.Center
-            "space-between" -> Arrangement.SpaceBetween
-            "space-around" -> Arrangement.SpaceAround
-            "space-evenly" -> Arrangement.SpaceEvenly
-            else -> if (columnGap > 0f) Arrangement.spacedBy(columnGap.dp) else Arrangement.Start
-        }
-        val verticalAlignment: Alignment.Vertical = when (alignItems) {
-            "flex-end" -> Alignment.Bottom
-            "center" -> Alignment.CenterVertically
-            else -> Alignment.Top
-        }
-        Row(
-            modifier = flexModifier.then(Modifier.applyViewProps(props, fillWidth = selfFlex <= 0f || parentFlexFactory == null)),
-            horizontalArrangement = horizontalArrangement,
-            verticalAlignment = verticalAlignment
-        ) {
-            // Provide weight factory to children so they can apply Modifier.weight() in this RowScope
-            CompositionLocalProvider(LocalFlexModifierFactory provides { flex -> Modifier.weight(flex) }) {
-                content()
+        if (isWrap) {
+            // FlowRow: items wrap to new rows when they exceed the container width.
+            val horizontalArrangement: Arrangement.Horizontal = when (effectiveJustify) {
+                "flex-end" -> if (columnGap > 0f) Arrangement.spacedBy(columnGap.dp, Alignment.End) else Arrangement.End
+                "center" -> if (columnGap > 0f) Arrangement.spacedBy(columnGap.dp, Alignment.CenterHorizontally) else Arrangement.Center
+                "space-between" -> Arrangement.SpaceBetween
+                "space-around" -> Arrangement.SpaceAround
+                "space-evenly" -> Arrangement.SpaceEvenly
+                else -> if (columnGap > 0f) Arrangement.spacedBy(columnGap.dp) else Arrangement.Start
+            }
+            val verticalArrangement: Arrangement.Vertical =
+                if (rowGap > 0f) Arrangement.spacedBy(rowGap.dp) else Arrangement.Top
+            FlowRow(
+                modifier = flexModifier.then(Modifier.applyViewProps(props, fillWidth = selfFlex <= 0f || parentFlexFactory == null)),
+                horizontalArrangement = horizontalArrangement,
+                verticalArrangement = verticalArrangement
+            ) {
+                CompositionLocalProvider(LocalFlexModifierFactory provides null) { content() }
+            }
+        } else {
+            // Standard row (existing Row path, now also handles row-reverse via effectiveJustify).
+            val horizontalArrangement: Arrangement.Horizontal = when (effectiveJustify) {
+                "flex-end" -> if (columnGap > 0f) Arrangement.spacedBy(columnGap.dp, Alignment.End) else Arrangement.End
+                "center" -> if (columnGap > 0f) Arrangement.spacedBy(columnGap.dp, Alignment.CenterHorizontally) else Arrangement.Center
+                "space-between" -> Arrangement.SpaceBetween
+                "space-around" -> Arrangement.SpaceAround
+                "space-evenly" -> Arrangement.SpaceEvenly
+                else -> if (columnGap > 0f) Arrangement.spacedBy(columnGap.dp) else Arrangement.Start
+            }
+            val verticalAlignment: Alignment.Vertical = when (alignItems) {
+                "flex-end" -> Alignment.Bottom
+                "center" -> Alignment.CenterVertically
+                else -> Alignment.Top
+            }
+            Row(
+                modifier = flexModifier.then(Modifier.applyViewProps(props, fillWidth = selfFlex <= 0f || parentFlexFactory == null)),
+                horizontalArrangement = horizontalArrangement,
+                verticalAlignment = verticalAlignment
+            ) {
+                CompositionLocalProvider(LocalFlexModifierFactory provides { flex -> Modifier.weight(flex) }) {
+                    content()
+                }
             }
         }
     } else {
-        val verticalArrangement: Arrangement.Vertical = when (justifyContent) {
-            "flex-end" -> if (rowGap > 0f) Arrangement.spacedBy(rowGap.dp, Alignment.Bottom) else Arrangement.Bottom
-            "center" -> if (rowGap > 0f) Arrangement.spacedBy(rowGap.dp, Alignment.CenterVertically) else Arrangement.Center
-            "space-between" -> Arrangement.SpaceBetween
-            "space-around" -> Arrangement.SpaceAround
-            "space-evenly" -> Arrangement.SpaceEvenly
-            else -> if (rowGap > 0f) Arrangement.spacedBy(rowGap.dp) else Arrangement.Top
-        }
-        val horizontalAlignment: Alignment.Horizontal = when (alignItems) {
-            "flex-end" -> Alignment.End
-            "center" -> Alignment.CenterHorizontally
-            else -> Alignment.Start
-        }
-        Column(
-            modifier = flexModifier.then(Modifier.applyViewProps(props, fillWidth = true)),
-            verticalArrangement = verticalArrangement,
-            horizontalAlignment = horizontalAlignment
-        ) {
-            // Provide weight factory to children so they can apply Modifier.weight() in this ColumnScope
-            CompositionLocalProvider(LocalFlexModifierFactory provides { flex -> Modifier.weight(flex) }) {
-                content()
+        if (!isWrap && !isReverse) {
+            // Standard column (original code path — preserves flex-weight support).
+            val verticalArrangement: Arrangement.Vertical = when (justifyContent) {
+                "flex-end" -> if (rowGap > 0f) Arrangement.spacedBy(rowGap.dp, Alignment.Bottom) else Arrangement.Bottom
+                "center" -> if (rowGap > 0f) Arrangement.spacedBy(rowGap.dp, Alignment.CenterVertically) else Arrangement.Center
+                "space-between" -> Arrangement.SpaceBetween
+                "space-around" -> Arrangement.SpaceAround
+                "space-evenly" -> Arrangement.SpaceEvenly
+                else -> if (rowGap > 0f) Arrangement.spacedBy(rowGap.dp) else Arrangement.Top
+            }
+            val horizontalAlignment: Alignment.Horizontal = when (alignItems) {
+                "flex-end" -> Alignment.End
+                "center" -> Alignment.CenterHorizontally
+                else -> Alignment.Start
+            }
+            Column(
+                modifier = flexModifier.then(Modifier.applyViewProps(props, fillWidth = true)),
+                verticalArrangement = verticalArrangement,
+                horizontalAlignment = horizontalAlignment
+            ) {
+                CompositionLocalProvider(LocalFlexModifierFactory provides { flex -> Modifier.weight(flex) }) {
+                    content()
+                }
+            }
+        } else {
+            // column + wrap, column + wrap-reverse, column-reverse +-nowrap/wrap:
+            // Use a custom Layout that measures children and places them according to
+            // CSS flex-direction:column with optional wrap and/or reverse.
+            val gap_row = rowGap.dp
+            val gap_col = columnGap.dp
+            Layout(
+                modifier = flexModifier.then(Modifier.applyViewProps(props, fillWidth = true)),
+                content = { CompositionLocalProvider(LocalFlexModifierFactory provides null) { content() } }
+            ) { measurables, constraints ->
+                val rowGapPx = gap_row.roundToPx()
+                val colGapPx = gap_col.roundToPx()
+                val stretch = alignItems == "stretch"
+                val measureW = if (stretch) constraints.maxWidth else 0
+                val childConstraints = constraints.copy(
+                    minWidth = measureW.coerceAtMost(if (constraints.maxWidth == Int.MAX_VALUE) 0 else constraints.maxWidth),
+                    minHeight = 0)
+                val placeables = measurables.map { it.measure(childConstraints) }
+
+                // Group children into columns, filling top-to-bottom.
+                // For column-reverse the visual order is reversed but the wrap grouping
+                // uses the ORIGINAL order so item[0] ends up at the bottom of its column.
+                data class ColGroup(val indices: List<Int>, val colWidth: Int)
+
+                val maxHeight = if (constraints.maxHeight == Int.MAX_VALUE) Int.MAX_VALUE else constraints.maxHeight
+
+                val colGroups = mutableListOf<ColGroup>()
+                val cur = mutableListOf<Int>()
+                var curH = 0
+                var curW = 0
+                for (i in placeables.indices) {
+                    val p = placeables[i]
+                    val gap = if (cur.isEmpty()) 0 else rowGapPx
+                    if (isWrap && cur.isNotEmpty() && maxHeight != Int.MAX_VALUE
+                        && curH + gap + p.height > maxHeight) {
+                        colGroups.add(ColGroup(cur.toList(), curW))
+                        cur.clear(); curH = 0; curW = 0
+                    }
+                    if (cur.isNotEmpty()) curH += rowGapPx
+                    cur.add(i); curH += p.height
+                    curW = maxOf(curW, p.width)
+                }
+                if (cur.isNotEmpty()) colGroups.add(ColGroup(cur.toList(), curW))
+
+                // Determine total layout dimensions.
+                val totalColWidths = colGroups.sumOf { it.colWidth }
+                val totalColGaps = (colGroups.size - 1).coerceAtLeast(0) * colGapPx
+                val layoutWidth = if (constraints.maxWidth == Int.MAX_VALUE)
+                    totalColWidths + totalColGaps
+                else constraints.maxWidth
+                val layoutHeight = if (maxHeight == Int.MAX_VALUE) {
+                    (colGroups.maxOfOrNull { g ->
+                        g.indices.sumOf { placeables[it].height } +
+                            (g.indices.size - 1).coerceAtLeast(0) * rowGapPx
+                    } ?: 0).coerceAtLeast(constraints.minHeight)
+                } else maxHeight
+
+                // Apply wrap-reverse: columns fill from the right side instead of left.
+                val colXPositions: List<Int> =
+                    if (flexWrap == "wrap-reverse") {
+                        val positions = mutableListOf<Int>()
+                        var x = layoutWidth
+                        for (g in colGroups) { x -= g.colWidth; positions.add(x); x -= colGapPx }
+                        positions
+                    } else {
+                        val positions = mutableListOf<Int>()
+                        var x = 0
+                        for (g in colGroups) { positions.add(x); x += g.colWidth + colGapPx }
+                        positions
+                    }
+
+                layout(layoutWidth, layoutHeight) {
+                    for ((gi, group) in colGroups.withIndex()) {
+                        val colX = colXPositions[gi]
+                        val colWidth = group.colWidth
+                        val colItems = group.indices.map { placeables[it] }
+
+                        val totalItemH = colItems.sumOf { it.height }
+                        val totalGapsH = (colItems.size - 1).coerceAtLeast(0) * rowGapPx
+                        val contentH = totalItemH + totalGapsH
+                        val extra = (layoutHeight - contentH).coerceAtLeast(0)
+
+                        // Place items; for column-reverse item[0] is at the bottom so
+                        // we iterate in original order placing bottom-to-top.
+                        if (isReverse) {
+                            // effectiveJustify already swapped: flex-end → cluster at bottom.
+                            when (effectiveJustify) {
+                                "space-between" -> {
+                                    val spacer = if (colItems.size > 1) extra / (colItems.size - 1) else 0
+                                    var y = layoutHeight
+                                    for ((idx, p) in colItems.withIndex()) {
+                                        y -= p.height
+                                        val x = colX + crossAlignOffset(p.width, colWidth, alignItems)
+                                        p.placeRelative(x, y)
+                                        if (idx < colItems.size - 1) y -= rowGapPx + spacer
+                                    }
+                                }
+                                "space-around" -> {
+                                    val unit = if (colItems.isNotEmpty()) extra / colItems.size else 0
+                                    var y = layoutHeight - unit / 2
+                                    for (p in colItems) {
+                                        y -= p.height
+                                        val x = colX + crossAlignOffset(p.width, colWidth, alignItems)
+                                        p.placeRelative(x, y)
+                                        y -= rowGapPx + unit
+                                    }
+                                }
+                                "space-evenly" -> {
+                                    val unit = extra / (colItems.size + 1)
+                                    var y = layoutHeight - unit
+                                    for (p in colItems) {
+                                        y -= p.height
+                                        val x = colX + crossAlignOffset(p.width, colWidth, alignItems)
+                                        p.placeRelative(x, y)
+                                        y -= rowGapPx + unit
+                                    }
+                                }
+                                "flex-start" -> {
+                                    // Original flex-end (swapped): cluster at top.
+                                    // item[n-1] at y=0, item[0] at y=contentH-height[0].
+                                    var y = contentH
+                                    for (p in colItems) {
+                                        y -= p.height
+                                        val x = colX + crossAlignOffset(p.width, colWidth, alignItems)
+                                        p.placeRelative(x, y)
+                                        y -= rowGapPx
+                                    }
+                                }
+                                "center" -> {
+                                    var y = (layoutHeight + contentH) / 2
+                                    for (p in colItems) {
+                                        y -= p.height
+                                        val x = colX + crossAlignOffset(p.width, colWidth, alignItems)
+                                        p.placeRelative(x, y)
+                                        y -= rowGapPx
+                                    }
+                                }
+                                else -> {
+                                    // flex-end (from original flex-start): cluster at bottom.
+                                    var y = layoutHeight
+                                    for (p in colItems) {
+                                        y -= p.height
+                                        val x = colX + crossAlignOffset(p.width, colWidth, alignItems)
+                                        p.placeRelative(x, y)
+                                        y -= rowGapPx
+                                    }
+                                }
+                            }
+                        } else {
+                            // Normal column (top-to-bottom) — just with wrap support.
+                            var y: Int
+                            val spacerBetween: Int
+                            when (effectiveJustify) {
+                                "flex-end" -> { y = extra; spacerBetween = 0 }
+                                "center" -> { y = extra / 2; spacerBetween = 0 }
+                                "space-between" -> {
+                                    y = 0
+                                    spacerBetween = if (colItems.size > 1) extra / (colItems.size - 1) else 0
+                                }
+                                "space-around" -> {
+                                    val unit = if (colItems.isNotEmpty()) extra / colItems.size else 0
+                                    y = unit / 2; spacerBetween = unit
+                                }
+                                "space-evenly" -> {
+                                    val unit = extra / (colItems.size + 1)
+                                    y = unit; spacerBetween = unit
+                                }
+                                else -> { y = 0; spacerBetween = 0 }
+                            }
+                            for ((idx, p) in colItems.withIndex()) {
+                                val x = colX + crossAlignOffset(p.width, colWidth, alignItems)
+                                p.placeRelative(x, y)
+                                y += p.height + rowGapPx + spacerBetween
+                            }
+                        }
+                    }
+                }
             }
         }
     }
 }
+
+/** Returns the horizontal offset for a child within a column based on alignItems. */
+private fun crossAlignOffset(childWidth: Int, colWidth: Int, alignItems: String): Int =
+    when (alignItems) {
+        "flex-end" -> colWidth - childWidth
+        "center" -> (colWidth - childWidth) / 2
+        else -> 0  // flex-start, stretch (stretch is handled at measure time)
+    }
 
 @Composable
 private fun rememberUrlBitmap(url: String): ImageBitmap? {

@@ -1129,6 +1129,193 @@ extension FTLayoutViewProtocol {
     }
 }
 
+// MARK: - FlexWrapLayout
+// Implements CSS flex-wrap ("wrap" / "wrap-reverse") for both row and column
+// flex-directions using the SwiftUI Layout protocol (requires iOS 16+ / macOS 13+).
+private struct FlexWrapLayout: SwiftUI.Layout {
+
+    /// true when flex-direction is row or row-reverse
+    var isRow: Bool
+    /// true when flex-wrap is "wrap-reverse" (new lines/columns from the opposite cross-axis end)
+    var wrapReverse: Bool
+    /// true when flex-direction ends with "-reverse" (items fill each line/column in reverse)
+    var reversed: Bool
+    /// Gap along the main axis (columnGap for row, rowGap for column)
+    var mainGap: CGFloat
+    /// Gap along the cross axis (rowGap for row, columnGap for column)
+    var crossGap: CGFloat
+    /// justify-content (already swapped for *-reverse flex-direction)
+    var justifyContent: String
+    /// align-items (cross-axis alignment within each line/column)
+    var alignItems: String
+
+    // Each "line" groups a contiguous set of children that fit in one row or column.
+    private struct Line {
+        var indices: [Int]  // child indices (in subviews)
+        var mainSizes: [CGFloat]  // child sizes along the main axis
+        var crossSizes: [CGFloat]  // child sizes along the cross axis
+        /// Total main-axis content size (items + gaps between them)
+        var mainContent: CGFloat
+        /// Cross-axis size of the line (max cross-axis child dimension)
+        var crossSize: CGFloat
+    }
+
+    /// Always fills lines in original CSS order (0..<n).
+    /// The `reversed` flag only affects PLACEMENT within each line; it does not
+    /// change which items end up in which line.
+    private func measureLines(subviews: Subviews, mainLimit: CGFloat) -> [Line] {
+        var lines: [Line] = []
+        var indices: [Int] = []
+        var mainSizes: [CGFloat] = []
+        var crossSizes: [CGFloat] = []
+        var mainContent: CGFloat = 0
+        var crossSize: CGFloat = 0
+
+        for i in 0..<subviews.count {
+            let sz = subviews[i].sizeThatFits(.unspecified)
+            let main = isRow ? sz.width : sz.height
+            let cross = isRow ? sz.height : sz.width
+            let gap = indices.isEmpty ? 0 : mainGap
+
+            if !indices.isEmpty && mainContent + gap + main > mainLimit && mainLimit < .infinity {
+                lines.append(
+                    Line(
+                        indices: indices, mainSizes: mainSizes, crossSizes: crossSizes,
+                        mainContent: mainContent, crossSize: crossSize))
+                indices = [i]; mainSizes = [main]; crossSizes = [cross]
+                mainContent = main; crossSize = cross
+            } else {
+                indices.append(i); mainSizes.append(main); crossSizes.append(cross)
+                mainContent += gap + main
+                crossSize = max(crossSize, cross)
+            }
+        }
+        if !indices.isEmpty {
+            lines.append(
+                Line(
+                    indices: indices, mainSizes: mainSizes, crossSizes: crossSizes,
+                    mainContent: mainContent, crossSize: crossSize))
+        }
+        return lines
+    }
+
+    func sizeThatFits(proposal: ProposedViewSize, subviews: Subviews, cache: inout ()) -> CGSize {
+        let mainLimit = isRow ? (proposal.width ?? .infinity) : (proposal.height ?? .infinity)
+        let lines = measureLines(subviews: subviews, mainLimit: mainLimit)
+        let totalCross =
+            lines.reduce(CGFloat(0)) { $0 + $1.crossSize }
+            + CGFloat(max(0, lines.count - 1)) * crossGap
+        let maxMain = lines.reduce(CGFloat(0)) { max($0, $1.mainContent) }
+        return isRow
+            ? CGSize(width: max(maxMain, proposal.width ?? maxMain), height: totalCross)
+            : CGSize(width: totalCross, height: max(maxMain, proposal.height ?? maxMain))
+    }
+
+    func placeSubviews(
+        in bounds: CGRect, proposal: ProposedViewSize, subviews: Subviews, cache: inout ()
+    ) {
+        let mainLimit = isRow ? bounds.width : bounds.height
+        let lines = measureLines(subviews: subviews, mainLimit: mainLimit)
+
+        // Compute cross-axis position for each line.
+        let totalCross =
+            lines.reduce(CGFloat(0)) { $0 + $1.crossSize }
+            + CGFloat(max(0, lines.count - 1)) * crossGap
+        var crossPositions: [CGFloat] = []
+        if wrapReverse {
+            var pos = max(0, (isRow ? bounds.height : bounds.width) - totalCross)
+            for line in lines { crossPositions.append(pos); pos += line.crossSize + crossGap }
+        } else {
+            var pos: CGFloat = 0
+            for line in lines { crossPositions.append(pos); pos += line.crossSize + crossGap }
+        }
+
+        let containerMain = isRow ? bounds.width : bounds.height
+
+        for (li, line) in lines.enumerated() {
+            let crossOrigin = (isRow ? bounds.minY : bounds.minX) + crossPositions[li]
+            let lineCross = line.crossSize
+
+            // For reversed directions (e.g. column-reverse): the first CSS item should
+            // occupy the "start" end of the reversed axis.  Achieve this by reversing
+            // the order in which we assign main-axis offsets to the items: the CSS-last
+            // item gets offset[0] (the start offset) and the CSS-first item gets the
+            // last offset (the "start" of the reversed direction).
+            let effIdx = reversed ? Array(line.indices.reversed()) : line.indices
+            let effMain = reversed ? Array(line.mainSizes.reversed()) : line.mainSizes
+            let effCross = reversed ? Array(line.crossSizes.reversed()) : line.crossSizes
+
+            let mainOffsets = computeMainOffsets(
+                itemMainSizes: effMain, containerMain: containerMain,
+                justifyContent: justifyContent, gap: mainGap)
+
+            for (ii, subviewIdx) in effIdx.enumerated() {
+                let mainOffset = mainOffsets[ii]
+                let itemMain = effMain[ii]
+                let itemCross = effCross[ii]
+
+                let crossOffset: CGFloat
+                switch alignItems {
+                case "flex-end": crossOffset = crossOrigin + lineCross - itemCross
+                case "center": crossOffset = crossOrigin + (lineCross - itemCross) / 2
+                default: crossOffset = crossOrigin  // flex-start / stretch
+                }
+
+                let isStretch = alignItems == "stretch"
+                let proposedCross = isStretch ? lineCross : itemCross
+                let finalMain = isRow ? bounds.minX + mainOffset : bounds.minY + mainOffset
+
+                subviews[subviewIdx].place(
+                    at: CGPoint(
+                        x: isRow ? finalMain : crossOffset,
+                        y: isRow ? crossOffset : finalMain),
+                    anchor: .topLeading,
+                    proposal: ProposedViewSize(
+                        width: isRow ? itemMain : proposedCross,
+                        height: isRow ? proposedCross : itemMain))
+            }
+        }
+    }
+
+    /// Returns main-axis offsets for each item in the line, respecting justifyContent.
+    private func computeMainOffsets(
+        itemMainSizes: [CGFloat], containerMain: CGFloat,
+        justifyContent: String, gap: CGFloat
+    ) -> [CGFloat] {
+        let n = itemMainSizes.count
+        guard n > 0 else { return [] }
+        let totalItems = itemMainSizes.reduce(0, +)
+        let totalGaps = gap * CGFloat(n - 1)
+        let extra = max(0, containerMain - totalItems - totalGaps)
+
+        var offsets: [CGFloat] = []
+        switch justifyContent {
+        case "flex-end":
+            var pos = extra
+            for s in itemMainSizes { offsets.append(pos); pos += s + gap }
+        case "center":
+            var pos = extra / 2
+            for s in itemMainSizes { offsets.append(pos); pos += s + gap }
+        case "space-between":
+            let spacer = n > 1 ? extra / CGFloat(n - 1) : 0
+            var pos: CGFloat = 0
+            for s in itemMainSizes { offsets.append(pos); pos += s + gap + spacer }
+        case "space-around":
+            let unit = extra / CGFloat(n)
+            var pos = unit / 2
+            for s in itemMainSizes { offsets.append(pos); pos += s + gap + unit }
+        case "space-evenly":
+            let unit = extra / CGFloat(n + 1)
+            var pos = unit
+            for s in itemMainSizes { offsets.append(pos); pos += s + gap + unit }
+        default:  // flex-start
+            var pos: CGFloat = 0
+            for s in itemMainSizes { offsets.append(pos); pos += s + gap }
+        }
+        return offsets
+    }
+}
+
 struct FTView: FTLayoutViewProtocol {
 
     var defaultFillsWidth: Bool { true }
@@ -1152,9 +1339,25 @@ struct FTView: FTLayoutViewProtocol {
     func content(_ info: FTLayoutInfo) -> some View {
         let isRow = flexDirection.hasPrefix("row")
         let isReverse = flexDirection.hasSuffix("-reverse")
-        // For rows (HStack), spacing between items is columnGap; for columns (VStack), rowGap
-        let spacing = (isRow ? columnGap : rowGap) ?? 0
+        // Gap along the main axis (columnGap for row, rowGap for column)
+        let mainGap = (isRow ? columnGap : rowGap) ?? 0
+        let crossGap = (isRow ? rowGap : columnGap) ?? 0
 
+        let wrap = flexWrap ?? "nowrap"
+        let isWrap = wrap == "wrap" || wrap == "wrap-reverse"
+
+        // In a reversed flex-direction the "start" and "end" sides swap, so
+        // flex-start ↔ flex-end must be mirrored before being used for placement.
+        let effectiveJustify: String = {
+            guard isReverse else { return justifyContent }
+            switch justifyContent {
+            case "flex-start": return "flex-end"
+            case "flex-end": return "flex-start"
+            default: return justifyContent
+            }
+        }()
+
+        // For non-wrap: reverse item order for visual stacking in HStack/VStack.
         let items = isReverse ? Array(children.reversed()) : children
 
         let vAlign: VerticalAlignment = {
@@ -1178,23 +1381,23 @@ struct FTView: FTLayoutViewProtocol {
         // Distributing variants (space-*) set effectiveSpacing to 0 and use Spacer() for
         // all gaps so that the available space is divided equally among the spacer slots.
         let useDistribute =
-            justifyContent == "space-between"
-            || justifyContent == "space-around"
-            || justifyContent == "space-evenly"
-        let effectiveSpacing: CGFloat = useDistribute ? 0 : spacing
+            effectiveJustify == "space-between"
+            || effectiveJustify == "space-around"
+            || effectiveJustify == "space-evenly"
+        let effectiveSpacing: CGFloat = useDistribute ? 0 : mainGap
         let viewArray: [AnyView] = {
-            switch justifyContent {
+            switch effectiveJustify {
             case "flex-end":
                 return [AnyView(Spacer(minLength: 0))] + items
             case "center":
                 return [AnyView(Spacer(minLength: 0))] + items + [AnyView(Spacer(minLength: 0))]
             case "space-between":
-                // Spacer(minLength: spacing) between items so the gap is respected as minimum.
+                // Spacer(minLength: mainGap) between items so the gap is respected as minimum.
                 var result: [AnyView] = []
                 for (i, item) in items.enumerated() {
                     result.append(item)
                     if i < items.count - 1 {
-                        result.append(AnyView(Spacer(minLength: spacing)))
+                        result.append(AnyView(Spacer(minLength: mainGap)))
                     }
                 }
                 return result
@@ -1224,7 +1427,21 @@ struct FTView: FTLayoutViewProtocol {
         }()
 
         return Group {
-            if isRow {
+            if isWrap {
+                // Pass children in original CSS order; FlexWrapLayout handles reversal internally.
+                FlexWrapLayout(
+                    isRow: isRow,
+                    wrapReverse: wrap == "wrap-reverse",
+                    reversed: isReverse,
+                    mainGap: mainGap,
+                    crossGap: crossGap,
+                    justifyContent: effectiveJustify,
+                    alignItems: alignItems
+                ) {
+                    ForEach(children.indexed(), id: \.index) { $0.element }
+                }
+                .frame(maxWidth: .infinity, alignment: .topLeading)
+            } else if isRow {
                 HStack(alignment: vAlign, spacing: effectiveSpacing) {
                     ForEach(viewArray.indexed(), id: \.index) { $0.element }
                 }
