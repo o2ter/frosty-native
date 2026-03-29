@@ -281,6 +281,10 @@ export const App = () => {
       {/* Section 14: Image */}
       <Section title="14. Image">
         <Image
+          source={require('./assets/sample.png')}
+          style={{ width: 120, height: 90, backgroundColor: '#e0e0e0' }}
+        />
+        <Image
           source="https://upload.wikimedia.org/wikipedia/commons/1/14/Animated_PNG_example_bouncing_beach_ball.png"
           style={{ width: 120, height: 90, backgroundColor: '#e0e0e0' }}
         />
