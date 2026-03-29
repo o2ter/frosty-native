@@ -291,6 +291,9 @@ protocol FTLayoutViewProtocol: FTViewProtocol {
     /// When true and no explicit width is set, the view expands to fill available width,
     /// matching the block-level default of a web <div>.
     var defaultFillsWidth: Bool { get }
+
+    /// Controls overflow clipping. Defaults to "visible"; ScrollView overrides to "hidden".
+    var overflow: String { get }
 }
 
 struct Layout: Equatable {
@@ -815,7 +818,7 @@ extension FTLayoutViewProtocol {
     var columnGap: CGFloat? { numericValue("columnGap") }
     var rowGap: CGFloat? { numericValue("rowGap") }
 
-    var overflow: String { stringValue("overflow") ?? "visible" }
+    var overflow: String { stringValue("overflow") ?? "visible" }  // protocol requirement default
 
     var zIndex: Int? {
         guard let v = styleForKey("zIndex"), v.isNumber else { return nil }
@@ -1286,6 +1289,9 @@ struct FTScrollView: FTLayoutViewProtocol {
 
     var defaultFillsWidth: Bool { true }
 
+    // Always clip to bounds — override the protocol default of "visible"
+    var overflow: String { stringValue("overflow") ?? "hidden" }
+
     @Binding
     var props: [String: JSValue]
 
@@ -1323,6 +1329,5 @@ struct FTScrollView: FTLayoutViewProtocol {
                 .frame(maxWidth: .infinity, alignment: .topLeading)
             }
         }
-        .clipped()
     }
 }
