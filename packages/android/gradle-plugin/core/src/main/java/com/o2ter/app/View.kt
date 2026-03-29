@@ -519,9 +519,9 @@ fun FTView(
         val horizontalArrangement: Arrangement.Horizontal = when (justifyContent) {
             "flex-end" -> if (columnGap > 0f) Arrangement.spacedBy(columnGap.dp, Alignment.End) else Arrangement.End
             "center" -> if (columnGap > 0f) Arrangement.spacedBy(columnGap.dp, Alignment.CenterHorizontally) else Arrangement.Center
-            "space-between" -> if (columnGap > 0f) Arrangement.spacedBy(columnGap.dp, Alignment.Start) else Arrangement.SpaceBetween
-            "space-around" -> if (columnGap > 0f) Arrangement.spacedBy(columnGap.dp, Alignment.Start) else Arrangement.SpaceAround
-            "space-evenly" -> if (columnGap > 0f) Arrangement.spacedBy(columnGap.dp, Alignment.Start) else Arrangement.SpaceEvenly
+            "space-between" -> Arrangement.SpaceBetween
+            "space-around" -> Arrangement.SpaceAround
+            "space-evenly" -> Arrangement.SpaceEvenly
             else -> if (columnGap > 0f) Arrangement.spacedBy(columnGap.dp) else Arrangement.Start
         }
         val verticalAlignment: Alignment.Vertical = when (alignItems) {
@@ -543,9 +543,9 @@ fun FTView(
         val verticalArrangement: Arrangement.Vertical = when (justifyContent) {
             "flex-end" -> if (rowGap > 0f) Arrangement.spacedBy(rowGap.dp, Alignment.Bottom) else Arrangement.Bottom
             "center" -> if (rowGap > 0f) Arrangement.spacedBy(rowGap.dp, Alignment.CenterVertically) else Arrangement.Center
-            "space-between" -> if (rowGap > 0f) Arrangement.spacedBy(rowGap.dp, Alignment.Top) else Arrangement.SpaceBetween
-            "space-around" -> if (rowGap > 0f) Arrangement.spacedBy(rowGap.dp, Alignment.Top) else Arrangement.SpaceAround
-            "space-evenly" -> if (rowGap > 0f) Arrangement.spacedBy(rowGap.dp, Alignment.Top) else Arrangement.SpaceEvenly
+            "space-between" -> Arrangement.SpaceBetween
+            "space-around" -> Arrangement.SpaceAround
+            "space-evenly" -> Arrangement.SpaceEvenly
             else -> if (rowGap > 0f) Arrangement.spacedBy(rowGap.dp) else Arrangement.Top
         }
         val horizontalAlignment: Alignment.Horizontal = when (alignItems) {

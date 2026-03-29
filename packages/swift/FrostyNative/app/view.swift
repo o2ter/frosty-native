@@ -1174,15 +1174,64 @@ struct FTView: FTLayoutViewProtocol {
             }
         }()
 
+        // Build view array with spacers inserted to implement justifyContent distribution.
+        // Distributing variants (space-*) set effectiveSpacing to 0 and use Spacer() for
+        // all gaps so that the available space is divided equally among the spacer slots.
+        let useDistribute =
+            justifyContent == "space-between"
+            || justifyContent == "space-around"
+            || justifyContent == "space-evenly"
+        let effectiveSpacing: CGFloat = useDistribute ? 0 : spacing
+        let viewArray: [AnyView] = {
+            switch justifyContent {
+            case "flex-end":
+                return [AnyView(Spacer(minLength: 0))] + items
+            case "center":
+                return [AnyView(Spacer(minLength: 0))] + items + [AnyView(Spacer(minLength: 0))]
+            case "space-between":
+                // Spacer(minLength: spacing) between items so the gap is respected as minimum.
+                var result: [AnyView] = []
+                for (i, item) in items.enumerated() {
+                    result.append(item)
+                    if i < items.count - 1 {
+                        result.append(AnyView(Spacer(minLength: spacing)))
+                    }
+                }
+                return result
+            case "space-around":
+                // 1 spacer at each edge, 2 spacers between each pair → edge:between = 1:2.
+                var result: [AnyView] = [AnyView(Spacer(minLength: 0))]
+                for (i, item) in items.enumerated() {
+                    result.append(item)
+                    if i < items.count - 1 {
+                        result.append(AnyView(Spacer(minLength: 0)))
+                        result.append(AnyView(Spacer(minLength: 0)))
+                    }
+                }
+                result.append(AnyView(Spacer(minLength: 0)))
+                return result
+            case "space-evenly":
+                // 1 spacer before first item and after every item → all gaps equal.
+                var result: [AnyView] = [AnyView(Spacer(minLength: 0))]
+                for item in items {
+                    result.append(item)
+                    result.append(AnyView(Spacer(minLength: 0)))
+                }
+                return result
+            default:  // flex-start, stretch
+                return items
+            }
+        }()
+
         return Group {
             if isRow {
-                HStack(alignment: vAlign, spacing: spacing) {
-                    ForEach(items.indexed(), id: \.index) { $0.element }
+                HStack(alignment: vAlign, spacing: effectiveSpacing) {
+                    ForEach(viewArray.indexed(), id: \.index) { $0.element }
                 }
                 .frame(maxWidth: .infinity, alignment: .topLeading)
             } else {
-                VStack(alignment: hAlign, spacing: spacing) {
-                    ForEach(items.indexed(), id: \.index) { $0.element }
+                VStack(alignment: hAlign, spacing: effectiveSpacing) {
+                    ForEach(viewArray.indexed(), id: \.index) { $0.element }
                 }
                 .frame(maxWidth: .infinity, alignment: .topLeading)
             }
