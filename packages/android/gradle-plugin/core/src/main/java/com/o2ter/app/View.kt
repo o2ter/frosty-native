@@ -137,7 +137,8 @@ private fun parseAngleDeg(str: String): Float? {
 }
 
 private fun Modifier.applyViewProps(
-    props: Map<String, Any?>
+    props: Map<String, Any?>,
+    fillWidth: Boolean = false
 ): Modifier {
     val rawStyle = props["style"] as? Map<*, *> ?: return this
     val style: Map<String, Any?> = rawStyle.entries.associate { (k, v) -> k.toString() to v }
@@ -228,7 +229,7 @@ private fun Modifier.applyViewProps(
     when (width) {
         is DimensionValue.Point -> m = m.width(width.value.dp)
         is DimensionValue.Percent -> m = m.fillMaxWidth(width.fraction)
-        else -> {}
+        else -> if (fillWidth) m = m.fillMaxWidth()
     }
     when (height) {
         is DimensionValue.Point -> m = m.height(height.value.dp)
@@ -509,7 +510,7 @@ fun FTView(
             else -> Alignment.Top
         }
         Row(
-            modifier = Modifier.applyViewProps(props),
+            modifier = Modifier.applyViewProps(props, fillWidth = true),
             horizontalArrangement = horizontalArrangement,
             verticalAlignment = verticalAlignment
         ) {
@@ -530,7 +531,7 @@ fun FTView(
             else -> Alignment.Start
         }
         Column(
-            modifier = Modifier.applyViewProps(props),
+            modifier = Modifier.applyViewProps(props, fillWidth = true),
             verticalArrangement = verticalArrangement,
             horizontalAlignment = horizontalAlignment
         ) {
@@ -632,7 +633,7 @@ fun FTScrollView(
 
     // The Box carries the outer size/style constraints and clips overflow.
     // The inner Row/Column carries the scroll so it can measure unlimited content.
-    Box(modifier = Modifier.applyViewProps(props).clipToBounds()) {
+    Box(modifier = Modifier.applyViewProps(props, fillWidth = true).clipToBounds()) {
         if (isHorizontalOnly) {
             Row(
                 modifier = Modifier.horizontalScroll(rememberScrollState()),
@@ -642,7 +643,7 @@ fun FTScrollView(
             }
         } else {
             Column(
-                modifier = Modifier.verticalScroll(rememberScrollState()),
+                modifier = Modifier.fillMaxWidth().verticalScroll(rememberScrollState()),
                 verticalArrangement = if (rowGap > 0f) Arrangement.spacedBy(rowGap.dp) else Arrangement.Top
             ) {
                 content()

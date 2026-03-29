@@ -873,6 +873,13 @@ extension FTLayoutViewProtocol {
 
 extension FTLayoutViewProtocol {
 
+    /// When true and no explicit width is set, the view expands to fill available width,
+    /// matching the block-level default of a web <div>.
+    var defaultFillsWidth: Bool { false }
+}
+
+extension FTLayoutViewProtocol {
+
     private func _body(_ parentSize: CGSize) -> some View {
         // Handle display:none - collapse view completely
         if display == "none" {
@@ -906,7 +913,15 @@ extension FTLayoutViewProtocol {
         } else if let width = width?.resolve(relativeBase: parentSize.width) {
             view = AnyView(view.frame(width: width, alignment: .topLeading))
         } else if let height = height?.resolve(relativeBase: parentSize.height) {
-            view = AnyView(view.frame(height: height, alignment: .topLeading))
+            if defaultFillsWidth {
+                view = AnyView(
+                    view.frame(height: height, alignment: .topLeading)
+                        .frame(maxWidth: .infinity))
+            } else {
+                view = AnyView(view.frame(height: height, alignment: .topLeading))
+            }
+        } else if defaultFillsWidth {
+            view = AnyView(view.frame(maxWidth: .infinity, alignment: .topLeading))
         }
 
         // Apply min/max constraints
@@ -1116,6 +1131,8 @@ extension FTLayoutViewProtocol {
 
 struct FTView: FTLayoutViewProtocol {
 
+    var defaultFillsWidth: Bool { true }
+
     @Binding
     var props: [String: JSValue]
 
@@ -1261,6 +1278,8 @@ struct FTTextInput: FTLayoutViewProtocol {
 }
 
 struct FTScrollView: FTLayoutViewProtocol {
+
+    var defaultFillsWidth: Bool { true }
 
     @Binding
     var props: [String: JSValue]
