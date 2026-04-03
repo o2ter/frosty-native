@@ -36,20 +36,20 @@ export type PanGestureEvent<Target> = PressEvent<Target> & {
 
 export type PanGestureProps<Target> = {
   minimumPanDistance?: number;
-  onPanStart?: (this: Target, event: PanGestureEvent<Target>) => void;
-  onPanMove?: (this: Target, event: PanGestureEvent<Target>) => void;
-  onPanEnd?: (this: Target, event: PanGestureEvent<Target>) => void;
+  onPanStart?: (this: Target | void, event: PanGestureEvent<Target>) => void;
+  onPanMove?: (this: Target | void, event: PanGestureEvent<Target>) => void;
+  onPanEnd?: (this: Target | void, event: PanGestureEvent<Target>) => void;
 
   // Pan responder events
-  onStartShouldSetPanResponder?: (this: Target, event: PressEvent<Target>) => boolean;
-  onStartShouldSetPanResponderCapture?: (this: Target, event: PressEvent<Target>) => boolean;
-  onMoveShouldSetPanResponder?: (this: Target, event: PressEvent<Target>) => boolean;
-  onMoveShouldSetPanResponderCapture?: (this: Target, event: PressEvent<Target>) => boolean;
-  onPanResponderGrant?: (this: Target, event: PressEvent<Target>) => void;
-  onPanResponderReject?: (this: Target, event: PressEvent<Target>) => void;
-  onPanResponderRelease?: (this: Target, event: PanGestureEvent<Target>) => void;
-  onPanResponderTerminate?: (this: Target, event: PanGestureEvent<Target>) => void;
-  onPanResponderTerminationRequest?: (this: Target, event: PressEvent<Target>) => boolean;
+  onStartShouldSetPanResponder?: (this: Target | void, event: PressEvent<Target>) => boolean;
+  onStartShouldSetPanResponderCapture?: (this: Target | void, event: PressEvent<Target>) => boolean;
+  onMoveShouldSetPanResponder?: (this: Target | void, event: PressEvent<Target>) => boolean;
+  onMoveShouldSetPanResponderCapture?: (this: Target | void, event: PressEvent<Target>) => boolean;
+  onPanResponderGrant?: (this: Target | void, event: PressEvent<Target>) => void;
+  onPanResponderReject?: (this: Target | void, event: PressEvent<Target>) => void;
+  onPanResponderRelease?: (this: Target | void, event: PanGestureEvent<Target>) => void;
+  onPanResponderTerminate?: (this: Target | void, event: PanGestureEvent<Target>) => void;
+  onPanResponderTerminationRequest?: (this: Target | void, event: PressEvent<Target>) => boolean;
 };
 
 // Hook for handling pan gestures only
@@ -112,9 +112,9 @@ export const usePanResponder = <Target extends any = any>({
 
   // Helper function to handle pan gesture end
   const handlePanEnd = (
-    context: Target,
+    context: Target | void,
     e: PressEvent<Target>,
-    onResponderCallback?: (this: Target, event: PanGestureEvent<Target>) => void
+    onResponderCallback?: (this: Target | void, event: PanGestureEvent<Target>) => void
   ) => {
     if (!state.isPanning || !_.isFunction(onPanEnd)) return;
 
@@ -140,15 +140,15 @@ export const usePanResponder = <Target extends any = any>({
   return _useCallbacks(hasPanHandlers ? {
     // ===== RESPONDER LIFECYCLE METHODS =====
 
-    onStartShouldSetResponder: function (this: Target, e: PressEvent<Target>): boolean {
+    onStartShouldSetResponder: function (this: Target | void, e: PressEvent<Target>): boolean {
       return _.isFunction(onStartShouldSetPanResponder) ? onStartShouldSetPanResponder.call(this, e) : true;
     },
 
-    onStartShouldSetResponderCapture: function (this: Target, e: PressEvent<Target>): boolean {
+    onStartShouldSetResponderCapture: function (this: Target | void, e: PressEvent<Target>): boolean {
       return _.isFunction(onStartShouldSetPanResponderCapture) ? onStartShouldSetPanResponderCapture.call(this, e) : false;
     },
 
-    onMoveShouldSetResponder: function (this: Target, e: PressEvent<Target>): boolean {
+    onMoveShouldSetResponder: function (this: Target | void, e: PressEvent<Target>): boolean {
       if (_.isFunction(onMoveShouldSetPanResponder)) {
         return onMoveShouldSetPanResponder.call(this, e);
       }
@@ -162,7 +162,7 @@ export const usePanResponder = <Target extends any = any>({
       return distance >= minimumPanDistance;
     },
 
-    onMoveShouldSetResponderCapture: function (this: Target, e: PressEvent<Target>): boolean {
+    onMoveShouldSetResponderCapture: function (this: Target | void, e: PressEvent<Target>): boolean {
       if (_.isFunction(onMoveShouldSetPanResponderCapture)) {
         return onMoveShouldSetPanResponderCapture.call(this, e);
       }
@@ -173,7 +173,7 @@ export const usePanResponder = <Target extends any = any>({
 
     // ===== RESPONDER GRANT/REJECT =====
 
-    onResponderGrant: function (this: Target, e: PressEvent<Target>) {
+    onResponderGrant: function (this: Target | void, e: PressEvent<Target>) {
       if (_.isFunction(onPanResponderGrant)) {
         onPanResponderGrant.call(this, e);
       }
@@ -192,7 +192,7 @@ export const usePanResponder = <Target extends any = any>({
       });
     },
 
-    onResponderReject: function (this: Target, e: PressEvent<Target>) {
+    onResponderReject: function (this: Target | void, e: PressEvent<Target>) {
       if (_.isFunction(onPanResponderReject)) {
         onPanResponderReject.call(this, e);
       }
@@ -200,7 +200,7 @@ export const usePanResponder = <Target extends any = any>({
 
     // ===== GESTURE MOVEMENT =====
 
-    onResponderMove: function (this: Target, e: PressEvent<Target>) {
+    onResponderMove: function (this: Target | void, e: PressEvent<Target>) {
       // Only handle pan gesture logic if we have the responder
       if (!state.hasResponder) return;
 
@@ -226,7 +226,7 @@ export const usePanResponder = <Target extends any = any>({
 
     // ===== GESTURE END =====
 
-    onResponderRelease: function (this: Target, e: PressEvent<Target>) {
+    onResponderRelease: function (this: Target | void, e: PressEvent<Target>) {
       handlePanEnd(this, e, onPanResponderRelease);
 
       // Reset all state
@@ -234,7 +234,7 @@ export const usePanResponder = <Target extends any = any>({
       state.hasResponder = false;
     },
 
-    onResponderTerminate: function (this: Target, e: PressEvent<Target>) {
+    onResponderTerminate: function (this: Target | void, e: PressEvent<Target>) {
       handlePanEnd(this, e, onPanResponderTerminate);
 
       // Reset all state
@@ -242,7 +242,7 @@ export const usePanResponder = <Target extends any = any>({
       state.hasResponder = false;
     },
 
-    onResponderTerminationRequest: function (this: Target, e: PressEvent<Target>): boolean {
+    onResponderTerminationRequest: function (this: Target | void, e: PressEvent<Target>): boolean {
       return _.isFunction(onPanResponderTerminationRequest) ? onPanResponderTerminationRequest.call(this, e) : !state.isPanning;
     },
   } : {});

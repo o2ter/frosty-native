@@ -46,18 +46,18 @@ export type ScrollBaseProps<Target> = {
   bouncesZoom?: number;
   decelerationRate?: 'fast' | 'normal';
   directionalLockEnabled?: boolean;
-  onContentSizeChange?: (this: Target, event: Event<Target>) => void;
-  onMomentumScrollBegin?: (this: Target, event: Event<Target>) => void;
-  onMomentumScrollEnd?: (this: Target, event: Event<Target>) => void;
-  onScroll?: (this: Target, event: Event<Target> & {
+  onContentSizeChange?: (this: Target | void, event: Event<Target>) => void;
+  onMomentumScrollBegin?: (this: Target | void, event: Event<Target>) => void;
+  onMomentumScrollEnd?: (this: Target | void, event: Event<Target>) => void;
+  onScroll?: (this: Target | void, event: Event<Target> & {
     contentOffset: { x: number; y: number; };
     contentSize: { height: number; width: number; };
     layoutMeasurement: { height: number; width: number; };
     zoomScale: number;
   }) => void;
-  onScrollBeginDrag?: (this: Target, event: Event<Target>) => void;
-  onScrollEndDrag?: (this: Target, event: Event<Target>) => void;
-  onScrollToTop?: (this: Target, event: Event<Target>) => void;
+  onScrollBeginDrag?: (this: Target | void, event: Event<Target>) => void;
+  onScrollEndDrag?: (this: Target | void, event: Event<Target>) => void;
+  onScrollToTop?: (this: Target | void, event: Event<Target>) => void;
 };
 
 export type ScrollViewProps = PropsWithChildren<ViewEventProps<ScrollViewRef> & ScrollBaseProps<ScrollViewRef> & {

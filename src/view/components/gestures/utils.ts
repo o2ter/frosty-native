@@ -34,11 +34,11 @@ export const mergeResponders = <Target>(...responders: ViewEventProps<Target>[])
   const combineBooleanHandlers = (handlerName: keyof ViewEventProps<Target>) => {
     const handlers = responders
       .map(r => r[handlerName])
-      .filter((h): h is (this: Target, event: any) => boolean => _.isFunction(h));
+      .filter((h): h is (this: Target | void, event: any) => boolean => _.isFunction(h));
 
     if (handlers.length === 0) return undefined;
 
-    return function (this: Target, event: any): boolean {
+    return function (this: Target | void, event: any): boolean {
       return handlers.some(handler => handler.call(this, event));
     };
   };
@@ -47,11 +47,11 @@ export const mergeResponders = <Target>(...responders: ViewEventProps<Target>[])
   const combineVoidHandlers = (handlerName: keyof ViewEventProps<Target>) => {
     const handlers = responders
       .map(r => r[handlerName])
-      .filter((h): h is (this: Target, event: any) => void => _.isFunction(h));
+      .filter((h): h is (this: Target | void, event: any) => void => _.isFunction(h));
 
     if (handlers.length === 0) return undefined;
 
-    return function (this: Target, event: any): void {
+    return function (this: Target | void, event: any): void {
       handlers.forEach(handler => handler.call(this, event));
     };
   };
@@ -65,10 +65,10 @@ export const mergeResponders = <Target>(...responders: ViewEventProps<Target>[])
   // For termination request, be more conservative - only allow if ALL handlers agree
   const terminationHandlers = responders
     .map(r => r.onResponderTerminationRequest)
-    .filter((h): h is (this: Target, event: any) => boolean => _.isFunction(h));
+    .filter((h): h is (this: Target | void, event: any) => boolean => _.isFunction(h));
 
   if (terminationHandlers.length > 0) {
-    merged.onResponderTerminationRequest = function (this: Target, event: any): boolean {
+    merged.onResponderTerminationRequest = function (this: Target | void, event: any): boolean {
       return terminationHandlers.every(handler => handler.call(this, event));
     };
   }

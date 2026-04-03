@@ -73,19 +73,19 @@ export type PressEvent<Target> = Event<Target> & {
 
 export type ViewEventProps<Target> = {
   disabled?: boolean;
-  onLayout?: (this: Target, event: LayoutEvent<Target>) => void;
-  onHoverIn?: (this: Target, event: MouseEvent<Target>) => void;
-  onHoverOut?: (this: Target, event: MouseEvent<Target>) => void;
-  onMoveShouldSetResponder?: (this: Target, event: PressEvent<Target>) => boolean;
-  onMoveShouldSetResponderCapture?: (this: Target, event: PressEvent<Target>) => boolean;
-  onResponderGrant?: (this: Target, event: PressEvent<Target>) => void;
-  onResponderStart?: (this: Target, event: PressEvent<Target>) => void;
-  onResponderMove?: (this: Target, event: PressEvent<Target>) => void;
-  onResponderEnd?: (this: Target, event: PressEvent<Target>) => void;
-  onResponderReject?: (this: Target, event: PressEvent<Target>) => void;
-  onResponderRelease?: (this: Target, event: PressEvent<Target>) => void;
-  onResponderTerminate?: (this: Target, event: PressEvent<Target>) => void;
-  onResponderTerminationRequest?: (this: Target, event: PressEvent<Target>) => boolean;
-  onStartShouldSetResponder?: (this: Target, event: PressEvent<Target>) => boolean;
-  onStartShouldSetResponderCapture?: (this: Target, event: PressEvent<Target>) => boolean;
+  onLayout?: (this: Target | void, event: LayoutEvent<Target>) => void;
+  onHoverIn?: (this: Target | void, event: MouseEvent<Target>) => void;
+  onHoverOut?: (this: Target | void, event: MouseEvent<Target>) => void;
+  onMoveShouldSetResponder?: (this: Target | void, event: PressEvent<Target>) => boolean;
+  onMoveShouldSetResponderCapture?: (this: Target | void, event: PressEvent<Target>) => boolean;
+  onResponderGrant?: (this: Target | void, event: PressEvent<Target>) => void;
+  onResponderStart?: (this: Target | void, event: PressEvent<Target>) => void;
+  onResponderMove?: (this: Target | void, event: PressEvent<Target>) => void;
+  onResponderEnd?: (this: Target | void, event: PressEvent<Target>) => void;
+  onResponderReject?: (this: Target | void, event: PressEvent<Target>) => void;
+  onResponderRelease?: (this: Target | void, event: PressEvent<Target>) => void;
+  onResponderTerminate?: (this: Target | void, event: PressEvent<Target>) => void;
+  onResponderTerminationRequest?: (this: Target | void, event: PressEvent<Target>) => boolean;
+  onStartShouldSetResponder?: (this: Target | void, event: PressEvent<Target>) => boolean;
+  onStartShouldSetResponderCapture?: (this: Target | void, event: PressEvent<Target>) => boolean;
 }

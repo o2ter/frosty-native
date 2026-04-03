@@ -57,11 +57,11 @@ export type TextInputProps = ViewEventProps<TextInputRef> & ScrollBaseProps<Text
   secureTextEntry?: boolean;
   autofocus?: boolean;
   tabIndex?: number;
-  onChange?: (this: TextInputRef, event: TextInputChangeEvent) => void;
-  onChangeValue?: (this: TextInputRef, string: string) => void;
-  onBlur?: (this: TextInputRef, event: Event<TextInputRef>) => void;
-  onFocus?: (this: TextInputRef, event: Event<TextInputRef>) => void;
-  onEndEditing?: (this: TextInputRef, event: Event<TextInputRef>) => void;
-  onSubmitEditing?: (this: TextInputRef, event: Event<TextInputRef>) => void;
-  onSelectionChange?: (this: TextInputRef, event: Event<TextInputRef> & { selection?: { start: number; end: number; } }) => void;
+  onChange?: (this: TextInputRef | void, event: TextInputChangeEvent) => void;
+  onChangeValue?: (this: TextInputRef | void, string: string) => void;
+  onBlur?: (this: TextInputRef | void, event: Event<TextInputRef>) => void;
+  onFocus?: (this: TextInputRef | void, event: Event<TextInputRef>) => void;
+  onEndEditing?: (this: TextInputRef | void, event: Event<TextInputRef>) => void;
+  onSubmitEditing?: (this: TextInputRef | void, event: Event<TextInputRef>) => void;
+  onSelectionChange?: (this: TextInputRef | void, event: Event<TextInputRef> & { selection?: { start: number; end: number; } }) => void;
 };

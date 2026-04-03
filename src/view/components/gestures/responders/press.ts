@@ -30,10 +30,10 @@ import { uniqueId } from 'frosty/_native';
 
 export type PressGestureProps<Target> = {
   delayLongPress?: number;
-  onLongPress?: (this: Target, event: PressEvent<Target>) => void;
-  onPress?: (this: Target, event: PressEvent<Target>) => void;
-  onPressIn?: (this: Target, event: PressEvent<Target>) => void;
-  onPressOut?: (this: Target, event: PressEvent<Target>) => void;
+  onLongPress?: (this: Target | void, event: PressEvent<Target>) => void;
+  onPress?: (this: Target | void, event: PressEvent<Target>) => void;
+  onPressIn?: (this: Target | void, event: PressEvent<Target>) => void;
+  onPressOut?: (this: Target | void, event: PressEvent<Target>) => void;
 };
 
 // Hook for handling press gestures only
@@ -64,7 +64,7 @@ export const usePressResponder = <Target extends any = any>({
 
     // ===== RESPONDER GRANT/REJECT =====
 
-    onResponderGrant: function (this: Target, e: PressEvent<Target>) {
+    onResponderGrant: function (this: Target | void, e: PressEvent<Target>) {
       onPressIn?.call(this, e);
 
       // Setup long press timer
@@ -84,7 +84,7 @@ export const usePressResponder = <Target extends any = any>({
 
     // ===== GESTURE END =====
 
-    onResponderRelease: function (this: Target, e: PressEvent<Target>) {
+    onResponderRelease: function (this: Target | void, e: PressEvent<Target>) {
       if (!state.token) return;
 
       state.token = '';
@@ -96,7 +96,7 @@ export const usePressResponder = <Target extends any = any>({
       }
     },
 
-    onResponderTerminate: function (this: Target, e: PressEvent<Target>) {
+    onResponderTerminate: function (this: Target | void, e: PressEvent<Target>) {
       if (!state.token) return;
 
       state.token = '';
