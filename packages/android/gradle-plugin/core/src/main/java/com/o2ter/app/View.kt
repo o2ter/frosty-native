@@ -45,6 +45,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
+import androidx.compose.foundation.layout.safeContentPadding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
@@ -1036,7 +1037,12 @@ fun FTSafeAreaView(
     handler: (ComponentHandler) -> Unit,
     content: @Composable () -> Unit
 ) {
-    FTView(nodeId, props, handler, content)
+    // enableEdgeToEdge() causes the root to draw behind system bars, so
+    // FTSafeAreaView must explicitly inset its content by the safe area
+    // (status bar, navigation bar, display cutout) — equivalent to iOS .safeAreaPadding().
+    Box(modifier = Modifier.safeContentPadding()) {
+        FTView(nodeId, props, handler, content)
+    }
 }
 
 /** Returns the horizontal offset for a child within a column based on alignItems. */
