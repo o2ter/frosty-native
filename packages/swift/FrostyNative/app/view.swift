@@ -1734,12 +1734,19 @@ struct FTSafeAreaView: FTLayoutViewProtocol {
         self._children = children
     }
 
+    // Override body to wrap FTView with safe area padding.
+    // The root view uses .ignoresSafeArea(), so FTSafeAreaView must explicitly inset its
+    // content by the device safe area (status bar, home indicator, notch, etc.).
+    // .safeAreaPadding() on iOS 17+ reads the true device safe area from the SwiftUI
+    // environment and adds it as padding even inside an ignoresSafeArea parent.
+    var body: some View {
+        FTView(nodeId: nodeId, props: $props, children: $children) { _ in }
+            .safeAreaPadding()
+    }
+
+    // Required by FTLayoutViewProtocol but not invoked — body is fully overridden above.
     func content(_ info: FTLayoutInfo) -> some View {
-        FTView(
-            nodeId: nodeId,
-            props: $props,
-            children: $children
-        ) { handler in }
+        EmptyView()
     }
 }
 
