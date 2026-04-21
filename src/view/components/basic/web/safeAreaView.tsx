@@ -29,7 +29,15 @@ import { View } from './view';
 
 export const SafeAreaView: ComponentType<ViewProps> = ({ style, children, ...props }) => (
   <View
-    style={[style]}
+    style={[
+      {
+        paddingTop: 'env(safe-area-inset-top)' as any,
+        paddingLeft: 'env(safe-area-inset-left)' as any,
+        paddingRight: 'env(safe-area-inset-right)' as any,
+        paddingBottom: 'env(safe-area-inset-bottom)' as any,
+      },
+      style,
+    ]}
     {...props}>
     {children}
   </View>
