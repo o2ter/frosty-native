@@ -421,6 +421,82 @@ export const App = () => {
         </Section>
       ))}
 
+      {/* Section 19: Position Relative */}
+      <Section title="19. Position: relative">
+        <Text style={{ fontSize: 11, color: '#888', marginBottom: 4 }}>Normal flow — relative box is offset from its natural position</Text>
+        <View style={{ backgroundColor: '#ddd', padding: 8 }}>
+          <View style={{ width: 80, height: 32, backgroundColor: 'steelblue' }} />
+          <View style={{ width: 80, height: 32, backgroundColor: 'coral', position: 'relative', top: -8, left: 24 }} />
+          <View style={{ width: 80, height: 32, backgroundColor: 'mediumseagreen' }} />
+        </View>
+        <Text style={{ fontSize: 11, color: '#888', marginTop: 8, marginBottom: 4 }}>Relative: top:8 left:8 shifts the orange box right+down</Text>
+        <View style={{ backgroundColor: '#ddd', padding: 8, flexDirection: 'row' }}>
+          <View style={{ width: 40, height: 40, backgroundColor: 'gold' }} />
+          <View style={{ width: 40, height: 40, backgroundColor: 'tomato', position: 'relative', top: 8, left: 8 }} />
+          <View style={{ width: 40, height: 40, backgroundColor: 'mediumpurple' }} />
+        </View>
+      </Section>
+
+      {/* Section 20: Position Absolute */}
+      <Section title="20. Position: absolute">
+        <Text style={{ fontSize: 11, color: '#888', marginBottom: 4 }}>Absolute children anchored to corners of relative container</Text>
+        <View style={{ position: 'relative', height: 120, backgroundColor: '#ddd' }}>
+          <View style={{ position: 'absolute', top: 0, left: 0, width: 40, height: 40, backgroundColor: 'red', justifyContent: 'center', alignItems: 'center' }}>
+            <Text style={{ color: 'white', fontSize: 10 }}>TL</Text>
+          </View>
+          <View style={{ position: 'absolute', top: 0, right: 0, width: 40, height: 40, backgroundColor: 'green', justifyContent: 'center', alignItems: 'center' }}>
+            <Text style={{ color: 'white', fontSize: 10 }}>TR</Text>
+          </View>
+          <View style={{ position: 'absolute', bottom: 0, left: 0, width: 40, height: 40, backgroundColor: 'blue', justifyContent: 'center', alignItems: 'center' }}>
+            <Text style={{ color: 'white', fontSize: 10 }}>BL</Text>
+          </View>
+          <View style={{ position: 'absolute', bottom: 0, right: 0, width: 40, height: 40, backgroundColor: 'orange', justifyContent: 'center', alignItems: 'center' }}>
+            <Text style={{ color: 'white', fontSize: 10 }}>BR</Text>
+          </View>
+          <View style={{ position: 'absolute', top: '50%', left: '50%', width: 40, height: 40, backgroundColor: 'purple', justifyContent: 'center', alignItems: 'center' }}>
+            <Text style={{ color: 'white', fontSize: 10 }}>CTR</Text>
+          </View>
+        </View>
+        <Text style={{ fontSize: 11, color: '#888', marginTop: 8, marginBottom: 4 }}>Absolute does not affect sibling layout</Text>
+        <View style={{ position: 'relative', backgroundColor: '#ddd', padding: 8 }}>
+          <View style={{ width: 80, height: 32, backgroundColor: 'steelblue', marginBottom: 4 }} />
+          <View style={{ position: 'absolute', top: 4, left: 4, width: 60, height: 24, backgroundColor: 'rgba(255,0,0,0.5)' }} />
+          <View style={{ width: 80, height: 32, backgroundColor: 'coral' }} />
+        </View>
+      </Section>
+
+      {/* Section 21: zIndex */}
+      <Section title="21. zIndex (absolute stacking)">
+        <Text style={{ fontSize: 11, color: '#888', marginBottom: 4 }}>Higher zIndex appears on top</Text>
+        <View style={{ position: 'relative', height: 80, backgroundColor: '#ddd' }}>
+          <View style={{ position: 'absolute', top: 8, left: 8, width: 80, height: 64, backgroundColor: 'steelblue', zIndex: 1, justifyContent: 'center', alignItems: 'center' }}>
+            <Text style={{ color: 'white', fontSize: 11 }}>z:1</Text>
+          </View>
+          <View style={{ position: 'absolute', top: 24, left: 32, width: 80, height: 48, backgroundColor: 'coral', zIndex: 2, justifyContent: 'center', alignItems: 'center' }}>
+            <Text style={{ color: 'white', fontSize: 11 }}>z:2 (top)</Text>
+          </View>
+          <View style={{ position: 'absolute', top: 16, left: 64, width: 80, height: 56, backgroundColor: 'mediumseagreen', zIndex: 0, justifyContent: 'center', alignItems: 'center' }}>
+            <Text style={{ color: 'white', fontSize: 11 }}>z:0</Text>
+          </View>
+        </View>
+      </Section>
+
+      {/* Section 22: inset */}
+      <Section title="22. inset (absolute fill)">
+        <Text style={{ fontSize: 11, color: '#888', marginBottom: 4 }}>inset:0 fills the entire relative container</Text>
+        <View style={{ position: 'relative', height: 80, backgroundColor: '#ddd' }}>
+          <View style={{ position: 'absolute', inset: 0, backgroundColor: 'rgba(70,130,180,0.4)', justifyContent: 'center', alignItems: 'center' }}>
+            <Text style={{ color: 'white', fontSize: 12 }}>inset: 0</Text>
+          </View>
+        </View>
+        <Text style={{ fontSize: 11, color: '#888', marginTop: 8, marginBottom: 4 }}>inset:12 leaves 12px margin on all sides</Text>
+        <View style={{ position: 'relative', height: 80, backgroundColor: '#ddd' }}>
+          <View style={{ position: 'absolute', inset: 12, backgroundColor: 'rgba(255,100,50,0.5)', justifyContent: 'center', alignItems: 'center' }}>
+            <Text style={{ color: 'white', fontSize: 12 }}>inset: 12</Text>
+          </View>
+        </View>
+      </Section>
+
     </View>
   );
 };
