@@ -264,6 +264,31 @@ extension AttributedString {
     }
 }
 
+// MARK: - Containing-block environment
+// Absolute-positioned children need the size of their nearest positioned ancestor
+// (the "containing block" in CSS terms) to resolve percentage and right/bottom offsets.
+// Each FTView that can serve as a containing block writes its measured size into the
+// environment and names its coordinate space so that absolute children can use
+// GeometryReader to find their origin within the container.
+private struct ContainingBlockSizeKey: EnvironmentKey {
+    static let defaultValue: CGSize = .zero
+}
+
+private struct ContainingBlockNameKey: EnvironmentKey {
+    nonisolated(unsafe) static let defaultValue: AnyHashable? = nil
+}
+
+extension EnvironmentValues {
+    fileprivate var containingBlockSize: CGSize {
+        get { self[ContainingBlockSizeKey.self] }
+        set { self[ContainingBlockSizeKey.self] = newValue }
+    }
+    fileprivate var containingBlockName: AnyHashable? {
+        get { self[ContainingBlockNameKey.self] }
+        set { self[ContainingBlockNameKey.self] = newValue }
+    }
+}
+
 protocol FTViewProtocol: View {
 
     var props: [String: JSValue] { get }
@@ -895,7 +920,14 @@ extension FTLayoutViewProtocol {
 
 extension FTLayoutViewProtocol {
 
-    private func _body(_ parentSize: CGSize) -> some View {
+    // Resolve the inset shorthand: if no individual top/left/right/bottom set, inset applies to all.
+    private func resolvedInset(_ individualDim: DimensionValue?, base: CGFloat) -> CGFloat {
+        if let v = individualDim { return v.resolve(relativeBase: base) ?? 0 }
+        if let i = inset { return i.resolve(relativeBase: 0) ?? 0 }
+        return 0
+    }
+
+    fileprivate func _body(_ parentSize: CGSize, containingBlock: CGSize) -> some View {
         // Handle display:none - collapse view completely
         if display == "none" {
             return AnyView(EmptyView())
@@ -939,6 +971,25 @@ extension FTLayoutViewProtocol {
             view = AnyView(view.frame(maxWidth: .infinity, alignment: .topLeading))
         }
 
+        // For position:absolute — resolve explicit width/height from inset when not set directly.
+        // inset:0 + no width → stretch to fill container width; same for height.
+        if position == "absolute" && inset != nil {
+            let insetVal = inset!.resolve(relativeBase: 0) ?? 0
+            let cbW = containingBlock.width
+            let cbH = containingBlock.height
+            if width == nil {
+                let l = resolvedInset(left, base: cbW)
+                let r = resolvedInset(right, base: cbW)
+                view = AnyView(view.frame(width: cbW - l - r, alignment: .topLeading))
+            }
+            if height == nil {
+                let t = resolvedInset(top, base: cbH)
+                let b = resolvedInset(bottom, base: cbH)
+                _ = insetVal  // suppress unused warning
+                view = AnyView(view.frame(height: cbH - t - b, alignment: .topLeading))
+            }
+        }
+
         // Apply min/max constraints
         let minW: CGFloat? = minWidth?.resolve(relativeBase: parentSize.width)
         let maxW: CGFloat? = maxWidth?.resolve(relativeBase: parentSize.width)
@@ -959,28 +1010,14 @@ extension FTLayoutViewProtocol {
             view = AnyView(view.aspectRatio(aspectRatio, contentMode: .fit))
         }
 
-        // Apply positioning
-        if position == "absolute" {
-            let x =
-                left?.resolve(relativeBase: parentSize.width) ?? right.map {
-                    parentSize.width - ($0.resolve(relativeBase: parentSize.width) ?? 0)
-                } ?? 0
-            let y =
-                top?.resolve(relativeBase: parentSize.height) ?? bottom.map {
-                    parentSize.height - ($0.resolve(relativeBase: parentSize.height) ?? 0)
-                } ?? 0
-            view = AnyView(view.position(x: x, y: y))
-        } else if position == "relative" {
-            let x =
-                left?.resolve(relativeBase: parentSize.width) ?? right.map {
-                    -($0.resolve(relativeBase: parentSize.width) ?? 0)
-                } ?? 0
-            let y =
-                top?.resolve(relativeBase: parentSize.height) ?? bottom.map {
-                    -($0.resolve(relativeBase: parentSize.height) ?? 0)
-                } ?? 0
-            view = AnyView(view.offset(x: x, y: y))
-        }
+        // ── Visual styling ────────────────────────────────────────────────────
+        // All visual modifiers (padding, background, borders, shadows, transforms)
+        // are applied BEFORE the positioning step so that:
+        //   • position:relative — .offset() wraps the fully-styled box
+        //   • position:absolute — AbsolutePositionView receives the fully-styled box
+        // If these were applied AFTER positioning the background/border would end up
+        // on the zero-size placeholder (absolute) or at the un-shifted layout frame
+        // (relative, because .offset() doesn't move the layout frame).
 
         // Apply padding
         view = AnyView(view.padding(paddingInsets))
@@ -1137,8 +1174,52 @@ extension FTLayoutViewProtocol {
             }
         }
 
-        // Apply margin as outer padding
-        view = AnyView(view.padding(marginInsets))
+        // ── Positioning ───────────────────────────────────────────────────────
+        // Applied last among visual modifiers so it wraps the fully-styled box.
+        if position == "absolute" {
+            let cbW = containingBlock.width
+            let cbH = containingBlock.height
+
+            let resolvedLeft =
+                left.flatMap { $0.resolve(relativeBase: cbW) }
+                ?? inset.flatMap { $0.resolve(relativeBase: 0) }
+            let resolvedRight =
+                right.flatMap { $0.resolve(relativeBase: cbW) }
+                ?? inset.flatMap { $0.resolve(relativeBase: 0) }
+            let resolvedTop =
+                top.flatMap { $0.resolve(relativeBase: cbH) }
+                ?? inset.flatMap { $0.resolve(relativeBase: 0) }
+            let resolvedBottom =
+                bottom.flatMap { $0.resolve(relativeBase: cbH) }
+                ?? inset.flatMap { $0.resolve(relativeBase: 0) }
+
+            let positionedView = view
+            view = AnyView(
+                AbsolutePositionView(
+                    content: positionedView,
+                    cbSize: containingBlock,
+                    resolvedLeft: resolvedLeft,
+                    resolvedRight: resolvedRight,
+                    resolvedTop: resolvedTop,
+                    resolvedBottom: resolvedBottom
+                )
+            )
+        } else if position == "relative" {
+            let x =
+                left?.resolve(relativeBase: parentSize.width) ?? right.map {
+                    -($0.resolve(relativeBase: parentSize.width) ?? 0)
+                } ?? 0
+            let y =
+                top?.resolve(relativeBase: parentSize.height) ?? bottom.map {
+                    -($0.resolve(relativeBase: parentSize.height) ?? 0)
+                } ?? 0
+            view = AnyView(view.offset(x: x, y: y))
+        }
+
+        // Apply margin as outer padding (skip for absolute — doesn't affect flow)
+        if position != "absolute" {
+            view = AnyView(view.padding(marginInsets))
+        }
 
         // Apply opacity
         if opacity != 1 {
@@ -1167,18 +1248,87 @@ extension FTLayoutViewProtocol {
             || isPercent(marginLeft) || isPercent(marginRight)
             || isPercent(left) || isPercent(right)
             || isPercent(top) || isPercent(bottom)
-            || position == "absolute"
     }
 
     @ViewBuilder
     var body: some View {
-        if needsParentSize {
+        if position == "absolute" {
+            // Absolute children need the containing block size from environment.
+            // No GeometryReader needed here — AbsolutePositionView handles its own sizing.
+            _BodyContainingBlockReader(view: self)
+        } else if needsParentSize {
             GeometryReader { geo in
-                self._body(geo.size)
+                self._body(geo.size, containingBlock: .zero)
             }
         } else {
-            self._body(.zero)
+            self._body(.zero, containingBlock: .zero)
         }
+    }
+}
+
+// MARK: - Absolute position helpers
+
+/// Reads the containing-block size from the environment and forwards it to `_body`.
+/// Used only for `position: absolute` children so they can resolve right/bottom/% offsets
+/// against the nearest positioned ancestor's size rather than their own size.
+private struct _BodyContainingBlockReader<V: FTLayoutViewProtocol>: View {
+    let view: V
+    @Environment(\.containingBlockSize) private var containingBlock
+
+    var body: some View {
+        view._body(.zero, containingBlock: containingBlock)
+    }
+}
+
+/// Renders an absolute-positioned child.
+///
+/// The child occupies **zero size** in the flex flow (so siblings are not displaced) but
+/// paints itself at the correct position relative to the nearest positioned ancestor by:
+/// 1. Reading the named coordinate space injected by the ancestor (`containingBlockName`).
+/// 2. Using a `GeometryReader` inside an `overlay` on the zero-size anchor to measure the
+///    child's own frame within that coordinate space.
+/// 3. Applying an `.offset` to shift the child from its natural (0,0) anchor to the
+///    target top-left position within the containing block.
+private struct AbsolutePositionView: View {
+    let content: AnyView
+    let cbSize: CGSize
+    let resolvedLeft: CGFloat?
+    let resolvedRight: CGFloat?
+    let resolvedTop: CGFloat?
+    let resolvedBottom: CGFloat?
+
+    @Environment(\.containingBlockName) private var cbName
+
+    var body: some View {
+        // Zero-size anchor in the flow — does not push any sibling.
+        Color.clear
+            .frame(width: 0, height: 0)
+            .overlay(alignment: .topLeading) {
+                GeometryReader { geo in
+                    // Origin of this zero-size anchor within the containing block coordinate space.
+                    let originInCB: CGPoint =
+                        cbName.map { geo.frame(in: .named($0)).origin } ?? .zero
+
+                    // Resolve X: prefer left, fall back to right-anchor.
+                    let targetX: CGFloat = {
+                        if let l = resolvedLeft { return l }
+                        if let r = resolvedRight { return cbSize.width - r - geo.size.width }
+                        return 0
+                    }()
+                    // Resolve Y: prefer top, fall back to bottom-anchor.
+                    let targetY: CGFloat = {
+                        if let t = resolvedTop { return t }
+                        if let b = resolvedBottom { return cbSize.height - b - geo.size.height }
+                        return 0
+                    }()
+
+                    content
+                        .offset(
+                            x: targetX - originInCB.x,
+                            y: targetY - originInCB.y
+                        )
+                }
+            }
     }
 }
 
@@ -1373,11 +1523,18 @@ struct FTView: FTLayoutViewProtocol {
 
     var defaultFillsWidth: Bool { true }
 
+    var nodeId: ObjectIdentifier
+
     @Binding
     var props: [String: JSValue]
 
     @Binding
     var children: [AnyView]
+
+    /// Measured size of this container after layout.
+    /// Injected into the environment so absolute-positioned children can resolve
+    /// right / bottom / % offsets against the real containing-block size.
+    @State private var _measuredSize: CGSize = .zero
 
     init(
         nodeId: ObjectIdentifier,
@@ -1385,6 +1542,7 @@ struct FTView: FTLayoutViewProtocol {
         children: Binding<[AnyView]>,
         handler: @escaping (@escaping FTContext.ViewHandler) -> Void
     ) {
+        self.nodeId = nodeId
         self._props = props
         self._children = children
     }
@@ -1500,9 +1658,14 @@ struct FTView: FTLayoutViewProtocol {
             }
         }()
 
-        return Group {
+        // nodeId (ObjectIdentifier) is used directly as the coordinate space key —
+        // NamedCoordinateSpace supports any Hashable, no string conversion needed.
+        let spaceName: AnyHashable = nodeId
+
+        // Build the flex content view (flow children only — absolute children render
+        // themselves as zero-size in flow via AbsolutePositionView).
+        let flexContent = Group {
             if isWrap {
-                // Pass children in original CSS order; FlexWrapLayout handles reversal internally.
                 FlexWrapLayout(
                     isRow: isRow,
                     wrapReverse: wrap == "wrap-reverse",
@@ -1527,6 +1690,24 @@ struct FTView: FTLayoutViewProtocol {
                 .frame(maxWidth: .infinity, alignment: colFrameAlignment)
             }
         }
+
+        return AnyView(
+            flexContent
+                // Named coordinate space — absolute children compute their origin inside this space.
+                .coordinateSpace(name: spaceName)
+                // Measure our actual rendered size using a background GeometryReader so we do NOT
+                // disturb the layout (background doesn't contribute to parent sizing).
+                .background(
+                    GeometryReader { geo in
+                        Color.clear
+                            .onAppear { _measuredSize = geo.size }
+                            .onChange(of: geo.size) { _, newSize in _measuredSize = newSize }
+                    }
+                )
+                // Inject containing-block info into the environment for any absolute children.
+                .environment(\.containingBlockSize, _measuredSize)
+                .environment(\.containingBlockName, Optional(spaceName))
+        )
     }
 }
 
