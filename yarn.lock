@@ -1647,10 +1647,10 @@
     "@emnapi/runtime" "^1.4.3"
     "@tybys/wasm-util" "^0.10.0"
 
-"@o2ter/colors.js@^1.0.2":
-  version "1.0.2"
-  resolved "https://registry.yarnpkg.com/@o2ter/colors.js/-/colors.js-1.0.2.tgz#dfec77cdaecaf0bd016cfe02293583e852c826d7"
-  integrity sha512-MAUKfibx68rJYqVFspg2mcH6V3uIVPKTThsjrNX8zNA5owBbVg8JUoHkLtFSVSjZIrGwyZy3eC8P0hp2vizsPw==
+"@o2ter/colors.js@^1.0.3":
+  version "1.0.3"
+  resolved "https://registry.yarnpkg.com/@o2ter/colors.js/-/colors.js-1.0.3.tgz#3b28524432ae5c5a2960fffe159c1de6471cb41d"
+  integrity sha512-S9mR/+oDmIQ1MqyJ3Qtq+7/x7WlF09oKDRmMMTcNaxK5eG+Bru+guaOgOHzN9JbsYrm3QbEpTt2NXfmIFeGqRg==
   dependencies:
     lodash "^4.17.21"
 
@@ -3035,10 +3035,10 @@ foreground-child@^3.1.0:
     cross-spawn "^7.0.6"
     signal-exit "^4.0.1"
 
-frosty@^0.0.153:
-  version "0.0.153"
-  resolved "https://registry.yarnpkg.com/frosty/-/frosty-0.0.153.tgz#b575581fd31a4d563d218767ccdab88eaa9fda9d"
-  integrity sha512-RkYvFAJQTaZmk+GT16cq2lObilSgjg9e1cfIytBH1Mrq7zR3yY0vAkdEZRFrGexpkir58E3+qskUe2HfTcKuIA==
+frosty@^0.0.154:
+  version "0.0.154"
+  resolved "https://registry.yarnpkg.com/frosty/-/frosty-0.0.154.tgz#6b8ad0852484a0def5909accff478617da6b4e5a"
+  integrity sha512-352k1v8eaG+JFnMi74KL8ImCtOahMSQTxqlTPSwucb6/MMVO324WtGH5x5B/L2VxkUxlZnVjrEtGK/EucbLp/w==
   dependencies:
     "@o2ter/utils-js" "^0.0.19"
     "@types/jsdom" "^21.1.7"
