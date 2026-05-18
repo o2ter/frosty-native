@@ -3035,10 +3035,10 @@ foreground-child@^3.1.0:
     cross-spawn "^7.0.6"
     signal-exit "^4.0.1"
 
-frosty@^0.0.151:
-  version "0.0.151"
-  resolved "https://registry.yarnpkg.com/frosty/-/frosty-0.0.151.tgz#e6d66e6b002c681b4adc2a8a5d08dd1a1d16c2c5"
-  integrity sha512-+OPNRsIzIDMX17q/PYUUP7n/XeugrjlQ2u6lwZUw9EUaruqY9gCV2kPJLxzo4u1fwvsqPiTQ900FcyOF0bA76Q==
+frosty@^0.0.152:
+  version "0.0.152"
+  resolved "https://registry.yarnpkg.com/frosty/-/frosty-0.0.152.tgz#2890112d249a90aa2fe828be63709338c04e689d"
+  integrity sha512-S6kj0F+ueeXk2czR6ol04AQ8ChwJvqJDAcmCMdTYLFCNzgslbb9YtYkBEr5D16hZ/j2wYt6coabbXyGngu+PYg==
   dependencies:
     "@o2ter/utils-js" "^0.0.19"
     "@types/jsdom" "^21.1.7"
@@ -3048,7 +3048,7 @@ frosty@^0.0.151:
     lodash ">=4.18.1"
     myers.js "^0.0.22"
     nextick "^0.0.2"
-    postcss "^8.5.6"
+    postcss "^8.5.10"
     postcss-js "^5.0.0"
     postcss-nested "^7.0.2"
 
@@ -4182,10 +4182,10 @@ postcss-selector-parser@^7.0.0:
     cssesc "^3.0.0"
     util-deprecate "^1.0.2"
 
-postcss@^8.5.6:
-  version "8.5.12"
-  resolved "https://registry.yarnpkg.com/postcss/-/postcss-8.5.12.tgz#cd0c0f667f7cb0521e2313234ea6e707a9ec1ddb"
-  integrity sha512-W62t/Se6rA0Az3DfCL0AqJwXuKwBeYg6nOaIgzP+xZ7N5BFCI7DYi1qs6ygUYT6rvfi6t9k65UMLJC+PHZpDAA==
+postcss@^8.5.10:
+  version "8.5.14"
+  resolved "https://registry.yarnpkg.com/postcss/-/postcss-8.5.14.tgz#a66c2d7808fadf69ebb5b84a03f8bafd76c4919c"
+  integrity sha512-SoSL4+OSEtR99LHFZQiJLkT59C5B1amGO1NzTwj7TT1qCUgUO6hxOvzkOYxD+vMrXBM3XJIKzokoERdqQq/Zmg==
   dependencies:
     nanoid "^3.3.11"
     picocolors "^1.1.1"
