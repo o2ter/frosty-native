@@ -53,6 +53,7 @@ export default [
         format: 'cjs',
         sourcemap: true,
         exports: 'named',
+        interop: 'auto',
       },
       {
         entryFileNames: `[name]${suffix}.mjs`,
