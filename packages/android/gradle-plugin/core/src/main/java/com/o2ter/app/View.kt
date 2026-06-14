@@ -1143,6 +1143,9 @@ fun FTScrollView(
     val rawStyle = props["style"] as? Map<*, *>
     val style: Map<String, Any?> = rawStyle?.entries?.associate { (k, v) -> k.toString() to v } ?: emptyMap()
 
+    val rawContentContainerStyle = props["contentContainerStyle"] as? Map<*, *>
+    val contentContainerStyle: Map<String, Any?> = rawContentContainerStyle?.entries?.associate { (k, v) -> k.toString() to v } ?: emptyMap()
+
     val horizontal = props["horizontal"] as? Boolean ?: false
     val vertical = props["vertical"] as? Boolean ?: false
     // Default to vertical scroll when neither or both are specified
