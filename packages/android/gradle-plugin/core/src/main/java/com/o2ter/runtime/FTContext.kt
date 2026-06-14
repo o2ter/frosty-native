@@ -55,6 +55,8 @@ internal class FTContext(private val activity: FrostyNativeActivity, val context
         register("FTTextInput") { nodeId, props, handler, content -> FTTextInput(nodeId, props, handler, content) }
         register("FTScrollView") { nodeId, props, handler, content -> FTScrollView(nodeId, props, handler, content) }
         register("FTSafeAreaView") { nodeId, props, handler, content -> FTSafeAreaView(nodeId, props, handler, content) }
+        register("FTLazyHView") { nodeId, props, handler, content -> FTView(nodeId, props, handler, content) }
+        register("FTLazyVView") { nodeId, props, handler, content -> FTView(nodeId, props, handler, content) }
     }
 
     private fun polyfill() {

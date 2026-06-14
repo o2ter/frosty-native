@@ -31,11 +31,52 @@ import { ScrollViewProps } from '../types/scrollView';
 import { View } from './view';
 import { useNativeStyle } from './style';
 import { useResponderEvents } from './events';
+import { ViewProps } from '../types/view';
 
 abstract class FTScrollView extends NativeNode {
 
   _native = NativeModules['FTScrollView']();
 }
+
+abstract class FTLazyHView extends NativeNode {
+
+  _native = NativeModules['FTLazyHView']();
+}
+
+abstract class FTLazyVView extends NativeNode {
+
+  _native = NativeModules['FTLazyVView']();
+}
+
+const LazyHView: ComponentType<ViewProps> = ({ ref, style, children, ...props }) => {
+
+  const handleRef = useRef<ComponentRef<typeof View>>();
+  useRefHandle(mergeRefs(handleRef, ref), () => ({
+  }), null);
+
+  const _style = useNativeStyle(style);
+
+  return _createNativeElement(FTLazyHView, {
+    style: _style,
+    children,
+    ...useResponderEvents(props, handleRef)
+  });
+};
+
+const LazyVView: ComponentType<ViewProps> = ({ ref, style, children, ...props }) => {
+
+  const handleRef = useRef<ComponentRef<typeof View>>();
+  useRefHandle(mergeRefs(handleRef, ref), () => ({
+  }), null);
+
+  const _style = useNativeStyle(style);
+
+  return _createNativeElement(FTLazyVView, {
+    style: _style,
+    children,
+    ...useResponderEvents(props, handleRef)
+  });
+};
 
 export const ScrollView: ComponentType<ScrollViewProps> = ({
   ref,
@@ -79,16 +120,23 @@ export const ScrollView: ComponentType<ScrollViewProps> = ({
 
   const _style = useNativeStyle(style);
 
+  let ContentContainer = View;
+  if (horizontal && !vertical) {
+    ContentContainer = LazyHView;
+  } else if (vertical && !horizontal) {
+    ContentContainer = LazyVView;
+  }
+
   return _createNativeElement(FTScrollView, {
     ref: nativeRef,
     style: _style,
     horizontal,
     vertical,
     children: (
-      <View style={[
+      <ContentContainer style={[
         horizontal && !vertical ? { flexDirection: 'row' } : undefined,
         contentContainerStyle,
-      ]}>{children}</View>
+      ]}>{children}</ContentContainer>
     ),
     ...useResponderEvents(props, handleRef)
   });
