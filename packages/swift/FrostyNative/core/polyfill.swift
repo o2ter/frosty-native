@@ -69,7 +69,7 @@ extension FTContext {
         @MainActor @Sendable (
             _ nodeId: ObjectIdentifier,
             _ props: Binding<[String: JSValue]>,
-            _ children: Binding<[AnyView]>,
+            _ children: [(id: ObjectIdentifier, element: AnyView)],
             _ handler: @escaping (@escaping ViewHandler) -> Void
         ) -> any View
 

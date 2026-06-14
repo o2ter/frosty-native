@@ -293,12 +293,12 @@ protocol FTViewProtocol: View {
 
     var props: [String: JSValue] { get }
 
-    var children: [AnyView] { get }
+    var children: [(id: ObjectIdentifier, element: AnyView)] { get }
 
     init(
         nodeId: ObjectIdentifier,
         props: Binding<[String: JSValue]>,
-        children: Binding<[AnyView]>,
+        children: [(id: ObjectIdentifier, element: AnyView)],
         handler: @escaping (@escaping FTContext.ViewHandler) -> Void
     )
 }
@@ -1528,8 +1528,7 @@ struct FTView: FTLayoutViewProtocol {
     @Binding
     var props: [String: JSValue]
 
-    @Binding
-    var children: [AnyView]
+    var children: [(id: ObjectIdentifier, element: AnyView)]
 
     /// Measured size of this container after layout.
     /// Injected into the environment so absolute-positioned children can resolve
@@ -1539,12 +1538,12 @@ struct FTView: FTLayoutViewProtocol {
     init(
         nodeId: ObjectIdentifier,
         props: Binding<[String: JSValue]>,
-        children: Binding<[AnyView]>,
+        children: [(id: ObjectIdentifier, element: AnyView)],
         handler: @escaping (@escaping FTContext.ViewHandler) -> Void
     ) {
         self.nodeId = nodeId
         self._props = props
-        self._children = children
+        self.children = children
     }
 
     func content(_ info: FTLayoutInfo) -> some View {
@@ -1569,7 +1568,7 @@ struct FTView: FTLayoutViewProtocol {
         }()
 
         // For non-wrap: reverse item order for visual stacking in HStack/VStack.
-        let items = isReverse ? Array(children.reversed()) : children
+        let items = isReverse ? children.reversed().map(\.element) : children.map(\.element)
 
         let vAlign: VerticalAlignment = {
             switch alignItems {
@@ -1675,7 +1674,7 @@ struct FTView: FTLayoutViewProtocol {
                     justifyContent: effectiveJustify,
                     alignItems: alignItems
                 ) {
-                    ForEach(children.indexed(), id: \.index) { $0.element }
+                    ForEach(children, id: \.id) { $0.element }
                 }
                 .frame(maxWidth: .infinity, alignment: .topLeading)
             } else if isRow {
@@ -1720,18 +1719,17 @@ struct FTSafeAreaView: FTLayoutViewProtocol {
     @Binding
     var props: [String: JSValue]
 
-    @Binding
-    var children: [AnyView]
+    var children: [(id: ObjectIdentifier, element: AnyView)]
 
     init(
         nodeId: ObjectIdentifier,
         props: Binding<[String: JSValue]>,
-        children: Binding<[AnyView]>,
+        children: [(id: ObjectIdentifier, element: AnyView)],
         handler: @escaping (@escaping FTContext.ViewHandler) -> Void
     ) {
         self.nodeId = nodeId
         self._props = props
-        self._children = children
+        self.children = children
     }
 
     // Override body to wrap FTView with safe area padding.
@@ -1740,7 +1738,7 @@ struct FTSafeAreaView: FTLayoutViewProtocol {
     // .safeAreaPadding() on iOS 17+ reads the true device safe area from the SwiftUI
     // environment and adds it as padding even inside an ignoresSafeArea parent.
     var body: some View {
-        FTView(nodeId: nodeId, props: $props, children: $children) { _ in }
+        FTView(nodeId: nodeId, props: $props, children: children) { _ in }
             .safeAreaPadding()
     }
 
@@ -1757,17 +1755,16 @@ struct FTImageView: FTLayoutViewProtocol {
     @Binding
     var props: [String: JSValue]
 
-    @Binding
-    var children: [AnyView]
+    var children: [(id: ObjectIdentifier, element: AnyView)]
 
     init(
         nodeId: ObjectIdentifier,
         props: Binding<[String: JSValue]>,
-        children: Binding<[AnyView]>,
+        children: [(id: ObjectIdentifier, element: AnyView)],
         handler: @escaping (@escaping FTContext.ViewHandler) -> Void
     ) {
         self._props = props
-        self._children = children
+        self.children = children
     }
 
     func content(_ info: FTLayoutInfo) -> some View {
@@ -1796,17 +1793,16 @@ struct FTTextView: FTLayoutViewProtocol {
     @Binding
     var props: [String: JSValue]
 
-    @Binding
-    var children: [AnyView]
+    var children: [(id: ObjectIdentifier, element: AnyView)]
 
     init(
         nodeId: ObjectIdentifier,
         props: Binding<[String: JSValue]>,
-        children: Binding<[AnyView]>,
+        children: [(id: ObjectIdentifier, element: AnyView)],
         handler: @escaping (@escaping FTContext.ViewHandler) -> Void
     ) {
         self._props = props
-        self._children = children
+        self.children = children
     }
 
     func content(_ info: FTLayoutInfo) -> some View {
@@ -1836,17 +1832,16 @@ struct FTTextInput: FTLayoutViewProtocol {
     @Binding
     var props: [String: JSValue]
 
-    @Binding
-    var children: [AnyView]
+    var children: [(id: ObjectIdentifier, element: AnyView)]
 
     init(
         nodeId: ObjectIdentifier,
         props: Binding<[String: JSValue]>,
-        children: Binding<[AnyView]>,
+        children: [(id: ObjectIdentifier, element: AnyView)],
         handler: @escaping (@escaping FTContext.ViewHandler) -> Void
     ) {
         self._props = props
-        self._children = children
+        self.children = children
     }
 
     func content(_ info: FTLayoutInfo) -> some View {
@@ -1867,8 +1862,7 @@ struct FTScrollView: FTLayoutViewProtocol {
     @Binding
     var props: [String: JSValue]
 
-    @Binding
-    var children: [AnyView]
+    var children: [(id: ObjectIdentifier, element: AnyView)]
 
     var contentContainerStyle: JSValue? {
         props["contentContainerStyle"]
@@ -1877,11 +1871,11 @@ struct FTScrollView: FTLayoutViewProtocol {
     init(
         nodeId: ObjectIdentifier,
         props: Binding<[String: JSValue]>,
-        children: Binding<[AnyView]>,
+        children: [(id: ObjectIdentifier, element: AnyView)],
         handler: @escaping (@escaping FTContext.ViewHandler) -> Void
     ) {
         self._props = props
-        self._children = children
+        self.children = children
         handler { method, args in
             switch method {
             case "scrollTo":
@@ -1904,12 +1898,17 @@ struct FTScrollView: FTLayoutViewProtocol {
 
         return ScrollView(axes) {
             if horizontal && !vertical {
-                HStack(alignment: .top, spacing: columnGap ?? 0) {
-                    ForEach(children.indexed(), id: \.index) { $0.element }
+                LazyHStack(alignment: .top, spacing: columnGap ?? 0) {
+                    ForEach(children, id: \.id) { $0.element }
                 }
+            } else if !horizontal && vertical {
+                LazyVStack(alignment: .leading, spacing: rowGap ?? 0) {
+                    ForEach(children, id: \.id) { $0.element }
+                }
+                .frame(maxWidth: .infinity, alignment: .topLeading)
             } else {
                 VStack(alignment: .leading, spacing: rowGap ?? 0) {
-                    ForEach(children.indexed(), id: \.index) { $0.element }
+                    ForEach(children, id: \.id) { $0.element }
                 }
                 .frame(maxWidth: .infinity, alignment: .topLeading)
             }

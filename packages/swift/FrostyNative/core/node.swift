@@ -47,7 +47,7 @@ struct FTNode: View {
 extension FTNode: @preconcurrency Identifiable {
 
     var id: ObjectIdentifier {
-        ObjectIdentifier(node)
+        node.id
     }
 }
 
@@ -62,10 +62,9 @@ extension FTNode {
             self.provider(
                 self.id,
                 self.$node.props,
-                .constant(
-                    self.$node.children.map {
-                        AnyView(FTNode(runner: runner, state: $0))
-                    }),
+                self.$node.children.map {
+                    ($0.wrappedValue.id, AnyView(FTNode(runner: runner, state: $0)))
+                },
                 { self.node.handler = $0 }
             )
         )
@@ -73,23 +72,30 @@ extension FTNode {
 }
 
 extension FTNode {
-
+    
     @Observable
     class State: NSObject, FTNodeExport {
-
+        
         let provider: FTContext.ViewProvider
-
+        
         var props: [String: JSValue]
-
+        
         var children: [FTNode.State]
-
+        
         var handler: FTContext.ViewHandler?
-
+        
         init(provider: @escaping FTContext.ViewProvider) {
             self.provider = provider
             self.props = [:]
             self.children = []
         }
+    }
+}
+
+extension FTNode.State {
+    
+    var id: ObjectIdentifier {
+        ObjectIdentifier(self)
     }
 }
 
