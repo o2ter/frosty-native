@@ -27,7 +27,7 @@ import _ from 'lodash';
 import { Image, ScrollView, Text, TextInput, View } from '../../src/view';
 
 import './app.scss';
-import { useState } from 'frosty';
+import { useEffect, useState } from 'frosty';
 
 function Section({ title, children }: { title: string; children?: any }) {
   return (
@@ -40,12 +40,22 @@ function Section({ title, children }: { title: string; children?: any }) {
 
 export const App = () => {
   const [value, setValue] = useState('Hello');
+  const [counter, setCounter] = useState(0);
+
+  useEffect(() => {
+    const handle = setInterval(() => { setCounter(v => v + 1); }, 100);
+    return () => clearTimeout(handle);
+  }, []);
+
   return (
     <View style={{
       width: '100%',
       padding: 16,
       backgroundColor: '#f5f5f5',
     }}>
+
+      <Text style={{ fontSize: 16, fontWeight: 'bold', color: '#222', marginBottom: 12 }}>Frosty Native Test App</Text>
+      <Text>{counter}</Text>
 
       {/* Section 1: Background Colors */}
       <Section title="1. Background Colors">
