@@ -1870,6 +1870,10 @@ struct FTScrollView: FTLayoutViewProtocol {
     @Binding
     var children: [AnyView]
 
+    var contentContainerStyle: JSValue? {
+        props["contentContainerStyle"]
+    }
+
     init(
         nodeId: ObjectIdentifier,
         props: Binding<[String: JSValue]>,

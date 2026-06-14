@@ -28,7 +28,6 @@ import { _createNativeElement } from 'frosty/_native';
 import { NativeModules } from './modules';
 import { NativeNode } from './node';
 import { ScrollViewProps } from '../types/scrollView';
-import { View } from './view';
 import { useNativeStyle } from './style';
 import { useResponderEvents } from './events';
 
@@ -78,18 +77,18 @@ export const ScrollView: ComponentType<ScrollViewProps> = ({
   }), null);
 
   const _style = useNativeStyle(style);
+  const _contentContainerStyle = useNativeStyle([
+    horizontal && !vertical ? { flexDirection: 'row' } : undefined,
+    contentContainerStyle,
+  ]);
 
   return _createNativeElement(FTScrollView, {
     ref: nativeRef,
     style: _style,
     horizontal,
     vertical,
-    children: (
-      <View style={[
-        horizontal && !vertical ? { flexDirection: 'row' } : undefined,
-        contentContainerStyle,
-      ]}>{children}</View>
-    ),
+    contentContainerStyle: _contentContainerStyle,
+    children,
     ...useResponderEvents(props, handleRef)
   });
 };
