@@ -23,10 +23,11 @@
 //  THE SOFTWARE.
 //
 
+// @ts-expect-error -- side-effect stylesheet import resolved by bundler
+import './app.scss';
+
 import _ from 'lodash';
 import { Image, ScrollView, Text, TextInput, View } from '../../src/view';
-
-import './app.scss';
 import { useEffect, useState } from 'frosty';
 
 function Section({ title, children }: { title: string; children?: any }) {
