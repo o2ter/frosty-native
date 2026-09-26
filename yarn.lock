@@ -1494,12 +1494,12 @@
   dependencies:
     lodash "^4.17.21"
 
-"@o2ter/utils-js@^0.0.19":
-  version "0.0.19"
-  resolved "https://registry.yarnpkg.com/@o2ter/utils-js/-/utils-js-0.0.19.tgz#c425291d049c92f802ff66f0a8d5de5a7748e92c"
-  integrity sha512-FosqNvEKzEV7KfeDvhdnTDCdv39oLW2OeiDLzM+NmeXwLrGJyQx0ilc3OWwQF0CG2FIy+W01MAPUZdgCHSQjcg==
+"@o2ter/utils-js@^0.0.23":
+  version "0.0.23"
+  resolved "https://registry.yarnpkg.com/@o2ter/utils-js/-/utils-js-0.0.23.tgz#16ad79e6c6a7788a8ea21bfa5fe39fd8d6e4e4df"
+  integrity sha512-iJz6WT1joK9W0vXD7naB6rDj6hj6m1kPENjvG6WtBci8Aps4lzhZi+TmVm53qCGZGFHAXlTvMV2DWE+X+x80Yw==
   dependencies:
-    lodash ">=4.17.21"
+    lodash ">=4.18.1"
 
 "@pkgjs/parseargs@^0.11.0":
   version "0.11.0"
@@ -2857,13 +2857,13 @@ foreground-child@^3.1.0:
     cross-spawn "^7.0.6"
     signal-exit "^4.0.1"
 
-frosty@^0.0.163:
-  version "0.0.163"
-  resolved "https://registry.yarnpkg.com/frosty/-/frosty-0.0.163.tgz#66000b807f146ea0375c09b44b36aa162f567b31"
-  integrity sha512-i+u7iRva1w9T7gle4baY6XP+WE0jdbjfrvZX8RVQXo8gCtq1f5BhjmAsAARCtttu6NPpirCF5dwWxEChuudrAg==
+frosty@^0.0.165:
+  version "0.0.165"
+  resolved "https://registry.yarnpkg.com/frosty/-/frosty-0.0.165.tgz#d46c810a98706a2ee6b609785699c8bfaa984fbc"
+  integrity sha512-z2dk6IncFVISSA+mUeHIG1aMfJsTKSP8d0vtiQulahjzj5vzjLXjcB9FYJ4nzjijZXsVupyVi0aENZCNTazWBg==
   dependencies:
     "@formatjs/intl-localematcher" "^0.8.12"
-    "@o2ter/utils-js" "^0.0.19"
+    "@o2ter/utils-js" "^0.0.23"
     "@types/jsdom" "^28.0.3"
     "@types/lodash" "^4.17.24"
     csstype "^3.2.3"
@@ -2871,7 +2871,7 @@ frosty@^0.0.163:
     lodash ">=4.18.1"
     myers.js "^0.0.22"
     nextick "^0.0.2"
-    postcss "^8.5.19"
+    postcss "^8.5.23"
     postcss-js "^5.1.0"
     postcss-nested "^7.0.2"
 
@@ -3656,7 +3656,7 @@ lodash.memoize@^4.1.2:
   resolved "https://registry.yarnpkg.com/lodash.memoize/-/lodash.memoize-4.1.2.tgz#bcc6c49a42a2840ed997f323eada5ecd182e0bfe"
   integrity sha512-t7j+NzmgnQzTAYXcsHYLgimltOV1MXHtlOWf6GjL9Kj8GK5FInw5JotxvbOs+IvV1/Dzo04/fCGfLVs7aXb4Ag==
 
-lodash@>=4.17.21, lodash@>=4.18.1, lodash@^4.17.21, lodash@^4.18.1:
+lodash@>=4.18.1, lodash@^4.17.21, lodash@^4.18.1:
   version "4.18.1"
   resolved "https://registry.yarnpkg.com/lodash/-/lodash-4.18.1.tgz#ff2b66c1f6326d59513de2407bf881439812771c"
   integrity sha512-dMInicTPVE8d1e5otfwmmjlxkZoUpiVLwyeTdUsi/Caj/gfzzblBcCE5sRHV/AsjuCmxWrte2TNGSYuCeCq+0Q==
@@ -3783,10 +3783,10 @@ myers.js@^0.0.22:
     lodash "^4.17.21"
     nextick "^0.0.2"
 
-nanoid@^3.3.16:
-  version "3.3.18"
-  resolved "https://registry.yarnpkg.com/nanoid/-/nanoid-3.3.18.tgz#f66a2de1199ffde0fcf21c8a5f13106b1c081913"
-  integrity sha512-DTg4MJbGMWkfi6VZFdNt2/caMbQy4Ou+Op/hJQvGEWcnVfoA1QA+xzRKAzw9jD6+GVOOeYr/mIcuDSdug6F6+w==
+nanoid@^3.3.18:
+  version "3.3.19"
+  resolved "https://registry.yarnpkg.com/nanoid/-/nanoid-3.3.19.tgz#336d4aa4bcd4fb24d2cddede7ffeae40bec03f0a"
+  integrity sha512-Y2tUNy4ouw6tq5oDSKeQYGOyhkUBhNOcGV/02KC+6kd9eDGqdZd++mjMiIDilrBYvjEnCYvVtsuHCuP+okSfug==
 
 napi-postinstall@^0.3.0:
   version "0.3.3"
@@ -3974,12 +3974,12 @@ postcss-selector-parser@^7.0.0:
     cssesc "^3.0.0"
     util-deprecate "^1.0.2"
 
-postcss@^8.5.19:
-  version "8.5.25"
-  resolved "https://registry.yarnpkg.com/postcss/-/postcss-8.5.25.tgz#5012a598eaaa897f21bbe8553be3cb7bd2bd78cb"
-  integrity sha512-DTPx3RWSSnWyzLxQnlH0rJP+EW5ekl16ZU4/psbIhA0e53kJfdgaN5vKM+xP7yJtXVu+nfdVFmlgFDEKAe4Pyw==
+postcss@^8.5.23:
+  version "8.5.28"
+  resolved "https://registry.yarnpkg.com/postcss/-/postcss-8.5.28.tgz#da4563a99a06e62d6c1cd1acae363224bcaed6e9"
+  integrity sha512-RRuzqDtt5Y9h3quz5hWhK+TPnsmVs6WwSU6LkJMeY4HstUEDuYTG8UJSdawMRzmzAtV+KEoG8N3Qg2qLy5vM/A==
   dependencies:
-    nanoid "^3.3.16"
+    nanoid "^3.3.18"
     picocolors "^1.1.1"
     source-map-js "^1.2.1"
 
